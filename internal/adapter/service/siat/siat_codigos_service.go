@@ -7,15 +7,18 @@ import (
 	"go-siat/internal/core/domain/facturacion"
 	"go-siat/internal/core/domain/facturacion/codigos"
 	"go-siat/internal/core/port"
-	"log"
 	"strings"
 	"time"
 
 	"github.com/gofiber/fiber/v3/client"
 )
 
+// SiatCodigosService implementa el puerto port.SiatCodigosService para interactuar con el SIAT.
+// Esta estructura utiliza un cliente HTTP personalizado para realizar peticiones SOAP a los endpoints de impuestos.
 type SiatCodigosService struct {
-	Url        string
+	// Url es la dirección base del servicio web del SIAT (ej. ambiente de prueba o producción).
+	Url string
+	// HttpClient es el cliente encargado de gestionar las peticiones HTTP, timeouts y configuraciones de red.
 	HttpClient *client.Client
 }
 
@@ -27,7 +30,6 @@ func (s *SiatCodigosService) VerificarComunicacion(ctx context.Context, config f
 	if err != nil {
 		return nil, err
 	}
-	log.Printf("[SIAT-INFO] Request SOAP: %+v", string(xmlBody))
 
 	// Ejecutar la petición HTTP utilizando el cliente configurado
 	resp, err := s.HttpClient.Post(fullURLCodigos(s.Url), client.Config{
@@ -41,7 +43,6 @@ func (s *SiatCodigosService) VerificarComunicacion(ctx context.Context, config f
 	if err != nil {
 		return nil, fmt.Errorf("error al hacer request HTTP: %w", err)
 	}
-	log.Printf("[SIAT-INFO] Response SOAP: %+v", string(resp.Body()))
 
 	return parseSoapResponse[codigos.VerificarComunicacionResponse](resp)
 }
@@ -50,12 +51,10 @@ func (s *SiatCodigosService) VerificarComunicacion(ctx context.Context, config f
 // Este procedimiento es crítico cuando un certificado ha sido comprometido o ya no es válido,
 // asegurando que las futuras firmas electrónicas asociadas no sean procesadas.
 func (s *SiatCodigosService) NotificaCertificadoRevocado(ctx context.Context, config facturacion.Config, req codigos.NotificaCertificadoRevocado) (*soap.EnvelopeResponse[codigos.NotificaCertificadoRevocadoResponse], error) {
-
 	xmlBody, err := buildRequest(req)
 	if err != nil {
 		return nil, err
 	}
-	log.Printf("[SIAT-INFO] Request SOAP: %+v", string(xmlBody))
 
 	// Ejecutar la petición HTTP utilizando el cliente configurado
 	resp, err := s.HttpClient.Post(fullURLCodigos(s.Url), client.Config{
@@ -69,21 +68,18 @@ func (s *SiatCodigosService) NotificaCertificadoRevocado(ctx context.Context, co
 	if err != nil {
 		return nil, fmt.Errorf("error al hacer request HTTP: %w", err)
 	}
-	log.Printf("[SIAT-INFO] Response SOAP: %+v", string(resp.Body()))
 
 	return parseSoapResponse[codigos.NotificaCertificadoRevocadoResponse](resp)
 }
 
 // SolicitudCufd solicita el Código Único de Facturación Diaria (CUFD) al SIAT.
 // Este código es indispensable para la emisión de facturas y tiene una vigencia de 24 horas.
-// El método configura automáticamente los parámetros base (Ambiente, Modalidad, Sistema, NIT).
+// Configura automáticamente los parámetros base (Ambiente, Modalidad, Sistema, NIT).
 func (s *SiatCodigosService) SolicitudCufd(ctx context.Context, config facturacion.Config, req codigos.Cufd) (*soap.EnvelopeResponse[codigos.CufdResponse], error) {
-
 	xmlBody, err := buildRequest(req)
 	if err != nil {
 		return nil, err
 	}
-	log.Printf("[SIAT-INFO] Request SOAP: %+v", string(xmlBody))
 
 	// Ejecutar la petición HTTP utilizando el cliente configurado
 	resp, err := s.HttpClient.Post(fullURLCodigos(s.Url), client.Config{
@@ -97,7 +93,6 @@ func (s *SiatCodigosService) SolicitudCufd(ctx context.Context, config facturaci
 	if err != nil {
 		return nil, fmt.Errorf("error al hacer request HTTP: %w", err)
 	}
-	log.Printf("[SIAT-INFO] Response SOAP: %+v", string(resp.Body()))
 
 	return parseSoapResponse[codigos.CufdResponse](resp)
 }
@@ -128,9 +123,7 @@ func (s *SiatCodigosService) SolicitudCufdMasivo(ctx context.Context, config fac
 
 // SolicitudCuis solicita el Código Único de Inicio de Sistemas (CUIS) al SIAT.
 // Este código es necesario para iniciar operaciones y tiene una vigencia determinada.
-// El método configura automáticamente los parámetros base (Ambiente, Modalidad, Sistema, NIT).
 func (s *SiatCodigosService) SolicitudCuis(ctx context.Context, config facturacion.Config, req codigos.Cuis) (*soap.EnvelopeResponse[codigos.CuisResponse], error) {
-
 	xmlBody, err := buildRequest(req)
 	if err != nil {
 		return nil, err
@@ -148,21 +141,18 @@ func (s *SiatCodigosService) SolicitudCuis(ctx context.Context, config facturaci
 	if err != nil {
 		return nil, fmt.Errorf("error al hacer request HTTP: %w", err)
 	}
-	log.Printf("[SIAT-INFO] Response SOAP: %+v", string(resp.Body()))
 
 	return parseSoapResponse[codigos.CuisResponse](resp)
 }
 
 // SolicitudCuisMasivo permite la generación masiva de Códigos Únicos de Inicio de Sistemas (CUIS).
-// Este método facilita la configuración inicial de múltiples puntos de venta o sucursales de forma simultánea,
+// Esta función facilita la configuración inicial de múltiples puntos de venta o sucursales de forma simultánea,
 // reduciendo la latencia de red y simplificando la gestión de credenciales.
 func (s *SiatCodigosService) SolicitudCuisMasivo(ctx context.Context, config facturacion.Config, req codigos.CuisMasivo) (*soap.EnvelopeResponse[codigos.CuisMasivoResponse], error) {
-
 	xmlBody, err := buildRequest(req)
 	if err != nil {
 		return nil, err
 	}
-	log.Printf("[SIAT-INFO] Request SOAP Cuis Masivo: %+v", string(xmlBody))
 
 	// Ejecutar la petición HTTP POST hacia el servicio de códigos masivos del SIAT
 	resp, err := s.HttpClient.Post(fullURLCodigos(s.Url), client.Config{
@@ -176,8 +166,6 @@ func (s *SiatCodigosService) SolicitudCuisMasivo(ctx context.Context, config fac
 	if err != nil {
 		return nil, fmt.Errorf("error al hacer request HTTP cuis masivo: %w", err)
 	}
-	log.Printf("[SIAT-INFO] Response SOAP Cuis Masivo: %+v", string(resp.Body()))
-
 	return parseSoapResponse[codigos.CuisMasivoResponse](resp)
 }
 
@@ -185,11 +173,11 @@ func (s *SiatCodigosService) SolicitudCuisMasivo(ctx context.Context, config fac
 // El proceso incluye la construcción de un sobre SOAP con las credenciales y parámetros de configuración (Ambiente, Modalidad, Sistema),
 // la ejecución de una petición HTTP POST y la posterior decodificación de la respuesta XML para determinar si el NIT se encuentra activo.
 func (s *SiatCodigosService) VerificarNit(ctx context.Context, config facturacion.Config, req codigos.VerificarNit) (*soap.EnvelopeResponse[codigos.VerificarNitResponse], error) {
-
 	xmlBody, err := buildRequest(req)
 	if err != nil {
 		return nil, err
 	}
+
 	// Ejecutar la petición HTTP utilizando el cliente configurado
 	resp, err := s.HttpClient.Post(fullURLCodigos(s.Url), client.Config{
 		Ctx:  ctx,

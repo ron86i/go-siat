@@ -32,10 +32,10 @@ type CufdResponse struct {
 // RespuestaCufd encapsula los datos del CUFD generado por el SIAT, como el código propiamente dicho,
 // el código de control, la dirección física asociada y la fecha de vigencia.
 type RespuestaCufd struct {
-	Codigo        string    `xml:"codigo,omitempty" json:"codigo,omitempty"`
-	CodigoControl string    `xml:"codigoControl,omitempty" json:"codigoControl,omitempty"`
-	Direccion     string    `xml:"direccion,omitempty" json:"direccion,omitempty"`
-	FechaVigencia time.Time `xml:"fechaVigencia,omitempty" json:"fechaVigencia,omitempty"`
-	MensajesList  []Mensaje `xml:"mensajesList,omitempty" json:"mensajesList,omitempty"`
-	Transaccion   bool      `xml:"transaccion,omitempty" json:"transaccion,omitempty"`
+	Codigo        string            `xml:"codigo,omitempty" json:"codigo,omitempty"`
+	CodigoControl string            `xml:"codigoControl,omitempty" json:"codigoControl,omitempty"`
+	Direccion     string            `xml:"direccion,omitempty" json:"direccion,omitempty"`
+	FechaVigencia time.Time         `xml:"fechaVigencia,omitempty" json:"fechaVigencia,omitempty"`
+	MensajesList  []MensajeServicio `xml:"mensajesList,omitempty" json:"mensajesList,omitempty"`
+	Transaccion   bool              `xml:"transaccion,omitempty" json:"transaccion,omitempty"`
 }

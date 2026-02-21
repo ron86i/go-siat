@@ -33,6 +33,6 @@ type NotificaCertificadoRevocadoResponse struct {
 // RespuestaNotificaRevocado contiene el resultado procesado por el SIAT, indicando si la transacción
 // fue exitosa e incluyendo cualquier mensaje informativo o de error generado.
 type RespuestaNotificaRevocado struct {
-	MensajesList []Mensaje `xml:"mensajesList,omitempty" json:"mensajesList,omitempty"`
-	Transaccion  bool      `xml:"transaccion,omitempty" json:"transaccion,omitempty"`
+	MensajesList []MensajeServicio `xml:"mensajesList,omitempty" json:"mensajesList,omitempty"`
+	Transaccion  bool              `xml:"transaccion,omitempty" json:"transaccion,omitempty"`
 }

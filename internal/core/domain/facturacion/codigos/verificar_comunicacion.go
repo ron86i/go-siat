@@ -16,6 +16,6 @@ type VerificarComunicacionResponse struct {
 // RespuestaComunicacion informa sobre el estado de la conexión, indicando si la transacción
 // de prueba fue exitosa y reportando cualquier mensaje técnico del servidor.
 type RespuestaComunicacion struct {
-	MensajesList []Mensaje `xml:"mensajesList,omitempty" json:"mensajesList,omitempty"`
-	Transaccion  bool      `xml:"transaccion,omitempty" json:"transaccion,omitempty"`
+	MensajesList []MensajeServicio `xml:"mensajesList,omitempty" json:"mensajesList,omitempty"`
+	Transaccion  bool              `xml:"transaccion,omitempty" json:"transaccion,omitempty"`
 }

@@ -33,8 +33,8 @@ func buildRequest(req any) ([]byte, error) {
 	return []byte(xml.Header + string(xmlBody)), nil
 }
 
-// parseSoapResponse procesa y valida una respuesta HTTP proveniente del SIAT para extraer el contenido SOAP esperado.
-// Este método centraliza la validación de códigos de estado HTTP, la detección de errores de negocio (SOAP Fault)
+// parseSoapResponse procesa y valida una respuesta HTTP proveniente del servicio para extraer el contenido SOAP esperado.
+// Esta función centraliza la validación de códigos de estado HTTP, la detección de errores de negocio (SOAP Fault)
 // y el desempaquetado del XML en una estructura genérica, simplificando el flujo de los servicios.
 func parseSoapResponse[T any](resp *client.Response) (*soap.EnvelopeResponse[T], error) {
 	var result soap.EnvelopeResponse[T]
@@ -42,7 +42,7 @@ func parseSoapResponse[T any](resp *client.Response) (*soap.EnvelopeResponse[T],
 	// Intentar parsear la respuesta XML en la estructura de respuesta SOAP (puede ser éxito o Fault)
 	errUnmarshal := xml.Unmarshal(resp.Body(), &result)
 
-	// Si el SIAT devolvió un SOAP Fault, priorizar este error descriptivo de negocio
+	// Si el servicio devolvió un SOAP Fault, priorizar este error descriptivo de negocio
 	if errUnmarshal == nil && result.Body.Fault != nil {
 		return nil, fmt.Errorf("SOAP Fault [%s]: %s", result.Body.Fault.FaultCode, result.Body.Fault.FaultString)
 	}
@@ -55,7 +55,7 @@ func parseSoapResponse[T any](resp *client.Response) (*soap.EnvelopeResponse[T],
 
 	// Si el status es 200 pero hubo un error de parseo, informar el error de XML
 	if errUnmarshal != nil {
-		log.Printf("[SIAT-ERROR] Error parseando XML respuesta: %v", errUnmarshal)
+		log.Printf("[ERROR] Error parseando XML respuesta: %v", errUnmarshal)
 		return nil, fmt.Errorf("error al parsear respuesta SOAP: %w", errUnmarshal)
 	}
 

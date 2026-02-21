@@ -1,68 +1,130 @@
 # go-siat
 
 [![Status](https://img.shields.io/badge/status-active-success)](https://github.com/ron86i/go-siat)
-[![Go Version](https://img.shields.io/badge/go-1.22+-00ADD8?logo=go)](https://go.dev/)
-[![Architecture](https://img.shields.io/badge/architecture-hexagonal-blue)](#-arquitectura-del-servicio)
+[![Go Version](https://img.shields.io/badge/go-1.26+-00ADD8?logo=go)](https://go.dev/)
+[![Architecture](https://img.shields.io/badge/architecture-hexagonal-blue)](#-arquitectura-del-proyecto)
+[![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
-**go-siat** es un **servicio backend especializado** diseñado para gestionar la integración robusta con los servicios del **SIAT (Servicio de Impuestos Nacionales de Bolivia)**. Implementado en Go, centraliza la comunicación SOAP de alta complejidad mediante una arquitectura de Puertos y Adaptadores.
+**go-siat** es un SDK y servicio backend robusto escrito en Go, diseñado para facilitar la integración con los servicios web SOAP del **SIAT (Sistema de Facturación de Impuestos Nacionales de Bolivia)**. 
+
+El proyecto utiliza una **Arquitectura Hexagonal** (Puertos y Adaptadores) para garantizar que la lógica de negocio permanezca desacoplada de las complejidades del protocolo SOAP y las comunicaciones de red.
+
+---
+
+## 📋 Tabla de Contenidos
+
+- [Capacidades Implementadas](#-capacidades-implementadas)
+- [Arquitectura del Proyecto](#-arquitectura-del-proyecto)
+- [Configuración](#-configuración)
+- [Testing](#-testing)
+- [Roadmap de Implementación](#-roadmap-de-implementación)
+- [Licencia](#-licencia)
+
+---
 
 ## 🚀 Capacidades Implementadas
 
-El core actualmente centraliza las operaciones del **Servicio de Códigos** del SIAT:
+Actualmente, el proyecto soporta las operaciones críticas del **Servicio de Códigos** del SIAT:
 
 ### Gestión de Códigos (`codigos`)
-- ✅ **CUIS**: Generación y obtención masiva e individual del Código Único de Inicio de Sistemas.
-- ✅ **CUFD**: Gestión masiva e individual de Códigos Únicos de Facturación Diaria.
-- ✅ **Validación de NIT**: Verificación en tiempo real de la vigencia de contribuyentes.
-- ✅ **Comunicación**: Test de comunicación oficial con los servidores del SIAT.
+- ✅ **CUIS**: Obtención individual y masiva del Código Único de Inicio de Sistemas.
+- ✅ **CUFD**: Generación individual y masiva del Código Único de Facturación Diaria (vigencia 24h).
+- ✅ **Validación de NIT**: Verificación automatizada de la validez y estado de contribuyentes.
+- ✅ **Prueba de Comunicación**: Validación de conectividad y credenciales con los servidores oficiales.
+- ✅ **Certificados Revocados**: Notificación de revocación de certificados digitales.
 
-## 🛠️ Arquitectura del Servicio
+### Sincronización de Catálogos (`sincronizacion`)
+- ✅ **Actividades Económicas**: Sincronización completa del catálogo de actividades del contribuyente.
+- ✅ **Paramétricas**: Obtención de todos los catálogos paramétricos (Eventos, Motivos, Países, Monedas, etc).
+- ✅ **Productos y Servicios**: Homologación y listado de productos y servicios autorizados.
+- ✅ **Documentos Sector**: Relación entre actividades y tipos de documentos sector.
 
-El proyecto sigue una estructura de **Arquitectura Hexagonal**, separando estrictamente la definición del dominio de las implementaciones técnicas (SOAP, firmadores, etc.):
+---
+
+## 🛠️ Arquitectura del Proyecto
+
+El proyecto sigue estrictamente los principios de la Arquitectura Hexagonal:
 
 ```text
 internal/
 ├── core/
-│   ├── domain/
-│   │   └── facturacion/
-│   │       ├── codigos/        # Lógica de CUIS/CUFD/NIT
-│   │       ├── sincronizacion/ # Catálogos y parámetros
-│   │       └── compra_venta/   # Recepción y Anulación
-│   └── port/                   # Interfaces (Contratos del SIAT)
-├── adapter/
-│   └── service/siat/           # Implementación clientes SOAP
+│   ├── domain/         # Modelos de dominio y tipos de datos (POCOs)
+│   │   ├── facturacion/
+│   │   │   ├── codigos/
+│   │   │   ├── sincronizacion/
+│   │   │   └── compra_venta/
+│   │   └── datatype/   # Tipos auxiliares (SOAP envelopes, TimeSiat, etc)
+│   └── port/           # Interfaces que definen los contratos (Puertos)
+└── adapter/
+    └── service/siat/   # Adaptadores SOAP e implementación HTTP
 ```
+
+---
 
 ## ⚙️ Configuración
 
-Requiere un archivo `.env` configurado con las credenciales de entorno del SIN:
+Cree un archivo `.env` en la raíz del proyecto basado en la siguiente tabla:
 
-| Variable | Propósito |
-| :--- | :--- |
-| `SIAT_TOKEN` | Token delegado del SIN. |
-| `SIAT_NIT` | NIT del emisor. |
-| `SIAT_CODIGO_SISTEMA` | Código del sistema certificado. |
-| `SIAT_URL` | Endpoint base del SIAT. |
+| Variable | Descripción | Ejemplo                                            |
+| :--- | :--- |:---------------------------------------------------|
+| `SIAT_TOKEN` | Token delegado proporcionado por el SIN | `eyJ0eX...`                                        |
+| `SIAT_NIT` | NIT del emisor | `123456789`                                        |
+| `SIAT_CODIGO_SISTEMA` | Código del sistema certificado | `ABC123XYZ`                                        |
+| `SIAT_CODIGO_AMBIENTE` | Código de ambiente (1: Producción, 2: Pruebas) | `2`                                                |
+| `SIAT_CODIGO_MODALIDAD` | Código de modalidad (1: Electrónica, 2: Computarizada) | `1`                                                |
+| `SIAT_URL` | Endpoint base del SIAT (Pruebas/Producción) | `https://pilotosiatservicios.impuestos.gob.bo/...` |
+
+---
+
+## 🧪 Testing
+
+El proyecto incluye una suite de pruebas unitarias y de integración para validar la comunicación con el SIAT.
+
+### Ejecutar todas las pruebas
+```bash
+go test ./...
+```
+
+### Ejecutar pruebas del servicio SIAT (con logs)
+```bash
+go test -v ./internal/adapter/service/siat/...
+```
+
+> [!IMPORTANT]
+> Para ejecutar las pruebas de integración con el SIAT, asegúrese de tener configuradas las variables de entorno correctas en su archivo `.env`.
 
 ---
 
 ## 🗺️ Roadmap de Implementación
 
-Los siguientes módulos se encuentran en fase de definición de modelos de dominio y estructuración SOAP:
-
 ### 1. Sincronización de Catálogos (`sincronizacion`)
-- 🔄 **Catálogos Paramétricos**: Sincronización de eventos, motivos de anulación, métodos de pago, etc.
-- 🔄 **Actividades Económicas**: Obtención y mapeo de actividades y documentos sector asociados.
-- 🔄 **Leyendas y Productos**: Homologación de códigos y textos legales.
+- ✅ Sincronización de catálogos paramétricos (Eventos, Motivos, Países, etc).
+- ✅ Listado de Actividades Económicas y Documentos Sector.
+- ✅ Homologación de productos y servicios.
 
-### 2. Emisión y Recepción (`compra_venta`)
-- 🔄 **Recepción de Facturas**: Protocolo de envío de paquetes de facturas electrónicas.
-- 🔄 **Anulación**: Gestión de estados y motivos de anulación.
+### 2. Facturación (`compra_venta`)
+- [ ] Recepción de Facturas Electrónicas y Computarizadas.
+- [ ] Validación y recepción de paquetes (Masivo/Lotes).
+- [ ] Gestión de Anulación de facturas.
 
-### 3. Core Técnico
-- [ ] **Firma Digital XML**: Implementación de firma con estándar DSIG.
-- [ ] **Persistencia**: Integración con PostgreSQL (`pgx`) para auditoría y logs.
+### 3. API y Servicios Web (`gofiber`)
+- [ ] Implementación de Handlers HTTP utilizando **GoFiber v3**.
+- [ ] Middleware para validación de API Keys y logging.
+- [ ] Documentación interactiva de API (Swagger/OpenAPI).
+
+### 4. Core Técnico
+- [ ] **Firma Digital**: Implementación de firma XML (DSIG) compatible con SIAT.
+- [ ] **Persistencia**: Drivers para PostgreSQL y auditoría de transacciones.
+
+---
+
+## 🤝 Contribución y Soporte
+
+¡Las contribuciones son lo que hacen que la comunidad de código abierto sea un lugar increíble para aprender, inspirar y crear!
+
+- Si deseas colaborar, consulta nuestra [Guía de Contribución](CONTRIBUTING.md).
+- Para apoyo financiero o soporte técnico especializado, revisa nuestra sección de [Soporte y Financiación](SUPPORT.md).
 
 ## 📄 Licencia
 
-Licencia MIT. Consulte `LICENSE` para detalles.
+Este proyecto está bajo la Licencia MIT. Para más información, consulte el archivo [LICENSE](LICENSE).

@@ -31,8 +31,8 @@ type CuisResponse struct {
 // RespuestaCuis encapsula el resultado de la solicitud de CUIS, incluyendo el código generado,
 // su fecha de vigencia y cualquier notificación o error emitido por el SIAT.
 type RespuestaCuis struct {
-	Codigo        string    `xml:"codigo,omitempty" json:"codigo,omitempty"`
-	FechaVigencia time.Time `xml:"fechaVigencia,omitempty" json:"fechaVigencia,omitempty"`
-	MensajesList  []Mensaje `xml:"mensajesList,omitempty" json:"mensajesList,omitempty"`
-	Transaccion   bool      `xml:"transaccion,omitempty" json:"transaccion,omitempty"`
+	Codigo        string            `xml:"codigo,omitempty" json:"codigo,omitempty"`
+	FechaVigencia time.Time         `xml:"fechaVigencia,omitempty" json:"fechaVigencia,omitempty"`
+	MensajesList  []MensajeServicio `xml:"mensajesList,omitempty" json:"mensajesList,omitempty"`
+	Transaccion   bool              `xml:"transaccion,omitempty" json:"transaccion,omitempty"`
 }

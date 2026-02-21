@@ -29,6 +29,6 @@ type VerificarNitResponse struct {
 // RespuestaVerificarNit comunica si el NIT consultado se encuentra vigente y activo,
 // adjuntando mensajes informativos en caso de discrepancias o errores técnicos.
 type RespuestaVerificarNit struct {
-	MensajesList []Mensaje `xml:"mensajesList,omitempty" json:"mensajesList,omitempty"`
-	Transaccion  bool      `xml:"transaccion,omitempty" json:"transaccion,omitempty"`
+	MensajesList []MensajeServicio `xml:"mensajesList,omitempty" json:"mensajesList,omitempty"`
+	Transaccion  bool              `xml:"transaccion,omitempty" json:"transaccion,omitempty"`
 }

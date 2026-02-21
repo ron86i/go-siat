@@ -39,20 +39,20 @@ type CufdMasivoResponse struct {
 // permitiendo verificar el éxito o falla de cada trámite dentro de la operación masiva.
 type RespuestaCufdMasivo struct {
 	ListaRespuestasCufd []RespuestaListaRegistroCufdSoapDto `xml:"listaRespuestasCufd,omitempty" json:"listaRespuestasCufd,omitempty"`
-	MensajesList        []Mensaje                           `xml:"mensajesList,omitempty" json:"mensajesList,omitempty"`
+	MensajesList        []MensajeServicio                   `xml:"mensajesList,omitempty" json:"mensajesList,omitempty"`
 	Transaccion         bool                                `xml:"transaccion,omitempty" json:"transaccion,omitempty"`
 }
 
 // RespuestaListaRegistroCufdSoapDto encapsula los datos individuales de un CUFD generado
 // en una solicitud masiva, incluyendo su código, control, dirección y vigencia.
 type RespuestaListaRegistroCufdSoapDto struct {
-	Codigo              string    `xml:"codigo" json:"codigo"`
-	CodigoControl       string    `xml:"codigoControl" json:"codigoControl"`
-	CodigoPuntoVenta    *int      `xml:"codigoPuntoVenta" json:"codigoPuntoVenta"`
-	CodigoSucursal      *int      `xml:"codigoSucursal" json:"codigoSucursal"`
-	Cuis                string    `xml:"cuis" json:"cuis"`
-	Direccion           string    `xml:"direccion" json:"direccion"`
-	FechaVigencia       time.Time `xml:"fechaVigencia" json:"fechaVigencia"`
-	MensajeServicioList []Mensaje `xml:"mensajeServicioList" json:"mensajeServicioList"`
-	Transaccion         bool      `xml:"transaccion" json:"transaccion"`
+	Codigo              string            `xml:"codigo" json:"codigo"`
+	CodigoControl       string            `xml:"codigoControl" json:"codigoControl"`
+	CodigoPuntoVenta    *int              `xml:"codigoPuntoVenta" json:"codigoPuntoVenta"`
+	CodigoSucursal      *int              `xml:"codigoSucursal" json:"codigoSucursal"`
+	Cuis                string            `xml:"cuis" json:"cuis"`
+	Direccion           string            `xml:"direccion" json:"direccion"`
+	FechaVigencia       time.Time         `xml:"fechaVigencia" json:"fechaVigencia"`
+	MensajeServicioList []MensajeServicio `xml:"mensajeServicioList" json:"mensajeServicioList"`
+	Transaccion         bool              `xml:"transaccion" json:"transaccion"`
 }

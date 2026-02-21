@@ -38,17 +38,17 @@ type CuisMasivoResponse struct {
 // permitiendo identificar de manera agregada los éxitos y fallos del proceso.
 type RespuestaCuisMasivo struct {
 	ListaRespuestasCuis []RespuestaListaRegistroCuisSoapDto `xml:"listaRespuestasCuis,omitempty" json:"listaRespuestasCuis,omitempty"`
-	MensajesList        []Mensaje                           `xml:"mensajesList,omitempty" json:"mensajesList,omitempty"`
+	MensajesList        []MensajeServicio                   `xml:"mensajesList,omitempty" json:"mensajesList,omitempty"`
 	Transaccion         bool                                `xml:"transaccion,omitempty" json:"transaccion,omitempty"`
 }
 
 // RespuestaListaRegistroCuisSoapDto representa el resultado individual de un CUIS tramitado masivamente,
 // incluyendo su código, vigencia y mensajes de servicio específicos.
 type RespuestaListaRegistroCuisSoapDto struct {
-	Codigo              string    `xml:"codigo,omitempty" json:"codigo,omitempty"`
-	CodigoPuntoVenta    *int32    `xml:"codigoPuntoVenta,omitempty" json:"codigoPuntoVenta,omitempty"`
-	CodigoSucursal      *int32    `xml:"codigoSucursal,omitempty" json:"codigoSucursal,omitempty"`
-	FechaVigencia       time.Time `xml:"fechaVigencia,omitempty" json:"fechaVigencia,omitempty"`
-	MensajeServicioList []Mensaje `xml:"mensajeServicioList,omitempty" json:"mensajeServicioList,omitempty"`
-	Transaccion         bool      `xml:"transaccion,omitempty" json:"transaccion,omitempty"`
+	Codigo              string            `xml:"codigo,omitempty" json:"codigo,omitempty"`
+	CodigoPuntoVenta    *int32            `xml:"codigoPuntoVenta,omitempty" json:"codigoPuntoVenta,omitempty"`
+	CodigoSucursal      *int32            `xml:"codigoSucursal,omitempty" json:"codigoSucursal,omitempty"`
+	FechaVigencia       time.Time         `xml:"fechaVigencia,omitempty" json:"fechaVigencia,omitempty"`
+	MensajeServicioList []MensajeServicio `xml:"mensajeServicioList,omitempty" json:"mensajeServicioList,omitempty"`
+	Transaccion         bool              `xml:"transaccion,omitempty" json:"transaccion,omitempty"`
 }
