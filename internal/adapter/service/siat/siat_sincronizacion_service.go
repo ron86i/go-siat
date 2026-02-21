@@ -104,13 +104,7 @@ func executeSincronizacion[K any, V any](s *SiatSincronizacionService, ctx conte
 	if err != nil {
 		return nil, fmt.Errorf("error al hacer request HTTP: %w", err)
 	}
-
-	envelope, err := parseSoapResponse[V](resp)
-	if err != nil {
-		return nil, err
-	}
-
-	return envelope, nil
+	return parseSoapResponse[V](resp)
 }
 
 // NewSiatSincronizacionService crea una nueva instancia del servicio SiatSincronizacionService.
