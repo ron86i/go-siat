@@ -198,21 +198,19 @@ func (s *SiatCodigosService) VerificarNit(ctx context.Context, config facturacio
 // NewSiatCodigosService crea una nueva instancia del servicio SiatCodigosService.
 // Valida que todas las variables de entorno requeridas estén presentes y configura el cliente HTTP.
 // Retorna un error si falta alguna configuración o si los valores numéricos son inválidos.
-func NewSiatCodigosService(url string, httpClient *client.Client) (*SiatCodigosService, error) {
-	cleanUrl := strings.TrimSpace(url)
-	if cleanUrl == "" {
-		return nil, fmt.Errorf("la URL base del SIAT no puede estar vacía")
+func NewSiatCodigosService(envs map[string]string) (*SiatCodigosService, error) {
+	url := strings.TrimSpace(envs["SIAT_URL"])
+	if url == "" {
+		return nil, fmt.Errorf("la variable de entorno SIAT_URL es obligatoria")
 	}
 
-	// Si no se inyecta un cliente, creamos uno con configuraciones seguras por defecto
-	if httpClient == nil {
-		httpClient = client.New()
-		httpClient.SetTimeout(15 * time.Second)
-	}
-
+	// Configurar cliente HTTP con timeout y headers base
+	cc := client.New()
+	cc.SetTimeout(10 * time.Second)
+	// Retornar la estructura lista para usarse, sin conversiones adicionales en los métodos
 	return &SiatCodigosService{
 		Url:        url,
-		HttpClient: httpClient,
+		HttpClient: cc,
 	}, nil
 }
 
