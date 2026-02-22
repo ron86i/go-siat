@@ -15,6 +15,14 @@ func fullURLCodigos(url string) string {
 	return url + "/FacturacionCodigos"
 }
 
+func fullURLSincronizacion(url string) string {
+	return url + "/FacturacionSincronizacion"
+}
+
+func fullURLOperaciones(url string) string {
+	return url + "/FacturacionOperaciones"
+}
+
 // buildRequest encapsula un objeto de solicitud genérico dentro de un sobre SOAP estándar (Envelope),
 // añadiendo los namespaces requeridos por el SIAT y serializando el resultado a formato XML.
 func buildRequest(req any) ([]byte, error) {

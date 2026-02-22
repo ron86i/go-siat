@@ -2,27 +2,28 @@ package port
 
 import (
 	"context"
+	"go-siat/internal/core/domain/datatype/soap"
 	"go-siat/internal/core/domain/facturacion"
 	facturacion_sincronizacion "go-siat/internal/core/domain/facturacion/sincronizacion"
 )
 
 // SiatSincronizacionCatalogoService define las operaciones para la sincronización de catálogos y parámetros del SIAT.
 type SiatSincronizacionCatalogoService interface {
-	SincronizarActividades(ctx context.Context, config facturacion.Config, req facturacion_sincronizacion.SincronizarActividades) (*facturacion_sincronizacion.SincronizarActividadesResponse, error)
-	SincronizarListaActividadesDocumentoSector(ctx context.Context, config facturacion.Config, req facturacion_sincronizacion.SincronizarListaActividadesDocumentoSector) (*facturacion_sincronizacion.SincronizarListaActividadesDocumentoSectorResponse, error)
-	SincronizarListaLeyendasFactura(ctx context.Context, config facturacion.Config, req facturacion_sincronizacion.SincronizarListaLeyendasFactura) (*facturacion_sincronizacion.SincronizarListaLeyendasFacturaResponse, error)
-	SincronizarListaMensajesServicios(ctx context.Context, config facturacion.Config, req facturacion_sincronizacion.SincronizarListaMensajesServicios) (*facturacion_sincronizacion.SincronizarListaMensajesServiciosResponse, error)
-	SincronizarListaProductosServicios(ctx context.Context, config facturacion.Config, req facturacion_sincronizacion.SincronizarListaProductosServicios) (*facturacion_sincronizacion.SincronizarListaProductosServiciosResponse, error)
-	SincronizarParametricaEventosSignificativos(ctx context.Context, config facturacion.Config, req facturacion_sincronizacion.SincronizarParametricaEventosSignificativos) (*facturacion_sincronizacion.SincronizarParametricaEventosSignificativosResponse, error)
-	SincronizarParametricaMotivoAnulacion(ctx context.Context, config facturacion.Config, req facturacion_sincronizacion.SincronizarParametricaMotivoAnulacion) (*facturacion_sincronizacion.SincronizarParametricaMotivoAnulacionResponse, error)
-	SincronizarParametricaPaisOrigen(ctx context.Context, config facturacion.Config, req facturacion_sincronizacion.SincronizarParametricaPaisOrigen) (*facturacion_sincronizacion.SincronizarParametricaPaisOrigenResponse, error)
-	SincronizarParametricaTipoDocumentoIdentidad(ctx context.Context, config facturacion.Config, req facturacion_sincronizacion.SincronizarParametricaTipoDocumentoIdentidad) (*facturacion_sincronizacion.SincronizarParametricaTipoDocumentoIdentidadResponse, error)
-	SincronizarParametricaTipoDocumentoSector(ctx context.Context, config facturacion.Config, req facturacion_sincronizacion.SincronizarParametricaTipoDocumentoSector) (*facturacion_sincronizacion.SincronizarParametricaTipoDocumentoSectorResponse, error)
-	SincronizarParametricaTipoEmision(ctx context.Context, config facturacion.Config, req facturacion_sincronizacion.SincronizarParametricaTipoEmision) (*facturacion_sincronizacion.SincronizarParametricaTipoEmisionResponse, error)
-	SincronizarParametricaTipoHabitacion(ctx context.Context, config facturacion.Config, req facturacion_sincronizacion.SincronizarParametricaTipoHabitacion) (*facturacion_sincronizacion.SincronizarParametricaTipoHabitacionResponse, error)
-	SincronizarParametricaTipoMetodoPago(ctx context.Context, config facturacion.Config, req facturacion_sincronizacion.SincronizarParametricaTipoMetodoPago) (*facturacion_sincronizacion.SincronizarParametricaTipoMetodoPagoResponse, error)
-	SincronizarParametricaTipoMoneda(ctx context.Context, config facturacion.Config, req facturacion_sincronizacion.SincronizarParametricaTipoMoneda) (*facturacion_sincronizacion.SincronizarParametricaTipoMonedaResponse, error)
-	SincronizarParametricaTipoPuntoVenta(ctx context.Context, config facturacion.Config, req facturacion_sincronizacion.SincronizarParametricaTipoPuntoVenta) (*facturacion_sincronizacion.SincronizarParametricaTipoPuntoVentaResponse, error)
-	SincronizarParametricaTiposFactura(ctx context.Context, config facturacion.Config, req facturacion_sincronizacion.SincronizarParametricaTiposFactura) (*facturacion_sincronizacion.SincronizarParametricaTiposFacturaResponse, error)
-	SincronizarParametricaUnidadMedida(ctx context.Context, config facturacion.Config, req facturacion_sincronizacion.SincronizarParametricaUnidadMedida) (*facturacion_sincronizacion.SincronizarParametricaUnidadMedidaResponse, error)
+	SincronizarActividades(ctx context.Context, config facturacion.Config, req facturacion_sincronizacion.SincronizarActividades) (*soap.EnvelopeResponse[facturacion_sincronizacion.SincronizarActividadesResponse], error)
+	SincronizarListaActividadesDocumentoSector(ctx context.Context, config facturacion.Config, req facturacion_sincronizacion.SincronizarListaActividadesDocumentoSector) (*soap.EnvelopeResponse[facturacion_sincronizacion.SincronizarListaActividadesDocumentoSectorResponse], error)
+	SincronizarListaLeyendasFactura(ctx context.Context, config facturacion.Config, req facturacion_sincronizacion.SincronizarListaLeyendasFactura) (*soap.EnvelopeResponse[facturacion_sincronizacion.SincronizarListaLeyendasFacturaResponse], error)
+	SincronizarListaMensajesServicios(ctx context.Context, config facturacion.Config, req facturacion_sincronizacion.SincronizarListaMensajesServicios) (*soap.EnvelopeResponse[facturacion_sincronizacion.SincronizarListaMensajesServiciosResponse], error)
+	SincronizarListaProductosServicios(ctx context.Context, config facturacion.Config, req facturacion_sincronizacion.SincronizarListaProductosServicios) (*soap.EnvelopeResponse[facturacion_sincronizacion.SincronizarListaProductosServiciosResponse], error)
+	SincronizarParametricaEventosSignificativos(ctx context.Context, config facturacion.Config, req facturacion_sincronizacion.SincronizarParametricaEventosSignificativos) (*soap.EnvelopeResponse[facturacion_sincronizacion.SincronizarParametricaEventosSignificativosResponse], error)
+	SincronizarParametricaMotivoAnulacion(ctx context.Context, config facturacion.Config, req facturacion_sincronizacion.SincronizarParametricaMotivoAnulacion) (*soap.EnvelopeResponse[facturacion_sincronizacion.SincronizarParametricaMotivoAnulacionResponse], error)
+	SincronizarParametricaPaisOrigen(ctx context.Context, config facturacion.Config, req facturacion_sincronizacion.SincronizarParametricaPaisOrigen) (*soap.EnvelopeResponse[facturacion_sincronizacion.SincronizarParametricaPaisOrigenResponse], error)
+	SincronizarParametricaTipoDocumentoIdentidad(ctx context.Context, config facturacion.Config, req facturacion_sincronizacion.SincronizarParametricaTipoDocumentoIdentidad) (*soap.EnvelopeResponse[facturacion_sincronizacion.SincronizarParametricaTipoDocumentoIdentidadResponse], error)
+	SincronizarParametricaTipoDocumentoSector(ctx context.Context, config facturacion.Config, req facturacion_sincronizacion.SincronizarParametricaTipoDocumentoSector) (*soap.EnvelopeResponse[facturacion_sincronizacion.SincronizarParametricaTipoDocumentoSectorResponse], error)
+	SincronizarParametricaTipoEmision(ctx context.Context, config facturacion.Config, req facturacion_sincronizacion.SincronizarParametricaTipoEmision) (*soap.EnvelopeResponse[facturacion_sincronizacion.SincronizarParametricaTipoEmisionResponse], error)
+	SincronizarParametricaTipoHabitacion(ctx context.Context, config facturacion.Config, req facturacion_sincronizacion.SincronizarParametricaTipoHabitacion) (*soap.EnvelopeResponse[facturacion_sincronizacion.SincronizarParametricaTipoHabitacionResponse], error)
+	SincronizarParametricaTipoMetodoPago(ctx context.Context, config facturacion.Config, req facturacion_sincronizacion.SincronizarParametricaTipoMetodoPago) (*soap.EnvelopeResponse[facturacion_sincronizacion.SincronizarParametricaTipoMetodoPagoResponse], error)
+	SincronizarParametricaTipoMoneda(ctx context.Context, config facturacion.Config, req facturacion_sincronizacion.SincronizarParametricaTipoMoneda) (*soap.EnvelopeResponse[facturacion_sincronizacion.SincronizarParametricaTipoMonedaResponse], error)
+	SincronizarParametricaTipoPuntoVenta(ctx context.Context, config facturacion.Config, req facturacion_sincronizacion.SincronizarParametricaTipoPuntoVenta) (*soap.EnvelopeResponse[facturacion_sincronizacion.SincronizarParametricaTipoPuntoVentaResponse], error)
+	SincronizarParametricaTiposFactura(ctx context.Context, config facturacion.Config, req facturacion_sincronizacion.SincronizarParametricaTiposFactura) (*soap.EnvelopeResponse[facturacion_sincronizacion.SincronizarParametricaTiposFacturaResponse], error)
+	SincronizarParametricaUnidadMedida(ctx context.Context, config facturacion.Config, req facturacion_sincronizacion.SincronizarParametricaUnidadMedida) (*soap.EnvelopeResponse[facturacion_sincronizacion.SincronizarParametricaUnidadMedidaResponse], error)
 }
