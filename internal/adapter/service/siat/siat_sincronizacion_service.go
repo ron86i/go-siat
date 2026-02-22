@@ -111,10 +111,6 @@ func executeSincronizacion[K any, V any](s *SiatSincronizacionService, ctx conte
 	return &envelope.Body.Content, nil
 }
 
-func fullURLSincronizacion(url string) string {
-	return url + "/FacturacionSincronizacion"
-}
-
 // NewSiatSincronizacionService crea una nueva instancia del servicio SiatSincronizacionService.
 // Valida que todas las variables de entorno requeridas estén presentes y configura el cliente HTTP.
 // Retorna un error si falta alguna configuración o si los valores numéricos son inválidos.
