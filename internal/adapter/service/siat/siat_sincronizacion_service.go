@@ -3,12 +3,12 @@ package siat
 import (
 	"context"
 	"fmt"
-	"go-siat/internal/core/domain/facturacion"
-	"go-siat/internal/core/domain/facturacion/sincronizacion"
-	"go-siat/internal/core/port"
 	"strings"
 
 	"github.com/gofiber/fiber/v3/client"
+	"github.com/ron86i/go-siat/internal/core/domain/facturacion"
+	"github.com/ron86i/go-siat/internal/core/domain/facturacion/sincronizacion"
+	"github.com/ron86i/go-siat/internal/core/port"
 )
 
 type SiatSincronizacionService struct {

@@ -2,9 +2,10 @@ package port
 
 import (
 	"context"
-	"go-siat/internal/core/domain/datatype/soap"
-	"go-siat/internal/core/domain/facturacion"
-	"go-siat/internal/core/domain/facturacion/codigos"
+
+	"github.com/ron86i/go-siat/internal/core/domain/datatype/soap"
+	"github.com/ron86i/go-siat/internal/core/domain/facturacion"
+	"github.com/ron86i/go-siat/internal/core/domain/facturacion/codigos"
 )
 
 // SiatCodigosService define el contrato para la gestión de códigos de facturación ante el SIAT.

@@ -2,16 +2,17 @@ package siat_test
 
 import (
 	"context"
-	"go-siat/internal/adapter/service/siat"
-	"go-siat/internal/core/domain/facturacion"
-	"go-siat/internal/core/domain/facturacion/codigos"
-	"go-siat/internal/core/util"
+
 	"log"
 	"os"
 	"testing"
 	"time"
 
 	"github.com/joho/godotenv"
+	"github.com/ron86i/go-siat/internal/adapter/service/siat"
+	"github.com/ron86i/go-siat/internal/core/domain/facturacion"
+	"github.com/ron86i/go-siat/internal/core/domain/facturacion/codigos"
+	"github.com/ron86i/go-siat/internal/core/util"
 	"github.com/stretchr/testify/assert"
 )
 

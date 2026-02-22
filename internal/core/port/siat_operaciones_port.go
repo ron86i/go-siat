@@ -2,9 +2,10 @@ package port
 
 import (
 	"context"
-	"go-siat/internal/core/domain/datatype/soap"
-	"go-siat/internal/core/domain/facturacion"
-	"go-siat/internal/core/domain/facturacion/operaciones"
+
+	"github.com/ron86i/go-siat/internal/core/domain/datatype/soap"
+	"github.com/ron86i/go-siat/internal/core/domain/facturacion"
+	"github.com/ron86i/go-siat/internal/core/domain/facturacion/operaciones"
 )
 
 type SiatOperacionesPort interface {

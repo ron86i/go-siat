@@ -3,14 +3,15 @@ package siat
 import (
 	"context"
 	"fmt"
-	"go-siat/internal/core/domain/datatype/soap"
-	"go-siat/internal/core/domain/facturacion"
-	"go-siat/internal/core/domain/facturacion/operaciones"
-	"go-siat/internal/core/port"
+
 	"strings"
 	"time"
 
 	"github.com/gofiber/fiber/v3/client"
+	"github.com/ron86i/go-siat/internal/core/domain/datatype/soap"
+	"github.com/ron86i/go-siat/internal/core/domain/facturacion"
+	"github.com/ron86i/go-siat/internal/core/domain/facturacion/operaciones"
+	"github.com/ron86i/go-siat/internal/core/port"
 )
 
 type SiatOperacionesService struct {

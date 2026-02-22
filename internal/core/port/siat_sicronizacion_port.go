@@ -2,8 +2,9 @@ package port
 
 import (
 	"context"
-	"go-siat/internal/core/domain/facturacion"
-	facturacion_sincronizacion "go-siat/internal/core/domain/facturacion/sincronizacion"
+
+	"github.com/ron86i/go-siat/internal/core/domain/facturacion"
+	facturacion_sincronizacion "github.com/ron86i/go-siat/internal/core/domain/facturacion/sincronizacion"
 )
 
 // SiatSincronizacionCatalogoService define las operaciones para la sincronización de catálogos y parámetros del SIAT.

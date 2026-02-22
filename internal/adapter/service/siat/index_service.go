@@ -3,10 +3,10 @@ package siat
 import (
 	"encoding/xml"
 	"fmt"
-	"go-siat/internal/core/domain/datatype/soap"
 	"log"
 
 	"github.com/gofiber/fiber/v3/client"
+	"github.com/ron86i/go-siat/internal/core/domain/datatype/soap"
 )
 
 // fullURLCodigos construye la URL completa para acceder al servicio de facturación de códigos del SIAT,

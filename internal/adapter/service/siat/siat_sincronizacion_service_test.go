@@ -2,15 +2,15 @@ package siat_test
 
 import (
 	"context"
-	"go-siat/internal/adapter/service/siat"
-	"go-siat/internal/core/domain/facturacion"
-	"go-siat/internal/core/domain/facturacion/sincronizacion"
-	"go-siat/internal/core/util"
 	"log"
 	"os"
 	"testing"
 
 	"github.com/joho/godotenv"
+	"github.com/ron86i/go-siat/internal/adapter/service/siat"
+	"github.com/ron86i/go-siat/internal/core/domain/facturacion"
+	"github.com/ron86i/go-siat/internal/core/domain/facturacion/sincronizacion"
+	"github.com/ron86i/go-siat/internal/core/util"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -55,7 +55,7 @@ func getCommonRequest(_ *testing.T) sincronizacion.SolicitudSincronizacion {
 		CodigoSistema:    os.Getenv("SIAT_CODIGO_SISTEMA"),
 		CodigoSucursal:   0,
 		CodigoPuntoVenta: 0,
-		Cuis:             "197C8240", // CUIS de prueba
+		Cuis:             "C2FC682C", // CUIS de prueba
 	}
 }
 
