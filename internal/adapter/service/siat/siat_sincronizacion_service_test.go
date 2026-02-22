@@ -30,7 +30,7 @@ func runSincronizacionTest[K any, V any](
 			Token: os.Getenv("SIAT_TOKEN"),
 		}
 
-		_, err := siat.NewSiatSincronizacionService(envs["SIAT_URL"], nil)
+		_, err := siat.NewSiatSincronizacionService(envs)
 		if err != nil {
 			t.Fatalf("No se pudo inicializar el servicio: %v", err)
 		}
@@ -61,7 +61,8 @@ func getCommonRequest(_ *testing.T) sincronizacion.SolicitudSincronizacion {
 
 func TestSincronizacionCompleta(t *testing.T) {
 	godotenv.Load()
-	service, _ := siat.NewSiatSincronizacionService(os.Getenv("SIAT_URL"), nil)
+	envs := map[string]string{"SIAT_URL": os.Getenv("SIAT_URL")}
+	service, _ := siat.NewSiatSincronizacionService(envs)
 	solicitud := getCommonRequest(t)
 
 	runSincronizacionTest(t, "SincronizarActividades", sincronizacion.SincronizarActividades{SolicitudSincronizacion: solicitud}, service.SincronizarActividades)

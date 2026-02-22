@@ -21,6 +21,10 @@ func TestNotificaCertificadoRevocado(t *testing.T) {
 	// Cargar configuración de integración desde el entorno (.env)
 	godotenv.Load()
 
+	envs := map[string]string{
+		"SIAT_URL": os.Getenv("SIAT_URL"),
+	}
+
 	// Parsear el NIT (Int64)
 	nit, err := util.ParseInt64Safe(os.Getenv("SIAT_NIT"))
 	if err != nil {
@@ -34,7 +38,7 @@ func TestNotificaCertificadoRevocado(t *testing.T) {
 		Token: os.Getenv("SIAT_TOKEN"),
 	}
 
-	service, err := siat.NewSiatCodigosService(os.Getenv("SIAT_URL"), nil)
+	service, err := siat.NewSiatCodigosService(envs)
 	if err != nil {
 		t.Fatalf("No se pudo inicializar el servicio de códigos: %v", err)
 	}
@@ -86,6 +90,9 @@ func TestVerificarNit(t *testing.T) {
 	// Cargar configuración de integración desde el entorno (.env)
 	godotenv.Load()
 
+	envs := map[string]string{
+		"SIAT_URL": os.Getenv("SIAT_URL"),
+	}
 	codModalidad, err := util.ParseIntSafe(os.Getenv("SIAT_CODIGO_MODALIDAD"))
 	if err != nil {
 		t.Fatalf("la variable SIAT_CODIGO_MODALIDAD debe ser un número válido: %v", err)
@@ -103,7 +110,7 @@ func TestVerificarNit(t *testing.T) {
 		Token: os.Getenv("SIAT_TOKEN"),
 	}
 
-	service, err := siat.NewSiatCodigosService(os.Getenv("SIAT_URL"), nil)
+	service, err := siat.NewSiatCodigosService(envs)
 	if err != nil {
 		t.Fatalf("No se pudo inicializar el servicio de códigos: %v", err)
 	}
@@ -149,7 +156,9 @@ func TestVerificarNit(t *testing.T) {
 // Verifica que el servicio sea capaz de conectar y recibir un código de respuesta válido.
 func TestSolicitudCuis(t *testing.T) {
 	godotenv.Load()
-
+	envs := map[string]string{
+		"SIAT_URL": os.Getenv("SIAT_URL"),
+	}
 	codModalidad, err := util.ParseIntSafe(os.Getenv("SIAT_CODIGO_MODALIDAD"))
 	if err != nil {
 		t.Fatalf("la variable SIAT_CODIGO_MODALIDAD debe ser un número válido: %v", err)
@@ -167,7 +176,7 @@ func TestSolicitudCuis(t *testing.T) {
 	config := facturacion.Config{
 		Token: os.Getenv("SIAT_TOKEN"),
 	}
-	service, _ := siat.NewSiatCodigosService(os.Getenv("SIAT_URL"), nil)
+	service, _ := siat.NewSiatCodigosService(envs)
 
 	req := codigos.Cuis{
 		SolicitudCuis: codigos.SolicitudCuis{
@@ -200,6 +209,9 @@ func TestSolicitudCufd(t *testing.T) {
 	// Cargar entorno de configuración para tests de integración
 	godotenv.Load()
 
+	envs := map[string]string{
+		"SIAT_URL": os.Getenv("SIAT_URL"),
+	}
 	codModalidad, err := util.ParseIntSafe(os.Getenv("SIAT_CODIGO_MODALIDAD"))
 	if err != nil {
 		t.Fatalf("la variable SIAT_CODIGO_MODALIDAD debe ser un número válido: %v", err)
@@ -217,7 +229,7 @@ func TestSolicitudCufd(t *testing.T) {
 	config := facturacion.Config{
 		Token: os.Getenv("SIAT_TOKEN"),
 	}
-	service, err := siat.NewSiatCodigosService(os.Getenv("SIAT_URL"), nil)
+	service, err := siat.NewSiatCodigosService(envs)
 	assert.NoError(t, err)
 
 	// Preparar la estructura de solicitud de CUFD con los datos de prueba
@@ -255,6 +267,9 @@ func TestSolicitudCufdMasivo(t *testing.T) {
 	// Cargar configuración de integración real
 	godotenv.Load()
 
+	envs := map[string]string{
+		"SIAT_URL": os.Getenv("SIAT_URL"),
+	}
 	codModalidad, err := util.ParseIntSafe(os.Getenv("SIAT_CODIGO_MODALIDAD"))
 	if err != nil {
 		t.Fatalf("la variable SIAT_CODIGO_MODALIDAD debe ser un número válido: %v", err)
@@ -271,7 +286,7 @@ func TestSolicitudCufdMasivo(t *testing.T) {
 	config := facturacion.Config{
 		Token: os.Getenv("SIAT_TOKEN"),
 	}
-	service, err := siat.NewSiatCodigosService(os.Getenv("SIAT_URL"), nil)
+	service, err := siat.NewSiatCodigosService(envs)
 	assert.NoError(t, err)
 
 	// Configurar la lista de solicitudes masivas (por ejemplo, para la sucursal 0 y punto de venta 0)
@@ -313,6 +328,9 @@ func TestSolicitudCuisMasivo(t *testing.T) {
 	// Cargar configuración real del entorno para pruebas de integración
 	godotenv.Load()
 
+	envs := map[string]string{
+		"SIAT_URL": os.Getenv("SIAT_URL"),
+	}
 	codModalidad, err := util.ParseIntSafe(os.Getenv("SIAT_CODIGO_MODALIDAD"))
 	if err != nil {
 		t.Fatalf("la variable SIAT_CODIGO_MODALIDAD debe ser un número válido: %v", err)
@@ -330,7 +348,7 @@ func TestSolicitudCuisMasivo(t *testing.T) {
 	config := facturacion.Config{
 		Token: os.Getenv("SIAT_TOKEN"),
 	}
-	service, err := siat.NewSiatCodigosService(os.Getenv("SIAT_URL"), nil)
+	service, err := siat.NewSiatCodigosService(envs)
 	assert.NoError(t, err)
 
 	// Configurar la solicitud masiva de CUIS para un punto de venta específico
@@ -372,10 +390,14 @@ func TestVerificarComunicacion(t *testing.T) {
 	// Cargar configuración desde .env
 	godotenv.Load()
 
+	envs := map[string]string{
+		"SIAT_URL": os.Getenv("SIAT_URL"),
+	}
+
 	config := facturacion.Config{
 		Token: os.Getenv("SIAT_TOKEN"),
 	}
-	service, err := siat.NewSiatCodigosService(os.Getenv("SIAT_URL"), nil)
+	service, err := siat.NewSiatCodigosService(envs)
 	if err != nil {
 		t.Fatalf("Error al crear servicio: %v", err)
 	}
