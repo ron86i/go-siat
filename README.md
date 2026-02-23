@@ -48,8 +48,6 @@ Actualmente, el proyecto soporta las operaciones críticas del **Servicio de Có
 ## 📂 Estructura del Proyecto
 
 El proyecto está organizado de la siguiente manera:
-
-- **`cmd/`**: Ejemplos de uso del SDK y pruebas rápidas.
 - **`internal/`**: Núcleo del SDK.
     - **`core/domain/`**: Modelos de datos y estructuras XML para el SIAT.
     - **`core/port/`**: Definición de interfaces y contratos.
