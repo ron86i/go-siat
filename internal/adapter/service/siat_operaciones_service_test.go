@@ -1,4 +1,4 @@
-package siat_test
+package service_test
 
 import (
 	"context"
@@ -9,8 +9,9 @@ import (
 	"time"
 
 	"github.com/joho/godotenv"
-	"github.com/ron86i/go-siat/internal/adapter/service/siat"
-	"github.com/ron86i/go-siat/internal/core/domain/facturacion"
+	"github.com/ron86i/go-siat/internal/adapter/service"
+	"github.com/ron86i/go-siat/pkg/config"
+
 	"github.com/ron86i/go-siat/internal/core/domain/facturacion/operaciones"
 	"github.com/ron86i/go-siat/internal/core/util"
 	"github.com/stretchr/testify/assert"
@@ -32,16 +33,16 @@ func TestRegistroPuntoVenta(t *testing.T) {
 		t.Fatalf("la variable SIAT_CODIGO_MODALIDAD debe ser un número válido: %v", err)
 	}
 
-	config := facturacion.Config{
+	config := config.Config{
 		Token: os.Getenv("SIAT_TOKEN"),
 	}
 
-	service, err := siat.NewSiatOperacionesService(os.Getenv("SIAT_URL"), nil)
+	service, err := service.NewSiatOperacionesService(os.Getenv("SIAT_URL"), nil)
 	if err != nil {
 		t.Fatalf("No se pudo inicializar el servicio de operaciones: %v", err)
 	}
 
-	req := &operaciones.RegistroPuntoVenta{
+	req := operaciones.RegistroPuntoVenta{
 		SolicitudRegistroPuntoVenta: operaciones.SolicitudRegistroPuntoVenta{
 			CodigoAmbiente:       codAmbiente,
 			CodigoModalidad:      codModalidad,
@@ -55,7 +56,7 @@ func TestRegistroPuntoVenta(t *testing.T) {
 		},
 	}
 
-	resp, err := service.RegistroPuntoVenta(context.Background(), config, req)
+	resp, err := service.RegistroPuntoVenta(context.Background(), config, &req)
 
 	if !assert.NoError(t, err) {
 		t.Fatalf("Fallo en la comunicación con el SIAT: %v", err)
@@ -93,17 +94,17 @@ func TestRegistroPuntoVentaComisionista(t *testing.T) {
 		t.Fatalf("la variable SIAT_CODIGO_MODALIDAD debe ser un número válido: %v", err)
 	}
 
-	config := facturacion.Config{
+	config := config.Config{
 		Token: os.Getenv("SIAT_TOKEN"),
 	}
 
-	service, err := siat.NewSiatOperacionesService(os.Getenv("SIAT_URL"), nil)
+	service, err := service.NewSiatOperacionesService(os.Getenv("SIAT_URL"), nil)
 	if err != nil {
 		t.Fatalf("No se pudo inicializar el servicio de operaciones: %v", err)
 	}
 
 	now := time.Now()
-	req := &operaciones.RegistroPuntoVentaComisionista{
+	req := operaciones.RegistroPuntoVentaComisionista{
 		SolicitudPuntoVentaComisionista: operaciones.SolicitudPuntoVentaComisionista{
 			CodigoAmbiente:   codAmbiente,
 			CodigoModalidad:  codModalidad,
@@ -120,7 +121,7 @@ func TestRegistroPuntoVentaComisionista(t *testing.T) {
 		},
 	}
 
-	resp, err := service.RegistroPuntoVentaComisionista(context.Background(), config, req)
+	resp, err := service.RegistroPuntoVentaComisionista(context.Background(), config, &req)
 
 	if err != nil {
 		log.Printf("Error/Soap Fault en RegistroPuntoVentaComisionista: %v", err)
@@ -138,10 +139,10 @@ func TestRegistroPuntoVentaComisionista(t *testing.T) {
 
 func TestOperacionesVerificarComunicacion(t *testing.T) {
 	godotenv.Load()
-	config := facturacion.Config{
+	config := config.Config{
 		Token: os.Getenv("SIAT_TOKEN"),
 	}
-	service, _ := siat.NewSiatOperacionesService(os.Getenv("SIAT_URL"), nil)
+	service, _ := service.NewSiatOperacionesService(os.Getenv("SIAT_URL"), nil)
 
 	resp, err := service.VerificarComunicacion(context.Background(), config)
 
@@ -155,12 +156,12 @@ func TestOperacionesVerificarComunicacion(t *testing.T) {
 func TestConsultaPuntoVenta(t *testing.T) {
 	godotenv.Load()
 	nit, _ := util.ParseInt64Safe(os.Getenv("SIAT_NIT"))
-	config := facturacion.Config{
+	config := config.Config{
 		Token: os.Getenv("SIAT_TOKEN"),
 	}
-	service, _ := siat.NewSiatOperacionesService(os.Getenv("SIAT_URL"), nil)
+	service, _ := service.NewSiatOperacionesService(os.Getenv("SIAT_URL"), nil)
 
-	req := &operaciones.ConsultaPuntoVenta{
+	req := operaciones.ConsultaPuntoVenta{
 		SolicitudConsultaPuntoVenta: operaciones.SolicitudConsultaPuntoVenta{
 			CodigoAmbiente: 2,
 			CodigoSistema:  os.Getenv("SIAT_CODIGO_SISTEMA"),
@@ -170,7 +171,7 @@ func TestConsultaPuntoVenta(t *testing.T) {
 		},
 	}
 
-	resp, err := service.ConsultaPuntoVenta(context.Background(), config, req)
+	resp, err := service.ConsultaPuntoVenta(context.Background(), config, &req)
 
 	if assert.NoError(t, err) && assert.NotNil(t, resp) {
 		res := resp.Body.Content.Respuesta
@@ -184,12 +185,12 @@ func TestConsultaPuntoVenta(t *testing.T) {
 func TestCierrePuntoVenta(t *testing.T) {
 	godotenv.Load()
 	nit, _ := util.ParseInt64Safe(os.Getenv("SIAT_NIT"))
-	config := facturacion.Config{
+	config := config.Config{
 		Token: os.Getenv("SIAT_TOKEN"),
 	}
-	service, _ := siat.NewSiatOperacionesService(os.Getenv("SIAT_URL"), nil)
+	service, _ := service.NewSiatOperacionesService(os.Getenv("SIAT_URL"), nil)
 
-	req := &operaciones.CierrePuntoVenta{
+	req := operaciones.CierrePuntoVenta{
 		SolicitudCierrePuntoVenta: operaciones.SolicitudCierrePuntoVenta{
 			CodigoAmbiente:   2,
 			CodigoPuntoVenta: 13, // Un código que probablemente no exista o sea de prueba
@@ -200,7 +201,7 @@ func TestCierrePuntoVenta(t *testing.T) {
 		},
 	}
 
-	resp, err := service.CierrePuntoVenta(context.Background(), config, req)
+	resp, err := service.CierrePuntoVenta(context.Background(), config, &req)
 
 	if err == nil && resp != nil {
 		log.Printf("Resultado Cierre PV: %v", resp.Body.Content.Respuesta.Transaccion)
@@ -212,12 +213,12 @@ func TestCierrePuntoVenta(t *testing.T) {
 func TestCierreOperacionesSistema(t *testing.T) {
 	godotenv.Load()
 	nit, _ := util.ParseInt64Safe(os.Getenv("SIAT_NIT"))
-	config := facturacion.Config{
+	config := config.Config{
 		Token: os.Getenv("SIAT_TOKEN"),
 	}
-	service, _ := siat.NewSiatOperacionesService(os.Getenv("SIAT_URL"), nil)
+	service, _ := service.NewSiatOperacionesService(os.Getenv("SIAT_URL"), nil)
 
-	req := &operaciones.CierreOperacionesSistema{
+	req := operaciones.CierreOperacionesSistema{
 		SolicitudOperaciones: operaciones.SolicitudOperaciones{
 			CodigoAmbiente:   2,
 			CodigoSistema:    os.Getenv("SIAT_CODIGO_SISTEMA"),
@@ -229,7 +230,7 @@ func TestCierreOperacionesSistema(t *testing.T) {
 		},
 	}
 
-	resp, err := service.CierreOperacionesSistema(context.Background(), config, req)
+	resp, err := service.CierreOperacionesSistema(context.Background(), config, &req)
 
 	if err == nil && resp != nil {
 		log.Printf("Resultado Cierre Sistema: %v", resp.Body.Content.Respuesta)
@@ -241,13 +242,13 @@ func TestCierreOperacionesSistema(t *testing.T) {
 func TestRegistroEventosSignificativos(t *testing.T) {
 	godotenv.Load()
 	nit, _ := util.ParseInt64Safe(os.Getenv("SIAT_NIT"))
-	config := facturacion.Config{
+	config := config.Config{
 		Token: os.Getenv("SIAT_TOKEN"),
 	}
-	service, _ := siat.NewSiatOperacionesService(os.Getenv("SIAT_URL"), nil)
+	service, _ := service.NewSiatOperacionesService(os.Getenv("SIAT_URL"), nil)
 
 	now := time.Now()
-	req := &operaciones.RegistroEventoSignificativo{
+	req := operaciones.RegistroEventoSignificativo{
 		SolicitudEventoSignificativo: operaciones.SolicitudEventoSignificativo{
 			CodigoAmbiente:        2,
 			CodigoMotivoEvento:    4,
@@ -264,7 +265,7 @@ func TestRegistroEventosSignificativos(t *testing.T) {
 		},
 	}
 
-	resp, err := service.RegistroEventosSignificativos(context.Background(), config, req)
+	resp, err := service.RegistroEventosSignificativos(context.Background(), config, &req)
 
 	if err == nil && resp != nil {
 		log.Printf("Resultado Registro Evento: %v", resp.Body.Content)
@@ -276,12 +277,12 @@ func TestRegistroEventosSignificativos(t *testing.T) {
 func TestConsultaEventosSignificativos(t *testing.T) {
 	godotenv.Load()
 	nit, _ := util.ParseInt64Safe(os.Getenv("SIAT_NIT"))
-	config := facturacion.Config{
+	config := config.Config{
 		Token: os.Getenv("SIAT_TOKEN"),
 	}
-	service, _ := siat.NewSiatOperacionesService(os.Getenv("SIAT_URL"), nil)
+	service, _ := service.NewSiatOperacionesService(os.Getenv("SIAT_URL"), nil)
 
-	req := &operaciones.ConsultaEventoSignificativo{
+	req := operaciones.ConsultaEventoSignificativo{
 		SolicitudConsultaEvento: operaciones.SolicitudConsultaEvento{
 			CodigoAmbiente:   2,
 			CodigoSistema:    os.Getenv("SIAT_CODIGO_SISTEMA"),
@@ -293,7 +294,7 @@ func TestConsultaEventosSignificativos(t *testing.T) {
 		},
 	}
 
-	resp, err := service.ConsultaEventosSignificativos(context.Background(), config, req)
+	resp, err := service.ConsultaEventosSignificativos(context.Background(), config, &req)
 
 	if assert.NoError(t, err) && assert.NotNil(t, resp) {
 		res := resp.Body.Content.Respuesta

@@ -1,4 +1,4 @@
-package siat_test
+package service_test
 
 import (
 	"context"
@@ -7,8 +7,9 @@ import (
 	"testing"
 
 	"github.com/joho/godotenv"
-	"github.com/ron86i/go-siat/internal/adapter/service/siat"
-	"github.com/ron86i/go-siat/internal/core/domain/facturacion"
+	"github.com/ron86i/go-siat/internal/adapter/service"
+	"github.com/ron86i/go-siat/pkg/config"
+
 	"github.com/ron86i/go-siat/internal/core/domain/facturacion/sincronizacion"
 	"github.com/ron86i/go-siat/internal/core/util"
 	"github.com/stretchr/testify/assert"
@@ -18,24 +19,21 @@ func runSincronizacionTest[K any, V any](
 	t *testing.T,
 	name string,
 	req K,
-	fn func(context.Context, facturacion.Config, K) (*V, error),
+	fn func(context.Context, config.Config, *K) (*V, error),
 ) {
 	t.Run(name, func(t *testing.T) {
 		godotenv.Load()
 
-		envs := map[string]string{
-			"SIAT_URL": os.Getenv("SIAT_URL"),
-		}
-		config := facturacion.Config{
+		config := config.Config{
 			Token: os.Getenv("SIAT_TOKEN"),
 		}
 
-		_, err := siat.NewSiatSincronizacionService(envs)
+		_, err := service.NewSiatSincronizacionService(os.Getenv("SIAT_URL"), nil)
 		if err != nil {
 			t.Fatalf("No se pudo inicializar el servicio: %v", err)
 		}
 
-		resp, err := fn(context.Background(), config, req)
+		resp, err := fn(context.Background(), config, &req)
 		if err != nil {
 			t.Fatalf("Error en %s: %v", name, err)
 		}
@@ -61,8 +59,7 @@ func getCommonRequest(_ *testing.T) sincronizacion.SolicitudSincronizacion {
 
 func TestSincronizacionCompleta(t *testing.T) {
 	godotenv.Load()
-	envs := map[string]string{"SIAT_URL": os.Getenv("SIAT_URL")}
-	service, _ := siat.NewSiatSincronizacionService(envs)
+	service, _ := service.NewSiatSincronizacionService(os.Getenv("SIAT_URL"), nil)
 	solicitud := getCommonRequest(t)
 
 	runSincronizacionTest(t, "SincronizarActividades", sincronizacion.SincronizarActividades{SolicitudSincronizacion: solicitud}, service.SincronizarActividades)

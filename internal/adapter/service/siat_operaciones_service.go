@@ -1,4 +1,4 @@
-package siat
+package service
 
 import (
 	"context"
@@ -9,9 +9,9 @@ import (
 
 	"github.com/gofiber/fiber/v3/client"
 	"github.com/ron86i/go-siat/internal/core/domain/datatype/soap"
-	"github.com/ron86i/go-siat/internal/core/domain/facturacion"
 	"github.com/ron86i/go-siat/internal/core/domain/facturacion/operaciones"
 	"github.com/ron86i/go-siat/internal/core/port"
+	"github.com/ron86i/go-siat/pkg/config"
 )
 
 type SiatOperacionesService struct {
@@ -20,7 +20,7 @@ type SiatOperacionesService struct {
 }
 
 // ConsultaPuntoVenta implements [port.SiatOperacionesPort].
-func (s *SiatOperacionesService) ConsultaPuntoVenta(ctx context.Context, config facturacion.Config, req *operaciones.ConsultaPuntoVenta) (*soap.EnvelopeResponse[operaciones.ConsultaPuntoVentaResponse], error) {
+func (s *SiatOperacionesService) ConsultaPuntoVenta(ctx context.Context, config config.Config, req *operaciones.ConsultaPuntoVenta) (*soap.EnvelopeResponse[operaciones.ConsultaPuntoVentaResponse], error) {
 	xmlBody, err := buildRequest(req)
 	if err != nil {
 		return nil, err
@@ -42,7 +42,7 @@ func (s *SiatOperacionesService) ConsultaPuntoVenta(ctx context.Context, config 
 }
 
 // CierreOperacionesSistema implements [port.SiatOperacionesPort].
-func (s *SiatOperacionesService) CierreOperacionesSistema(ctx context.Context, config facturacion.Config, req *operaciones.CierreOperacionesSistema) (*soap.EnvelopeResponse[operaciones.CierreOperacionesSistemaResponse], error) {
+func (s *SiatOperacionesService) CierreOperacionesSistema(ctx context.Context, config config.Config, req *operaciones.CierreOperacionesSistema) (*soap.EnvelopeResponse[operaciones.CierreOperacionesSistemaResponse], error) {
 	xmlBody, err := buildRequest(req)
 	if err != nil {
 		return nil, err
@@ -64,7 +64,7 @@ func (s *SiatOperacionesService) CierreOperacionesSistema(ctx context.Context, c
 }
 
 // CierrePuntoVenta implements [port.SiatOperacionesPort].
-func (s *SiatOperacionesService) CierrePuntoVenta(ctx context.Context, config facturacion.Config, req *operaciones.CierrePuntoVenta) (*soap.EnvelopeResponse[operaciones.CierrePuntoVentaResponse], error) {
+func (s *SiatOperacionesService) CierrePuntoVenta(ctx context.Context, config config.Config, req *operaciones.CierrePuntoVenta) (*soap.EnvelopeResponse[operaciones.CierrePuntoVentaResponse], error) {
 	xmlBody, err := buildRequest(req)
 	if err != nil {
 		return nil, err
@@ -86,7 +86,7 @@ func (s *SiatOperacionesService) CierrePuntoVenta(ctx context.Context, config fa
 }
 
 // ConsultaEventosSignificativos implements [port.SiatOperacionesPort].
-func (s *SiatOperacionesService) ConsultaEventosSignificativos(ctx context.Context, config facturacion.Config, req *operaciones.ConsultaEventoSignificativo) (*soap.EnvelopeResponse[operaciones.ConsultaEventoSignificativoResponse], error) {
+func (s *SiatOperacionesService) ConsultaEventosSignificativos(ctx context.Context, config config.Config, req *operaciones.ConsultaEventoSignificativo) (*soap.EnvelopeResponse[operaciones.ConsultaEventoSignificativoResponse], error) {
 	xmlBody, err := buildRequest(req)
 	if err != nil {
 		return nil, err
@@ -108,7 +108,7 @@ func (s *SiatOperacionesService) ConsultaEventosSignificativos(ctx context.Conte
 }
 
 // RegistroEventosSignificativos implements [port.SiatOperacionesPort].
-func (s *SiatOperacionesService) RegistroEventosSignificativos(ctx context.Context, config facturacion.Config, req *operaciones.RegistroEventoSignificativo) (*soap.EnvelopeResponse[operaciones.RegistroEventoSignificativoResponse], error) {
+func (s *SiatOperacionesService) RegistroEventosSignificativos(ctx context.Context, config config.Config, req *operaciones.RegistroEventoSignificativo) (*soap.EnvelopeResponse[operaciones.RegistroEventoSignificativoResponse], error) {
 	xmlBody, err := buildRequest(req)
 	if err != nil {
 		return nil, err
@@ -130,7 +130,7 @@ func (s *SiatOperacionesService) RegistroEventosSignificativos(ctx context.Conte
 }
 
 // VerificarComunicacion implements [port.SiatOperacionesPort].
-func (s *SiatOperacionesService) VerificarComunicacion(ctx context.Context, config facturacion.Config) (*soap.EnvelopeResponse[operaciones.VerificarComunicacionResponse], error) {
+func (s *SiatOperacionesService) VerificarComunicacion(ctx context.Context, config config.Config) (*soap.EnvelopeResponse[operaciones.VerificarComunicacionResponse], error) {
 	req := operaciones.VerificarComunicacion{}
 	xmlBody, err := buildRequest(req)
 	if err != nil {
@@ -153,7 +153,7 @@ func (s *SiatOperacionesService) VerificarComunicacion(ctx context.Context, conf
 }
 
 // RegistroPuntoVenta implements [port.SiatOperacionesPort].
-func (s *SiatOperacionesService) RegistroPuntoVenta(ctx context.Context, config facturacion.Config, req *operaciones.RegistroPuntoVenta) (*soap.EnvelopeResponse[operaciones.RegistroPuntoVentaResponse], error) {
+func (s *SiatOperacionesService) RegistroPuntoVenta(ctx context.Context, config config.Config, req *operaciones.RegistroPuntoVenta) (*soap.EnvelopeResponse[operaciones.RegistroPuntoVentaResponse], error) {
 	xmlBody, err := buildRequest(req)
 	if err != nil {
 		return nil, err
@@ -175,7 +175,7 @@ func (s *SiatOperacionesService) RegistroPuntoVenta(ctx context.Context, config 
 }
 
 // RegistroPuntoVentaComisionista implements [port.SiatOperacionesPort].
-func (s *SiatOperacionesService) RegistroPuntoVentaComisionista(ctx context.Context, config facturacion.Config, req *operaciones.RegistroPuntoVentaComisionista) (*soap.EnvelopeResponse[operaciones.RegistroPuntoVentaComisionistaResponse], error) {
+func (s *SiatOperacionesService) RegistroPuntoVentaComisionista(ctx context.Context, config config.Config, req *operaciones.RegistroPuntoVentaComisionista) (*soap.EnvelopeResponse[operaciones.RegistroPuntoVentaComisionistaResponse], error) {
 	xmlBody, err := buildRequest(req)
 	if err != nil {
 		return nil, err

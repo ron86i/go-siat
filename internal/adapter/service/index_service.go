@@ -1,4 +1,4 @@
-package siat
+package service
 
 import (
 	"encoding/xml"
