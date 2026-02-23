@@ -1,7 +1,8 @@
 package siat
 
 import (
-	"github.com/gofiber/fiber/v3/client"
+	"net/http"
+
 	"github.com/ron86i/go-siat/internal/adapter/service"
 )
 
@@ -14,7 +15,7 @@ type sdk struct {
 
 // New retorna un puntero al struct privado.
 // Go permite esto y el usuario podrá usar los campos públicos.
-func New(URL string, httpClient *client.Client) (*sdk, error) {
+func New(URL string, httpClient *http.Client) (*sdk, error) {
 	operaciones, err := service.NewSiatOperacionesService(URL, httpClient)
 	if err != nil {
 		return nil, err

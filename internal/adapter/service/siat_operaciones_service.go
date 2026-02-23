@@ -7,7 +7,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/gofiber/fiber/v3/client"
+	"bytes"
+	"net/http"
+
 	"github.com/ron86i/go-siat/internal/core/domain/datatype/soap"
 	"github.com/ron86i/go-siat/internal/core/domain/facturacion/operaciones"
 	"github.com/ron86i/go-siat/internal/core/port"
@@ -16,7 +18,7 @@ import (
 
 type SiatOperacionesService struct {
 	Url        string
-	HttpClient *client.Client
+	HttpClient *http.Client
 }
 
 // ConsultaPuntoVenta implements [port.SiatOperacionesPort].
@@ -25,15 +27,15 @@ func (s *SiatOperacionesService) ConsultaPuntoVenta(ctx context.Context, config 
 	if err != nil {
 		return nil, err
 	}
-	// Ejecutar la petición HTTP utilizando el cliente configurado
-	resp, err := s.HttpClient.Post(fullURLOperaciones(s.Url), client.Config{
-		Ctx:  ctx,
-		Body: xmlBody,
-		Header: map[string]string{
-			"Content-Type": "application/xml",
-			"apiKey":       fmt.Sprintf("TokenApi %s", config.Token),
-		},
-	})
+	httpReq, err := http.NewRequestWithContext(ctx, "POST", fullURLOperaciones(s.Url), bytes.NewReader(xmlBody))
+	if err != nil {
+		return nil, fmt.Errorf("error al crear petición HTTP: %w", err)
+	}
+
+	httpReq.Header.Set("Content-Type", "application/xml")
+	httpReq.Header.Set("apiKey", fmt.Sprintf("TokenApi %s", config.Token))
+
+	resp, err := s.HttpClient.Do(httpReq)
 	if err != nil {
 		return nil, fmt.Errorf("error al hacer request HTTP: %w", err)
 	}
@@ -47,15 +49,15 @@ func (s *SiatOperacionesService) CierreOperacionesSistema(ctx context.Context, c
 	if err != nil {
 		return nil, err
 	}
-	// Ejecutar la petición HTTP utilizando el cliente configurado
-	resp, err := s.HttpClient.Post(fullURLOperaciones(s.Url), client.Config{
-		Ctx:  ctx,
-		Body: xmlBody,
-		Header: map[string]string{
-			"Content-Type": "application/xml",
-			"apiKey":       fmt.Sprintf("TokenApi %s", config.Token),
-		},
-	})
+	httpReq, err := http.NewRequestWithContext(ctx, "POST", fullURLOperaciones(s.Url), bytes.NewReader(xmlBody))
+	if err != nil {
+		return nil, fmt.Errorf("error al crear petición HTTP: %w", err)
+	}
+
+	httpReq.Header.Set("Content-Type", "application/xml")
+	httpReq.Header.Set("apiKey", fmt.Sprintf("TokenApi %s", config.Token))
+
+	resp, err := s.HttpClient.Do(httpReq)
 	if err != nil {
 		return nil, fmt.Errorf("error al hacer request HTTP: %w", err)
 	}
@@ -70,14 +72,15 @@ func (s *SiatOperacionesService) CierrePuntoVenta(ctx context.Context, config co
 		return nil, err
 	}
 
-	resp, err := s.HttpClient.Post(fullURLOperaciones(s.Url), client.Config{
-		Ctx:  ctx,
-		Body: xmlBody,
-		Header: map[string]string{
-			"Content-Type": "application/xml",
-			"apiKey":       fmt.Sprintf("TokenApi %s", config.Token),
-		},
-	})
+	httpReq, err := http.NewRequestWithContext(ctx, "POST", fullURLOperaciones(s.Url), bytes.NewReader(xmlBody))
+	if err != nil {
+		return nil, fmt.Errorf("error al crear petición HTTP: %w", err)
+	}
+
+	httpReq.Header.Set("Content-Type", "application/xml")
+	httpReq.Header.Set("apiKey", fmt.Sprintf("TokenApi %s", config.Token))
+
+	resp, err := s.HttpClient.Do(httpReq)
 	if err != nil {
 		return nil, fmt.Errorf("error al hacer request HTTP: %w", err)
 	}
@@ -91,15 +94,15 @@ func (s *SiatOperacionesService) ConsultaEventosSignificativos(ctx context.Conte
 	if err != nil {
 		return nil, err
 	}
-	// Ejecutar la petición HTTP utilizando el cliente configurado
-	resp, err := s.HttpClient.Post(fullURLOperaciones(s.Url), client.Config{
-		Ctx:  ctx,
-		Body: xmlBody,
-		Header: map[string]string{
-			"Content-Type": "application/xml",
-			"apiKey":       fmt.Sprintf("TokenApi %s", config.Token),
-		},
-	})
+	httpReq, err := http.NewRequestWithContext(ctx, "POST", fullURLOperaciones(s.Url), bytes.NewReader(xmlBody))
+	if err != nil {
+		return nil, fmt.Errorf("error al crear petición HTTP: %w", err)
+	}
+
+	httpReq.Header.Set("Content-Type", "application/xml")
+	httpReq.Header.Set("apiKey", fmt.Sprintf("TokenApi %s", config.Token))
+
+	resp, err := s.HttpClient.Do(httpReq)
 	if err != nil {
 		return nil, fmt.Errorf("error al hacer request HTTP: %w", err)
 	}
@@ -113,15 +116,15 @@ func (s *SiatOperacionesService) RegistroEventosSignificativos(ctx context.Conte
 	if err != nil {
 		return nil, err
 	}
-	// Ejecutar la petición HTTP utilizando el cliente configurado
-	resp, err := s.HttpClient.Post(fullURLOperaciones(s.Url), client.Config{
-		Ctx:  ctx,
-		Body: xmlBody,
-		Header: map[string]string{
-			"Content-Type": "application/xml",
-			"apiKey":       fmt.Sprintf("TokenApi %s", config.Token),
-		},
-	})
+	httpReq, err := http.NewRequestWithContext(ctx, "POST", fullURLOperaciones(s.Url), bytes.NewReader(xmlBody))
+	if err != nil {
+		return nil, fmt.Errorf("error al crear petición HTTP: %w", err)
+	}
+
+	httpReq.Header.Set("Content-Type", "application/xml")
+	httpReq.Header.Set("apiKey", fmt.Sprintf("TokenApi %s", config.Token))
+
+	resp, err := s.HttpClient.Do(httpReq)
 	if err != nil {
 		return nil, fmt.Errorf("error al hacer request HTTP: %w", err)
 	}
@@ -137,14 +140,15 @@ func (s *SiatOperacionesService) VerificarComunicacion(ctx context.Context, conf
 		return nil, err
 	}
 
-	resp, err := s.HttpClient.Post(fullURLOperaciones(s.Url), client.Config{
-		Ctx:  ctx,
-		Body: xmlBody,
-		Header: map[string]string{
-			"Content-Type": "application/xml",
-			"apiKey":       fmt.Sprintf("TokenApi %s", config.Token),
-		},
-	})
+	httpReq, err := http.NewRequestWithContext(ctx, "POST", fullURLOperaciones(s.Url), bytes.NewReader(xmlBody))
+	if err != nil {
+		return nil, fmt.Errorf("error al crear petición HTTP: %w", err)
+	}
+
+	httpReq.Header.Set("Content-Type", "application/xml")
+	httpReq.Header.Set("apiKey", fmt.Sprintf("TokenApi %s", config.Token))
+
+	resp, err := s.HttpClient.Do(httpReq)
 	if err != nil {
 		return nil, fmt.Errorf("error al hacer request HTTP: %w", err)
 	}
@@ -158,15 +162,15 @@ func (s *SiatOperacionesService) RegistroPuntoVenta(ctx context.Context, config 
 	if err != nil {
 		return nil, err
 	}
-	// Ejecutar la petición HTTP utilizando el cliente configurado
-	resp, err := s.HttpClient.Post(fullURLOperaciones(s.Url), client.Config{
-		Ctx:  ctx,
-		Body: xmlBody,
-		Header: map[string]string{
-			"Content-Type": "application/xml",
-			"apiKey":       fmt.Sprintf("TokenApi %s", config.Token),
-		},
-	})
+	httpReq, err := http.NewRequestWithContext(ctx, "POST", fullURLOperaciones(s.Url), bytes.NewReader(xmlBody))
+	if err != nil {
+		return nil, fmt.Errorf("error al crear petición HTTP: %w", err)
+	}
+
+	httpReq.Header.Set("Content-Type", "application/xml")
+	httpReq.Header.Set("apiKey", fmt.Sprintf("TokenApi %s", config.Token))
+
+	resp, err := s.HttpClient.Do(httpReq)
 	if err != nil {
 		return nil, fmt.Errorf("error al hacer request HTTP: %w", err)
 	}
@@ -182,21 +186,22 @@ func (s *SiatOperacionesService) RegistroPuntoVentaComisionista(ctx context.Cont
 	}
 
 	// Ejecutar la petición HTTP utilizando el cliente configurado
-	resp, err := s.HttpClient.Post(fullURLOperaciones(s.Url), client.Config{
-		Ctx:  ctx,
-		Body: xmlBody,
-		Header: map[string]string{
-			"Content-Type": "application/xml",
-			"apiKey":       fmt.Sprintf("TokenApi %s", config.Token),
-		},
-	})
+	httpReq, err := http.NewRequestWithContext(ctx, "POST", fullURLOperaciones(s.Url), bytes.NewReader(xmlBody))
+	if err != nil {
+		return nil, fmt.Errorf("error al crear petición HTTP: %w", err)
+	}
+
+	httpReq.Header.Set("Content-Type", "application/xml")
+	httpReq.Header.Set("apiKey", fmt.Sprintf("TokenApi %s", config.Token))
+
+	resp, err := s.HttpClient.Do(httpReq)
 	if err != nil {
 		return nil, fmt.Errorf("error al hacer request HTTP: %w", err)
 	}
 	return parseSoapResponse[operaciones.RegistroPuntoVentaComisionistaResponse](resp)
 }
 
-func NewSiatOperacionesService(url string, httpClient *client.Client) (*SiatOperacionesService, error) {
+func NewSiatOperacionesService(url string, httpClient *http.Client) (*SiatOperacionesService, error) {
 	cleanUrl := strings.TrimSpace(url)
 	if cleanUrl == "" {
 		return nil, fmt.Errorf("la URL base del SIAT no puede estar vacía")
@@ -204,8 +209,9 @@ func NewSiatOperacionesService(url string, httpClient *client.Client) (*SiatOper
 
 	// Si no se inyecta un cliente, creamos uno con configuraciones seguras por defecto
 	if httpClient == nil {
-		httpClient = client.New()
-		httpClient.SetTimeout(15 * time.Second)
+		httpClient = &http.Client{
+			Timeout: 15 * time.Second,
+		}
 	}
 
 	return &SiatOperacionesService{

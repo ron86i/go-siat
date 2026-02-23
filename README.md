@@ -2,19 +2,18 @@
 
 [![Status](https://img.shields.io/badge/status-active-success)](https://github.com/ron86i/go-siat)
 [![Go Version](https://img.shields.io/badge/go-1.26+-00ADD8?logo=go)](https://go.dev/)
-[![Architecture](https://img.shields.io/badge/architecture-hexagonal-blue)](#-arquitectura-del-proyecto)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
-**go-siat** es un SDK y servicio backend robusto escrito en Go, diseñado para facilitar la integración con los servicios web SOAP del **SIAT (Sistema de Facturación de Impuestos Nacionales de Bolivia)**. 
+**go-siat** es un SDK robusto escrito en Go, diseñado para facilitar la integración con los servicios web SOAP del **SIAT (Sistema de Facturación de Impuestos Nacionales de Bolivia)**. 
 
-El proyecto utiliza una **Arquitectura Hexagonal** (Puertos y Adaptadores) para garantizar que la lógica de negocio permanezca desacoplada de las complejidades del protocolo SOAP y las comunicaciones de red.
+Actualmente, el SDK ya cuenta con las implementaciones completas para **Gestión de Códigos**, **Sincronización de Catálogos** y **Operaciones de Punto de Venta**, utilizando el cliente HTTP estándar de Go para garantizar ligereza y facilidad de mantenimiento.
 
 ---
 
 ## 📋 Tabla de Contenidos
 
 - [Capacidades Implementadas](#-capacidades-implementadas)
-- [Arquitectura del Proyecto](#-arquitectura-del-proyecto)
+- [Estructura del Proyecto](#-estructura-del-proyecto)
 - [Configuración](#-configuración)
 - [Testing](#-testing)
 - [Roadmap de Implementación](#-roadmap-de-implementación)
@@ -39,25 +38,24 @@ Actualmente, el proyecto soporta las operaciones críticas del **Servicio de Có
 - ✅ **Productos y Servicios**: Homologación y listado de productos y servicios autorizados.
 - ✅ **Documentos Sector**: Relación entre actividades y tipos de documentos sector.
 
+### Operaciones de Punto de Venta (`operaciones`)
+- ✅ **Registro de Punto de Venta**: Apertura y registro de nuevos puntos de venta/comisionistas.
+- ✅ **Cierre de Operaciones**: Gestión de cierre de sistemas y puntos de venta.
+- ✅ **Eventos Significativos**: Registro y consulta de eventos (cortes de internet, fallas, etc).
+
 ---
 
-## 🛠️ Arquitectura del Proyecto
+## 📂 Estructura del Proyecto
 
-El proyecto sigue estrictamente los principios de la Arquitectura Hexagonal:
+El proyecto está organizado de la siguiente manera:
 
-```text
-internal/
-├── core/
-│   ├── domain/         # Modelos de dominio y tipos de datos (POCOs)
-│   │   ├── facturacion/
-│   │   │   ├── codigos/
-│   │   │   ├── sincronizacion/
-│   │   │   └── compra_venta/
-│   │   └── datatype/   # Tipos auxiliares (SOAP envelopes, TimeSiat, etc)
-│   └── port/           # Interfaces que definen los contratos (Puertos)
-└── adapter/
-    └── service/siat/   # Adaptadores SOAP e implementación HTTP
-```
+- **`cmd/`**: Ejemplos de uso del SDK y pruebas rápidas.
+- **`internal/`**: Núcleo del SDK.
+    - **`core/domain/`**: Modelos de datos y estructuras XML para el SIAT.
+    - **`core/port/`**: Definición de interfaces y contratos.
+    - **`adapter/service/`**: Implementación de la comunicación SOAP/HTTP con el SIAT.
+- **`pkg/`**: Paquetes de utilidad, configuración y modelos auxiliares.
+- **`siat.go`**: Punto de entrada principal para inicializar el SDK.
 
 ---
 
@@ -92,31 +90,6 @@ go test -v ./internal/adapter/service/siat/...
 
 > [!IMPORTANT]
 > Para ejecutar las pruebas de integración con el SIAT, asegúrese de tener configuradas las variables de entorno correctas en su archivo `.env`.
-
----
-
-## 🗺️ Roadmap de Implementación
-
-### 1. Sincronización de Catálogos (`sincronizacion`)
-- ✅ Sincronización de catálogos paramétricos (Eventos, Motivos, Países, etc).
-- ✅ Listado de Actividades Económicas y Documentos Sector.
-- ✅ Homologación de productos y servicios.
-
-### 2. Facturación (`compra_venta`)
-- [ ] Recepción de Facturas Electrónicas y Computarizadas.
-- [ ] Validación y recepción de paquetes (Masivo/Lotes).
-- [ ] Gestión de Anulación de facturas.
-
-### 3. API y Servicios Web (`gofiber`)
-- [ ] Implementación de Handlers HTTP utilizando **GoFiber v3**.
-- [ ] Middleware para validación de API Keys y logging.
-- [ ] Documentación interactiva de API (Swagger/OpenAPI).
-
-### 4. Core Técnico
-- [ ] **Firma Digital**: Implementación de firma XML (DSIG) compatible con SIAT.
-- [ ] **Persistencia**: Drivers para PostgreSQL y auditoría de transacciones.
-
----
 
 ## 🤝 Contribución y Soporte
 

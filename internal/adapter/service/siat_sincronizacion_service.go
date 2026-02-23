@@ -6,7 +6,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/gofiber/fiber/v3/client"
+	"bytes"
+	"net/http"
+
 	"github.com/ron86i/go-siat/internal/core/domain/facturacion/sincronizacion"
 	"github.com/ron86i/go-siat/internal/core/port"
 	"github.com/ron86i/go-siat/pkg/config"
@@ -14,7 +16,7 @@ import (
 
 type SiatSincronizacionService struct {
 	Url        string
-	HttpClient *client.Client
+	HttpClient *http.Client
 }
 
 func (s *SiatSincronizacionService) SincronizarActividades(ctx context.Context, config config.Config, req *sincronizacion.SincronizarActividades) (*sincronizacion.SincronizarActividadesResponse, error) {
@@ -92,14 +94,15 @@ func executeSincronizacion[V any, K any](s *SiatSincronizacionService, ctx conte
 		return nil, err
 	}
 
-	resp, err := s.HttpClient.Post(fullURLSincronizacion(s.Url), client.Config{
-		Ctx: ctx,
-		Header: map[string]string{
-			"Content-Type": "application/xml",
-			"apiKey":       fmt.Sprintf("TokenApi %s", config.Token),
-		},
-		Body: xmlBody,
-	})
+	httpReq, err := http.NewRequestWithContext(ctx, "POST", fullURLSincronizacion(s.Url), bytes.NewReader(xmlBody))
+	if err != nil {
+		return nil, fmt.Errorf("error al crear petición HTTP: %w", err)
+	}
+
+	httpReq.Header.Set("Content-Type", "application/xml")
+	httpReq.Header.Set("apiKey", fmt.Sprintf("TokenApi %s", config.Token))
+
+	resp, err := s.HttpClient.Do(httpReq)
 	if err != nil {
 		return nil, fmt.Errorf("error al hacer request HTTP: %w", err)
 	}
@@ -113,15 +116,16 @@ func executeSincronizacion[V any, K any](s *SiatSincronizacionService, ctx conte
 }
 
 // NewSiatSincronizacionService crea una nueva instancia del servicio SiatSincronizacionService.
-func NewSiatSincronizacionService(url string, httpClient *client.Client) (*SiatSincronizacionService, error) {
+func NewSiatSincronizacionService(url string, httpClient *http.Client) (*SiatSincronizacionService, error) {
 	cleanUrl := strings.TrimSpace(url)
 	if cleanUrl == "" {
 		return nil, fmt.Errorf("la URL base del SIAT no puede estar vacía")
 	}
 
 	if httpClient == nil {
-		httpClient = client.New()
-		httpClient.SetTimeout(15 * time.Second)
+		httpClient = &http.Client{
+			Timeout: 15 * time.Second,
+		}
 	}
 
 	return &SiatSincronizacionService{

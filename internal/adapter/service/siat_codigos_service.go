@@ -3,12 +3,13 @@ package service
 import (
 	"context"
 	"fmt"
-	"log"
 
 	"strings"
 	"time"
 
-	"github.com/gofiber/fiber/v3/client"
+	"bytes"
+	"net/http"
+
 	"github.com/ron86i/go-siat/internal/core/domain/datatype/soap"
 	"github.com/ron86i/go-siat/internal/core/domain/facturacion/codigos"
 	"github.com/ron86i/go-siat/internal/core/port"
@@ -21,7 +22,7 @@ type SiatCodigosService struct {
 	// Url es la dirección base del servicio web del SIAT (ej. ambiente de prueba o producción).
 	Url string
 	// HttpClient es el cliente encargado de gestionar las peticiones HTTP, timeouts y configuraciones de red.
-	HttpClient *client.Client
+	HttpClient *http.Client
 }
 
 // VerificarComunicacion realiza una prueba de conectividad con el servicio de códigos del SIAT.
@@ -33,15 +34,15 @@ func (s *SiatCodigosService) VerificarComunicacion(ctx context.Context, config c
 		return nil, err
 	}
 
-	// Ejecutar la petición HTTP utilizando el cliente configurado
-	resp, err := s.HttpClient.Post(fullURLCodigos(s.Url), client.Config{
-		Ctx:  ctx,
-		Body: xmlBody,
-		Header: map[string]string{
-			"Content-Type": "application/xml",
-			"apiKey":       fmt.Sprintf("TokenApi %s", config.Token),
-		},
-	})
+	httpReq, err := http.NewRequestWithContext(ctx, "POST", fullURLCodigos(s.Url), bytes.NewReader(xmlBody))
+	if err != nil {
+		return nil, fmt.Errorf("error al crear petición HTTP: %w", err)
+	}
+
+	httpReq.Header.Set("Content-Type", "application/xml")
+	httpReq.Header.Set("apiKey", fmt.Sprintf("TokenApi %s", config.Token))
+
+	resp, err := s.HttpClient.Do(httpReq)
 	if err != nil {
 		return nil, fmt.Errorf("error al hacer request HTTP: %w", err)
 	}
@@ -58,15 +59,15 @@ func (s *SiatCodigosService) NotificaCertificadoRevocado(ctx context.Context, co
 		return nil, err
 	}
 
-	// Ejecutar la petición HTTP utilizando el cliente configurado
-	resp, err := s.HttpClient.Post(fullURLCodigos(s.Url), client.Config{
-		Ctx:  ctx,
-		Body: xmlBody,
-		Header: map[string]string{
-			"Content-Type": "application/xml",
-			"apiKey":       fmt.Sprintf("TokenApi %s", config.Token),
-		},
-	})
+	httpReq, err := http.NewRequestWithContext(ctx, "POST", fullURLCodigos(s.Url), bytes.NewReader(xmlBody))
+	if err != nil {
+		return nil, fmt.Errorf("error al crear petición HTTP: %w", err)
+	}
+
+	httpReq.Header.Set("Content-Type", "application/xml")
+	httpReq.Header.Set("apiKey", fmt.Sprintf("TokenApi %s", config.Token))
+
+	resp, err := s.HttpClient.Do(httpReq)
 	if err != nil {
 		return nil, fmt.Errorf("error al hacer request HTTP: %w", err)
 	}
@@ -83,15 +84,15 @@ func (s *SiatCodigosService) SolicitudCufd(ctx context.Context, config config.Co
 		return nil, err
 	}
 
-	// Ejecutar la petición HTTP utilizando el cliente configurado
-	resp, err := s.HttpClient.Post(fullURLCodigos(s.Url), client.Config{
-		Ctx: ctx,
-		Header: map[string]string{
-			"Content-Type": "application/xml",
-			"apiKey":       fmt.Sprintf("TokenApi %s", config.Token),
-		},
-		Body: xmlBody,
-	})
+	httpReq, err := http.NewRequestWithContext(ctx, "POST", fullURLCodigos(s.Url), bytes.NewReader(xmlBody))
+	if err != nil {
+		return nil, fmt.Errorf("error al crear petición HTTP: %w", err)
+	}
+
+	httpReq.Header.Set("Content-Type", "application/xml")
+	httpReq.Header.Set("apiKey", fmt.Sprintf("TokenApi %s", config.Token))
+
+	resp, err := s.HttpClient.Do(httpReq)
 	if err != nil {
 		return nil, fmt.Errorf("error al hacer request HTTP: %w", err)
 	}
@@ -108,15 +109,15 @@ func (s *SiatCodigosService) SolicitudCufdMasivo(ctx context.Context, config con
 		return nil, err
 	}
 
-	// Ejecutar la petición HTTP POST hacia el servicio de facturación masiva
-	resp, err := s.HttpClient.Post(fullURLCodigos(s.Url), client.Config{
-		Ctx: ctx,
-		Header: map[string]string{
-			"Content-Type": "application/xml",
-			"apiKey":       fmt.Sprintf("TokenApi %s", config.Token),
-		},
-		Body: xmlBody,
-	})
+	httpReq, err := http.NewRequestWithContext(ctx, "POST", fullURLCodigos(s.Url), bytes.NewReader(xmlBody))
+	if err != nil {
+		return nil, fmt.Errorf("error al crear petición HTTP: %w", err)
+	}
+
+	httpReq.Header.Set("Content-Type", "application/xml")
+	httpReq.Header.Set("apiKey", fmt.Sprintf("TokenApi %s", config.Token))
+
+	resp, err := s.HttpClient.Do(httpReq)
 	if err != nil {
 		return nil, fmt.Errorf("error al hacer request HTTP masivo: %w", err)
 	}
@@ -131,15 +132,15 @@ func (s *SiatCodigosService) SolicitudCuis(ctx context.Context, config config.Co
 		return nil, err
 	}
 
-	// Ejecutar la petición HTTP utilizando el cliente configurado
-	resp, err := s.HttpClient.Post(fullURLCodigos(s.Url), client.Config{
-		Ctx: ctx,
-		Header: map[string]string{
-			"Content-Type": "application/xml",
-			"apiKey":       fmt.Sprintf("TokenApi %s", config.Token),
-		},
-		Body: xmlBody,
-	})
+	httpReq, err := http.NewRequestWithContext(ctx, "POST", fullURLCodigos(s.Url), bytes.NewReader(xmlBody))
+	if err != nil {
+		return nil, fmt.Errorf("error al crear petición HTTP: %w", err)
+	}
+
+	httpReq.Header.Set("Content-Type", "application/xml")
+	httpReq.Header.Set("apiKey", fmt.Sprintf("TokenApi %s", config.Token))
+
+	resp, err := s.HttpClient.Do(httpReq)
 	if err != nil {
 		return nil, fmt.Errorf("error al hacer request HTTP: %w", err)
 	}
@@ -156,15 +157,15 @@ func (s *SiatCodigosService) SolicitudCuisMasivo(ctx context.Context, config con
 		return nil, err
 	}
 
-	// Ejecutar la petición HTTP POST hacia el servicio de códigos masivos del SIAT
-	resp, err := s.HttpClient.Post(fullURLCodigos(s.Url), client.Config{
-		Ctx:  ctx,
-		Body: xmlBody,
-		Header: map[string]string{
-			"Content-Type": "application/xml",
-			"apiKey":       fmt.Sprintf("TokenApi %s", config.Token),
-		},
-	})
+	httpReq, err := http.NewRequestWithContext(ctx, "POST", fullURLCodigos(s.Url), bytes.NewReader(xmlBody))
+	if err != nil {
+		return nil, fmt.Errorf("error al crear petición HTTP: %w", err)
+	}
+
+	httpReq.Header.Set("Content-Type", "application/xml")
+	httpReq.Header.Set("apiKey", fmt.Sprintf("TokenApi %s", config.Token))
+
+	resp, err := s.HttpClient.Do(httpReq)
 	if err != nil {
 		return nil, fmt.Errorf("error al hacer request HTTP cuis masivo: %w", err)
 	}
@@ -180,16 +181,15 @@ func (s *SiatCodigosService) VerificarNit(ctx context.Context, config config.Con
 		return nil, err
 	}
 
-	// Ejecutar la petición HTTP utilizando el cliente configurado
-	resp, err := s.HttpClient.Post(fullURLCodigos(s.Url), client.Config{
-		Ctx:  ctx,
-		Body: xmlBody,
-		Header: map[string]string{
-			"Content-Type": "application/xml",
-			"apiKey":       fmt.Sprintf("TokenApi %s", config.Token),
-		},
-	})
-	log.Println("Response:", config.Token)
+	httpReq, err := http.NewRequestWithContext(ctx, "POST", fullURLCodigos(s.Url), bytes.NewReader(xmlBody))
+	if err != nil {
+		return nil, fmt.Errorf("error al crear petición HTTP: %w", err)
+	}
+
+	httpReq.Header.Set("Content-Type", "application/xml")
+	httpReq.Header.Set("apiKey", fmt.Sprintf("TokenApi %s", config.Token))
+
+	resp, err := s.HttpClient.Do(httpReq)
 	if err != nil {
 		return nil, fmt.Errorf("error al hacer request HTTP: %w", err)
 	}
@@ -199,7 +199,7 @@ func (s *SiatCodigosService) VerificarNit(ctx context.Context, config config.Con
 }
 
 // NewSiatCodigosService crea una nueva instancia del servicio SiatCodigosService.
-func NewSiatCodigosService(url string, httpClient *client.Client) (*SiatCodigosService, error) {
+func NewSiatCodigosService(url string, httpClient *http.Client) (*SiatCodigosService, error) {
 	cleanUrl := strings.TrimSpace(url)
 	if cleanUrl == "" {
 		return nil, fmt.Errorf("la URL base del SIAT no puede estar vacía")
@@ -207,8 +207,9 @@ func NewSiatCodigosService(url string, httpClient *client.Client) (*SiatCodigosS
 
 	// Si no se inyecta un cliente, creamos uno con configuraciones seguras por defecto
 	if httpClient == nil {
-		httpClient = client.New()
-		httpClient.SetTimeout(15 * time.Second)
+		httpClient = &http.Client{
+			Timeout: 15 * time.Second,
+		}
 	}
 
 	return &SiatCodigosService{
