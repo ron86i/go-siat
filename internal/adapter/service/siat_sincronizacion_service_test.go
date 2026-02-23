@@ -11,7 +11,7 @@ import (
 	"github.com/ron86i/go-siat/pkg/config"
 
 	"github.com/ron86i/go-siat/internal/core/domain/facturacion/sincronizacion"
-	"github.com/ron86i/go-siat/internal/core/util"
+	"github.com/ron86i/go-siat/pkg/util"
 	"github.com/stretchr/testify/assert"
 )
 
