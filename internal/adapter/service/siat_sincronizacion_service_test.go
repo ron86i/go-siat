@@ -15,11 +15,11 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func runSincronizacionTest[K any, V any](
+func runSincronizacionTest[V any](
 	t *testing.T,
 	name string,
-	req K,
-	fn func(context.Context, config.Config, *K) (*V, error),
+	req any,
+	fn func(context.Context, config.Config, any) (*V, error),
 ) {
 	t.Run(name, func(t *testing.T) {
 		godotenv.Load()
@@ -33,7 +33,7 @@ func runSincronizacionTest[K any, V any](
 			t.Fatalf("No se pudo inicializar el servicio: %v", err)
 		}
 
-		resp, err := fn(context.Background(), config, &req)
+		resp, err := fn(context.Background(), config, req)
 		if err != nil {
 			t.Fatalf("Error en %s: %v", name, err)
 		}
@@ -62,21 +62,21 @@ func TestSincronizacionCompleta(t *testing.T) {
 	service, _ := service.NewSiatSincronizacionService(os.Getenv("SIAT_URL"), nil)
 	solicitud := getCommonRequest(t)
 
-	runSincronizacionTest(t, "SincronizarActividades", sincronizacion.SincronizarActividades{SolicitudSincronizacion: solicitud}, service.SincronizarActividades)
-	runSincronizacionTest(t, "SincronizarListaActividadesDocumentoSector", sincronizacion.SincronizarListaActividadesDocumentoSector{SolicitudSincronizacion: solicitud}, service.SincronizarListaActividadesDocumentoSector)
-	runSincronizacionTest(t, "SincronizarListaLeyendasFactura", sincronizacion.SincronizarListaLeyendasFactura{SolicitudSincronizacion: solicitud}, service.SincronizarListaLeyendasFactura)
-	runSincronizacionTest(t, "SincronizarListaMensajesServicios", sincronizacion.SincronizarListaMensajesServicios{SolicitudSincronizacion: solicitud}, service.SincronizarListaMensajesServicios)
-	runSincronizacionTest(t, "SincronizarListaProductosServicios", sincronizacion.SincronizarListaProductosServicios{SolicitudSincronizacion: solicitud}, service.SincronizarListaProductosServicios)
-	runSincronizacionTest(t, "SincronizarParametricaEventosSignificativos", sincronizacion.SincronizarParametricaEventosSignificativos{SolicitudSincronizacion: solicitud}, service.SincronizarParametricaEventosSignificativos)
-	runSincronizacionTest(t, "SincronizarParametricaMotivoAnulacion", sincronizacion.SincronizarParametricaMotivoAnulacion{SolicitudSincronizacion: solicitud}, service.SincronizarParametricaMotivoAnulacion)
-	runSincronizacionTest(t, "SincronizarParametricaPaisOrigen", sincronizacion.SincronizarParametricaPaisOrigen{SolicitudSincronizacion: solicitud}, service.SincronizarParametricaPaisOrigen)
-	runSincronizacionTest(t, "SincronizarParametricaTipoDocumentoIdentidad", sincronizacion.SincronizarParametricaTipoDocumentoIdentidad{SolicitudSincronizacion: solicitud}, service.SincronizarParametricaTipoDocumentoIdentidad)
-	runSincronizacionTest(t, "SincronizarParametricaTipoDocumentoSector", sincronizacion.SincronizarParametricaTipoDocumentoSector{SolicitudSincronizacion: solicitud}, service.SincronizarParametricaTipoDocumentoSector)
-	runSincronizacionTest(t, "SincronizarParametricaTipoEmision", sincronizacion.SincronizarParametricaTipoEmision{SolicitudSincronizacion: solicitud}, service.SincronizarParametricaTipoEmision)
-	runSincronizacionTest(t, "SincronizarParametricaTipoHabitacion", sincronizacion.SincronizarParametricaTipoHabitacion{SolicitudSincronizacion: solicitud}, service.SincronizarParametricaTipoHabitacion)
-	runSincronizacionTest(t, "SincronizarParametricaTipoMetodoPago", sincronizacion.SincronizarParametricaTipoMetodoPago{SolicitudSincronizacion: solicitud}, service.SincronizarParametricaTipoMetodoPago)
-	runSincronizacionTest(t, "SincronizarParametricaTipoMoneda", sincronizacion.SincronizarParametricaTipoMoneda{SolicitudSincronizacion: solicitud}, service.SincronizarParametricaTipoMoneda)
-	runSincronizacionTest(t, "SincronizarParametricaTipoPuntoVenta", sincronizacion.SincronizarParametricaTipoPuntoVenta{SolicitudSincronizacion: solicitud}, service.SincronizarParametricaTipoPuntoVenta)
-	runSincronizacionTest(t, "SincronizarParametricaTiposFactura", sincronizacion.SincronizarParametricaTiposFactura{SolicitudSincronizacion: solicitud}, service.SincronizarParametricaTiposFactura)
-	runSincronizacionTest(t, "SincronizarParametricaUnidadMedida", sincronizacion.SincronizarParametricaUnidadMedida{SolicitudSincronizacion: solicitud}, service.SincronizarParametricaUnidadMedida)
+	runSincronizacionTest(t, "SincronizarActividades", &sincronizacion.SincronizarActividades{SolicitudSincronizacion: solicitud}, service.SincronizarActividades)
+	runSincronizacionTest(t, "SincronizarListaActividadesDocumentoSector", &sincronizacion.SincronizarListaActividadesDocumentoSector{SolicitudSincronizacion: solicitud}, service.SincronizarListaActividadesDocumentoSector)
+	runSincronizacionTest(t, "SincronizarListaLeyendasFactura", &sincronizacion.SincronizarListaLeyendasFactura{SolicitudSincronizacion: solicitud}, service.SincronizarListaLeyendasFactura)
+	runSincronizacionTest(t, "SincronizarListaMensajesServicios", &sincronizacion.SincronizarListaMensajesServicios{SolicitudSincronizacion: solicitud}, service.SincronizarListaMensajesServicios)
+	runSincronizacionTest(t, "SincronizarListaProductosServicios", &sincronizacion.SincronizarListaProductosServicios{SolicitudSincronizacion: solicitud}, service.SincronizarListaProductosServicios)
+	runSincronizacionTest(t, "SincronizarParametricaEventosSignificativos", &sincronizacion.SincronizarParametricaEventosSignificativos{SolicitudSincronizacion: solicitud}, service.SincronizarParametricaEventosSignificativos)
+	runSincronizacionTest(t, "SincronizarParametricaMotivoAnulacion", &sincronizacion.SincronizarParametricaMotivoAnulacion{SolicitudSincronizacion: solicitud}, service.SincronizarParametricaMotivoAnulacion)
+	runSincronizacionTest(t, "SincronizarParametricaPaisOrigen", &sincronizacion.SincronizarParametricaPaisOrigen{SolicitudSincronizacion: solicitud}, service.SincronizarParametricaPaisOrigen)
+	runSincronizacionTest(t, "SincronizarParametricaTipoDocumentoIdentidad", &sincronizacion.SincronizarParametricaTipoDocumentoIdentidad{SolicitudSincronizacion: solicitud}, service.SincronizarParametricaTipoDocumentoIdentidad)
+	runSincronizacionTest(t, "SincronizarParametricaTipoDocumentoSector", &sincronizacion.SincronizarParametricaTipoDocumentoSector{SolicitudSincronizacion: solicitud}, service.SincronizarParametricaTipoDocumentoSector)
+	runSincronizacionTest(t, "SincronizarParametricaTipoEmision", &sincronizacion.SincronizarParametricaTipoEmision{SolicitudSincronizacion: solicitud}, service.SincronizarParametricaTipoEmision)
+	runSincronizacionTest(t, "SincronizarParametricaTipoHabitacion", &sincronizacion.SincronizarParametricaTipoHabitacion{SolicitudSincronizacion: solicitud}, service.SincronizarParametricaTipoHabitacion)
+	runSincronizacionTest(t, "SincronizarParametricaTipoMetodoPago", &sincronizacion.SincronizarParametricaTipoMetodoPago{SolicitudSincronizacion: solicitud}, service.SincronizarParametricaTipoMetodoPago)
+	runSincronizacionTest(t, "SincronizarParametricaTipoMoneda", &sincronizacion.SincronizarParametricaTipoMoneda{SolicitudSincronizacion: solicitud}, service.SincronizarParametricaTipoMoneda)
+	runSincronizacionTest(t, "SincronizarParametricaTipoPuntoVenta", &sincronizacion.SincronizarParametricaTipoPuntoVenta{SolicitudSincronizacion: solicitud}, service.SincronizarParametricaTipoPuntoVenta)
+	runSincronizacionTest(t, "SincronizarParametricaTiposFactura", &sincronizacion.SincronizarParametricaTiposFactura{SolicitudSincronizacion: solicitud}, service.SincronizarParametricaTiposFactura)
+	runSincronizacionTest(t, "SincronizarParametricaUnidadMedida", &sincronizacion.SincronizarParametricaUnidadMedida{SolicitudSincronizacion: solicitud}, service.SincronizarParametricaUnidadMedida)
 }
