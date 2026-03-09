@@ -128,7 +128,7 @@ func TestSiatCompraVentaService_RecepcionFactura(t *testing.T) {
 	encodedArchivo := base64.StdEncoding.EncodeToString(compressedBytes)
 
 	req := &compra_venta.RecepcionFactura{
-		SolicitudServicioRecepcionFactura: compra_venta.SolicitudServicioRecepcionFactura{
+		SolicitudServicioRecepcionFactura: compra_venta.SolicitudRecepcionFactura{
 			SolicitudRecepcion: compra_venta.SolicitudRecepcion{
 				CodigoAmbiente: codAmbiente, CodigoModalidad: codModalidad,
 				CodigoSistema: os.Getenv("SIAT_CODIGO_SISTEMA"), Nit: nit,
@@ -195,20 +195,19 @@ func TestSiatCompraVentaService_AnulacionFactura(t *testing.T) {
 
 	// Usar la estructura directamente sin Builder
 	req := &compra_venta.AnulacionFactura{
-		SolicitudServicioAnulacionFactura: compra_venta.SolicitudServicioAnulacionFactura{
-			CodigoAmbiente:        codAmbiente,
-			CodigoDocumentoSector: 1,
-			CodigoEmision:         1,
-			CodigoModalidad:       codModalidad,
-			CodigoPuntoVenta:      0,
-			CodigoSistema:         os.Getenv("SIAT_CODIGO_SISTEMA"),
-			CodigoSucursal:        0,
-			Cufd:                  cufd.Body.Content.RespuestaCufd.Codigo,
-			Cuf:                   cuf,
-			Cuis:                  cuis.Body.Content.RespuestaCuis.Codigo,
-			Nit:                   nit,
-			TipoFacturaDocumento:  1,
-			CodigoMotivo:          1,
+		SolicitudAnulacion: compra_venta.SolicitudAnulacion{
+			SolicitudRecepcion: compra_venta.SolicitudRecepcion{
+				CodigoAmbiente:        codAmbiente,
+				CodigoDocumentoSector: 1,
+				CodigoEmision:         1,
+				CodigoModalidad:       codModalidad,
+				CodigoPuntoVenta:      0,
+				CodigoSistema:         os.Getenv("SIAT_CODIGO_SISTEMA"),
+				CodigoSucursal:        0,
+				Cufd:                  cufd.Body.Content.RespuestaCufd.Codigo,
+			},
+			Cuf:          cuf,
+			CodigoMotivo: 1,
 		},
 	}
 

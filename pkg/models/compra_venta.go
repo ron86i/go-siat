@@ -57,67 +57,67 @@ type AnulacionFacturaBuilder struct {
 }
 
 func (b *AnulacionFacturaBuilder) WithCodigoAmbiente(codigoAmbiente int) *AnulacionFacturaBuilder {
-	b.request.SolicitudServicioAnulacionFactura.CodigoAmbiente = codigoAmbiente
+	b.request.SolicitudAnulacion.CodigoAmbiente = codigoAmbiente
 	return b
 }
 
 func (b *AnulacionFacturaBuilder) WithCodigoDocumentoSector(codigoDocumentoSector int) *AnulacionFacturaBuilder {
-	b.request.SolicitudServicioAnulacionFactura.CodigoDocumentoSector = codigoDocumentoSector
+	b.request.SolicitudAnulacion.CodigoDocumentoSector = codigoDocumentoSector
 	return b
 }
 
 func (b *AnulacionFacturaBuilder) WithCodigoEmision(codigoEmision int) *AnulacionFacturaBuilder {
-	b.request.SolicitudServicioAnulacionFactura.CodigoEmision = codigoEmision
+	b.request.SolicitudAnulacion.CodigoEmision = codigoEmision
 	return b
 }
 
 func (b *AnulacionFacturaBuilder) WithCodigoModalidad(codigoModalidad int) *AnulacionFacturaBuilder {
-	b.request.SolicitudServicioAnulacionFactura.CodigoModalidad = codigoModalidad
+	b.request.SolicitudAnulacion.CodigoModalidad = codigoModalidad
 	return b
 }
 
 func (b *AnulacionFacturaBuilder) WithCodigoPuntoVenta(codigoPuntoVenta int) *AnulacionFacturaBuilder {
-	b.request.SolicitudServicioAnulacionFactura.CodigoPuntoVenta = codigoPuntoVenta
+	b.request.SolicitudAnulacion.CodigoPuntoVenta = codigoPuntoVenta
 	return b
 }
 
 func (b *AnulacionFacturaBuilder) WithCodigoSistema(codigoSistema string) *AnulacionFacturaBuilder {
-	b.request.SolicitudServicioAnulacionFactura.CodigoSistema = codigoSistema
+	b.request.SolicitudAnulacion.CodigoSistema = codigoSistema
 	return b
 }
 
 func (b *AnulacionFacturaBuilder) WithCodigoSucursal(codigoSucursal int) *AnulacionFacturaBuilder {
-	b.request.SolicitudServicioAnulacionFactura.CodigoSucursal = codigoSucursal
+	b.request.SolicitudAnulacion.CodigoSucursal = codigoSucursal
 	return b
 }
 
 func (b *AnulacionFacturaBuilder) WithCufd(cufd string) *AnulacionFacturaBuilder {
-	b.request.SolicitudServicioAnulacionFactura.Cufd = cufd
+	b.request.SolicitudAnulacion.Cufd = cufd
 	return b
 }
 
 func (b *AnulacionFacturaBuilder) WithCuf(cuf string) *AnulacionFacturaBuilder {
-	b.request.SolicitudServicioAnulacionFactura.Cuf = cuf
+	b.request.SolicitudAnulacion.Cuf = cuf
 	return b
 }
 
 func (b *AnulacionFacturaBuilder) WithCuis(cuis string) *AnulacionFacturaBuilder {
-	b.request.SolicitudServicioAnulacionFactura.Cuis = cuis
+	b.request.SolicitudAnulacion.Cuis = cuis
 	return b
 }
 
 func (b *AnulacionFacturaBuilder) WithNit(nit int64) *AnulacionFacturaBuilder {
-	b.request.SolicitudServicioAnulacionFactura.Nit = nit
+	b.request.SolicitudAnulacion.Nit = nit
 	return b
 }
 
 func (b *AnulacionFacturaBuilder) WithTipoFacturaDocumento(tipoFacturaDocumento int) *AnulacionFacturaBuilder {
-	b.request.SolicitudServicioAnulacionFactura.TipoFacturaDocumento = tipoFacturaDocumento
+	b.request.SolicitudAnulacion.TipoFacturaDocumento = tipoFacturaDocumento
 	return b
 }
 
 func (b *AnulacionFacturaBuilder) WithCodigoMotivo(codigoMotivo int) *AnulacionFacturaBuilder {
-	b.request.SolicitudServicioAnulacionFactura.CodigoMotivo = codigoMotivo
+	b.request.SolicitudAnulacion.CodigoMotivo = codigoMotivo
 	return b
 }
 

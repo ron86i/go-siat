@@ -7,8 +7,8 @@ import (
 )
 
 type RecepcionFactura struct {
-	XMLName                           xml.Name                          `xml:"ns:recepcionFactura" json:"-"`
-	SolicitudServicioRecepcionFactura SolicitudServicioRecepcionFactura `xml:"SolicitudServicioRecepcionFactura" json:"solicitudServicioRecepcionFactura"`
+	XMLName                           xml.Name                  `xml:"ns:recepcionFactura" json:"-"`
+	SolicitudServicioRecepcionFactura SolicitudRecepcionFactura `xml:"SolicitudServicioRecepcionFactura" json:"solicitudServicioRecepcionFactura"`
 }
 
 // SolicitudRecepcion
@@ -26,7 +26,7 @@ type SolicitudRecepcion struct {
 	TipoFacturaDocumento  int    `xml:"tipoFacturaDocumento" json:"tipoFacturaDocumento"`
 }
 
-type SolicitudServicioRecepcionFactura struct {
+type SolicitudRecepcionFactura struct {
 	SolicitudRecepcion
 	Archivo     []byte            `xml:"archivo" json:"archivo"`
 	FechaEnvio  datatype.TimeSiat `xml:"fechaEnvio" json:"fechaEnvio"`
@@ -34,6 +34,6 @@ type SolicitudServicioRecepcionFactura struct {
 }
 
 type RecepcionFacturaResponse struct {
-	XMLName                      xml.Name                     `xml:"recepcionFacturaResponse" json:"-"`
-	RespuestaServicioFacturacion RespuestaServicioFacturacion `xml:"RespuestaServicioFacturacion" json:"respuestaServicioFacturacion"`
+	XMLName                      xml.Name           `xml:"recepcionFacturaResponse" json:"-"`
+	RespuestaServicioFacturacion RespuestaRecepcion `xml:"RespuestaServicioFacturacion" json:"respuestaServicioFacturacion"`
 }
