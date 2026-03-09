@@ -10,11 +10,11 @@ import (
 
 	"github.com/joho/godotenv"
 	"github.com/ron86i/go-siat/pkg/config"
+	"github.com/ron86i/go-siat/pkg/utils"
 
 	"github.com/ron86i/go-siat/internal/adapter/service"
 
 	"github.com/ron86i/go-siat/internal/core/domain/facturacion/codigos"
-	"github.com/ron86i/go-siat/pkg/util"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -25,11 +25,11 @@ func TestNotificaCertificadoRevocado(t *testing.T) {
 	godotenv.Load()
 
 	// Parsear el NIT (Int64)
-	nit, err := util.ParseInt64Safe(os.Getenv("SIAT_NIT"))
+	nit, err := utils.ParseInt64Safe(os.Getenv("SIAT_NIT"))
 	if err != nil {
 		t.Fatalf("la variable SIAT_NIT debe ser un número válido: %v", err)
 	}
-	codAmbiente, err := util.ParseIntSafe(os.Getenv("SIAT_CODIGO_AMBIENTE"))
+	codAmbiente, err := utils.ParseIntSafe(os.Getenv("SIAT_CODIGO_AMBIENTE"))
 	if err != nil {
 		t.Fatalf("la variable SIAT_CODIGO_AMBIENTE debe ser un número válido: %v", err)
 	}
@@ -89,16 +89,16 @@ func TestVerificarNit(t *testing.T) {
 	// Cargar configuración de integración desde el entorno (.env)
 	godotenv.Load()
 
-	codModalidad, err := util.ParseIntSafe(os.Getenv("SIAT_CODIGO_MODALIDAD"))
+	codModalidad, err := utils.ParseIntSafe(os.Getenv("SIAT_CODIGO_MODALIDAD"))
 	if err != nil {
 		t.Fatalf("la variable SIAT_CODIGO_MODALIDAD debe ser un número válido: %v", err)
 	}
 
-	nit, err := util.ParseInt64Safe(os.Getenv("SIAT_NIT"))
+	nit, err := utils.ParseInt64Safe(os.Getenv("SIAT_NIT"))
 	if err != nil {
 		t.Fatalf("la variable SIAT_NIT debe ser un número válido: %v", err)
 	}
-	codAmbiente, err := util.ParseIntSafe(os.Getenv("SIAT_CODIGO_AMBIENTE"))
+	codAmbiente, err := utils.ParseIntSafe(os.Getenv("SIAT_CODIGO_AMBIENTE"))
 	if err != nil {
 		t.Fatalf("la variable SIAT_CODIGO_AMBIENTE debe ser un número válido: %v", err)
 	}
@@ -152,17 +152,17 @@ func TestVerificarNit(t *testing.T) {
 // Verifica que el servicio sea capaz de conectar y recibir un código de respuesta válido.
 func TestSolicitudCuis(t *testing.T) {
 	godotenv.Load()
-	codModalidad, err := util.ParseIntSafe(os.Getenv("SIAT_CODIGO_MODALIDAD"))
+	codModalidad, err := utils.ParseIntSafe(os.Getenv("SIAT_CODIGO_MODALIDAD"))
 	if err != nil {
 		t.Fatalf("la variable SIAT_CODIGO_MODALIDAD debe ser un número válido: %v", err)
 	}
 
 	// Parsear el NIT (Int64)
-	nit, err := util.ParseInt64Safe(os.Getenv("SIAT_NIT"))
+	nit, err := utils.ParseInt64Safe(os.Getenv("SIAT_NIT"))
 	if err != nil {
 		t.Fatalf("la variable SIAT_NIT debe ser un número válido: %v", err)
 	}
-	codAmbiente, err := util.ParseIntSafe(os.Getenv("SIAT_CODIGO_AMBIENTE"))
+	codAmbiente, err := utils.ParseIntSafe(os.Getenv("SIAT_CODIGO_AMBIENTE"))
 	if err != nil {
 		t.Fatalf("la variable SIAT_CODIGO_AMBIENTE debe ser un número válido: %v", err)
 	}
@@ -202,17 +202,17 @@ func TestSolicitudCufd(t *testing.T) {
 	// Cargar entorno de configuración para tests de integración
 	godotenv.Load()
 
-	codModalidad, err := util.ParseIntSafe(os.Getenv("SIAT_CODIGO_MODALIDAD"))
+	codModalidad, err := utils.ParseIntSafe(os.Getenv("SIAT_CODIGO_MODALIDAD"))
 	if err != nil {
 		t.Fatalf("la variable SIAT_CODIGO_MODALIDAD debe ser un número válido: %v", err)
 	}
 
 	// Parsear el NIT (Int64)
-	nit, err := util.ParseInt64Safe(os.Getenv("SIAT_NIT"))
+	nit, err := utils.ParseInt64Safe(os.Getenv("SIAT_NIT"))
 	if err != nil {
 		t.Fatalf("la variable SIAT_NIT debe ser un número válido: %v", err)
 	}
-	codAmbiente, err := util.ParseIntSafe(os.Getenv("SIAT_CODIGO_AMBIENTE"))
+	codAmbiente, err := utils.ParseIntSafe(os.Getenv("SIAT_CODIGO_AMBIENTE"))
 	if err != nil {
 		t.Fatalf("la variable SIAT_CODIGO_AMBIENTE debe ser un número válido: %v", err)
 	}
@@ -256,16 +256,16 @@ func TestSolicitudCufdMasivo(t *testing.T) {
 	// Cargar configuración de integración real
 	godotenv.Load()
 
-	codModalidad, err := util.ParseIntSafe(os.Getenv("SIAT_CODIGO_MODALIDAD"))
+	codModalidad, err := utils.ParseIntSafe(os.Getenv("SIAT_CODIGO_MODALIDAD"))
 	if err != nil {
 		t.Fatalf("la variable SIAT_CODIGO_MODALIDAD debe ser un número válido: %v", err)
 	}
 
-	codAmbiente, err := util.ParseIntSafe(os.Getenv("SIAT_CODIGO_AMBIENTE"))
+	codAmbiente, err := utils.ParseIntSafe(os.Getenv("SIAT_CODIGO_AMBIENTE"))
 	if err != nil {
 		t.Fatalf("la variable SIAT_CODIGO_AMBIENTE debe ser un número válido: %v", err)
 	}
-	nit, err := util.ParseInt64Safe(os.Getenv("SIAT_NIT"))
+	nit, err := utils.ParseInt64Safe(os.Getenv("SIAT_NIT"))
 	if err != nil {
 		t.Fatalf("la variable SIAT_NIT debe ser un número válido: %v", err)
 	}
@@ -314,17 +314,17 @@ func TestSolicitudCuisMasivo(t *testing.T) {
 	// Cargar configuración real del entorno para pruebas de integración
 	godotenv.Load()
 
-	codModalidad, err := util.ParseIntSafe(os.Getenv("SIAT_CODIGO_MODALIDAD"))
+	codModalidad, err := utils.ParseIntSafe(os.Getenv("SIAT_CODIGO_MODALIDAD"))
 	if err != nil {
 		t.Fatalf("la variable SIAT_CODIGO_MODALIDAD debe ser un número válido: %v", err)
 	}
 
 	// Parsear el NIT (Int64)
-	nit, err := util.ParseInt64Safe(os.Getenv("SIAT_NIT"))
+	nit, err := utils.ParseInt64Safe(os.Getenv("SIAT_NIT"))
 	if err != nil {
 		t.Fatalf("la variable SIAT_NIT debe ser un número válido: %v", err)
 	}
-	codAmbiente, err := util.ParseIntSafe(os.Getenv("SIAT_CODIGO_AMBIENTE"))
+	codAmbiente, err := utils.ParseIntSafe(os.Getenv("SIAT_CODIGO_AMBIENTE"))
 	if err != nil {
 		t.Fatalf("la variable SIAT_CODIGO_AMBIENTE debe ser un número válido: %v", err)
 	}

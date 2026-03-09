@@ -7,7 +7,7 @@ type MensajeServicio struct {
 	Descripcion string `xml:"descripcion" json:"descripcion"`
 }
 
-type RespuestaServicioFacturacion struct {
+type RespuestaRecepcion struct {
 	CodigoDescripcion string            `xml:"codigoDescripcion" json:"codigoDescripcion"`
 	CodigoEstado      int               `xml:"codigoEstado" json:"codigoEstado"`
 	CodigoRecepcion   string            `xml:"codigoRecepcion" json:"codigoRecepcion"`

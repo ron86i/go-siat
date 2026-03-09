@@ -58,7 +58,7 @@ func (n *Nilable[T]) UnmarshalJSON(data []byte) error {
 
 // FacturaCompraVenta representa la estructura completa de una factura de compra-venta para el SIAT.
 type FacturaCompraVenta struct {
-	XMLName           xml.Name  `xml:"facturaElectronicaCompraVenta" json:"-"`
+	XMLName           xml.Name  `json:"-"`
 	XmlnsXsi          string    `xml:"xmlns:xsi,attr" json:"-"`
 	XsiSchemaLocation string    `xml:"xsi:noNamespaceSchemaLocation,attr" json:"-"`
 	Cabecera          Cabecera  `xml:"cabecera" json:"cabecera"`

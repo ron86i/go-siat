@@ -6,7 +6,6 @@ import (
 
 	"github.com/ron86i/go-siat/internal/core/domain/datatype"
 	"github.com/ron86i/go-siat/internal/core/domain/facturacion/compra_venta"
-	"github.com/ron86i/go-siat/pkg/util"
 )
 
 // --- Interfaces opacas para restringir el acceso a los atributos ---
@@ -33,16 +32,6 @@ type compraVentaNamespace struct{}
 // CompraVenta expone utilidades y constructores de solicitudes para el módulo de Facturación del SIAT.
 var CompraVenta = compraVentaNamespace{}
 
-// GenerarCUF genera el código único de factura.
-func (compraVentaNamespace) GenerarCUF(nit int64, fechaHora time.Time, sucursal int, modalidad, tipoEmision, tipoFactura int, tipoDocumentoSector int, numeroFactura int, puntoVenta int, codigoControl string) (string, error) {
-	return util.GenerarCUF(nit, fechaHora, sucursal, modalidad, tipoEmision, tipoFactura, tipoDocumentoSector, numeroFactura, puntoVenta, codigoControl)
-}
-
-// SignXML firma un documento XML de factura.
-func (compraVentaNamespace) SignXML(xmlBytes []byte, keyPath, certPath string) ([]byte, error) {
-	return util.SignXML(xmlBytes, keyPath, certPath)
-}
-
 // --- Builders para la creación de solicitudes ---
 
 // NewAnulacionFacturaRequest inicia la construcción de una solicitud de anulación.
@@ -57,67 +46,67 @@ type AnulacionFacturaBuilder struct {
 }
 
 func (b *AnulacionFacturaBuilder) WithCodigoAmbiente(codigoAmbiente int) *AnulacionFacturaBuilder {
-	b.request.SolicitudServicioAnulacionFactura.CodigoAmbiente = codigoAmbiente
+	b.request.SolicitudAnulacion.CodigoAmbiente = codigoAmbiente
 	return b
 }
 
 func (b *AnulacionFacturaBuilder) WithCodigoDocumentoSector(codigoDocumentoSector int) *AnulacionFacturaBuilder {
-	b.request.SolicitudServicioAnulacionFactura.CodigoDocumentoSector = codigoDocumentoSector
+	b.request.SolicitudAnulacion.CodigoDocumentoSector = codigoDocumentoSector
 	return b
 }
 
 func (b *AnulacionFacturaBuilder) WithCodigoEmision(codigoEmision int) *AnulacionFacturaBuilder {
-	b.request.SolicitudServicioAnulacionFactura.CodigoEmision = codigoEmision
+	b.request.SolicitudAnulacion.CodigoEmision = codigoEmision
 	return b
 }
 
 func (b *AnulacionFacturaBuilder) WithCodigoModalidad(codigoModalidad int) *AnulacionFacturaBuilder {
-	b.request.SolicitudServicioAnulacionFactura.CodigoModalidad = codigoModalidad
+	b.request.SolicitudAnulacion.CodigoModalidad = codigoModalidad
 	return b
 }
 
 func (b *AnulacionFacturaBuilder) WithCodigoPuntoVenta(codigoPuntoVenta int) *AnulacionFacturaBuilder {
-	b.request.SolicitudServicioAnulacionFactura.CodigoPuntoVenta = codigoPuntoVenta
+	b.request.SolicitudAnulacion.CodigoPuntoVenta = codigoPuntoVenta
 	return b
 }
 
 func (b *AnulacionFacturaBuilder) WithCodigoSistema(codigoSistema string) *AnulacionFacturaBuilder {
-	b.request.SolicitudServicioAnulacionFactura.CodigoSistema = codigoSistema
+	b.request.SolicitudAnulacion.CodigoSistema = codigoSistema
 	return b
 }
 
 func (b *AnulacionFacturaBuilder) WithCodigoSucursal(codigoSucursal int) *AnulacionFacturaBuilder {
-	b.request.SolicitudServicioAnulacionFactura.CodigoSucursal = codigoSucursal
+	b.request.SolicitudAnulacion.CodigoSucursal = codigoSucursal
 	return b
 }
 
 func (b *AnulacionFacturaBuilder) WithCufd(cufd string) *AnulacionFacturaBuilder {
-	b.request.SolicitudServicioAnulacionFactura.Cufd = cufd
+	b.request.SolicitudAnulacion.Cufd = cufd
 	return b
 }
 
 func (b *AnulacionFacturaBuilder) WithCuf(cuf string) *AnulacionFacturaBuilder {
-	b.request.SolicitudServicioAnulacionFactura.Cuf = cuf
+	b.request.SolicitudAnulacion.Cuf = cuf
 	return b
 }
 
 func (b *AnulacionFacturaBuilder) WithCuis(cuis string) *AnulacionFacturaBuilder {
-	b.request.SolicitudServicioAnulacionFactura.Cuis = cuis
+	b.request.SolicitudAnulacion.Cuis = cuis
 	return b
 }
 
 func (b *AnulacionFacturaBuilder) WithNit(nit int64) *AnulacionFacturaBuilder {
-	b.request.SolicitudServicioAnulacionFactura.Nit = nit
+	b.request.SolicitudAnulacion.Nit = nit
 	return b
 }
 
 func (b *AnulacionFacturaBuilder) WithTipoFacturaDocumento(tipoFacturaDocumento int) *AnulacionFacturaBuilder {
-	b.request.SolicitudServicioAnulacionFactura.TipoFacturaDocumento = tipoFacturaDocumento
+	b.request.SolicitudAnulacion.TipoFacturaDocumento = tipoFacturaDocumento
 	return b
 }
 
 func (b *AnulacionFacturaBuilder) WithCodigoMotivo(codigoMotivo int) *AnulacionFacturaBuilder {
-	b.request.SolicitudServicioAnulacionFactura.CodigoMotivo = codigoMotivo
+	b.request.SolicitudAnulacion.CodigoMotivo = codigoMotivo
 	return b
 }
 
@@ -191,13 +180,13 @@ func (b *RecepcionFacturaBuilder) WithTipoFacturaDocumento(tipoFacturaDocumento 
 	return b
 }
 
-func (b *RecepcionFacturaBuilder) WithArchivo(archivo []byte) *RecepcionFacturaBuilder {
+func (b *RecepcionFacturaBuilder) WithArchivo(archivo string) *RecepcionFacturaBuilder {
 	b.request.SolicitudServicioRecepcionFactura.Archivo = archivo
 	return b
 }
 
-func (b *RecepcionFacturaBuilder) WithFechaEnvio(fechaEnvio datatype.TimeSiat) *RecepcionFacturaBuilder {
-	b.request.SolicitudServicioRecepcionFactura.FechaEnvio = fechaEnvio
+func (b *RecepcionFacturaBuilder) WithFechaEnvio(fechaEnvio time.Time) *RecepcionFacturaBuilder {
+	b.request.SolicitudServicioRecepcionFactura.FechaEnvio = datatype.NewTimeSiat(fechaEnvio)
 	return b
 }
 
@@ -210,9 +199,9 @@ func (b *RecepcionFacturaBuilder) Build() RecepcionFacturaRequest {
 	return requestWrapper[compra_venta.RecepcionFactura]{request: b.request}
 }
 
-// NewFactura inicia la construcción de una FacturaCompraVenta.
-func (compraVentaNamespace) NewFactura() *FacturaBuilder {
-	return &FacturaBuilder{
+// NewFacturaCompraVenta inicia la construcción de una FacturaCompraVenta.
+func (compraVentaNamespace) NewFacturaCompraVenta() *FacturaCompraVentaBuilder {
+	return &FacturaCompraVentaBuilder{
 		factura: &compra_venta.FacturaCompraVenta{
 			XMLName:           xml.Name{Local: "facturaElectronicaCompraVenta"},
 			XmlnsXsi:          "http://www.w3.org/2001/XMLSchema-instance",
@@ -235,25 +224,38 @@ func (compraVentaNamespace) NewDetalle() *DetalleBuilder {
 	}
 }
 
-type FacturaBuilder struct {
+type FacturaCompraVentaBuilder struct {
 	factura *compra_venta.FacturaCompraVenta
 }
 
-func (b *FacturaBuilder) WithCabecera(req CabeceraRequest) *FacturaBuilder {
+func (b *FacturaCompraVentaBuilder) WithCabecera(req CabeceraRequest) *FacturaCompraVentaBuilder {
 	if c := GetInternalRequest[compra_venta.Cabecera](req); c != nil {
 		b.factura.Cabecera = *c
 	}
 	return b
 }
 
-func (b *FacturaBuilder) AddDetalle(req DetalleRequest) *FacturaBuilder {
+func (b *FacturaCompraVentaBuilder) AddDetalle(req DetalleRequest) *FacturaCompraVentaBuilder {
 	if d := GetInternalRequest[compra_venta.Detalle](req); d != nil {
 		b.factura.Detalle = append(b.factura.Detalle, *d)
 	}
 	return b
 }
 
-func (b *FacturaBuilder) Build() FacturaRequest {
+func (b *FacturaCompraVentaBuilder) WithModalidad(tipo int) *FacturaCompraVentaBuilder {
+
+	switch tipo {
+	case 1:
+		b.factura.XMLName = xml.Name{Local: "facturaElectronicaCompraVenta"}
+		b.factura.XsiSchemaLocation = "facturaElectronicaCompraVenta.xsd"
+	case 2:
+		b.factura.XMLName = xml.Name{Local: "facturaComputarizadaCompraVenta"}
+		b.factura.XsiSchemaLocation = "facturaComputarizadaCompraVenta.xsd"
+	}
+	return b
+}
+
+func (b *FacturaCompraVentaBuilder) Build() FacturaRequest {
 	return requestWrapper[compra_venta.FacturaCompraVenta]{request: b.factura}
 }
 

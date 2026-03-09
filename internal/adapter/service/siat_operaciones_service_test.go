@@ -13,22 +13,22 @@ import (
 	"github.com/ron86i/go-siat/pkg/config"
 
 	"github.com/ron86i/go-siat/internal/core/domain/facturacion/operaciones"
-	"github.com/ron86i/go-siat/pkg/util"
+	"github.com/ron86i/go-siat/pkg/utils"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestRegistroPuntoVenta(t *testing.T) {
 	godotenv.Load()
 
-	nit, err := util.ParseInt64Safe(os.Getenv("SIAT_NIT"))
+	nit, err := utils.ParseInt64Safe(os.Getenv("SIAT_NIT"))
 	if err != nil {
 		t.Fatalf("la variable SIAT_NIT debe ser un número válido: %v", err)
 	}
-	codAmbiente, err := util.ParseIntSafe(os.Getenv("SIAT_CODIGO_AMBIENTE"))
+	codAmbiente, err := utils.ParseIntSafe(os.Getenv("SIAT_CODIGO_AMBIENTE"))
 	if err != nil {
 		t.Fatalf("la variable SIAT_CODIGO_AMBIENTE debe ser un número válido: %v", err)
 	}
-	codModalidad, err := util.ParseIntSafe(os.Getenv("SIAT_CODIGO_MODALIDAD"))
+	codModalidad, err := utils.ParseIntSafe(os.Getenv("SIAT_CODIGO_MODALIDAD"))
 	if err != nil {
 		t.Fatalf("la variable SIAT_CODIGO_MODALIDAD debe ser un número válido: %v", err)
 	}
@@ -81,15 +81,15 @@ func TestRegistroPuntoVenta(t *testing.T) {
 func TestRegistroPuntoVentaComisionista(t *testing.T) {
 	godotenv.Load()
 
-	nit, err := util.ParseInt64Safe(os.Getenv("SIAT_NIT"))
+	nit, err := utils.ParseInt64Safe(os.Getenv("SIAT_NIT"))
 	if err != nil {
 		t.Fatalf("la variable SIAT_NIT debe ser un número válido: %v", err)
 	}
-	codAmbiente, err := util.ParseIntSafe(os.Getenv("SIAT_CODIGO_AMBIENTE"))
+	codAmbiente, err := utils.ParseIntSafe(os.Getenv("SIAT_CODIGO_AMBIENTE"))
 	if err != nil {
 		t.Fatalf("la variable SIAT_CODIGO_AMBIENTE debe ser un número válido: %v", err)
 	}
-	codModalidad, err := util.ParseIntSafe(os.Getenv("SIAT_CODIGO_MODALIDAD"))
+	codModalidad, err := utils.ParseIntSafe(os.Getenv("SIAT_CODIGO_MODALIDAD"))
 	if err != nil {
 		t.Fatalf("la variable SIAT_CODIGO_MODALIDAD debe ser un número válido: %v", err)
 	}
@@ -155,7 +155,7 @@ func TestOperacionesVerificarComunicacion(t *testing.T) {
 
 func TestConsultaPuntoVenta(t *testing.T) {
 	godotenv.Load()
-	nit, _ := util.ParseInt64Safe(os.Getenv("SIAT_NIT"))
+	nit, _ := utils.ParseInt64Safe(os.Getenv("SIAT_NIT"))
 	config := config.Config{
 		Token: os.Getenv("SIAT_TOKEN"),
 	}
@@ -184,7 +184,7 @@ func TestConsultaPuntoVenta(t *testing.T) {
 
 func TestCierrePuntoVenta(t *testing.T) {
 	godotenv.Load()
-	nit, _ := util.ParseInt64Safe(os.Getenv("SIAT_NIT"))
+	nit, _ := utils.ParseInt64Safe(os.Getenv("SIAT_NIT"))
 	config := config.Config{
 		Token: os.Getenv("SIAT_TOKEN"),
 	}
@@ -212,7 +212,7 @@ func TestCierrePuntoVenta(t *testing.T) {
 
 func TestCierreOperacionesSistema(t *testing.T) {
 	godotenv.Load()
-	nit, _ := util.ParseInt64Safe(os.Getenv("SIAT_NIT"))
+	nit, _ := utils.ParseInt64Safe(os.Getenv("SIAT_NIT"))
 	config := config.Config{
 		Token: os.Getenv("SIAT_TOKEN"),
 	}
@@ -241,7 +241,7 @@ func TestCierreOperacionesSistema(t *testing.T) {
 
 func TestRegistroEventosSignificativos(t *testing.T) {
 	godotenv.Load()
-	nit, _ := util.ParseInt64Safe(os.Getenv("SIAT_NIT"))
+	nit, _ := utils.ParseInt64Safe(os.Getenv("SIAT_NIT"))
 	config := config.Config{
 		Token: os.Getenv("SIAT_TOKEN"),
 	}
@@ -276,7 +276,7 @@ func TestRegistroEventosSignificativos(t *testing.T) {
 
 func TestConsultaEventosSignificativos(t *testing.T) {
 	godotenv.Load()
-	nit, _ := util.ParseInt64Safe(os.Getenv("SIAT_NIT"))
+	nit, _ := utils.ParseInt64Safe(os.Getenv("SIAT_NIT"))
 	config := config.Config{
 		Token: os.Getenv("SIAT_TOKEN"),
 	}

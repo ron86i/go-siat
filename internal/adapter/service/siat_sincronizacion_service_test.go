@@ -11,7 +11,7 @@ import (
 	"github.com/ron86i/go-siat/pkg/config"
 
 	"github.com/ron86i/go-siat/internal/core/domain/facturacion/sincronizacion"
-	"github.com/ron86i/go-siat/pkg/util"
+	"github.com/ron86i/go-siat/pkg/utils"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -44,8 +44,8 @@ func runSincronizacionTest[V any](
 }
 
 func getCommonRequest(_ *testing.T) sincronizacion.SolicitudSincronizacion {
-	nit, _ := util.ParseInt64Safe(os.Getenv("SIAT_NIT"))
-	codAmbiente, _ := util.ParseIntSafe(os.Getenv("SIAT_CODIGO_AMBIENTE"))
+	nit, _ := utils.ParseInt64Safe(os.Getenv("SIAT_NIT"))
+	codAmbiente, _ := utils.ParseIntSafe(os.Getenv("SIAT_CODIGO_AMBIENTE"))
 
 	return sincronizacion.SolicitudSincronizacion{
 		CodigoAmbiente:   codAmbiente,
