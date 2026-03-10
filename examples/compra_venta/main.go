@@ -45,8 +45,8 @@ func main() {
 	if err != nil {
 		log.Fatalf("Error inicializando SIAT: %v", err)
 	}
-	serviceCodigos := siatService.Codigos
-	serviceCompraVenta := siatService.CompraVenta
+	serviceCodigos := siatService.Codigos()
+	serviceCompraVenta := siatService.CompraVenta()
 
 	// 3. Solicitar CUIS
 	fmt.Println("Solicitando CUIS...")

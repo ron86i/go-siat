@@ -17,7 +17,7 @@ func main() {
 		log.Fatalf("Error: %v", err)
 	}
 
-	codigosService := s.Codigos
+	codigosService := s.Codigos()
 
 	// 2. Construir solicitud de CUIS usando el Builder
 	// El resultado de Build() es una interfaz opaca CuisRequest

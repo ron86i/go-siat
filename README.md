@@ -72,16 +72,19 @@ func main() {
 
     // 2. Usar un Builder para crear una solicitud
     req := models.Codigos.NewCuisRequest().
-        WithNit(123456789).
-        WithCodigoAmbiente(2).
-        WithCodigoSistema("ABC123XYZ").
-        Build()
+		WithCodigoAmbiente(1).
+		WithCodigoModalidad(1).
+		WithCodigoPuntoVenta(0).
+		WithCodigoSucursal(0).
+		WithCodigoSistema("ABC123DEF").
+		WithNit(123456789).
+		Build()
 
     // 3. Ejecutar la operación
     ctx := context.Background()
     cfg := config.Config{Token: "TU_TOKEN_API"}
     
-    resp, err := s.Codigos.SolicitudCuis(ctx, cfg, req)
+    resp, err := s.Codigos().SolicitudCuis(ctx, cfg, req)
     if err == nil {
         log.Println("CUIS:", resp.Body.Content.RespuestaCuis.Codigo)
     }

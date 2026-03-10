@@ -17,7 +17,7 @@ func main() {
 		log.Fatalf("Error: %v", err)
 	}
 
-	sincService := s.Sincronizacion
+	sincService := s.Sincronizacion()
 
 	ctx := context.Background()
 	cfg := config.Config{Token: "TU_TOKEN_API"}

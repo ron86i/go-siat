@@ -17,7 +17,7 @@ func main() {
 		log.Fatalf("Error: %v", err)
 	}
 
-	operService := s.Operaciones
+	operService := s.Operaciones()
 
 	ctx := context.Background()
 	cfg := config.Config{Token: "TU_TOKEN_API"}
