@@ -7,34 +7,35 @@ import (
 	"time"
 
 	"github.com/ron86i/go-siat/internal/adapter/service"
+	"github.com/ron86i/go-siat/internal/core/port"
 )
 
 // SiatServices agrupa todas las implementaciones de los servicios del SIAT
 // accesibles a través de un único punto de entrada orientado a métodos.
 type SiatServices struct {
-	operaciones    *service.SiatOperacionesService
-	sincronizacion *service.SiatSincronizacionService
-	codigos        *service.SiatCodigosService
-	compraVenta    *service.SiatCompraVentaService
+	operaciones    port.SiatOperacionesPort
+	sincronizacion port.SiatSincronizacionCatalogoService
+	codigos        port.SiatCodigosService
+	compraVenta    port.SiatCompraVentaService
 }
 
 // Operaciones retorna el servicio para la gestión de puntos de venta y eventos significativos.
-func (s *SiatServices) Operaciones() *service.SiatOperacionesService {
+func (s *SiatServices) Operaciones() port.SiatOperacionesPort {
 	return s.operaciones
 }
 
 // Sincronizacion retorna el servicio para la obtención de catálogos y parametrizaciones del SIAT.
-func (s *SiatServices) Sincronizacion() *service.SiatSincronizacionService {
+func (s *SiatServices) Sincronizacion() port.SiatSincronizacionCatalogoService {
 	return s.sincronizacion
 }
 
 // Codigos retorna el servicio para la solicitud de códigos CUIS y CUFD, y validación de NIT.
-func (s *SiatServices) Codigos() *service.SiatCodigosService {
+func (s *SiatServices) Codigos() port.SiatCodigosService {
 	return s.codigos
 }
 
 // CompraVenta retorna el servicio para el envío y anulación de facturas comerciales.
-func (s *SiatServices) CompraVenta() *service.SiatCompraVentaService {
+func (s *SiatServices) CompraVenta() port.SiatCompraVentaService {
 	return s.compraVenta
 }
 
