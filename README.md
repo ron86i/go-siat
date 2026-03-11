@@ -47,7 +47,7 @@ La forma más sencilla de utilizar el SDK es a través del paquete unificado `si
 ### Instalación
 
 ```bash
-go get github.com/ron86i/go-siat@latest
+go get github.com/ron86i/go-siat@v0.3.0
 ```
 
 ### Uso Básico
