@@ -51,7 +51,7 @@ func New(baseUrl string, httpClient *http.Client) (*SiatServices, error) {
 
 	baseUrl = strings.TrimSpace(baseUrl)
 	if baseUrl == "" {
-		return nil, fmt.Errorf("la URL base del SIAT no puede estar vacía")
+		return nil, fmt.Errorf("baseUrl is empty")
 	}
 
 	operaciones, err := service.NewSiatOperacionesService(baseUrl, httpClient)

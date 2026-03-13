@@ -36,7 +36,7 @@ func (s *SiatCodigosService) VerificarComunicacion(ctx context.Context, config c
 
 	httpReq, err := http.NewRequestWithContext(ctx, "POST", s.url, bytes.NewReader(xmlBody))
 	if err != nil {
-		return nil, fmt.Errorf("error al crear petición HTTP: %w", err)
+		return nil, err
 	}
 
 	httpReq.Header.Set("Content-Type", "application/xml")
@@ -44,7 +44,7 @@ func (s *SiatCodigosService) VerificarComunicacion(ctx context.Context, config c
 
 	resp, err := s.HttpClient.Do(httpReq)
 	if err != nil {
-		return nil, fmt.Errorf("error al hacer request HTTP: %w", err)
+		return nil, err
 	}
 
 	return parseSoapResponse[codigos.VerificarComunicacionResponse](resp)
@@ -62,7 +62,7 @@ func (s *SiatCodigosService) NotificaCertificadoRevocado(ctx context.Context, co
 
 	httpReq, err := http.NewRequestWithContext(ctx, "POST", s.url, bytes.NewReader(xmlBody))
 	if err != nil {
-		return nil, fmt.Errorf("error al crear petición HTTP: %w", err)
+		return nil, err
 	}
 
 	httpReq.Header.Set("Content-Type", "application/xml")
@@ -70,7 +70,7 @@ func (s *SiatCodigosService) NotificaCertificadoRevocado(ctx context.Context, co
 
 	resp, err := s.HttpClient.Do(httpReq)
 	if err != nil {
-		return nil, fmt.Errorf("error al hacer request HTTP: %w", err)
+		return nil, err
 	}
 
 	return parseSoapResponse[codigos.NotificaCertificadoRevocadoResponse](resp)
@@ -88,7 +88,7 @@ func (s *SiatCodigosService) SolicitudCufd(ctx context.Context, config config.Co
 
 	httpReq, err := http.NewRequestWithContext(ctx, "POST", s.url, bytes.NewReader(xmlBody))
 	if err != nil {
-		return nil, fmt.Errorf("error al crear petición HTTP: %w", err)
+		return nil, err
 	}
 
 	httpReq.Header.Set("Content-Type", "application/xml")
@@ -96,7 +96,7 @@ func (s *SiatCodigosService) SolicitudCufd(ctx context.Context, config config.Co
 
 	resp, err := s.HttpClient.Do(httpReq)
 	if err != nil {
-		return nil, fmt.Errorf("error al hacer request HTTP: %w", err)
+		return nil, err
 	}
 
 	return parseSoapResponse[codigos.CufdResponse](resp)
@@ -114,7 +114,7 @@ func (s *SiatCodigosService) SolicitudCufdMasivo(ctx context.Context, config con
 
 	httpReq, err := http.NewRequestWithContext(ctx, "POST", s.url, bytes.NewReader(xmlBody))
 	if err != nil {
-		return nil, fmt.Errorf("error al crear petición HTTP: %w", err)
+		return nil, err
 	}
 
 	httpReq.Header.Set("Content-Type", "application/xml")
@@ -122,7 +122,7 @@ func (s *SiatCodigosService) SolicitudCufdMasivo(ctx context.Context, config con
 
 	resp, err := s.HttpClient.Do(httpReq)
 	if err != nil {
-		return nil, fmt.Errorf("error al hacer request HTTP masivo: %w", err)
+		return nil, err
 	}
 	return parseSoapResponse[codigos.CufdMasivoResponse](resp)
 }
@@ -138,7 +138,7 @@ func (s *SiatCodigosService) SolicitudCuis(ctx context.Context, config config.Co
 
 	httpReq, err := http.NewRequestWithContext(ctx, "POST", s.url, bytes.NewReader(xmlBody))
 	if err != nil {
-		return nil, fmt.Errorf("error al crear petición HTTP: %w", err)
+		return nil, err
 	}
 
 	httpReq.Header.Set("Content-Type", "application/xml")
@@ -146,7 +146,7 @@ func (s *SiatCodigosService) SolicitudCuis(ctx context.Context, config config.Co
 
 	resp, err := s.HttpClient.Do(httpReq)
 	if err != nil {
-		return nil, fmt.Errorf("error al hacer request HTTP: %w", err)
+		return nil, err
 	}
 
 	return parseSoapResponse[codigos.CuisResponse](resp)
@@ -164,7 +164,7 @@ func (s *SiatCodigosService) SolicitudCuisMasivo(ctx context.Context, config con
 
 	httpReq, err := http.NewRequestWithContext(ctx, "POST", s.url, bytes.NewReader(xmlBody))
 	if err != nil {
-		return nil, fmt.Errorf("error al crear petición HTTP: %w", err)
+		return nil, err
 	}
 
 	httpReq.Header.Set("Content-Type", "application/xml")
@@ -172,7 +172,7 @@ func (s *SiatCodigosService) SolicitudCuisMasivo(ctx context.Context, config con
 
 	resp, err := s.HttpClient.Do(httpReq)
 	if err != nil {
-		return nil, fmt.Errorf("error al hacer request HTTP cuis masivo: %w", err)
+		return nil, err
 	}
 	return parseSoapResponse[codigos.CuisMasivoResponse](resp)
 }
@@ -189,7 +189,7 @@ func (s *SiatCodigosService) VerificarNit(ctx context.Context, config config.Con
 
 	httpReq, err := http.NewRequestWithContext(ctx, "POST", s.url, bytes.NewReader(xmlBody))
 	if err != nil {
-		return nil, fmt.Errorf("error al crear petición HTTP: %w", err)
+		return nil, err
 	}
 
 	httpReq.Header.Set("Content-Type", "application/xml")
@@ -197,7 +197,7 @@ func (s *SiatCodigosService) VerificarNit(ctx context.Context, config config.Con
 
 	resp, err := s.HttpClient.Do(httpReq)
 	if err != nil {
-		return nil, fmt.Errorf("error al hacer request HTTP: %w", err)
+		return nil, err
 	}
 
 	// Intentar extraer el resultado de la respuesta SOAP
@@ -208,7 +208,7 @@ func (s *SiatCodigosService) VerificarNit(ctx context.Context, config config.Con
 func NewSiatCodigosService(baseUrl string, httpClient *http.Client) (*SiatCodigosService, error) {
 	baseUrl = strings.TrimSpace(baseUrl)
 	if baseUrl == "" {
-		return nil, fmt.Errorf("la URL base del SIAT no puede estar vacía")
+		return nil, fmt.Errorf("baseUrl is empty")
 	}
 
 	// Si no se inyecta un cliente, creamos uno con configuraciones seguras por defecto

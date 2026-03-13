@@ -2,8 +2,6 @@ package service
 
 import (
 	"encoding/xml"
-	"fmt"
-	"log"
 
 	"io"
 	"net/http"
@@ -40,7 +38,7 @@ func buildRequest(req any) ([]byte, error) {
 
 	xmlBody, err := xml.MarshalIndent(requestBody, "", "  ")
 	if err != nil {
-		return nil, fmt.Errorf("error al serializar body SOAP: %w", err)
+		return nil, err
 	}
 	return []byte(xml.Header + string(xmlBody)), nil
 }
@@ -51,28 +49,15 @@ func parseSoapResponse[T any](resp *http.Response) (*soap.EnvelopeResponse[T], e
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return nil, fmt.Errorf("error al leer el cuerpo de la respuesta: %w", err)
+		return nil, err
 	}
-	log.Printf("Raw Response Body: %s", string(body))
 
 	var result soap.EnvelopeResponse[T]
 
 	// Intentar parsear la respuesta XML en la estructura de respuesta SOAP
-	errUnmarshal := xml.Unmarshal(body, &result)
-
-	// Si el servicio devolvió un SOAP Fault, priorizar este error descriptivo de negocio
-	if errUnmarshal == nil && result.Body.Fault != nil {
-		return nil, fmt.Errorf("SOAP Fault [%s]: %s", result.Body.Fault.FaultCode, result.Body.Fault.FaultString)
-	}
-
-	// Si el código de estado HTTP no es 200, informar el error de estado.
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("HTTP status inesperado: %d", resp.StatusCode)
-	}
-
-	// Si el status es 200 pero hubo un error de parseo, informar el error de XML
-	if errUnmarshal != nil {
-		return nil, fmt.Errorf("error al parsear respuesta SOAP: %w", errUnmarshal)
+	err = xml.Unmarshal(body, &result)
+	if err != nil {
+		return nil, err
 	}
 
 	return &result, nil

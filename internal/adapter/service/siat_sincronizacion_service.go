@@ -97,7 +97,7 @@ func (s *SiatSincronizacionService) VerificarComunicacion(ctx context.Context, c
 	}
 	httpReq, err := http.NewRequestWithContext(ctx, "POST", s.url, bytes.NewReader(xmlBody))
 	if err != nil {
-		return nil, fmt.Errorf("error al crear petición HTTP: %w", err)
+		return nil, err
 	}
 
 	httpReq.Header.Set("Content-Type", "application/xml")
@@ -105,7 +105,7 @@ func (s *SiatSincronizacionService) VerificarComunicacion(ctx context.Context, c
 
 	resp, err := s.HttpClient.Do(httpReq)
 	if err != nil {
-		return nil, fmt.Errorf("error al hacer request HTTP: %w", err)
+		return nil, err
 	}
 	return parseSoapResponse[sincronizacion.VerificarComunicacionResponse](resp)
 }
@@ -114,7 +114,7 @@ func (s *SiatSincronizacionService) VerificarComunicacion(ctx context.Context, c
 func executeSincronizacion[V any, K any](s *SiatSincronizacionService, ctx context.Context, config config.Config, req any) (*soap.EnvelopeResponse[V], error) {
 	concreteReq := models.GetInternalRequest[K](req)
 	if concreteReq == nil {
-		return nil, fmt.Errorf("tipo de solicitud inválido")
+		return nil, fmt.Errorf("error to convert request")
 	}
 
 	xmlBody, err := buildRequest(concreteReq)
@@ -124,7 +124,7 @@ func executeSincronizacion[V any, K any](s *SiatSincronizacionService, ctx conte
 
 	httpReq, err := http.NewRequestWithContext(ctx, "POST", s.url, bytes.NewReader(xmlBody))
 	if err != nil {
-		return nil, fmt.Errorf("error al crear petición HTTP: %w", err)
+		return nil, err
 	}
 
 	httpReq.Header.Set("Content-Type", "application/xml")
@@ -132,7 +132,7 @@ func executeSincronizacion[V any, K any](s *SiatSincronizacionService, ctx conte
 
 	resp, err := s.HttpClient.Do(httpReq)
 	if err != nil {
-		return nil, fmt.Errorf("error al hacer request HTTP: %w", err)
+		return nil, err
 	}
 
 	return parseSoapResponse[V](resp)
@@ -142,7 +142,7 @@ func executeSincronizacion[V any, K any](s *SiatSincronizacionService, ctx conte
 func NewSiatSincronizacionService(baseUrl string, httpClient *http.Client) (*SiatSincronizacionService, error) {
 	baseUrl = strings.TrimSpace(baseUrl)
 	if baseUrl == "" {
-		return nil, fmt.Errorf("la URL base del SIAT no puede estar vacía")
+		return nil, fmt.Errorf("baseUrl is empty")
 	}
 
 	if httpClient == nil {

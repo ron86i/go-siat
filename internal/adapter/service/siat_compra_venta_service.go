@@ -33,7 +33,7 @@ func (s *SiatCompraVentaService) RecepcionAnexos(ctx context.Context, config con
 
 	httpReq, err := http.NewRequestWithContext(ctx, "POST", s.url, bytes.NewReader(xmlBody))
 	if err != nil {
-		return nil, fmt.Errorf("error al crear petición HTTP: %w", err)
+		return nil, err
 	}
 
 	httpReq.Header.Set("Content-Type", "application/xml")
@@ -41,7 +41,7 @@ func (s *SiatCompraVentaService) RecepcionAnexos(ctx context.Context, config con
 
 	resp, err := s.HttpClient.Do(httpReq)
 	if err != nil {
-		return nil, fmt.Errorf("error al hacer request HTTP recepcion anexos: %w", err)
+		return nil, err
 	}
 	return parseSoapResponse[compra_venta.RecepcionAnexosResponse](resp)
 }
@@ -56,7 +56,7 @@ func (s *SiatCompraVentaService) ValidacionRecepcionMasivaFactura(ctx context.Co
 
 	httpReq, err := http.NewRequestWithContext(ctx, "POST", s.url, bytes.NewReader(xmlBody))
 	if err != nil {
-		return nil, fmt.Errorf("error al crear petición HTTP: %w", err)
+		return nil, err
 	}
 
 	httpReq.Header.Set("Content-Type", "application/xml")
@@ -64,7 +64,7 @@ func (s *SiatCompraVentaService) ValidacionRecepcionMasivaFactura(ctx context.Co
 
 	resp, err := s.HttpClient.Do(httpReq)
 	if err != nil {
-		return nil, fmt.Errorf("error al hacer request HTTP validacion recepcion masiva factura: %w", err)
+		return nil, err
 	}
 	return parseSoapResponse[compra_venta.ValidacionRecepcionMasivaFacturaResponse](resp)
 }
@@ -79,7 +79,7 @@ func (s *SiatCompraVentaService) VerificacionEstadoFactura(ctx context.Context, 
 
 	httpReq, err := http.NewRequestWithContext(ctx, "POST", s.url, bytes.NewReader(xmlBody))
 	if err != nil {
-		return nil, fmt.Errorf("error al crear petición HTTP: %w", err)
+		return nil, err
 	}
 
 	httpReq.Header.Set("Content-Type", "application/xml")
@@ -87,7 +87,7 @@ func (s *SiatCompraVentaService) VerificacionEstadoFactura(ctx context.Context, 
 
 	resp, err := s.HttpClient.Do(httpReq)
 	if err != nil {
-		return nil, fmt.Errorf("error al hacer request HTTP verificacion estado factura: %w", err)
+		return nil, err
 	}
 	return parseSoapResponse[compra_venta.VerificacionEstadoFacturaResponse](resp)
 }
@@ -106,7 +106,7 @@ func (s *SiatCompraVentaService) RecepcionMasivaFactura(ctx context.Context, con
 
 	httpReq, err := http.NewRequestWithContext(ctx, "POST", s.url, bytes.NewReader(xmlBody))
 	if err != nil {
-		return nil, fmt.Errorf("error al crear petición HTTP: %w", err)
+		return nil, err
 	}
 
 	httpReq.Header.Set("Content-Type", "application/xml")
@@ -114,7 +114,7 @@ func (s *SiatCompraVentaService) RecepcionMasivaFactura(ctx context.Context, con
 
 	resp, err := s.HttpClient.Do(httpReq)
 	if err != nil {
-		return nil, fmt.Errorf("error al hacer request HTTP recepcion masiva factura: %w", err)
+		return nil, err
 	}
 	return parseSoapResponse[compra_venta.RecepcionMasivaFacturaResponse](resp)
 }
@@ -130,7 +130,7 @@ func (s *SiatCompraVentaService) VerificarComunicacion(ctx context.Context, conf
 
 	httpReq, err := http.NewRequestWithContext(ctx, "POST", s.url, bytes.NewReader(xmlBody))
 	if err != nil {
-		return nil, fmt.Errorf("error al crear petición HTTP: %w", err)
+		return nil, err
 	}
 
 	httpReq.Header.Set("Content-Type", "application/xml")
@@ -138,7 +138,7 @@ func (s *SiatCompraVentaService) VerificarComunicacion(ctx context.Context, conf
 
 	resp, err := s.HttpClient.Do(httpReq)
 	if err != nil {
-		return nil, fmt.Errorf("error al hacer request HTTP verificar comunicacion: %w", err)
+		return nil, err
 	}
 	return parseSoapResponse[compra_venta.VerificarComunicacionResponse](resp)
 }
@@ -154,7 +154,7 @@ func (s *SiatCompraVentaService) ValidacionRecepcionPaqueteFactura(ctx context.C
 
 	httpReq, err := http.NewRequestWithContext(ctx, "POST", s.url, bytes.NewReader(xmlBody))
 	if err != nil {
-		return nil, fmt.Errorf("error al crear petición HTTP: %w", err)
+		return nil, err
 	}
 
 	httpReq.Header.Set("Content-Type", "application/xml")
@@ -162,7 +162,7 @@ func (s *SiatCompraVentaService) ValidacionRecepcionPaqueteFactura(ctx context.C
 
 	resp, err := s.HttpClient.Do(httpReq)
 	if err != nil {
-		return nil, fmt.Errorf("error al hacer request HTTP validacion recepcion paquete factura: %w", err)
+		return nil, err
 	}
 	return parseSoapResponse[compra_venta.ValidacionRecepcionPaqueteFacturaResponse](resp)
 }
@@ -181,7 +181,7 @@ func (s *SiatCompraVentaService) RecepcionPaqueteFactura(ctx context.Context, co
 
 	httpReq, err := http.NewRequestWithContext(ctx, "POST", s.url, bytes.NewReader(xmlBody))
 	if err != nil {
-		return nil, fmt.Errorf("error al crear petición HTTP: %w", err)
+		return nil, err
 	}
 
 	httpReq.Header.Set("Content-Type", "application/xml")
@@ -189,7 +189,7 @@ func (s *SiatCompraVentaService) RecepcionPaqueteFactura(ctx context.Context, co
 
 	resp, err := s.HttpClient.Do(httpReq)
 	if err != nil {
-		return nil, fmt.Errorf("error al hacer request HTTP recepcion paquete factura: %w", err)
+		return nil, err
 	}
 	return parseSoapResponse[compra_venta.RecepcionPaqueteFacturaResponse](resp)
 }
@@ -206,7 +206,7 @@ func (s *SiatCompraVentaService) ReversionAnulacionFactura(ctx context.Context, 
 
 	httpReq, err := http.NewRequestWithContext(ctx, "POST", s.url, bytes.NewReader(xmlBody))
 	if err != nil {
-		return nil, fmt.Errorf("error al crear petición HTTP: %w", err)
+		return nil, err
 	}
 
 	httpReq.Header.Set("Content-Type", "application/xml")
@@ -214,7 +214,7 @@ func (s *SiatCompraVentaService) ReversionAnulacionFactura(ctx context.Context, 
 
 	resp, err := s.HttpClient.Do(httpReq)
 	if err != nil {
-		return nil, fmt.Errorf("error al hacer request HTTP reversion anulacion factura: %w", err)
+		return nil, err
 	}
 	return parseSoapResponse[compra_venta.ReversionAnulacionFacturaResponse](resp)
 }
@@ -230,7 +230,7 @@ func (s *SiatCompraVentaService) AnulacionFactura(ctx context.Context, config co
 
 	httpReq, err := http.NewRequestWithContext(ctx, "POST", s.url, bytes.NewReader(xmlBody))
 	if err != nil {
-		return nil, fmt.Errorf("error al crear petición HTTP: %w", err)
+		return nil, err
 	}
 
 	httpReq.Header.Set("Content-Type", "application/xml")
@@ -238,7 +238,7 @@ func (s *SiatCompraVentaService) AnulacionFactura(ctx context.Context, config co
 
 	resp, err := s.HttpClient.Do(httpReq)
 	if err != nil {
-		return nil, fmt.Errorf("error al hacer request HTTP anulacion factura: %w", err)
+		return nil, err
 	}
 	return parseSoapResponse[compra_venta.AnulacionFacturaResponse](resp)
 }
@@ -255,7 +255,7 @@ func (s *SiatCompraVentaService) RecepcionFactura(ctx context.Context, config co
 
 	httpReq, err := http.NewRequestWithContext(ctx, "POST", s.url, bytes.NewReader(xmlBody))
 	if err != nil {
-		return nil, fmt.Errorf("error al crear petición HTTP: %w", err)
+		return nil, err
 	}
 
 	httpReq.Header.Set("Content-Type", "application/xml")
@@ -263,7 +263,7 @@ func (s *SiatCompraVentaService) RecepcionFactura(ctx context.Context, config co
 
 	resp, err := s.HttpClient.Do(httpReq)
 	if err != nil {
-		return nil, fmt.Errorf("error al hacer request HTTP recepcion factura: %w", err)
+		return nil, err
 	}
 	return parseSoapResponse[compra_venta.RecepcionFacturaResponse](resp)
 }
@@ -273,7 +273,7 @@ func (s *SiatCompraVentaService) RecepcionFactura(ctx context.Context, config co
 func NewSiatCompraVentaService(baseUrl string, httpClient *http.Client) (*SiatCompraVentaService, error) {
 	baseUrl = strings.TrimSpace(baseUrl)
 	if baseUrl == "" {
-		return nil, fmt.Errorf("la URL base del SIAT no puede estar vacía")
+		return nil, fmt.Errorf("baseUrl is empty")
 	}
 
 	// Si no se inyecta un cliente, creamos uno con configuraciones seguras por defecto

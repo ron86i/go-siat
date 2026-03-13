@@ -124,7 +124,7 @@ func (s *SiatOperacionesService) RegistroEventosSignificativos(ctx context.Conte
 	}
 	httpReq, err := http.NewRequestWithContext(ctx, "POST", s.url, bytes.NewReader(xmlBody))
 	if err != nil {
-		return nil, fmt.Errorf("error al crear petición HTTP: %w", err)
+		return nil, err
 	}
 
 	httpReq.Header.Set("Content-Type", "application/xml")
@@ -132,7 +132,7 @@ func (s *SiatOperacionesService) RegistroEventosSignificativos(ctx context.Conte
 
 	resp, err := s.HttpClient.Do(httpReq)
 	if err != nil {
-		return nil, fmt.Errorf("error al hacer request HTTP: %w", err)
+		return nil, err
 	}
 
 	return parseSoapResponse[operaciones.RegistroEventoSignificativoResponse](resp)
@@ -148,7 +148,7 @@ func (s *SiatOperacionesService) VerificarComunicacion(ctx context.Context, conf
 
 	httpReq, err := http.NewRequestWithContext(ctx, "POST", s.url, bytes.NewReader(xmlBody))
 	if err != nil {
-		return nil, fmt.Errorf("error al crear petición HTTP: %w", err)
+		return nil, err
 	}
 
 	httpReq.Header.Set("Content-Type", "application/xml")
@@ -156,7 +156,7 @@ func (s *SiatOperacionesService) VerificarComunicacion(ctx context.Context, conf
 
 	resp, err := s.HttpClient.Do(httpReq)
 	if err != nil {
-		return nil, fmt.Errorf("error al hacer request HTTP: %w", err)
+		return nil, err
 	}
 
 	return parseSoapResponse[operaciones.VerificarComunicacionResponse](resp)
@@ -171,7 +171,7 @@ func (s *SiatOperacionesService) RegistroPuntoVenta(ctx context.Context, config 
 	}
 	httpReq, err := http.NewRequestWithContext(ctx, "POST", s.url, bytes.NewReader(xmlBody))
 	if err != nil {
-		return nil, fmt.Errorf("error al crear petición HTTP: %w", err)
+		return nil, err
 	}
 
 	httpReq.Header.Set("Content-Type", "application/xml")
@@ -179,7 +179,7 @@ func (s *SiatOperacionesService) RegistroPuntoVenta(ctx context.Context, config 
 
 	resp, err := s.HttpClient.Do(httpReq)
 	if err != nil {
-		return nil, fmt.Errorf("error al hacer request HTTP: %w", err)
+		return nil, err
 	}
 
 	return parseSoapResponse[operaciones.RegistroPuntoVentaResponse](resp)
@@ -196,7 +196,7 @@ func (s *SiatOperacionesService) RegistroPuntoVentaComisionista(ctx context.Cont
 	// Ejecutar la petición HTTP utilizando el cliente configurado
 	httpReq, err := http.NewRequestWithContext(ctx, "POST", s.url, bytes.NewReader(xmlBody))
 	if err != nil {
-		return nil, fmt.Errorf("error al crear petición HTTP: %w", err)
+		return nil, err
 	}
 
 	httpReq.Header.Set("Content-Type", "application/xml")
@@ -204,7 +204,7 @@ func (s *SiatOperacionesService) RegistroPuntoVentaComisionista(ctx context.Cont
 
 	resp, err := s.HttpClient.Do(httpReq)
 	if err != nil {
-		return nil, fmt.Errorf("error al hacer request HTTP: %w", err)
+		return nil, err
 	}
 	return parseSoapResponse[operaciones.RegistroPuntoVentaComisionistaResponse](resp)
 }
@@ -212,7 +212,7 @@ func (s *SiatOperacionesService) RegistroPuntoVentaComisionista(ctx context.Cont
 func NewSiatOperacionesService(baseUrl string, httpClient *http.Client) (*SiatOperacionesService, error) {
 	baseUrl = strings.TrimSpace(baseUrl)
 	if baseUrl == "" {
-		return nil, fmt.Errorf("la URL base del SIAT no puede estar vacía")
+		return nil, fmt.Errorf("baseUrl is empty")
 	}
 	// Si no se inyecta un cliente, creamos uno con configuraciones seguras por defecto
 	if httpClient == nil {
