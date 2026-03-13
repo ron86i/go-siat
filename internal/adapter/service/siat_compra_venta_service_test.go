@@ -3,11 +3,7 @@ package service_test
 import (
 	"archive/tar"
 	"bytes"
-	"compress/gzip"
 	"context"
-	"crypto/sha256"
-	"encoding/base64"
-	"encoding/hex"
 	"encoding/xml"
 	"fmt"
 	"log"
@@ -169,7 +165,10 @@ func TestSiatCompraVentaService_RecepcionMasivaFactura(t *testing.T) {
 		WithNit(nit).
 		Build()
 
-	cuis, _ := serviceCodigos.SolicitudCuis(context.Background(), config, cuisReq)
+	cuis, err := serviceCodigos.SolicitudCuis(context.Background(), config, cuisReq)
+	if err != nil {
+		t.Fatalf("error calculando CUIS: %v", err)
+	}
 
 	cufdReq := models.Codigos().NewCufdBuilder().
 		WithCodigoAmbiente(codAmbiente).
@@ -179,7 +178,10 @@ func TestSiatCompraVentaService_RecepcionMasivaFactura(t *testing.T) {
 		WithCuis(cuis.Body.Content.RespuestaCuis.Codigo).
 		Build()
 
-	cufd, _ := serviceCodigos.SolicitudCufd(context.Background(), config, cufdReq)
+	cufd, err := serviceCodigos.SolicitudCufd(context.Background(), config, cufdReq)
+	if err != nil {
+		t.Fatalf("error calculando CUFD: %v", err)
+	}
 
 	// Construir paquete de 5 facturas para recepción masiva
 	var tarBuf bytes.Buffer
@@ -246,16 +248,11 @@ func TestSiatCompraVentaService_RecepcionMasivaFactura(t *testing.T) {
 	}
 	tw.Close()
 
-	// Comprimir el TAR con Gzip
-	var gzipBuf bytes.Buffer
-	gw := gzip.NewWriter(&gzipBuf)
-	gw.Write(tarBuf.Bytes())
-	gw.Close()
-
-	compressedBytes := gzipBuf.Bytes()
-	hash := sha256.Sum256(compressedBytes)
-	hashString := hex.EncodeToString(hash[:])
-	encodedArchivo := base64.StdEncoding.EncodeToString(compressedBytes)
+	// Comprimir el TAR con Gzip y preparar para SIAT
+	hashString, encodedArchivo, err := utils.CompressAndHash(tarBuf.Bytes())
+	if err != nil {
+		t.Fatalf("error preparando paquete masivo: %v", err)
+	}
 
 	req := models.CompraVenta().NewRecepcionMasivaFacturaBuilder().
 		WithCodigoAmbiente(codAmbiente).
@@ -374,9 +371,8 @@ func TestSiatCompraVentaService_RecepcionPaqueteFactura(t *testing.T) {
 	// Construir paquete de 5 facturas
 	var tarBuf bytes.Buffer
 	tw := tar.NewWriter(&tarBuf)
-
+	fechaEmision := time.Now().Truncate(time.Millisecond)
 	for i := 1; i <= 5; i++ {
-		fechaEmision := time.Now()
 		cuf, _ := utils.GenerarCUF(nit, fechaEmision, 0, codModalidad, facturas.EmisionOffline, 1, 1, i, 0, cufd.Body.Content.RespuestaCufd.CodigoControl)
 		nombreRazonSocial := "JUAN PEREZ"
 		cabecera := facturas.NewFacturaCompraVentaCabeceraBuilder().
@@ -439,18 +435,11 @@ func TestSiatCompraVentaService_RecepcionPaqueteFactura(t *testing.T) {
 	}
 	tw.Close()
 
-	// Comprimir el TAR con Gzip
-	var gzipBuf bytes.Buffer
-	gw := gzip.NewWriter(&gzipBuf)
-	if _, err := gw.Write(tarBuf.Bytes()); err != nil {
-		t.Fatalf("error comprimiendo tar: %v", err)
+	// Comprimir el TAR con Gzip y preparar para SIAT
+	hashString, encodedArchivo, err := utils.CompressAndHash(tarBuf.Bytes())
+	if err != nil {
+		t.Fatalf("error preparando paquete: %v", err)
 	}
-	gw.Close()
-
-	compressedBytes := gzipBuf.Bytes()
-	hash := sha256.Sum256(compressedBytes)
-	hashString := hex.EncodeToString(hash[:])
-	encodedArchivo := base64.StdEncoding.EncodeToString(compressedBytes)
 
 	req := models.CompraVenta().NewRecepcionPaqueteFacturaBuilder().
 		WithCodigoAmbiente(codAmbiente).
@@ -696,22 +685,11 @@ func TestSiatCompraVentaService_RecepcionFactura(t *testing.T) {
 		t.Fatalf("error firmando XML: %v", err)
 	}
 
-	// 3. Comprimir con Gzip
-	var buf bytes.Buffer
-	zw := gzip.NewWriter(&buf)
-	if _, err := zw.Write(signedXML); err != nil {
-		t.Fatalf("error comprimiendo: %v", err)
+	// 3, 4, 5. Preparar archivo (Gzip + Hash SHA256 + Base64)
+	hashString, encodedArchivo, err := utils.CompressAndHash(signedXML)
+	if err != nil {
+		t.Fatalf("error preparando archivo: %v", err)
 	}
-	zw.Close()
-
-	compressedBytes := buf.Bytes()
-
-	// 4. Calcular Hash SHA256 sobre los bytes COMPRIMIDOS (antes del base64)
-	hash := sha256.Sum256(compressedBytes)
-	hashString := hex.EncodeToString(hash[:])
-
-	// 5. Codificar a base64
-	encodedArchivo := base64.StdEncoding.EncodeToString(compressedBytes)
 
 	req := models.CompraVenta().NewRecepcionFacturaBuilder().
 		WithCodigoAmbiente(codAmbiente).

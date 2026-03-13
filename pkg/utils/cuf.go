@@ -8,12 +8,29 @@ import (
 )
 
 // GenerarCUF genera el CUF completo para una factura
+//
+// Args:
+//
+//	nit (int64): Nit del contribuyente.
+//	fechaHora (time.Time): Fecha y hora de emisión de la factura.
+//	sucursal (int): Número de sucursal.
+//	modalidad (int): Modalidad de emisión.
+//	tipoEmision (int): Tipo de emisión.
+//	tipoFactura (int): Tipo de factura.
+//	tipoDocumentoSector (int): Tipo de documento sector.
+//	numeroFactura (int): Número de la factura.
+//	puntoVenta (int): Punto de venta.
+//	codigoControl (string): Código de control.
+//
+// Returns:
+//
+//	(string, error): CUF completo y error si ocurre.
 func GenerarCUF(nit int64, fechaHora time.Time, sucursal, modalidad, tipoEmision, tipoFactura, tipoDocumentoSector, numeroFactura, puntoVenta int, codigoControl string) (string, error) {
 
-	// 1. Formatear campos a longitud fija
+	// 1. Format fields to fixed length
 	nitStr := fmt.Sprintf("%013d", nit)                                // 13
 	fechaStr := fechaHora.Format("20060102150405.000")                 // 17 yyyyMMddHHmmss.SSS
-	fechaStr = strings.ReplaceAll(fechaStr, ".", "")                   // 17 dígitos
+	fechaStr = strings.ReplaceAll(fechaStr, ".", "")                   // 17 digits
 	sucursalStr := fmt.Sprintf("%04d", sucursal)                       // 4
 	modalidadStr := fmt.Sprintf("%1d", modalidad)                      // 1
 	tipoEmisionStr := fmt.Sprintf("%1d", tipoEmision)                  // 1
@@ -22,28 +39,28 @@ func GenerarCUF(nit int64, fechaHora time.Time, sucursal, modalidad, tipoEmision
 	numeroFacturaStr := fmt.Sprintf("%010d", numeroFactura)            // 10
 	puntoVentaStr := fmt.Sprintf("%04d", puntoVenta)                   // 4
 
-	// 2. Concatenar todo hasta punto de venta
+	// 2. Concatenate everything up to point of sale
 	cadena := nitStr + fechaStr + sucursalStr + modalidadStr + tipoEmisionStr +
 		tipoFacturaStr + tipoDocumentoSectorStr + numeroFacturaStr + puntoVentaStr
 
-	// 3. Calcular dígito verificador Módulo 11
+	// 3. Calculate Modulo 11 verify digit
 	digitoVerificador := calculaDigitoMod11(cadena, 1, 9, false)
 	cadena += digitoVerificador
 
-	// 4. Convertir a Base16 (hexadecimal como número, no ASCII)
+	// 4. Convert to Base16 (hexadecimal as number, not ASCII)
 	bigInt := new(big.Int)
 	if _, ok := bigInt.SetString(cadena, 10); !ok {
 		return "", fmt.Errorf("error converting to BigInt")
 	}
 	cadenaHex := strings.ToUpper(bigInt.Text(16))
 
-	// 5. Concatenar código de control (CUFD)
+	// 5. Concatenate control code (CUFD)
 	cuf := cadenaHex + codigoControl
 
 	return cuf, nil
 }
 
-// CalculaDigitoMod11 calcula el dígito verificador Mod 11
+// calculaDigitoMod11 calculates the Mod 11 verify digit
 func calculaDigitoMod11(cadena string, numDig, limMult int, x10 bool) string {
 	var mult, suma, dig int
 	if !x10 {

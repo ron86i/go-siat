@@ -6,8 +6,8 @@ import (
 	"strings"
 )
 
-// ParseIntSafe convierte un string a int eliminando espacios en blanco.
-// Retorna un error descriptivo si la conversión falla.
+// ParseIntSafe converts a string to int, removing whitespace.
+// Returns a descriptive error if the conversion fails.
 func ParseIntSafe(valStr string) (int, error) {
 	cleanVal := strings.TrimSpace(valStr)
 	if cleanVal == "" {
@@ -21,8 +21,8 @@ func ParseIntSafe(valStr string) (int, error) {
 	return val, nil
 }
 
-// ParseInt64Safe convierte un string a int64 (ideal para el NIT).
-// Retorna un error descriptivo si la conversión falla.
+// ParseInt64Safe converts a string to int64 (ideal for NIT).
+// Returns a descriptive error if the conversion fails.
 func ParseInt64Safe(valStr string) (int64, error) {
 	cleanVal := strings.TrimSpace(valStr)
 	if cleanVal == "" {
