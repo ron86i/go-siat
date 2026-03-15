@@ -11,7 +11,7 @@ import (
 	"net/http"
 
 	"github.com/ron86i/go-siat/internal/core/domain/datatype/soap"
-	"github.com/ron86i/go-siat/internal/core/domain/facturacion/codigos"
+	"github.com/ron86i/go-siat/internal/core/domain/siat/codigos"
 	"github.com/ron86i/go-siat/internal/core/port"
 	"github.com/ron86i/go-siat/pkg/config"
 	"github.com/ron86i/go-siat/pkg/models"
@@ -27,7 +27,7 @@ type SiatCodigosService struct {
 // VerificarComunicacion realiza una prueba de conectividad con el servicio de códigos del SIAT.
 // Es útil para validar que las credenciales base (Token, URL) y la conexión de red
 // estén funcionando correctamente antes de realizar operaciones de negocio.
-func (s *SiatCodigosService) VerificarComunicacion(ctx context.Context, config config.Config, opaqueReq models.VerificarComunicacionCompraVenta) (*soap.EnvelopeResponse[codigos.VerificarComunicacionResponse], error) {
+func (s *SiatCodigosService) VerificarComunicacion(ctx context.Context, config config.Config, opaqueReq models.VerificarComunicacionCodigos) (*soap.EnvelopeResponse[codigos.VerificarComunicacionResponse], error) {
 	req := models.GetInternalRequest[codigos.VerificarComunicacion](opaqueReq)
 	xmlBody, err := buildRequest(req)
 	if err != nil {

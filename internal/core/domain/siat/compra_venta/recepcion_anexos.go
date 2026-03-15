@@ -1,6 +1,10 @@
 package compra_venta
 
-import "encoding/xml"
+import (
+	"encoding/xml"
+
+	"github.com/ron86i/go-siat/internal/core/domain/siat/facturacion"
+)
 
 type RecepcionAnexos struct {
 	XMLName                  xml.Name                 `xml:"ns:recepcionAnexos" json:"-"`
@@ -8,13 +12,13 @@ type RecepcionAnexos struct {
 }
 
 type SolicitudRecepcionAnexos struct {
-	SolicitudRecepcion
+	facturacion.SolicitudRecepcion
 	AnexosList []VentaAnexo `xml:"anexosList" json:"anexosList"`
 	Cuf        string       `xml:"cuf" json:"cuf"`
 }
 
 type RecepcionAnexosResponse struct {
-	RespuestaRecepcionAnexos RespuestaRecepcion `xml:"RespuestaRecepcionAnexos" json:"respuestaRecepcionAnexos"`
+	RespuestaRecepcionAnexos facturacion.RespuestaRecepcion `xml:"RespuestaRecepcionAnexos" json:"respuestaRecepcionAnexos"`
 }
 
 type VentaAnexo struct {

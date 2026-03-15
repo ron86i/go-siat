@@ -10,7 +10,8 @@ import (
 	"time"
 
 	"github.com/ron86i/go-siat/internal/core/domain/datatype/soap"
-	"github.com/ron86i/go-siat/internal/core/domain/facturacion/compra_venta"
+	"github.com/ron86i/go-siat/internal/core/domain/siat/compra_venta"
+	"github.com/ron86i/go-siat/internal/core/domain/siat/facturacion"
 	"github.com/ron86i/go-siat/internal/core/port"
 	"github.com/ron86i/go-siat/pkg/config"
 	"github.com/ron86i/go-siat/pkg/models"
@@ -47,8 +48,8 @@ func (s *SiatCompraVentaService) RecepcionAnexos(ctx context.Context, config con
 }
 
 // ValidacionRecepcionMasivaFactura
-func (s *SiatCompraVentaService) ValidacionRecepcionMasivaFactura(ctx context.Context, config config.Config, opaqueReq models.ValidacionRecepcionMasivaFactura) (*soap.EnvelopeResponse[compra_venta.ValidacionRecepcionMasivaFacturaResponse], error) {
-	req := models.GetInternalRequest[compra_venta.ValidacionRecepcionMasivaFactura](opaqueReq)
+func (s *SiatCompraVentaService) ValidacionRecepcionMasivaFactura(ctx context.Context, config config.Config, opaqueReq models.ValidacionRecepcionMasivaFactura) (*soap.EnvelopeResponse[facturacion.ValidacionRecepcionMasivaFacturaResponse], error) {
+	req := models.GetInternalRequest[facturacion.ValidacionRecepcionMasivaFactura](opaqueReq)
 	xmlBody, err := buildRequest(req)
 	if err != nil {
 		return nil, err
@@ -66,12 +67,12 @@ func (s *SiatCompraVentaService) ValidacionRecepcionMasivaFactura(ctx context.Co
 	if err != nil {
 		return nil, err
 	}
-	return parseSoapResponse[compra_venta.ValidacionRecepcionMasivaFacturaResponse](resp)
+	return parseSoapResponse[facturacion.ValidacionRecepcionMasivaFacturaResponse](resp)
 }
 
 // VerificacionEstadoFactura
-func (s *SiatCompraVentaService) VerificacionEstadoFactura(ctx context.Context, config config.Config, opaqueReq models.VerificacionEstadoFactura) (*soap.EnvelopeResponse[compra_venta.VerificacionEstadoFacturaResponse], error) {
-	req := models.GetInternalRequest[compra_venta.VerificacionEstadoFactura](opaqueReq)
+func (s *SiatCompraVentaService) VerificacionEstadoFactura(ctx context.Context, config config.Config, opaqueReq models.VerificacionEstadoFactura) (*soap.EnvelopeResponse[facturacion.VerificacionEstadoFacturaResponse], error) {
+	req := models.GetInternalRequest[facturacion.VerificacionEstadoFactura](opaqueReq)
 	xmlBody, err := buildRequest(req)
 	if err != nil {
 		return nil, err
@@ -89,7 +90,7 @@ func (s *SiatCompraVentaService) VerificacionEstadoFactura(ctx context.Context, 
 	if err != nil {
 		return nil, err
 	}
-	return parseSoapResponse[compra_venta.VerificacionEstadoFacturaResponse](resp)
+	return parseSoapResponse[facturacion.VerificacionEstadoFacturaResponse](resp)
 }
 
 // RecepcionMasivaFactura permite recibir paquetes de facturas emitidas bajo la modalidad
@@ -97,8 +98,8 @@ func (s *SiatCompraVentaService) VerificacionEstadoFactura(ctx context.Context, 
 // La periodicidad del envío (diario, semanal o mensual) se configura en el portal de la Administración Tributaria.
 // Retorna un código de recepción si es aceptado, o códigos de error/advertencia.
 // Recibe una solicitud opaca de tipo RecepcionMasivaFacturaRequest construida vía Builder.
-func (s *SiatCompraVentaService) RecepcionMasivaFactura(ctx context.Context, config config.Config, opaqueReq models.RecepcionMasivaFactura) (*soap.EnvelopeResponse[compra_venta.RecepcionMasivaFacturaResponse], error) {
-	req := models.GetInternalRequest[compra_venta.RecepcionMasivaFactura](opaqueReq)
+func (s *SiatCompraVentaService) RecepcionMasivaFactura(ctx context.Context, config config.Config, opaqueReq models.RecepcionMasivaFactura) (*soap.EnvelopeResponse[facturacion.RecepcionMasivaFacturaResponse], error) {
+	req := models.GetInternalRequest[facturacion.RecepcionMasivaFactura](opaqueReq)
 	xmlBody, err := buildRequest(req)
 	if err != nil {
 		return nil, err
@@ -116,13 +117,13 @@ func (s *SiatCompraVentaService) RecepcionMasivaFactura(ctx context.Context, con
 	if err != nil {
 		return nil, err
 	}
-	return parseSoapResponse[compra_venta.RecepcionMasivaFacturaResponse](resp)
+	return parseSoapResponse[facturacion.RecepcionMasivaFacturaResponse](resp)
 }
 
 // VerificarComunicacion permite verificar la comunicación con el SIAT.
 // Recibe una solicitud opaca de tipo VerificarComunicacionRequest construida vía Builder.
-func (s *SiatCompraVentaService) VerificarComunicacion(ctx context.Context, config config.Config, opaqueReq models.VerificarComunicacionCompraVenta) (*soap.EnvelopeResponse[compra_venta.VerificarComunicacionResponse], error) {
-	req := models.GetInternalRequest[compra_venta.VerificarComunicacion](opaqueReq)
+func (s *SiatCompraVentaService) VerificarComunicacion(ctx context.Context, config config.Config, opaqueReq models.VerificarComunicacionCompraVenta) (*soap.EnvelopeResponse[facturacion.VerificarComunicacionResponse], error) {
+	req := models.GetInternalRequest[facturacion.VerificarComunicacion](opaqueReq)
 	xmlBody, err := buildRequest(req)
 	if err != nil {
 		return nil, err
@@ -140,13 +141,13 @@ func (s *SiatCompraVentaService) VerificarComunicacion(ctx context.Context, conf
 	if err != nil {
 		return nil, err
 	}
-	return parseSoapResponse[compra_venta.VerificarComunicacionResponse](resp)
+	return parseSoapResponse[facturacion.VerificarComunicacionResponse](resp)
 }
 
 // ValidacionRecepcionPaqueteFactura permite validar la recepción de paquetes de facturas.
 // Recibe una solicitud opaca de tipo ValidacionRecepcionPaqueteFacturaRequest construida vía Builder.
-func (s *SiatCompraVentaService) ValidacionRecepcionPaqueteFactura(ctx context.Context, config config.Config, opaqueReq models.ValidacionRecepcionPaqueteFactura) (*soap.EnvelopeResponse[compra_venta.ValidacionRecepcionPaqueteFacturaResponse], error) {
-	req := models.GetInternalRequest[compra_venta.ValidacionRecepcionPaqueteFactura](opaqueReq)
+func (s *SiatCompraVentaService) ValidacionRecepcionPaqueteFactura(ctx context.Context, config config.Config, opaqueReq models.ValidacionRecepcionPaqueteFactura) (*soap.EnvelopeResponse[facturacion.ValidacionRecepcionPaqueteFacturaResponse], error) {
+	req := models.GetInternalRequest[facturacion.ValidacionRecepcionPaqueteFactura](opaqueReq)
 	xmlBody, err := buildRequest(req)
 	if err != nil {
 		return nil, err
@@ -164,7 +165,7 @@ func (s *SiatCompraVentaService) ValidacionRecepcionPaqueteFactura(ctx context.C
 	if err != nil {
 		return nil, err
 	}
-	return parseSoapResponse[compra_venta.ValidacionRecepcionPaqueteFacturaResponse](resp)
+	return parseSoapResponse[facturacion.ValidacionRecepcionPaqueteFacturaResponse](resp)
 }
 
 // RecepcionPaqueteFactura permite recibir paquetes de hasta 500 facturas emitidas bajo la modalidad
@@ -172,8 +173,8 @@ func (s *SiatCompraVentaService) ValidacionRecepcionPaqueteFactura(ctx context.C
 // y la integridad del paquete, retornando un código de recepción si es aceptado,
 // o códigos de error/advertencia en caso contrario.
 // Recibe una solicitud opaca de tipo RecepcionPaqueteFacturaRequest construida vía Builder.
-func (s *SiatCompraVentaService) RecepcionPaqueteFactura(ctx context.Context, config config.Config, opaqueReq models.RecepcionPaqueteFactura) (*soap.EnvelopeResponse[compra_venta.RecepcionPaqueteFacturaResponse], error) {
-	req := models.GetInternalRequest[compra_venta.RecepcionPaqueteFactura](opaqueReq)
+func (s *SiatCompraVentaService) RecepcionPaqueteFactura(ctx context.Context, config config.Config, opaqueReq models.RecepcionPaqueteFactura) (*soap.EnvelopeResponse[facturacion.RecepcionPaqueteFacturaResponse], error) {
+	req := models.GetInternalRequest[facturacion.RecepcionPaqueteFactura](opaqueReq)
 	xmlBody, err := buildRequest(req)
 	if err != nil {
 		return nil, err
@@ -191,14 +192,14 @@ func (s *SiatCompraVentaService) RecepcionPaqueteFactura(ctx context.Context, co
 	if err != nil {
 		return nil, err
 	}
-	return parseSoapResponse[compra_venta.RecepcionPaqueteFacturaResponse](resp)
+	return parseSoapResponse[facturacion.RecepcionPaqueteFacturaResponse](resp)
 }
 
 // ReversionAnulacionFactura permite revertir la anulación de una factura previamente enviada al SIAT.
 // Permite revertir el estado de las facturas digitales que fueron anuladas por error una sola vez.
 // Recibe una solicitud opaca de tipo ReversionAnulacionFacturaRequest construida vía Builder.
-func (s *SiatCompraVentaService) ReversionAnulacionFactura(ctx context.Context, config config.Config, opaqueReq models.ReversionAnulacionFactura) (*soap.EnvelopeResponse[compra_venta.ReversionAnulacionFacturaResponse], error) {
-	req := models.GetInternalRequest[compra_venta.ReversionAnulacionFactura](opaqueReq)
+func (s *SiatCompraVentaService) ReversionAnulacionFactura(ctx context.Context, config config.Config, opaqueReq models.ReversionAnulacionFactura) (*soap.EnvelopeResponse[facturacion.ReversionAnulacionFacturaResponse], error) {
+	req := models.GetInternalRequest[facturacion.ReversionAnulacionFactura](opaqueReq)
 	xmlBody, err := buildRequest(req)
 	if err != nil {
 		return nil, err
@@ -216,13 +217,13 @@ func (s *SiatCompraVentaService) ReversionAnulacionFactura(ctx context.Context, 
 	if err != nil {
 		return nil, err
 	}
-	return parseSoapResponse[compra_venta.ReversionAnulacionFacturaResponse](resp)
+	return parseSoapResponse[facturacion.ReversionAnulacionFacturaResponse](resp)
 }
 
 // AnulacionFactura permite anular una factura previamente aceptada por el SIAT.
 // Recibe una solicitud opaca de tipo AnulacionFacturaRequest construida vía Builder.
-func (s *SiatCompraVentaService) AnulacionFactura(ctx context.Context, config config.Config, opaqueReq models.AnulacionFactura) (*soap.EnvelopeResponse[compra_venta.AnulacionFacturaResponse], error) {
-	req := models.GetInternalRequest[compra_venta.AnulacionFactura](opaqueReq)
+func (s *SiatCompraVentaService) AnulacionFactura(ctx context.Context, config config.Config, opaqueReq models.AnulacionFactura) (*soap.EnvelopeResponse[facturacion.AnulacionFacturaResponse], error) {
+	req := models.GetInternalRequest[facturacion.AnulacionFactura](opaqueReq)
 	xmlBody, err := buildRequest(req)
 	if err != nil {
 		return nil, err
@@ -240,13 +241,13 @@ func (s *SiatCompraVentaService) AnulacionFactura(ctx context.Context, config co
 	if err != nil {
 		return nil, err
 	}
-	return parseSoapResponse[compra_venta.AnulacionFacturaResponse](resp)
+	return parseSoapResponse[facturacion.AnulacionFacturaResponse](resp)
 }
 
 // RecepcionFactura envía una factura firmada, comprimida y codificada al SIAT para su procesamiento.
 // Recibe una solicitud opaca de tipo RecepcionFacturaRequest construida vía Builder.
-func (s *SiatCompraVentaService) RecepcionFactura(ctx context.Context, config config.Config, opaqueReq models.RecepcionFactura) (*soap.EnvelopeResponse[compra_venta.RecepcionFacturaResponse], error) {
-	req := models.GetInternalRequest[compra_venta.RecepcionFactura](opaqueReq)
+func (s *SiatCompraVentaService) RecepcionFactura(ctx context.Context, config config.Config, opaqueReq models.RecepcionFactura) (*soap.EnvelopeResponse[facturacion.RecepcionFacturaResponse], error) {
+	req := models.GetInternalRequest[facturacion.RecepcionFactura](opaqueReq)
 	xmlBody, err := buildRequest(req)
 	if err != nil {
 		return nil, err
@@ -265,7 +266,7 @@ func (s *SiatCompraVentaService) RecepcionFactura(ctx context.Context, config co
 	if err != nil {
 		return nil, err
 	}
-	return parseSoapResponse[compra_venta.RecepcionFacturaResponse](resp)
+	return parseSoapResponse[facturacion.RecepcionFacturaResponse](resp)
 }
 
 // NewSiatCompraVentaService crea una nueva instancia del servicio de Compra y Venta.

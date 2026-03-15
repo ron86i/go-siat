@@ -1,7 +1,7 @@
 package models
 
 import (
-	"github.com/ron86i/go-siat/internal/core/domain/facturacion/sincronizacion"
+	"github.com/ron86i/go-siat/internal/core/domain/siat/sincronizacion"
 )
 
 type sincronizacionNamespace struct{}

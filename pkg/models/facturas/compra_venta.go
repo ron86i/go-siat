@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/ron86i/go-siat/internal/core/domain/datatype"
-	"github.com/ron86i/go-siat/internal/core/domain/models_facturas"
+	"github.com/ron86i/go-siat/internal/core/domain/documentos"
 )
 
 // FacturaCompraVenta representa la estructura completa de una factura lista para ser procesada.
@@ -25,7 +25,7 @@ type FacturaCompraVentaDetalle interface{}
 // Por defecto, la factura se configura para ser emitida electrónica.
 func NewFacturaCompraVentaBuilder() *FacturaCompraVentaBuilder {
 	return &FacturaCompraVentaBuilder{
-		factura: &models_facturas.FacturaCompraVenta{
+		factura: &documentos.FacturaCompraVenta{
 			XMLName:           xml.Name{Local: "facturaElectronicaCompraVenta"},
 			XmlnsXsi:          "http://www.w3.org/2001/XMLSchema-instance",
 			XsiSchemaLocation: "facturaElectronicaCompraVenta.xsd",
@@ -37,7 +37,7 @@ func NewFacturaCompraVentaBuilder() *FacturaCompraVentaBuilder {
 // de facturas de compra y venta.
 func NewFacturaCompraVentaCabeceraBuilder() *FacturaCompraVentaCabeceraBuilder {
 	return &FacturaCompraVentaCabeceraBuilder{
-		cabecera: &models_facturas.Cabecera{},
+		cabecera: &documentos.CabeceraCompraVenta{},
 	}
 }
 
@@ -45,17 +45,17 @@ func NewFacturaCompraVentaCabeceraBuilder() *FacturaCompraVentaCabeceraBuilder {
 // de detalle de la factura.
 func NewFacturaCompraVentaDetalleBuilder() *DetalleBuilder {
 	return &DetalleBuilder{
-		detalle: &models_facturas.Detalle{},
+		detalle: &documentos.DetalleCompraVenta{},
 	}
 }
 
 type FacturaCompraVentaBuilder struct {
-	factura *models_facturas.FacturaCompraVenta
+	factura *documentos.FacturaCompraVenta
 }
 
 // WithCabecera asocia la cabecera construida previamente a la factura.
 func (b *FacturaCompraVentaBuilder) WithCabecera(req FacturaCompraVentaCabecera) *FacturaCompraVentaBuilder {
-	if c := getInternalRequest[models_facturas.Cabecera](req); c != nil {
+	if c := getInternalRequest[documentos.CabeceraCompraVenta](req); c != nil {
 		b.factura.Cabecera = *c
 	}
 	return b
@@ -63,7 +63,7 @@ func (b *FacturaCompraVentaBuilder) WithCabecera(req FacturaCompraVentaCabecera)
 
 // AddDetalle añade un ítem de detalle a la lista de detalles de la factura.
 func (b *FacturaCompraVentaBuilder) AddDetalle(req FacturaCompraVentaDetalle) *FacturaCompraVentaBuilder {
-	if d := getInternalRequest[models_facturas.Detalle](req); d != nil {
+	if d := getInternalRequest[documentos.DetalleCompraVenta](req); d != nil {
 		b.factura.Detalle = append(b.factura.Detalle, *d)
 	}
 	return b
@@ -84,12 +84,12 @@ func (b *FacturaCompraVentaBuilder) WithModalidad(tipo int) *FacturaCompraVentaB
 
 // Build finaliza la construcción y retorna la interfaz opaca lista para ser firmada y enviada.
 func (b *FacturaCompraVentaBuilder) Build() FacturaCompraVenta {
-	return requestWrapper[models_facturas.FacturaCompraVenta]{request: b.factura}
+	return requestWrapper[documentos.FacturaCompraVenta]{request: b.factura}
 }
 
 // FacturaCompraVentaCabeceraBuilder ayuda a configurar la cabecera de la factura de compra y venta.
 type FacturaCompraVentaCabeceraBuilder struct {
-	cabecera *models_facturas.Cabecera
+	cabecera *documentos.CabeceraCompraVenta
 }
 
 // WithNitEmisor configura el NIT del emisor de la factura.
@@ -154,9 +154,14 @@ func (b *FacturaCompraVentaCabeceraBuilder) WithDireccion(direccion string) *Fac
 	return b
 }
 
-// WithCodigoPuntoVenta configura el código del punto de venta registrado ante el SIAT.
-func (b *FacturaCompraVentaCabeceraBuilder) WithCodigoPuntoVenta(codigoPuntoVenta int) *FacturaCompraVentaCabeceraBuilder {
-	b.cabecera.CodigoPuntoVenta = codigoPuntoVenta
+// WithCodigoPuntoVenta configura el código del punto de venta registrado ante el SIAT (nillable, pasar nil para omitir).
+func (b *FacturaCompraVentaCabeceraBuilder) WithCodigoPuntoVenta(codigoPuntoVenta *int) *FacturaCompraVentaCabeceraBuilder {
+	if codigoPuntoVenta == nil {
+		b.cabecera.CodigoPuntoVenta = datatype.Nilable[int]{Value: nil}
+		return b
+	}
+	value := *codigoPuntoVenta
+	b.cabecera.CodigoPuntoVenta = datatype.Nilable[int]{Value: &value}
 	return b
 }
 
@@ -343,12 +348,12 @@ func (b *FacturaCompraVentaCabeceraBuilder) WithCodigoDocumentoSector(codigoDocu
 
 // Build finaliza la construcción de la cabecera retornando la interfaz opaca.
 func (b *FacturaCompraVentaCabeceraBuilder) Build() FacturaCompraVentaCabecera {
-	return requestWrapper[models_facturas.Cabecera]{request: b.cabecera}
+	return requestWrapper[documentos.CabeceraCompraVenta]{request: b.cabecera}
 }
 
 // DetalleBuilder ayuda a configurar un ítem individual de detalle de la factura.
 type DetalleBuilder struct {
-	detalle *models_facturas.Detalle
+	detalle *documentos.DetalleCompraVenta
 }
 
 // WithActividadEconomica configura el código de actividad económica asociado al producto/servicio.
@@ -357,8 +362,8 @@ func (b *DetalleBuilder) WithActividadEconomica(actividadEconomica string) *Deta
 	return b
 }
 
-// WithCodigoProductoSin configura el código de producto según el catálogo del SIAT.
-func (b *DetalleBuilder) WithCodigoProductoSin(codigoProductoSin string) *DetalleBuilder {
+// WithCodigoProductoSin configura el código de producto según el catálogo del SIAT (integer).
+func (b *DetalleBuilder) WithCodigoProductoSin(codigoProductoSin int64) *DetalleBuilder {
 	b.detalle.CodigoProductoSin = codigoProductoSin
 	return b
 }
@@ -375,10 +380,9 @@ func (b *DetalleBuilder) WithDescripcion(descripcion string) *DetalleBuilder {
 	return b
 }
 
-// WithCantidad configura la cantidad vendida, redondeada automáticamente a 2 decimales.
+// WithCantidad configura la cantidad vendida, según XSD acepta hasta 5 decimales.
 func (b *DetalleBuilder) WithCantidad(cantidad float64) *DetalleBuilder {
-	// Asegurar que el valor sea redondeado a 2 decimales
-	cantidad, _ = strconv.ParseFloat(strconv.FormatFloat(cantidad, 'f', 2, 64), 64)
+	cantidad, _ = strconv.ParseFloat(strconv.FormatFloat(cantidad, 'f', 5, 64), 64)
 	b.detalle.Cantidad = cantidad
 	return b
 }
@@ -389,33 +393,28 @@ func (b *DetalleBuilder) WithUnidadMedida(unidadMedida int) *DetalleBuilder {
 	return b
 }
 
-// WithPrecioUnitario configura el precio unitario del ítem, redondeado automáticamente.
+// WithPrecioUnitario configura el precio unitario, según XSD acepta hasta 5 decimales.
 func (b *DetalleBuilder) WithPrecioUnitario(precioUnitario float64) *DetalleBuilder {
-	// Asegurar que el valor sea redondeado a 2 decimales
-	precioUnitario, _ = strconv.ParseFloat(strconv.FormatFloat(precioUnitario, 'f', 2, 64), 64)
+	precioUnitario, _ = strconv.ParseFloat(strconv.FormatFloat(precioUnitario, 'f', 5, 64), 64)
 	b.detalle.PrecioUnitario = precioUnitario
 	return b
 }
 
-// WithMontoDescuento configura un descuento aplicado específicamente a este ítem (opcional, redondeado).
+// WithMontoDescuento configura un descuento aplicado al ítem (opcional). Acepta hasta 5 decimales.
 func (b *DetalleBuilder) WithMontoDescuento(montoDescuento *float64) *DetalleBuilder {
 	if montoDescuento == nil {
 		b.detalle.MontoDescuento = datatype.Nilable[float64]{Value: nil}
 		return b
 	}
-
-	// Creamos una copia física del valor en una nueva dirección de memoria
 	value := *montoDescuento
-	// Asegurar que el valor sea redondeado a 2 decimales
-	value, _ = strconv.ParseFloat(strconv.FormatFloat(value, 'f', 2, 64), 64)
+	value, _ = strconv.ParseFloat(strconv.FormatFloat(value, 'f', 5, 64), 64)
 	b.detalle.MontoDescuento = datatype.Nilable[float64]{Value: &value}
 	return b
 }
 
-// WithSubTotal configura el subtotal (Cantidad * PrecioUnitario - MontoDescuento), redondeado automáticamente.
+// WithSubTotal configura el subtotal del ítem. Acepta hasta 5 decimales.
 func (b *DetalleBuilder) WithSubTotal(subTotal float64) *DetalleBuilder {
-	// Asegurar que el valor sea redondeado a 2 decimales
-	subTotal, _ = strconv.ParseFloat(strconv.FormatFloat(subTotal, 'f', 2, 64), 64)
+	subTotal, _ = strconv.ParseFloat(strconv.FormatFloat(subTotal, 'f', 5, 64), 64)
 	b.detalle.SubTotal = subTotal
 	return b
 }
@@ -448,5 +447,5 @@ func (b *DetalleBuilder) WithNumeroImei(numeroImei *string) *DetalleBuilder {
 
 // Build finaliza la construcción del detalle retornando la interfaz opaca.
 func (b *DetalleBuilder) Build() FacturaCompraVentaDetalle {
-	return requestWrapper[models_facturas.Detalle]{request: b.detalle}
+	return requestWrapper[documentos.DetalleCompraVenta]{request: b.detalle}
 }

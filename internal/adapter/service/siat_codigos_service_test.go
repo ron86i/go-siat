@@ -15,7 +15,7 @@ import (
 
 	"github.com/ron86i/go-siat"
 
-	"github.com/ron86i/go-siat/internal/core/domain/facturacion/codigos"
+	"github.com/ron86i/go-siat/internal/core/domain/siat/codigos"
 	"github.com/stretchr/testify/assert"
 )
 

@@ -3,7 +3,7 @@ package models
 import (
 	"time"
 
-	"github.com/ron86i/go-siat/internal/core/domain/facturacion/operaciones"
+	"github.com/ron86i/go-siat/internal/core/domain/siat/operaciones"
 )
 
 type operacionesNamespace struct{}
