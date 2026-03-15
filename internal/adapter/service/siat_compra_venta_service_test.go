@@ -15,7 +15,6 @@ import (
 
 	"github.com/joho/godotenv"
 	"github.com/ron86i/go-siat"
-	"github.com/ron86i/go-siat/internal/core/domain/facturacion/compra_venta"
 	"github.com/ron86i/go-siat/pkg/config"
 	"github.com/ron86i/go-siat/pkg/models"
 	"github.com/ron86i/go-siat/pkg/models/facturas"
@@ -56,11 +55,11 @@ func TestSiatCompraVentaService_RecepcionAnexos(t *testing.T) {
 		WithCodigoSucursal(0).
 		WithCuis(cuis.Body.Content.RespuestaCuis.Codigo).
 		WithNit(nit).
-		WithCuf("D5340CCDF031F0CFDBF6C8DEAD9D2DDD65A06606A19F03592115AAF74").
-		AddAnexo(compra_venta.VentaAnexo{
-			Codigo:         "1",
-			CodigoProducto: "86111",
-		}).
+		WithCuf("D5340CCDF031F0CFDB...").
+		AddAnexo(models.CompraVenta().NewVentaAnexoBuilder().
+			WithCodigo("1").
+			WithCodigoProducto("86111").
+			Build()).
 		Build()
 
 	resp, err := serviceCompraVenta.RecepcionAnexos(context.Background(), config, req)
@@ -187,6 +186,7 @@ func TestSiatCompraVentaService_RecepcionMasivaFactura(t *testing.T) {
 	var tarBuf bytes.Buffer
 	tw := tar.NewWriter(&tarBuf)
 	fechaEmision := time.Now()
+	codigoPuntoVenta := 0
 	for i := 1; i <= 5; i++ {
 		nombreRazonSocial := "JUAN PEREZ"
 		// Para masiva debe ser emisión Masiva (3)
@@ -201,7 +201,7 @@ func TestSiatCompraVentaService_RecepcionMasivaFactura(t *testing.T) {
 			WithCufd(cufd.Body.Content.RespuestaCufd.Codigo).
 			WithCodigoSucursal(0).
 			WithDireccion("ESQUINA AVENIDA LA PAZ").
-			WithCodigoPuntoVenta(0).
+			WithCodigoPuntoVenta(&codigoPuntoVenta).
 			WithFechaEmision(fechaEmision).
 			WithNombreRazonSocial(&nombreRazonSocial).
 			WithCodigoTipoDocumentoIdentidad(1).
@@ -220,7 +220,7 @@ func TestSiatCompraVentaService_RecepcionMasivaFactura(t *testing.T) {
 
 		detalle := facturas.NewFacturaCompraVentaDetalleBuilder().
 			WithActividadEconomica("477300").
-			WithCodigoProductoSin("622539").
+			WithCodigoProductoSin(622539).
 			WithCodigoProducto("abc123").
 			WithDescripcion("GASA").
 			WithCantidad(1).
@@ -372,6 +372,7 @@ func TestSiatCompraVentaService_RecepcionPaqueteFactura(t *testing.T) {
 	var tarBuf bytes.Buffer
 	tw := tar.NewWriter(&tarBuf)
 	fechaEmision := time.Now().Truncate(time.Millisecond)
+	codigoPuntoVenta := 0
 	for i := 1; i <= 5; i++ {
 		cuf, _ := utils.GenerarCUF(nit, fechaEmision, 0, codModalidad, facturas.EmisionOffline, 1, 1, i, 0, cufd.Body.Content.RespuestaCufd.CodigoControl)
 		nombreRazonSocial := "JUAN PEREZ"
@@ -384,7 +385,7 @@ func TestSiatCompraVentaService_RecepcionPaqueteFactura(t *testing.T) {
 			WithCufd(cufd.Body.Content.RespuestaCufd.Codigo).
 			WithCodigoSucursal(0).
 			WithDireccion("ESQUINA AVENIDA LA PAZ").
-			WithCodigoPuntoVenta(0).
+			WithCodigoPuntoVenta(&codigoPuntoVenta).
 			WithFechaEmision(fechaEmision).
 			WithNombreRazonSocial(&nombreRazonSocial).
 			WithCodigoTipoDocumentoIdentidad(1).
@@ -403,7 +404,7 @@ func TestSiatCompraVentaService_RecepcionPaqueteFactura(t *testing.T) {
 
 		detalle := facturas.NewFacturaCompraVentaDetalleBuilder().
 			WithActividadEconomica("477300").
-			WithCodigoProductoSin("622539").
+			WithCodigoProductoSin(622539).
 			WithCodigoProducto("abc123").
 			WithDescripcion("GASA").
 			WithCantidad(1).
@@ -585,9 +586,9 @@ func TestSiatCompraVentaService_ReversionAnulacionFactura(t *testing.T) {
 	log.Printf("Respuesta SIAT: %+v", resp.Body.Content)
 }
 
-// TestSiatCompraVentaService_RecepcionFactura valida el flujo técnico de emisión de una factura individual.
+// TestSiatCompraVentaService_RecepcionFacturaCompraVenta valida el flujo técnico de emisión de una factura individual.
 // Proceso: Construcción -> Firmado XML -> Compresión Gzip -> Codificación Base64 -> Envío SOAP.
-func TestSiatCompraVentaService_RecepcionFactura(t *testing.T) {
+func TestSiatCompraVentaService_RecepcionFacturaCompraVenta(t *testing.T) {
 	godotenv.Load(".env")
 
 	codModalidad, _ := utils.ParseIntSafe(os.Getenv("SIAT_CODIGO_MODALIDAD"))
@@ -634,6 +635,7 @@ func TestSiatCompraVentaService_RecepcionFactura(t *testing.T) {
 	}
 
 	nombreRazonSocial := "JUAN PEREZ"
+	codigoPuntoVenta := 0
 	// Crear objeto de factura usando el nuevo paquete facturas
 	cabecera := facturas.NewFacturaCompraVentaCabeceraBuilder().
 		WithNitEmisor(nit).
@@ -644,7 +646,7 @@ func TestSiatCompraVentaService_RecepcionFactura(t *testing.T) {
 		WithCufd(cufd.Body.Content.RespuestaCufd.Codigo).
 		WithCodigoSucursal(0).
 		WithDireccion("ESQUINA AVENIDA LA PAZ").
-		WithCodigoPuntoVenta(0).
+		WithCodigoPuntoVenta(&codigoPuntoVenta).
 		WithFechaEmision(fechaEmision).
 		WithNombreRazonSocial(&nombreRazonSocial).
 		WithCodigoTipoDocumentoIdentidad(1).
@@ -663,7 +665,7 @@ func TestSiatCompraVentaService_RecepcionFactura(t *testing.T) {
 
 	detalle := facturas.NewFacturaCompraVentaDetalleBuilder().
 		WithActividadEconomica("477300").
-		WithCodigoProductoSin("622539").
+		WithCodigoProductoSin(622539).
 		WithCodigoProducto("abc123").
 		WithDescripcion("GASA").
 		WithCantidad(1).
@@ -783,4 +785,281 @@ func TestSiatCompraVentaService_AnulacionFactura(t *testing.T) {
 
 	assert.NotNil(t, resp)
 	log.Printf("Respuesta Anulación SIAT: %+v", resp.Body.Content)
+}
+
+// TestSiatCompraVentaService_RecepcionFacturaCompraVentaTasas valida el envío de una factura compra-venta
+// con tasas (codigoDocumentoSector=41). Solo difiere del test normal en el builder de factura
+// y el código de sector.
+func TestSiatCompraVentaService_RecepcionFacturaCompraVentaTasas(t *testing.T) {
+	godotenv.Load(".env")
+
+	codModalidad, _ := utils.ParseIntSafe(os.Getenv("SIAT_CODIGO_MODALIDAD"))
+	nit, _ := utils.ParseInt64Safe(os.Getenv("SIAT_NIT"))
+	codAmbiente, _ := utils.ParseIntSafe(os.Getenv("SIAT_CODIGO_AMBIENTE"))
+	config := config.Config{Token: os.Getenv("SIAT_TOKEN")}
+
+	client := &http.Client{Transport: &http.Transport{Proxy: http.ProxyFromEnvironment}}
+	siatClient, _ := siat.New(os.Getenv("SIAT_URL"), client)
+	serviceCodigos := siatClient.Codigos()
+
+	cuisReq := models.Codigos().NewCuisBuilder().
+		WithCodigoAmbiente(codAmbiente).
+		WithCodigoModalidad(codModalidad).
+		WithCodigoSistema(os.Getenv("SIAT_CODIGO_SISTEMA")).
+		WithNit(nit).
+		Build()
+
+	cuis, err := serviceCodigos.SolicitudCuis(context.Background(), config, cuisReq)
+	if err != nil {
+		t.Fatalf("error CUIS: %v", err)
+	}
+
+	cufdReq := models.Codigos().NewCufdBuilder().
+		WithCodigoAmbiente(codAmbiente).
+		WithCodigoModalidad(codModalidad).
+		WithCodigoSistema(os.Getenv("SIAT_CODIGO_SISTEMA")).
+		WithNit(nit).
+		WithCuis(cuis.Body.Content.RespuestaCuis.Codigo).
+		Build()
+
+	cufd, err := serviceCodigos.SolicitudCufd(context.Background(), config, cufdReq)
+	if err != nil {
+		t.Fatalf("error CUFD: %v", err)
+	}
+
+	serviceCompraVenta := siatClient.CompraVenta()
+
+	fechaEmision := time.Now()
+	cuf, err := utils.GenerarCUF(nit, fechaEmision, 0, codModalidad, 1, 1, 41, 1, 0, cufd.Body.Content.RespuestaCufd.CodigoControl)
+	if err != nil {
+		t.Fatalf("error al generar CUF: %v", err)
+	}
+
+	nombreRazonSocial := "JUAN PEREZ"
+	codigoPuntoVenta := 0
+	// En tasas (sector 41), montoTasa se reporta en cabecera por separado.
+	// montoTotal = suma de subTotales del detalle (sin tasa).
+	// El monto que el cliente paga efectivamente = montoTotal + montoTasa.
+	precioBase := 90.00
+	montoTasa := 10.00
+
+	cabecera := facturas.NewFacturaCompraVentaTasasCabeceraBuilder().
+		WithNitEmisor(nit).
+		WithRazonSocialEmisor("Ronaldo Rua").
+		WithMunicipio("Tarija").
+		WithNumeroFactura(1).
+		WithCuf(cuf).
+		WithCufd(cufd.Body.Content.RespuestaCufd.Codigo).
+		WithCodigoSucursal(0).
+		WithDireccion("ESQUINA AVENIDA LA PAZ").
+		WithCodigoPuntoVenta(&codigoPuntoVenta).
+		WithFechaEmision(fechaEmision).
+		WithNombreRazonSocial(&nombreRazonSocial).
+		WithCodigoTipoDocumentoIdentidad(1).
+		WithNumeroDocumento("5115889").
+		WithCodigoCliente("1").
+		WithCodigoMetodoPago(1).
+		WithMontoTotal(precioBase).                      // = suma subTotales del detalle (sin tasa)
+		WithMontoTotalSujetoIva(precioBase - montoTasa). // montoTotal - montoTasa = 80.00
+		WithCodigoMoneda(1).
+		WithTipoCambio(1).
+		WithMontoTotalMoneda(precioBase). // en moneda de la factura
+		WithMontoTasa(&montoTasa).        // campo exclusivo tasas, reportado aparte
+		WithLeyenda("Ley N° 453: Tienes derecho a recibir información...").
+		WithUsuario("usuario").
+		WithCodigoDocumentoSector(41).
+		Build()
+
+	detalle := facturas.NewFacturaCompraVentaTasasDetalleBuilder().
+		WithActividadEconomica("477300").
+		WithCodigoProductoSin(622539).
+		WithCodigoProducto("abc123").
+		WithDescripcion("GASA ESTERIL").
+		WithCantidad(1).
+		WithUnidadMedida(1).
+		WithPrecioUnitario(precioBase).
+		WithSubTotal(precioBase). // subTotal no incluye la tasa (va en cabecera)
+		Build()
+
+	factura := facturas.NewFacturaCompraVentaTasasBuilder().
+		WithModalidad(facturas.ModalidadElectronica).
+		WithCabecera(cabecera).
+		AddDetalle(detalle).
+		Build()
+
+	xmlData, _ := xml.Marshal(factura)
+	signedXML, err := utils.SignXML(xmlData, "key.pem", "cert.crt")
+	if err != nil {
+		t.Fatalf("error firmando XML: %v", err)
+	}
+
+	hashString, encodedArchivo, err := utils.CompressAndHash(signedXML)
+	if err != nil {
+		t.Fatalf("error preparando archivo: %v", err)
+	}
+
+	req := models.CompraVenta().NewRecepcionFacturaBuilder().
+		WithCodigoAmbiente(codAmbiente).
+		WithCodigoModalidad(codModalidad).
+		WithCodigoSistema(os.Getenv("SIAT_CODIGO_SISTEMA")).
+		WithNit(nit).
+		WithCodigoSucursal(0).
+		WithCodigoDocumentoSector(41).
+		WithCodigoEmision(1).
+		WithCodigoPuntoVenta(0).
+		WithCufd(cufd.Body.Content.RespuestaCufd.Codigo).
+		WithCuis(cuis.Body.Content.RespuestaCuis.Codigo).
+		WithTipoFacturaDocumento(1).
+		WithArchivo(encodedArchivo).
+		WithFechaEnvio(fechaEmision).
+		WithHashArchivo(hashString).
+		Build()
+
+	resp, err := serviceCompraVenta.RecepcionFactura(context.Background(), config, req)
+	if err != nil {
+		t.Fatalf("error en solicitud: %v", err)
+	}
+
+	assert.NotNil(t, resp)
+	log.Printf("Respuesta SIAT Tasas: %+v", resp.Body.Content)
+}
+
+// TestSiatCompraVentaService_RecepcionFacturaCompraVentaBonificaciones valida el envío de una factura
+// compra-venta con bonificaciones (codigoDocumentoSector=35). Solo difiere del test normal
+// en el builder de factura y el código de sector.
+func TestSiatCompraVentaService_RecepcionFacturaCompraVentaBonificaciones(t *testing.T) {
+	godotenv.Load(".env")
+
+	codModalidad, _ := utils.ParseIntSafe(os.Getenv("SIAT_CODIGO_MODALIDAD"))
+	nit, _ := utils.ParseInt64Safe(os.Getenv("SIAT_NIT"))
+	codAmbiente, _ := utils.ParseIntSafe(os.Getenv("SIAT_CODIGO_AMBIENTE"))
+	config := config.Config{Token: os.Getenv("SIAT_TOKEN")}
+
+	client := &http.Client{Transport: &http.Transport{Proxy: http.ProxyFromEnvironment}}
+	siatClient, _ := siat.New(os.Getenv("SIAT_URL"), client)
+	serviceCodigos := siatClient.Codigos()
+
+	cuisReq := models.Codigos().NewCuisBuilder().
+		WithCodigoAmbiente(codAmbiente).
+		WithCodigoModalidad(codModalidad).
+		WithCodigoSistema(os.Getenv("SIAT_CODIGO_SISTEMA")).
+		WithNit(nit).
+		Build()
+
+	cuis, err := serviceCodigos.SolicitudCuis(context.Background(), config, cuisReq)
+	if err != nil {
+		t.Fatalf("error CUIS: %v", err)
+	}
+
+	cufdReq := models.Codigos().NewCufdBuilder().
+		WithCodigoAmbiente(codAmbiente).
+		WithCodigoModalidad(codModalidad).
+		WithCodigoSistema(os.Getenv("SIAT_CODIGO_SISTEMA")).
+		WithNit(nit).
+		WithCuis(cuis.Body.Content.RespuestaCuis.Codigo).
+		Build()
+
+	cufd, err := serviceCodigos.SolicitudCufd(context.Background(), config, cufdReq)
+	if err != nil {
+		t.Fatalf("error CUFD: %v", err)
+	}
+
+	serviceCompraVenta := siatClient.CompraVenta()
+
+	fechaEmision := time.Now()
+	cuf, err := utils.GenerarCUF(nit, fechaEmision, 0, codModalidad, 1, 1, 35, 1, 0, cufd.Body.Content.RespuestaCufd.CodigoControl)
+	if err != nil {
+		t.Fatalf("error al generar CUF: %v", err)
+	}
+
+	nombreRazonSocial := "JUAN PEREZ"
+	codigoPuntoVenta := 0
+	// DescuentoAdicional y MontoDescuento reflejan la bonificación (sector 35).
+	// El SIAT requiere que el montoTotal refleje el monto NETO (precio - descuento).
+	precioUnitario := 100.00
+	descuentoItem := 10.00                      // bonificación por ítem (10%)
+	descuentoAdicional := 5.00                  // descuento comercial adicional en cabecera
+	subTotal := precioUnitario - descuentoItem  // 90.00
+	montoTotal := subTotal - descuentoAdicional // 85.00
+
+	cabecera := facturas.NewFacturaCompraVentaBonCabeceraBuilder().
+		WithNitEmisor(nit).
+		WithRazonSocialEmisor("Ronaldo Rua").
+		WithMunicipio("Tarija").
+		WithNumeroFactura(1).
+		WithCuf(cuf).
+		WithCufd(cufd.Body.Content.RespuestaCufd.Codigo).
+		WithCodigoSucursal(0).
+		WithDireccion("ESQUINA AVENIDA LA PAZ").
+		WithCodigoPuntoVenta(&codigoPuntoVenta).
+		WithFechaEmision(fechaEmision).
+		WithNombreRazonSocial(&nombreRazonSocial).
+		WithCodigoTipoDocumentoIdentidad(1).
+		WithNumeroDocumento("5115889").
+		WithCodigoCliente("1").
+		WithCodigoMetodoPago(1).
+		WithMontoTotal(montoTotal).
+		WithMontoTotalSujetoIva(montoTotal).
+		WithCodigoMoneda(1).
+		WithTipoCambio(1).
+		WithMontoTotalMoneda(montoTotal).
+		WithDescuentoAdicional(&descuentoAdicional). // descuento comercial de cabecera
+		WithLeyenda("Ley N° 453: Tienes derecho a recibir información...").
+		WithUsuario("usuario").
+		WithCodigoDocumentoSector(35).
+		Build()
+
+	detalle := facturas.NewFacturaCompraVentaBonDetalleBuilder().
+		WithActividadEconomica("477300").
+		WithCodigoProductoSin(622539).
+		WithCodigoProducto("abc123").
+		WithDescripcion("GASA ESTERIL").
+		WithCantidad(1).
+		WithUnidadMedida(1).
+		WithPrecioUnitario(precioUnitario).
+		WithMontoDescuento(&descuentoItem). // bonificación por ítem
+		WithSubTotal(subTotal).
+		Build()
+
+	factura := facturas.NewFacturaCompraVentaBonBuilder().
+		WithModalidad(facturas.ModalidadElectronica).
+		WithCabecera(cabecera).
+		AddDetalle(detalle).
+		Build()
+
+	xmlData, _ := xml.Marshal(factura)
+	signedXML, err := utils.SignXML(xmlData, "key.pem", "cert.crt")
+	if err != nil {
+		t.Fatalf("error firmando XML: %v", err)
+	}
+
+	hashString, encodedArchivo, err := utils.CompressAndHash(signedXML)
+	if err != nil {
+		t.Fatalf("error preparando archivo: %v", err)
+	}
+
+	req := models.CompraVenta().NewRecepcionFacturaBuilder().
+		WithCodigoAmbiente(codAmbiente).
+		WithCodigoModalidad(codModalidad).
+		WithCodigoSistema(os.Getenv("SIAT_CODIGO_SISTEMA")).
+		WithNit(nit).
+		WithCodigoSucursal(0).
+		WithCodigoDocumentoSector(35).
+		WithCodigoEmision(1).
+		WithCodigoPuntoVenta(0).
+		WithCufd(cufd.Body.Content.RespuestaCufd.Codigo).
+		WithCuis(cuis.Body.Content.RespuestaCuis.Codigo).
+		WithTipoFacturaDocumento(1).
+		WithArchivo(encodedArchivo).
+		WithFechaEnvio(fechaEmision).
+		WithHashArchivo(hashString).
+		Build()
+
+	resp, err := serviceCompraVenta.RecepcionFactura(context.Background(), config, req)
+	if err != nil {
+		t.Fatalf("error en solicitud: %v", err)
+	}
+
+	assert.NotNil(t, resp)
+	log.Printf("Respuesta SIAT Bonificaciones: %+v", resp.Body.Content)
 }

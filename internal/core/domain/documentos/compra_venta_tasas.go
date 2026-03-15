@@ -1,4 +1,4 @@
-package models_facturas
+package documentos
 
 import (
 	"encoding/xml"
@@ -6,17 +6,21 @@ import (
 	"github.com/ron86i/go-siat/internal/core/domain/datatype"
 )
 
-// FacturaCompraVenta representa la estructura completa de una factura de compra-venta para el SIAT.
-type FacturaCompraVenta struct {
-	XMLName           xml.Name  `json:"-"`
-	XmlnsXsi          string    `xml:"xmlns:xsi,attr" json:"-"`
-	XsiSchemaLocation string    `xml:"xsi:noNamespaceSchemaLocation,attr" json:"-"`
-	Cabecera          Cabecera  `xml:"cabecera" json:"cabecera"`
-	Detalle           []Detalle `xml:"detalle" json:"detalle"`
+// FacturaCompraVentaTasas representa la factura de compra-venta con tasas (sector 41).
+// Diferencias respecto a FacturaCompraVenta:
+//   - Agrega MontoTasa (nillable) en la cabecera
+//   - CodigoPuntoVenta es nillable
+//   - CodigoProductoSin en el detalle es integer (no string)
+type FacturaCompraVentaTasas struct {
+	XMLName           xml.Name                    `json:"-"`
+	XmlnsXsi          string                      `xml:"xmlns:xsi,attr" json:"-"`
+	XsiSchemaLocation string                      `xml:"xsi:noNamespaceSchemaLocation,attr" json:"-"`
+	Cabecera          CabeceraCompraVentaTasas    `xml:"cabecera" json:"cabecera"`
+	Detalle           []DetalleCompraVentaTasas   `xml:"detalle" json:"detalle"`
 }
 
-// Cabecera contiene la información general y del cliente de la factura.
-type Cabecera struct {
+// CabeceraCompraVentaTasas contiene la información general de la factura de tasas.
+type CabeceraCompraVentaTasas struct {
 	NitEmisor                    int64                     `xml:"nitEmisor" json:"nitEmisor"`
 	RazonSocialEmisor            string                    `xml:"razonSocialEmisor" json:"razonSocialEmisor"`
 	Municipio                    string                    `xml:"municipio" json:"municipio"`
@@ -26,7 +30,7 @@ type Cabecera struct {
 	Cufd                         string                    `xml:"cufd" json:"cufd"`
 	CodigoSucursal               int                       `xml:"codigoSucursal" json:"codigoSucursal"`
 	Direccion                    string                    `xml:"direccion" json:"direccion"`
-	CodigoPuntoVenta             int                       `xml:"codigoPuntoVenta" json:"codigoPuntoVenta"`
+	CodigoPuntoVenta             datatype.Nilable[int]     `xml:"codigoPuntoVenta" json:"codigoPuntoVenta"`
 	FechaEmision                 datatype.TimeSiat         `xml:"fechaEmision" json:"fechaEmision"`
 	NombreRazonSocial            datatype.Nilable[string]  `xml:"nombreRazonSocial" json:"nombreRazonSocial"`
 	CodigoTipoDocumentoIdentidad int                       `xml:"codigoTipoDocumentoIdentidad" json:"codigoTipoDocumentoIdentidad"`
@@ -41,6 +45,7 @@ type Cabecera struct {
 	TipoCambio                   float64                   `xml:"tipoCambio" json:"tipoCambio"`
 	MontoTotalMoneda             float64                   `xml:"montoTotalMoneda" json:"montoTotalMoneda"`
 	MontoGiftCard                datatype.Nilable[float64] `xml:"montoGiftCard" json:"montoGiftCard"`
+	MontoTasa                    datatype.Nilable[float64] `xml:"montoTasa" json:"montoTasa"`
 	DescuentoAdicional           datatype.Nilable[float64] `xml:"descuentoAdicional" json:"descuentoAdicional"`
 	CodigoExcepcion              datatype.Nilable[int64]   `xml:"codigoExcepcion" json:"codigoExcepcion"`
 	Cafc                         datatype.Nilable[string]  `xml:"cafc" json:"cafc"`
@@ -49,10 +54,11 @@ type Cabecera struct {
 	CodigoDocumentoSector        int                       `xml:"codigoDocumentoSector" json:"codigoDocumentoSector"`
 }
 
-// Detalle representa un ítem o servicio dentro de la factura.
-type Detalle struct {
+// DetalleCompraVentaTasas representa un ítem de la factura de tasas.
+// CodigoProductoSin es integer según el XSD (a diferencia de la normal que es string).
+type DetalleCompraVentaTasas struct {
 	ActividadEconomica string                    `xml:"actividadEconomica" json:"actividadEconomica"`
-	CodigoProductoSin  string                    `xml:"codigoProductoSin" json:"codigoProductoSin"`
+	CodigoProductoSin  int64                     `xml:"codigoProductoSin" json:"codigoProductoSin"`
 	CodigoProducto     string                    `xml:"codigoProducto" json:"codigoProducto"`
 	Descripcion        string                    `xml:"descripcion" json:"descripcion"`
 	Cantidad           float64                   `xml:"cantidad" json:"cantidad"`

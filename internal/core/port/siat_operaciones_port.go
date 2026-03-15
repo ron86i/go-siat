@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/ron86i/go-siat/internal/core/domain/datatype/soap"
-	"github.com/ron86i/go-siat/internal/core/domain/facturacion/operaciones"
+	"github.com/ron86i/go-siat/internal/core/domain/siat/operaciones"
 	"github.com/ron86i/go-siat/pkg/config"
 	"github.com/ron86i/go-siat/pkg/models"
 )

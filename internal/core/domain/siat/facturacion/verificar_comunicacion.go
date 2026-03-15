@@ -1,4 +1,4 @@
-package compra_venta
+package facturacion
 
 import "encoding/xml"
 

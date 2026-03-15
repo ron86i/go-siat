@@ -3,7 +3,7 @@ package models
 import (
 	"time"
 
-	"github.com/ron86i/go-siat/internal/core/domain/facturacion/codigos"
+	"github.com/ron86i/go-siat/internal/core/domain/siat/codigos"
 )
 
 // --- Interfaces opacas para restringir el acceso a los atributos ---

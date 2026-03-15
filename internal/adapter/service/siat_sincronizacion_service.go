@@ -10,7 +10,7 @@ import (
 	"net/http"
 
 	"github.com/ron86i/go-siat/internal/core/domain/datatype/soap"
-	"github.com/ron86i/go-siat/internal/core/domain/facturacion/sincronizacion"
+	"github.com/ron86i/go-siat/internal/core/domain/siat/sincronizacion"
 	"github.com/ron86i/go-siat/internal/core/port"
 	"github.com/ron86i/go-siat/pkg/config"
 	"github.com/ron86i/go-siat/pkg/models"

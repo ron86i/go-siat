@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/ron86i/go-siat/internal/core/domain/datatype/soap"
-	"github.com/ron86i/go-siat/internal/core/domain/facturacion/codigos"
+	"github.com/ron86i/go-siat/internal/core/domain/siat/codigos"
 	"github.com/ron86i/go-siat/pkg/config"
 	"github.com/ron86i/go-siat/pkg/models"
 )
@@ -32,5 +32,5 @@ type SiatCodigosService interface {
 	VerificarNit(ctx context.Context, config config.Config, req models.VerificarNit) (*soap.EnvelopeResponse[codigos.VerificarNitResponse], error)
 
 	// VerificarComunicacion realiza una prueba de conectividad con el servicio de códigos del SIAT.
-	VerificarComunicacion(ctx context.Context, config config.Config, req models.VerificarComunicacionCompraVenta) (*soap.EnvelopeResponse[codigos.VerificarComunicacionResponse], error)
+	VerificarComunicacion(ctx context.Context, config config.Config, req models.VerificarComunicacionCodigos) (*soap.EnvelopeResponse[codigos.VerificarComunicacionResponse], error)
 }

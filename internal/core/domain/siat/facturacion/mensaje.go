@@ -1,4 +1,4 @@
-package compra_venta
+package facturacion
 
 // MensajeServicio representa una estructura de notificación o error devuelta por los servicios del SIAT.
 // Contiene un código identificador y una descripción detallada que permite entender el resultado de una operación.
