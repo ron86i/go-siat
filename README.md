@@ -13,7 +13,7 @@
 </h1>
 
 <p align="center">
-  <em><b>go-siat</b> es un SDK profesional desarrollado en Go, diseñado para simplificar la integración con los servicios web SOAP del <b>SIAT (Sistema de Facturación de Impuestos Nacionales de Bolivia)</b>.</em>
+  <em><b>go-siat</b> es un SDK profesional desarrollado en Go, diseñado para simplificar la integración con los servicios web SOAP del <b>SIAT (Sistema Integrado de Administración Tributaria)</b>.</em>
 </p>
 
 ## 💡¿Por qué go-siat?
