@@ -9,27 +9,40 @@ import (
 // --- Interfaces opacas para restringir el acceso a los atributos ---
 
 // VerificarComunicacionCodigos representa una solicitud para verificar la comunicación con el SIAT.
-type VerificarComunicacionCodigos interface{}
+type VerificarComunicacionCodigos struct {
+	requestWrapper[codigos.VerificarComunicacion]
+}
 
 // VerificarNit representa una solicitud para validar un NIT.
-type VerificarNit interface{}
+type VerificarNit struct {
+	requestWrapper[codigos.VerificarNit]
+}
 
 // Cuis representa una solicitud para el Código Único de Inicio de Sistemas.
-type Cuis interface{}
+type Cuis struct {
+	requestWrapper[codigos.Cuis]
+}
 
 // Cufd representa una solicitud para el Código Único de Facturación Diaria.
-type Cufd interface{}
+type Cufd struct {
+	requestWrapper[codigos.Cufd]
+}
 
 // CuisMasivo representa una solicitud masiva de CUIS.
-type CuisMasivo interface{}
+type CuisMasivo struct {
+	requestWrapper[codigos.CuisMasivo]
+}
 
 // CufdMasivo representa una solicitud masiva de CUFD.
-type CufdMasivo interface{}
+type CufdMasivo struct {
+	requestWrapper[codigos.CufdMasivo]
+}
 
 // NotificaCertificadoRevocado representa una notificación de certificado revocado.
-type NotificaCertificadoRevocado interface{}
+type NotificaCertificadoRevocado struct {
+	requestWrapper[codigos.NotificaCertificadoRevocado]
+}
 
-// requestWrapper satisface todas estas interfaces mediante el método commonRequest() en common.go
 type codigosNamespace struct{}
 
 // Codigos expone constructores de solicitudes para el módulo de Gestión de Códigos del SIAT.
@@ -86,7 +99,7 @@ func (b *VerificarNitBuilder) WithNitParaVerificacion(nitParaVerificacion int64)
 
 // Build retorna la solicitud de verificación de NIT lista para ser enviada.
 func (b *VerificarNitBuilder) Build() VerificarNit {
-	return requestWrapper[codigos.VerificarNit]{request: b.request}
+	return VerificarNit{requestWrapper[codigos.VerificarNit]{request: b.request}}
 }
 
 // NewCuisBuilder inicia la construcción de una solicitud para el Código Único de Inicio de Sistemas.
@@ -133,7 +146,7 @@ func (b *CuisBuilder) WithNit(nit int64) *CuisBuilder {
 
 // Build entrega el objeto Cuis configurado.
 func (b *CuisBuilder) Build() Cuis {
-	return requestWrapper[codigos.Cuis]{request: b.request}
+	return Cuis{requestWrapper[codigos.Cuis]{request: b.request}}
 }
 
 // NewCufdBuilder inicia la construcción de una solicitud para el Código Único de Facturación Diaria.
@@ -185,7 +198,7 @@ func (b *CufdBuilder) WithNit(nit int64) *CufdBuilder {
 
 // Build retorna el objeto Cufd configurado.
 func (b *CufdBuilder) Build() Cufd {
-	return requestWrapper[codigos.Cufd]{request: b.request}
+	return Cufd{requestWrapper[codigos.Cufd]{request: b.request}}
 }
 
 // NewCuisMasivoBuilder inicia la construcción de una solicitud masiva de CUIS.
@@ -227,7 +240,7 @@ func (b *CuisMasivoBuilder) WithDatosSolicitud(datosSolicitud []codigos.Solicitu
 
 // Build retorna el objeto CuisMasivo configurado.
 func (b *CuisMasivoBuilder) Build() CuisMasivo {
-	return requestWrapper[codigos.CuisMasivo]{request: b.request}
+	return CuisMasivo{requestWrapper[codigos.CuisMasivo]{request: b.request}}
 }
 
 // NewCufdMasivoBuilder inicia la construcción de una solicitud masiva de CUFD.
@@ -269,7 +282,7 @@ func (b *CufdMasivoBuilder) WithDatosSolicitud(datosSolicitud []codigos.Solicitu
 
 // Build retorna el objeto CufdMasivo configurado.
 func (b *CufdMasivoBuilder) Build() CufdMasivo {
-	return requestWrapper[codigos.CufdMasivo]{request: b.request}
+	return CufdMasivo{requestWrapper[codigos.CufdMasivo]{request: b.request}}
 }
 
 // NewNotificaCertificadoRevocadoBuilder inicia la construcción de una solicitud para notificar un certificado revocado.
@@ -326,7 +339,7 @@ func (b *NotificaCertificadoRevocadoBuilder) WithFechaRevocacion(fechaRevocacion
 
 // Build retorna el objeto NotificaCertificadoRevocado configurado.
 func (b *NotificaCertificadoRevocadoBuilder) Build() NotificaCertificadoRevocado {
-	return requestWrapper[codigos.NotificaCertificadoRevocado]{request: b.request}
+	return NotificaCertificadoRevocado{requestWrapper[codigos.NotificaCertificadoRevocado]{request: b.request}}
 }
 
 // NewVerificarComunicacionCodigosBuilder inicia la construcción de una prueba de conexión.
@@ -343,5 +356,5 @@ type VerificarComunicacionCodigosBuilder struct {
 
 // Build retorna el objeto de verificación configurado.
 func (b *VerificarComunicacionCodigosBuilder) Build() VerificarComunicacionCodigos {
-	return requestWrapper[codigos.VerificarComunicacion]{request: b.request}
+	return VerificarComunicacionCodigos{requestWrapper[codigos.VerificarComunicacion]{request: b.request}}
 }

@@ -10,13 +10,19 @@ import (
 )
 
 // FacturaCompraVentaTasas representa una factura de compra-venta con tasas lista para procesar.
-type FacturaCompraVentaTasas interface{}
+type FacturaCompraVentaTasas struct {
+	requestWrapper[documentos.FacturaCompraVentaTasas]
+}
 
 // FacturaCompraVentaTasasCabecera representa la cabecera de una factura de tasas.
-type FacturaCompraVentaTasasCabecera interface{}
+type FacturaCompraVentaTasasCabecera struct {
+	requestWrapper[documentos.CabeceraCompraVentaTasas]
+}
 
 // FacturaCompraVentaTasasDetalle representa un ítem de detalle de una factura de tasas.
-type FacturaCompraVentaTasasDetalle interface{}
+type FacturaCompraVentaTasasDetalle struct {
+	requestWrapper[documentos.DetalleCompraVentaTasas]
+}
 
 // NewFacturaCompraVentaTasasBuilder inicia la construcción de una factura de compra-venta con tasas.
 func NewFacturaCompraVentaTasasBuilder() *FacturaCompraVentaTasasBuilder {
@@ -64,23 +70,23 @@ func (b *FacturaCompraVentaTasasBuilder) WithModalidad(tipo int) *FacturaCompraV
 
 // WithCabecera asocia la cabecera a la factura.
 func (b *FacturaCompraVentaTasasBuilder) WithCabecera(req FacturaCompraVentaTasasCabecera) *FacturaCompraVentaTasasBuilder {
-	if c := getInternalRequest[documentos.CabeceraCompraVentaTasas](req); c != nil {
-		b.factura.Cabecera = *c
+	if req.request != nil {
+		b.factura.Cabecera = *req.request
 	}
 	return b
 }
 
 // AddDetalle añade un ítem de detalle a la factura.
 func (b *FacturaCompraVentaTasasBuilder) AddDetalle(req FacturaCompraVentaTasasDetalle) *FacturaCompraVentaTasasBuilder {
-	if d := getInternalRequest[documentos.DetalleCompraVentaTasas](req); d != nil {
-		b.factura.Detalle = append(b.factura.Detalle, *d)
+	if req.request != nil {
+		b.factura.Detalle = append(b.factura.Detalle, *req.request)
 	}
 	return b
 }
 
-// Build finaliza la construcción y retorna la interfaz opaca.
+// Build finaliza la construcción y retorna la estructura opaca.
 func (b *FacturaCompraVentaTasasBuilder) Build() FacturaCompraVentaTasas {
-	return requestWrapper[documentos.FacturaCompraVentaTasas]{request: b.factura}
+	return FacturaCompraVentaTasas{requestWrapper[documentos.FacturaCompraVentaTasas]{request: b.factura}}
 }
 
 // --- Builder Cabecera Tasas ---
@@ -272,7 +278,7 @@ func (b *FacturaCompraVentaTasasCabeceraBuilder) WithCodigoDocumentoSector(v int
 	return b
 }
 func (b *FacturaCompraVentaTasasCabeceraBuilder) Build() FacturaCompraVentaTasasCabecera {
-	return requestWrapper[documentos.CabeceraCompraVentaTasas]{request: b.cabecera}
+	return FacturaCompraVentaTasasCabecera{requestWrapper[documentos.CabeceraCompraVentaTasas]{request: b.cabecera}}
 }
 
 // --- Builder Detalle Tasas ---
@@ -346,7 +352,5 @@ func (b *DetalleTasasBuilder) WithNumeroImei(v *string) *DetalleTasasBuilder {
 	return b
 }
 func (b *DetalleTasasBuilder) Build() FacturaCompraVentaTasasDetalle {
-	return requestWrapper[documentos.DetalleCompraVentaTasas]{request: b.detalle}
+	return FacturaCompraVentaTasasDetalle{requestWrapper[documentos.DetalleCompraVentaTasas]{request: b.detalle}}
 }
-
-
