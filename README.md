@@ -36,7 +36,8 @@ Integrarse con los servicios web SOAP del SIAT para la facturación electrónica
 - 📦 **Abstracción SOAP Total**: Gestión transparente de la capa SOAP. El desarrollador interactúa con structs, no con XML.
 - ✍️ **Firma Digital (XMLDSig) Integrada**: Utilidades para firmar facturas automáticamente con su certificado digital.
 - 🚀 **Alto Rendimiento**: Cero dependencias innecesarias, aprovechando la velocidad nativa de Go para la manipulación y compresión de bytes.
-- 🧩 **Modular**: Múltiples servicios (`Codigos`, `Sincronizacion`, `Operaciones`, `CompraVenta`) claramente separados.
+- 🧩 **Modular**: Múltiples servicios (`Codigos`, `Sincronizacion`, `Operaciones`, `CompraVenta`, `Computarizada`) claramente separados.
+- 🏢 **Multi-Sector**: Soporte nativo para diversos documentos sector (Compra y Venta, Hoteles, Duty Free, Hidrocarburos, etc.).
 
 ---
 
@@ -59,6 +60,7 @@ El SDK cubre los servicios críticos del ecosistema SIAT:
 | **Sincronización** | Catálogos de actividades, paramétricas, productos, servicios y documentos sector. |
 | **Operaciones** | Registro/Cierre de Puntos de Venta, Gestión de Eventos Significativos. |
 | **Compra y Venta** | Generación de CUF, Firma Digital XML, Recepción y Anulación de Facturas. |
+| **Computarizada** | Recepción de Facturas y Paquetes para modalidades de facturación computarizada. |
 
 ---
 
@@ -155,7 +157,7 @@ func main() {
 
     // 3. Construir Cabecera y Detalle con el Builder
     nombre := "JUAN PEREZ"
-    cabecera := facturas.NewFacturaCompraVentaCabeceraBuilder().
+    cabecera := facturas.NewCompraVentaCabeceraBuilder().
         WithNitEmisor(nit).
         WithRazonSocialEmisor("Mi Empresa S.R.L.").
         WithNumeroFactura(1).
@@ -167,7 +169,7 @@ func main() {
         WithCodigoDocumentoSector(1).
         Build()
 
-    detalle := facturas.NewFacturaCompraVentaDetalleBuilder().
+    detalle := facturas.NewCompraVentaDetalleBuilder().
         WithActividadEconomica("477300").
         WithCodigoProductoSin("622539").
         WithDescripcion("PRODUCTO DEMO").
@@ -176,7 +178,7 @@ func main() {
         WithSubTotal(100).
         Build()
 
-    factura := facturas.NewFacturaCompraVentaBuilder().
+    factura := facturas.NewCompraVentaBuilder().
         WithCabecera(cabecera).
         AddDetalle(detalle).
         Build()
@@ -187,7 +189,7 @@ func main() {
     hash, archivoBase64, _ := utils.CompressAndHash(signedXML)
 
     // 5. Enviar al SIAT
-    req := models.CompraVenta().NewRecepcionFacturaBuilder().
+    req := models.CompraVenta().NewRecepcionFactura().
         WithCodigoAmbiente(1).
         WithNit(nit).
         WithCufd("TU_CUFD").
@@ -220,6 +222,7 @@ Para una comprensión profunda de cada servicio, los **Tests de Integración** a
 | **Sincronización** | [`siat_sincronizacion_service_test.go`](./internal/adapter/service/siat_sincronizacion_service_test.go) |
 | **Operaciones** | [`siat_operaciones_service_test.go`](./internal/adapter/service/siat_operaciones_service_test.go) |
 | **Compra y Venta** | [`siat_compra_venta_service_test.go`](./internal/adapter/service/siat_compra_venta_service_test.go) |
+| **Computarizada** | [`siat_computarizada_service_test.go`](./internal/adapter/service/siat_computarizada_service_test.go) |
 
 > **Configuración de Ambiente**
 > Antes de ejecutar los tests, asegúrese de crear un archivo `.env` configurado con sus credenciales del ambiente de pruebas del SIAT.

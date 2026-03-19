@@ -22,16 +22,15 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-// TestSiatCompraVentaService_RecepcionAnexos servicio no disponible, falta verificación.
 // TestSiatCompraVentaService_RecepcionAnexos verifica el envío de anexos técnicos para facturas específicas.
 // Valida que el builder construya correctamente la solicitud con todos los campos obligatorios
 // y que el servicio procese la respuesta del SIAT usando el mapeo XML estandarizado.
 func TestSiatCompraVentaService_RecepcionAnexos(t *testing.T) {
 	godotenv.Load(".env")
 
-	codModalidad, _ := utils.ParseIntSafe(os.Getenv("SIAT_CODIGO_MODALIDAD"))
+	codModalidad := siat.ModalidadElectronica
 	nit, _ := utils.ParseInt64Safe(os.Getenv("SIAT_NIT"))
-	codAmbiente, _ := utils.ParseIntSafe(os.Getenv("SIAT_CODIGO_AMBIENTE"))
+	codAmbiente := siat.AmbientePruebas
 	config := config.Config{Token: os.Getenv("SIAT_TOKEN")}
 
 	client := &http.Client{Transport: &http.Transport{Proxy: http.ProxyFromEnvironment}}
@@ -56,7 +55,7 @@ func TestSiatCompraVentaService_RecepcionAnexos(t *testing.T) {
 		WithCuis(cuis.Body.Content.RespuestaCuis.Codigo).
 		WithNit(nit).
 		WithCuf("D5340CCDF031F0CFDB...").
-		AddAnexo(models.CompraVenta().NewVentaAnexoBuilder().
+		AddAnexos(models.CompraVenta().NewVentaAnexoBuilder().
 			WithCodigo("1").
 			WithCodigoProducto("86111").
 			Build()).
@@ -74,9 +73,9 @@ func TestSiatCompraVentaService_RecepcionAnexos(t *testing.T) {
 func TestSiatCompraVentaService_VerificacionEstadoFactura(t *testing.T) {
 	godotenv.Load(".env")
 
-	codModalidad, _ := utils.ParseIntSafe(os.Getenv("SIAT_CODIGO_MODALIDAD"))
+	codModalidad := siat.ModalidadElectronica
 	nit, _ := utils.ParseInt64Safe(os.Getenv("SIAT_NIT"))
-	codAmbiente, _ := utils.ParseIntSafe(os.Getenv("SIAT_CODIGO_AMBIENTE"))
+	codAmbiente := siat.AmbientePruebas
 	config := config.Config{Token: os.Getenv("SIAT_TOKEN")}
 
 	client := &http.Client{Transport: &http.Transport{Proxy: http.ProxyFromEnvironment}}
@@ -148,9 +147,9 @@ func TestSiatCompraVentaService_VerificarComunicacion(t *testing.T) {
 func TestSiatCompraVentaService_RecepcionMasivaFactura(t *testing.T) {
 	godotenv.Load(".env")
 
-	codModalidad, _ := utils.ParseIntSafe(os.Getenv("SIAT_CODIGO_MODALIDAD"))
+	codModalidad := siat.ModalidadElectronica
 	nit, _ := utils.ParseInt64Safe(os.Getenv("SIAT_NIT"))
-	codAmbiente, _ := utils.ParseIntSafe(os.Getenv("SIAT_CODIGO_AMBIENTE"))
+	codAmbiente := siat.AmbientePruebas
 	config := config.Config{Token: os.Getenv("SIAT_TOKEN")}
 
 	siatClient, _ := siat.New(os.Getenv("SIAT_URL"), nil)
@@ -190,9 +189,9 @@ func TestSiatCompraVentaService_RecepcionMasivaFactura(t *testing.T) {
 	for i := 1; i <= 5; i++ {
 		nombreRazonSocial := "JUAN PEREZ"
 		// Para masiva debe ser emisión Masiva (3)
-		cuf, _ := utils.GenerarCUF(nit, fechaEmision, 0, codModalidad, facturas.EmisionMasiva, 1, 1, i, 0, cufd.Body.Content.RespuestaCufd.CodigoControl)
+		cuf, _ := utils.GenerarCUF(nit, fechaEmision, 0, codModalidad, siat.EmisionMasiva, 1, 1, i, 0, cufd.Body.Content.RespuestaCufd.CodigoControl)
 		log.Printf("CUF #%d: %s", i, cuf)
-		cabecera := facturas.NewFacturaCompraVentaCabeceraBuilder().
+		cabecera := facturas.NewCompraVentaCabeceraBuilder().
 			WithNitEmisor(nit).
 			WithRazonSocialEmisor("Ronaldo Rua").
 			WithMunicipio("Tarija").
@@ -218,7 +217,7 @@ func TestSiatCompraVentaService_RecepcionMasivaFactura(t *testing.T) {
 			WithCodigoDocumentoSector(1).
 			Build()
 
-		detalle := facturas.NewFacturaCompraVentaDetalleBuilder().
+		detalle := facturas.NewCompraVentaDetalleBuilder().
 			WithActividadEconomica("477300").
 			WithCodigoProductoSin(622539).
 			WithCodigoProducto("abc123").
@@ -228,9 +227,8 @@ func TestSiatCompraVentaService_RecepcionMasivaFactura(t *testing.T) {
 			WithPrecioUnitario(100).
 			WithSubTotal(100).
 			Build()
-
-		factura := facturas.NewFacturaCompraVentaBuilder().
-			WithModalidad(facturas.ModalidadElectronica).
+		factura := facturas.NewCompraVentaBuilder().
+			WithModalidad(siat.ModalidadElectronica).
 			WithCabecera(cabecera).
 			AddDetalle(detalle).
 			Build()
@@ -257,7 +255,7 @@ func TestSiatCompraVentaService_RecepcionMasivaFactura(t *testing.T) {
 	req := models.CompraVenta().NewRecepcionMasivaFacturaBuilder().
 		WithCodigoAmbiente(codAmbiente).
 		WithCodigoDocumentoSector(1).
-		WithCodigoEmision(facturas.EmisionMasiva).
+		WithCodigoEmision(siat.EmisionMasiva).
 		WithCodigoModalidad(codModalidad).
 		WithCodigoPuntoVenta(0).
 		WithCodigoSistema(os.Getenv("SIAT_CODIGO_SISTEMA")).
@@ -315,7 +313,7 @@ func TestSiatCompraVentaService_ValidacionRecepcionMasivaFactura(t *testing.T) {
 	req := models.CompraVenta().NewValidacionRecepcionMasivaFacturaBuilder().
 		WithCodigoAmbiente(codAmbiente).
 		WithCodigoDocumentoSector(1).
-		WithCodigoEmision(facturas.EmisionMasiva).
+		WithCodigoEmision(siat.EmisionMasiva).
 		WithCodigoModalidad(codModalidad).
 		WithCodigoPuntoVenta(0).
 		WithCodigoSistema(os.Getenv("SIAT_CODIGO_SISTEMA")).
@@ -374,9 +372,9 @@ func TestSiatCompraVentaService_RecepcionPaqueteFactura(t *testing.T) {
 	fechaEmision := time.Now().Truncate(time.Millisecond)
 	codigoPuntoVenta := 0
 	for i := 1; i <= 5; i++ {
-		cuf, _ := utils.GenerarCUF(nit, fechaEmision, 0, codModalidad, facturas.EmisionOffline, 1, 1, i, 0, cufd.Body.Content.RespuestaCufd.CodigoControl)
+		cuf, _ := utils.GenerarCUF(nit, fechaEmision, 0, codModalidad, siat.EmisionOffline, 1, 1, i, 0, cufd.Body.Content.RespuestaCufd.CodigoControl)
 		nombreRazonSocial := "JUAN PEREZ"
-		cabecera := facturas.NewFacturaCompraVentaCabeceraBuilder().
+		cabecera := facturas.NewCompraVentaCabeceraBuilder().
 			WithNitEmisor(nit).
 			WithRazonSocialEmisor("Ronaldo Rua").
 			WithMunicipio("Tarija").
@@ -402,7 +400,7 @@ func TestSiatCompraVentaService_RecepcionPaqueteFactura(t *testing.T) {
 			WithCodigoDocumentoSector(1).
 			Build()
 
-		detalle := facturas.NewFacturaCompraVentaDetalleBuilder().
+		detalle := facturas.NewCompraVentaDetalleBuilder().
 			WithActividadEconomica("477300").
 			WithCodigoProductoSin(622539).
 			WithCodigoProducto("abc123").
@@ -413,8 +411,8 @@ func TestSiatCompraVentaService_RecepcionPaqueteFactura(t *testing.T) {
 			WithSubTotal(100).
 			Build()
 
-		factura := facturas.NewFacturaCompraVentaBuilder().
-			WithModalidad(facturas.ModalidadElectronica).
+		factura := facturas.NewCompraVentaBuilder().
+			WithModalidad(siat.ModalidadElectronica).
 			WithCabecera(cabecera).
 			AddDetalle(detalle).
 			Build()
@@ -445,7 +443,7 @@ func TestSiatCompraVentaService_RecepcionPaqueteFactura(t *testing.T) {
 	req := models.CompraVenta().NewRecepcionPaqueteFacturaBuilder().
 		WithCodigoAmbiente(codAmbiente).
 		WithCodigoDocumentoSector(1).
-		WithCodigoEmision(facturas.EmisionOffline).
+		WithCodigoEmision(siat.EmisionOffline).
 		WithCodigoModalidad(codModalidad).
 		WithCodigoPuntoVenta(0).
 		WithCodigoSistema(os.Getenv("SIAT_CODIGO_SISTEMA")).
@@ -504,7 +502,7 @@ func TestSiatCompraVentaService_ValidacionRecepcionPaqueteFactura(t *testing.T) 
 	req := models.CompraVenta().NewValidacionRecepcionPaqueteFacturaBuilder().
 		WithCodigoAmbiente(codAmbiente).
 		WithCodigoDocumentoSector(1).
-		WithCodigoEmision(facturas.EmisionOffline).
+		WithCodigoEmision(siat.EmisionOffline).
 		WithCodigoModalidad(codModalidad).
 		WithCodigoPuntoVenta(0).
 		WithCodigoSistema(os.Getenv("SIAT_CODIGO_SISTEMA")).
@@ -586,9 +584,9 @@ func TestSiatCompraVentaService_ReversionAnulacionFactura(t *testing.T) {
 	log.Printf("Respuesta SIAT: %+v", resp.Body.Content)
 }
 
-// TestSiatCompraVentaService_RecepcionFacturaCompraVenta valida el flujo técnico de emisión de una factura individual.
+// TestSiatCompraVentaService_RecepcionCompraVenta valida el flujo técnico de emisión de una factura individual.
 // Proceso: Construcción -> Firmado XML -> Compresión Gzip -> Codificación Base64 -> Envío SOAP.
-func TestSiatCompraVentaService_RecepcionFacturaCompraVenta(t *testing.T) {
+func TestSiatCompraVentaService_RecepcionCompraVenta(t *testing.T) {
 	godotenv.Load(".env")
 
 	codModalidad, _ := utils.ParseIntSafe(os.Getenv("SIAT_CODIGO_MODALIDAD"))
@@ -637,7 +635,7 @@ func TestSiatCompraVentaService_RecepcionFacturaCompraVenta(t *testing.T) {
 	nombreRazonSocial := "JUAN PEREZ"
 	codigoPuntoVenta := 0
 	// Crear objeto de factura usando el nuevo paquete facturas
-	cabecera := facturas.NewFacturaCompraVentaCabeceraBuilder().
+	cabecera := facturas.NewCompraVentaCabeceraBuilder().
 		WithNitEmisor(nit).
 		WithRazonSocialEmisor("Ronaldo Rua").
 		WithMunicipio("Tarija").
@@ -663,7 +661,7 @@ func TestSiatCompraVentaService_RecepcionFacturaCompraVenta(t *testing.T) {
 		WithCodigoDocumentoSector(1).
 		Build()
 
-	detalle := facturas.NewFacturaCompraVentaDetalleBuilder().
+	detalle := facturas.NewCompraVentaDetalleBuilder().
 		WithActividadEconomica("477300").
 		WithCodigoProductoSin(622539).
 		WithCodigoProducto("abc123").
@@ -674,8 +672,8 @@ func TestSiatCompraVentaService_RecepcionFacturaCompraVenta(t *testing.T) {
 		WithSubTotal(100).
 		Build()
 
-	factura := facturas.NewFacturaCompraVentaBuilder().
-		WithModalidad(facturas.ModalidadElectronica).
+	factura := facturas.NewCompraVentaBuilder().
+		WithModalidad(siat.ModalidadElectronica).
 		WithCabecera(cabecera).
 		AddDetalle(detalle).
 		Build()
@@ -787,10 +785,10 @@ func TestSiatCompraVentaService_AnulacionFactura(t *testing.T) {
 	log.Printf("Respuesta Anulación SIAT: %+v", resp.Body.Content)
 }
 
-// TestSiatCompraVentaService_RecepcionFacturaCompraVentaTasas valida el envío de una factura compra-venta
+// TestSiatCompraVentaService_RecepcionCompraVentaTasas valida el envío de una factura compra-venta
 // con tasas (codigoDocumentoSector=41). Solo difiere del test normal en el builder de factura
 // y el código de sector.
-func TestSiatCompraVentaService_RecepcionFacturaCompraVentaTasas(t *testing.T) {
+func TestSiatCompraVentaService_RecepcionCompraVentaTasas(t *testing.T) {
 	godotenv.Load(".env")
 
 	codModalidad, _ := utils.ParseIntSafe(os.Getenv("SIAT_CODIGO_MODALIDAD"))
@@ -843,7 +841,7 @@ func TestSiatCompraVentaService_RecepcionFacturaCompraVentaTasas(t *testing.T) {
 	precioBase := 90.00
 	montoTasa := 10.00
 
-	cabecera := facturas.NewFacturaCompraVentaTasasCabeceraBuilder().
+	cabecera := facturas.NewCompraVentaTasasCabeceraBuilder().
 		WithNitEmisor(nit).
 		WithRazonSocialEmisor("Ronaldo Rua").
 		WithMunicipio("Tarija").
@@ -870,7 +868,7 @@ func TestSiatCompraVentaService_RecepcionFacturaCompraVentaTasas(t *testing.T) {
 		WithCodigoDocumentoSector(41).
 		Build()
 
-	detalle := facturas.NewFacturaCompraVentaTasasDetalleBuilder().
+	detalle := facturas.NewCompraVentaTasasDetalleBuilder().
 		WithActividadEconomica("477300").
 		WithCodigoProductoSin(622539).
 		WithCodigoProducto("abc123").
@@ -881,8 +879,8 @@ func TestSiatCompraVentaService_RecepcionFacturaCompraVentaTasas(t *testing.T) {
 		WithSubTotal(precioBase). // subTotal no incluye la tasa (va en cabecera)
 		Build()
 
-	factura := facturas.NewFacturaCompraVentaTasasBuilder().
-		WithModalidad(facturas.ModalidadElectronica).
+	factura := facturas.NewCompraVentaTasasBuilder().
+		WithModalidad(siat.ModalidadElectronica).
 		WithCabecera(cabecera).
 		AddDetalle(detalle).
 		Build()
@@ -924,10 +922,10 @@ func TestSiatCompraVentaService_RecepcionFacturaCompraVentaTasas(t *testing.T) {
 	log.Printf("Respuesta SIAT Tasas: %+v", resp.Body.Content)
 }
 
-// TestSiatCompraVentaService_RecepcionFacturaCompraVentaBonificaciones valida el envío de una factura
+// TestSiatCompraVentaService_RecepcionCompraVentaBonificaciones valida el envío de una factura
 // compra-venta con bonificaciones (codigoDocumentoSector=35). Solo difiere del test normal
 // en el builder de factura y el código de sector.
-func TestSiatCompraVentaService_RecepcionFacturaCompraVentaBonificaciones(t *testing.T) {
+func TestSiatCompraVentaService_RecepcionCompraVentaBonificaciones(t *testing.T) {
 	godotenv.Load(".env")
 
 	codModalidad, _ := utils.ParseIntSafe(os.Getenv("SIAT_CODIGO_MODALIDAD"))
@@ -982,7 +980,7 @@ func TestSiatCompraVentaService_RecepcionFacturaCompraVentaBonificaciones(t *tes
 	subTotal := precioUnitario - descuentoItem  // 90.00
 	montoTotal := subTotal - descuentoAdicional // 85.00
 
-	cabecera := facturas.NewFacturaCompraVentaBonificacionesCabeceraBuilder().
+	cabecera := facturas.NewCompraVentaBonificacionesCabeceraBuilder().
 		WithNitEmisor(nit).
 		WithRazonSocialEmisor("Ronaldo Rua").
 		WithMunicipio("Tarija").
@@ -1009,7 +1007,7 @@ func TestSiatCompraVentaService_RecepcionFacturaCompraVentaBonificaciones(t *tes
 		WithCodigoDocumentoSector(35).
 		Build()
 
-	detalle := facturas.NewFacturaCompraVentaBonificacionesDetalleBuilder().
+	detalle := facturas.NewCompraVentaBonificacionesDetalleBuilder().
 		WithActividadEconomica("477300").
 		WithCodigoProductoSin(622539).
 		WithCodigoProducto("abc123").
@@ -1021,8 +1019,8 @@ func TestSiatCompraVentaService_RecepcionFacturaCompraVentaBonificaciones(t *tes
 		WithSubTotal(subTotal).
 		Build()
 
-	factura := facturas.NewFacturaCompraVentaBonificacionesBuilder().
-		WithModalidad(facturas.ModalidadElectronica).
+	factura := facturas.NewCompraVentaBonificacionesBuilder().
+		WithModalidad(siat.ModalidadElectronica).
 		WithCabecera(cabecera).
 		AddDetalle(detalle).
 		Build()

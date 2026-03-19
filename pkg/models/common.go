@@ -16,22 +16,16 @@ func (r requestWrapper[T]) MarshalXML(e *xml.Encoder, start xml.StartElement) er
 	return e.Encode(r.request)
 }
 
-func (r requestWrapper[T]) Internal() *T {
+func (r requestWrapper[T]) internal() *T {
 	return r.request
 }
 
-// GetInternalRequest desempaqueta la estructura de solicitud concreta desde una interfaz opaca.
-// Este método es utilizado internamente por los servicios para acceder a los campos de la solicitud.
-// Soporta tanto envolturas (wrappers) como punteros directos para mayor flexibilidad.
+// GetInternalRequest es un helper para extraer el request interno de un modelo opaco.
+// Aunque es público para permitir su uso desde el paquete de servicios, no se recomienda
+// su uso directo por parte de los usuarios del SDK.
 func GetInternalRequest[T any](req any) *T {
-	if getter, ok := req.(interface{ Internal() *T }); ok {
-		return getter.Internal()
-	}
-	if wrapper, ok := req.(requestWrapper[T]); ok {
-		return wrapper.request
-	}
-	if res, ok := req.(*T); ok {
-		return res
+	if r, ok := req.(interface{ internal() *T }); ok {
+		return r.internal()
 	}
 	return nil
 }

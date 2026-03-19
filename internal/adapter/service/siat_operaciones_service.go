@@ -7,7 +7,6 @@ import (
 	"strings"
 	"time"
 
-	"bytes"
 	"net/http"
 
 	"github.com/ron86i/go-siat/internal/core/domain/datatype/soap"
@@ -22,194 +21,48 @@ type SiatOperacionesService struct {
 	httpClient *http.Client
 }
 
-// ConsultaPuntoVenta implements [port.SiatOperacionesPort].
+// ConsultaPuntoVenta envia una solicitud al SIAT para consultar los puntos de venta registrados.
 func (s *SiatOperacionesService) ConsultaPuntoVenta(ctx context.Context, config config.Config, opaqueReq models.ConsultaPuntoVenta) (*soap.EnvelopeResponse[operaciones.ConsultaPuntoVentaResponse], error) {
-	req := models.GetInternalRequest[operaciones.ConsultaPuntoVenta](opaqueReq)
-	xmlBody, err := buildRequest(req)
-	if err != nil {
-		return nil, err
-	}
-	httpReq, err := http.NewRequestWithContext(ctx, "POST", s.url, bytes.NewReader(xmlBody))
-	if err != nil {
-		return nil, fmt.Errorf("error al crear petición HTTP: %w", err)
-	}
-
-	httpReq.Header.Set("Content-Type", "application/xml")
-	httpReq.Header.Set("apiKey", fmt.Sprintf("TokenApi %s", config.Token))
-
-	resp, err := s.httpClient.Do(httpReq)
-	if err != nil {
-		return nil, fmt.Errorf("error al hacer request HTTP: %w", err)
-	}
-
-	return parseSoapResponse[operaciones.ConsultaPuntoVentaResponse](resp)
+	return performSoapRequest[operaciones.ConsultaPuntoVenta, operaciones.ConsultaPuntoVentaResponse](ctx, s.httpClient, s.url, config.Token, opaqueReq)
 }
 
-// CierreOperacionesSistema implements [port.SiatOperacionesPort].
+// CierreOperacionesSistema envia una solicitud al SIAT para cerrar las operaciones del sistema.
 func (s *SiatOperacionesService) CierreOperacionesSistema(ctx context.Context, config config.Config, opaqueReq models.CierreOperacionesSistema) (*soap.EnvelopeResponse[operaciones.CierreOperacionesSistemaResponse], error) {
-	req := models.GetInternalRequest[operaciones.CierreOperacionesSistema](opaqueReq)
-	xmlBody, err := buildRequest(req)
-	if err != nil {
-		return nil, err
-	}
-	httpReq, err := http.NewRequestWithContext(ctx, "POST", s.url, bytes.NewReader(xmlBody))
-	if err != nil {
-		return nil, fmt.Errorf("error al crear petición HTTP: %w", err)
-	}
-
-	httpReq.Header.Set("Content-Type", "application/xml")
-	httpReq.Header.Set("apiKey", fmt.Sprintf("TokenApi %s", config.Token))
-
-	resp, err := s.httpClient.Do(httpReq)
-	if err != nil {
-		return nil, fmt.Errorf("error al hacer request HTTP: %w", err)
-	}
-
-	return parseSoapResponse[operaciones.CierreOperacionesSistemaResponse](resp)
+	return performSoapRequest[operaciones.CierreOperacionesSistema, operaciones.CierreOperacionesSistemaResponse](ctx, s.httpClient, s.url, config.Token, opaqueReq)
 }
 
-// CierrePuntoVenta implements [port.SiatOperacionesPort].
+// CierrePuntoVenta envia una solicitud al SIAT para cerrar un punto de venta.
 func (s *SiatOperacionesService) CierrePuntoVenta(ctx context.Context, config config.Config, opaqueReq models.CierrePuntoVenta) (*soap.EnvelopeResponse[operaciones.CierrePuntoVentaResponse], error) {
-	req := models.GetInternalRequest[operaciones.CierrePuntoVenta](opaqueReq)
-	xmlBody, err := buildRequest(req)
-	if err != nil {
-		return nil, err
-	}
-
-	httpReq, err := http.NewRequestWithContext(ctx, "POST", s.url, bytes.NewReader(xmlBody))
-	if err != nil {
-		return nil, fmt.Errorf("error al crear petición HTTP: %w", err)
-	}
-
-	httpReq.Header.Set("Content-Type", "application/xml")
-	httpReq.Header.Set("apiKey", fmt.Sprintf("TokenApi %s", config.Token))
-
-	resp, err := s.httpClient.Do(httpReq)
-	if err != nil {
-		return nil, fmt.Errorf("error al hacer request HTTP: %w", err)
-	}
-
-	return parseSoapResponse[operaciones.CierrePuntoVentaResponse](resp)
+	return performSoapRequest[operaciones.CierrePuntoVenta, operaciones.CierrePuntoVentaResponse](ctx, s.httpClient, s.url, config.Token, opaqueReq)
 }
 
-// ConsultaEventosSignificativos implements [port.SiatOperacionesPort].
+// ConsultaEventosSignificativos envia una solicitud al SIAT para consultar los eventos significativos registrados.
 func (s *SiatOperacionesService) ConsultaEventosSignificativos(ctx context.Context, config config.Config, opaqueReq models.ConsultaEventoSignificativo) (*soap.EnvelopeResponse[operaciones.ConsultaEventoSignificativoResponse], error) {
-	req := models.GetInternalRequest[operaciones.ConsultaEventoSignificativo](opaqueReq)
-	xmlBody, err := buildRequest(req)
-	if err != nil {
-		return nil, err
-	}
-	httpReq, err := http.NewRequestWithContext(ctx, "POST", s.url, bytes.NewReader(xmlBody))
-	if err != nil {
-		return nil, fmt.Errorf("error al crear petición HTTP: %w", err)
-	}
-
-	httpReq.Header.Set("Content-Type", "application/xml")
-	httpReq.Header.Set("apiKey", fmt.Sprintf("TokenApi %s", config.Token))
-
-	resp, err := s.httpClient.Do(httpReq)
-	if err != nil {
-		return nil, fmt.Errorf("error al hacer request HTTP: %w", err)
-	}
-
-	return parseSoapResponse[operaciones.ConsultaEventoSignificativoResponse](resp)
+	return performSoapRequest[operaciones.ConsultaEventoSignificativo, operaciones.ConsultaEventoSignificativoResponse](ctx, s.httpClient, s.url, config.Token, opaqueReq)
 }
 
-// RegistroEventosSignificativos implements [port.SiatOperacionesPort].
+// RegistroEventosSignificativos envia una solicitud al SIAT para registrar un evento significativo.
 func (s *SiatOperacionesService) RegistroEventosSignificativos(ctx context.Context, config config.Config, opaqueReq models.RegistroEventoSignificativo) (*soap.EnvelopeResponse[operaciones.RegistroEventoSignificativoResponse], error) {
-	req := models.GetInternalRequest[operaciones.RegistroEventoSignificativo](opaqueReq)
-	xmlBody, err := buildRequest(req)
-	if err != nil {
-		return nil, err
-	}
-	httpReq, err := http.NewRequestWithContext(ctx, "POST", s.url, bytes.NewReader(xmlBody))
-	if err != nil {
-		return nil, err
-	}
-
-	httpReq.Header.Set("Content-Type", "application/xml")
-	httpReq.Header.Set("apiKey", fmt.Sprintf("TokenApi %s", config.Token))
-
-	resp, err := s.httpClient.Do(httpReq)
-	if err != nil {
-		return nil, err
-	}
-
-	return parseSoapResponse[operaciones.RegistroEventoSignificativoResponse](resp)
+	return performSoapRequest[operaciones.RegistroEventoSignificativo, operaciones.RegistroEventoSignificativoResponse](ctx, s.httpClient, s.url, config.Token, opaqueReq)
 }
 
-// VerificarComunicacion implements [port.SiatOperacionesPort].
+// VerificarComunicacion envia una solicitud al SIAT para verificar la comunicación.
 func (s *SiatOperacionesService) VerificarComunicacion(ctx context.Context, config config.Config, opaqueReq models.VerificarComunicacionOperaciones) (*soap.EnvelopeResponse[operaciones.VerificarComunicacionResponse], error) {
-	req := models.GetInternalRequest[operaciones.VerificarComunicacion](opaqueReq)
-	xmlBody, err := buildRequest(req)
-	if err != nil {
-		return nil, err
-	}
-
-	httpReq, err := http.NewRequestWithContext(ctx, "POST", s.url, bytes.NewReader(xmlBody))
-	if err != nil {
-		return nil, err
-	}
-
-	httpReq.Header.Set("Content-Type", "application/xml")
-	httpReq.Header.Set("apiKey", fmt.Sprintf("TokenApi %s", config.Token))
-
-	resp, err := s.httpClient.Do(httpReq)
-	if err != nil {
-		return nil, err
-	}
-
-	return parseSoapResponse[operaciones.VerificarComunicacionResponse](resp)
+	return performSoapRequest[operaciones.VerificarComunicacion, operaciones.VerificarComunicacionResponse](ctx, s.httpClient, s.url, config.Token, opaqueReq)
 }
 
-// RegistroPuntoVenta implements [port.SiatOperacionesPort].
+// RegistroPuntoVenta envia una solicitud al SIAT para registrar un punto de venta.
 func (s *SiatOperacionesService) RegistroPuntoVenta(ctx context.Context, config config.Config, opaqueReq models.RegistroPuntoVenta) (*soap.EnvelopeResponse[operaciones.RegistroPuntoVentaResponse], error) {
-	req := models.GetInternalRequest[operaciones.RegistroPuntoVenta](opaqueReq)
-	xmlBody, err := buildRequest(req)
-	if err != nil {
-		return nil, err
-	}
-	httpReq, err := http.NewRequestWithContext(ctx, "POST", s.url, bytes.NewReader(xmlBody))
-	if err != nil {
-		return nil, err
-	}
-
-	httpReq.Header.Set("Content-Type", "application/xml")
-	httpReq.Header.Set("apiKey", fmt.Sprintf("TokenApi %s", config.Token))
-
-	resp, err := s.httpClient.Do(httpReq)
-	if err != nil {
-		return nil, err
-	}
-
-	return parseSoapResponse[operaciones.RegistroPuntoVentaResponse](resp)
+	return performSoapRequest[operaciones.RegistroPuntoVenta, operaciones.RegistroPuntoVentaResponse](ctx, s.httpClient, s.url, config.Token, opaqueReq)
 }
 
-// RegistroPuntoVentaComisionista implements [port.SiatOperacionesPort].
+// RegistroPuntoVentaComisionista envia una solicitud al SIAT para registrar un punto de venta comisionista.
 func (s *SiatOperacionesService) RegistroPuntoVentaComisionista(ctx context.Context, config config.Config, opaqueReq models.RegistroPuntoVentaComisionista) (*soap.EnvelopeResponse[operaciones.RegistroPuntoVentaComisionistaResponse], error) {
-	req := models.GetInternalRequest[operaciones.RegistroPuntoVentaComisionista](opaqueReq)
-	xmlBody, err := buildRequest(req)
-	if err != nil {
-		return nil, err
-	}
-
-	// Ejecutar la petición HTTP utilizando el cliente configurado
-	httpReq, err := http.NewRequestWithContext(ctx, "POST", s.url, bytes.NewReader(xmlBody))
-	if err != nil {
-		return nil, err
-	}
-
-	httpReq.Header.Set("Content-Type", "application/xml")
-	httpReq.Header.Set("apiKey", fmt.Sprintf("TokenApi %s", config.Token))
-
-	resp, err := s.httpClient.Do(httpReq)
-	if err != nil {
-		return nil, err
-	}
-	return parseSoapResponse[operaciones.RegistroPuntoVentaComisionistaResponse](resp)
+	return performSoapRequest[operaciones.RegistroPuntoVentaComisionista, operaciones.RegistroPuntoVentaComisionistaResponse](ctx, s.httpClient, s.url, config.Token, opaqueReq)
 }
 
-func NewSiatOperacionesService(baseUrl string, httpClient *http.Client) (port.SiatOperacionesPort, error) {
+// NewSiatOperacionesService crea una nueva instancia de SiatOperacionesService.
+func NewSiatOperacionesService(baseUrl string, httpClient *http.Client) (*SiatOperacionesService, error) {
 	baseUrl = strings.TrimSpace(baseUrl)
 	if baseUrl == "" {
 		return nil, fmt.Errorf("baseUrl is empty")
@@ -226,3 +79,5 @@ func NewSiatOperacionesService(baseUrl string, httpClient *http.Client) (port.Si
 		httpClient: httpClient,
 	}, nil
 }
+
+var _ port.SiatOperacionesPort = (*SiatOperacionesService)(nil)
