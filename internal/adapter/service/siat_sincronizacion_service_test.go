@@ -33,9 +33,6 @@ func runSincronizacionTest[V any, ReqType any](
 		if err != nil {
 			t.Fatalf("No se pudo inicializar el cliente SIAT: %v", err)
 		}
-		// En sincronización, el servicio se obtiene de siatClient.Sincronizacion()
-		// Pero aquí runSincronizacionTest recibe el método.
-		// Ajustamos el llamador de este helper.
 
 		resp, err := fn(context.Background(), config, req)
 		if err != nil {
@@ -57,11 +54,11 @@ func getCommonRequest(_ *testing.T) sincronizacion.SolicitudSincronizacion {
 		CodigoSistema:    os.Getenv("SIAT_CODIGO_SISTEMA"),
 		CodigoSucursal:   0,
 		CodigoPuntoVenta: 0,
-		Cuis:             "C2FC682C", // CUIS de prueba
+		Cuis:             "C2FC682C",
 	}
 }
 
-func buildSyncReq[T any, R any](b *models.SincronizacionBuilder[T, R], sol sincronizacion.SolicitudSincronizacion) R {
+func buildSincronizacion[T any, R any](b models.SincronizacionBuilder[T, R], sol sincronizacion.SolicitudSincronizacion) R {
 	return b.WithCodigoAmbiente(sol.CodigoAmbiente).
 		WithCodigoPuntoVenta(sol.CodigoPuntoVenta).
 		WithCodigoSistema(sol.CodigoSistema).
@@ -71,29 +68,155 @@ func buildSyncReq[T any, R any](b *models.SincronizacionBuilder[T, R], sol sincr
 		Build()
 }
 
-// TestSincronizacionCompleta ejecuta secuencialmente todas las solicitudes de sincronización.
-// Asegura que el sistema pueda obtener los catálogos oficiales actualizados del SIAT.
-func TestSincronizacionCompleta(t *testing.T) {
+func TestSincronizarActividades(t *testing.T) {
 	godotenv.Load()
 	siatClient, _ := siat.New(os.Getenv("SIAT_URL"), nil)
 	service := siatClient.Sincronizacion()
-	solicitud := getCommonRequest(t)
+	sol := getCommonRequest(t)
+	req := buildSincronizacion(models.Sincronizacion().NewSincronizarActividadesBuilder(), sol)
+	runSincronizacionTest(t, "SincronizarActividades", req, service.SincronizarActividades)
+}
 
-	runSincronizacionTest(t, "SincronizarActividades", buildSyncReq(models.Sincronizacion().NewSincronizarActividadesBuilder(), solicitud), service.SincronizarActividades)
-	runSincronizacionTest(t, "SincronizarListaActividadesDocumentoSector", buildSyncReq(models.Sincronizacion().NewSincronizarListaActividadesDocumentoSectorBuilder(), solicitud), service.SincronizarListaActividadesDocumentoSector)
-	runSincronizacionTest(t, "SincronizarListaLeyendasFactura", buildSyncReq(models.Sincronizacion().NewSincronizarListaLeyendasFacturaBuilder(), solicitud), service.SincronizarListaLeyendasFactura)
-	runSincronizacionTest(t, "SincronizarListaMensajesServicios", buildSyncReq(models.Sincronizacion().NewSincronizarListaMensajesServiciosBuilder(), solicitud), service.SincronizarListaMensajesServicios)
-	runSincronizacionTest(t, "SincronizarListaProductosServicios", buildSyncReq(models.Sincronizacion().NewSincronizarListaProductosServiciosBuilder(), solicitud), service.SincronizarListaProductosServicios)
-	runSincronizacionTest(t, "SincronizarParametricaEventosSignificativos", buildSyncReq(models.Sincronizacion().NewSincronizarParametricaEventosSignificativosBuilder(), solicitud), service.SincronizarParametricaEventosSignificativos)
-	runSincronizacionTest(t, "SincronizarParametricaMotivoAnulacion", buildSyncReq(models.Sincronizacion().NewSincronizarParametricaMotivoAnulacionBuilder(), solicitud), service.SincronizarParametricaMotivoAnulacion)
-	runSincronizacionTest(t, "SincronizarParametricaPaisOrigen", buildSyncReq(models.Sincronizacion().NewSincronizarParametricaPaisOrigenBuilder(), solicitud), service.SincronizarParametricaPaisOrigen)
-	runSincronizacionTest(t, "SincronizarParametricaTipoDocumentoIdentidad", buildSyncReq(models.Sincronizacion().NewSincronizarParametricaTipoDocumentoIdentidadBuilder(), solicitud), service.SincronizarParametricaTipoDocumentoIdentidad)
-	runSincronizacionTest(t, "SincronizarParametricaTipoDocumentoSector", buildSyncReq(models.Sincronizacion().NewSincronizarParametricaTipoDocumentoSectorBuilder(), solicitud), service.SincronizarParametricaTipoDocumentoSector)
-	runSincronizacionTest(t, "SincronizarParametricaTipoEmision", buildSyncReq(models.Sincronizacion().NewSincronizarParametricaTipoEmisionBuilder(), solicitud), service.SincronizarParametricaTipoEmision)
-	runSincronizacionTest(t, "SincronizarParametricaTipoHabitacion", buildSyncReq(models.Sincronizacion().NewSincronizarParametricaTipoHabitacionBuilder(), solicitud), service.SincronizarParametricaTipoHabitacion)
-	runSincronizacionTest(t, "SincronizarParametricaTipoMetodoPago", buildSyncReq(models.Sincronizacion().NewSincronizarParametricaTipoMetodoPagoBuilder(), solicitud), service.SincronizarParametricaTipoMetodoPago)
-	runSincronizacionTest(t, "SincronizarParametricaTipoMoneda", buildSyncReq(models.Sincronizacion().NewSincronizarParametricaTipoMonedaBuilder(), solicitud), service.SincronizarParametricaTipoMoneda)
-	runSincronizacionTest(t, "SincronizarParametricaTipoPuntoVenta", buildSyncReq(models.Sincronizacion().NewSincronizarParametricaTipoPuntoVentaBuilder(), solicitud), service.SincronizarParametricaTipoPuntoVenta)
-	runSincronizacionTest(t, "SincronizarParametricaTiposFactura", buildSyncReq(models.Sincronizacion().NewSincronizarParametricaTiposFacturaBuilder(), solicitud), service.SincronizarParametricaTiposFactura)
-	runSincronizacionTest(t, "SincronizarParametricaUnidadMedida", buildSyncReq(models.Sincronizacion().NewSincronizarParametricaUnidadMedidaBuilder(), solicitud), service.SincronizarParametricaUnidadMedida)
+func TestSincronizarListaActividadesDocumentoSector(t *testing.T) {
+	godotenv.Load()
+	siatClient, _ := siat.New(os.Getenv("SIAT_URL"), nil)
+	service := siatClient.Sincronizacion()
+	sol := getCommonRequest(t)
+	req := buildSincronizacion(models.Sincronizacion().NewSincronizarListaActividadesDocumentoSectorBuilder(), sol)
+	runSincronizacionTest(t, "SincronizarListaActividadesDocumentoSector", req, service.SincronizarListaActividadesDocumentoSector)
+}
+
+func TestSincronizarListaLeyendasFactura(t *testing.T) {
+	godotenv.Load()
+	siatClient, _ := siat.New(os.Getenv("SIAT_URL"), nil)
+	service := siatClient.Sincronizacion()
+	sol := getCommonRequest(t)
+	req := buildSincronizacion(models.Sincronizacion().NewSincronizarListaLeyendasFacturaBuilder(), sol)
+	runSincronizacionTest(t, "SincronizarListaLeyendasFactura", req, service.SincronizarListaLeyendasFactura)
+}
+
+func TestSincronizarListaMensajesServicios(t *testing.T) {
+	godotenv.Load()
+	siatClient, _ := siat.New(os.Getenv("SIAT_URL"), nil)
+	service := siatClient.Sincronizacion()
+	sol := getCommonRequest(t)
+	req := buildSincronizacion(models.Sincronizacion().NewSincronizarListaMensajesServiciosBuilder(), sol)
+	runSincronizacionTest(t, "SincronizarListaMensajesServicios", req, service.SincronizarListaMensajesServicios)
+}
+
+func TestSincronizarListaProductosServicios(t *testing.T) {
+	godotenv.Load()
+	siatClient, _ := siat.New(os.Getenv("SIAT_URL"), nil)
+	service := siatClient.Sincronizacion()
+	sol := getCommonRequest(t)
+	req := buildSincronizacion(models.Sincronizacion().NewSincronizarListaProductosServiciosBuilder(), sol)
+	runSincronizacionTest(t, "SincronizarListaProductosServicios", req, service.SincronizarListaProductosServicios)
+}
+
+func TestSincronizarParametricaEventosSignificativos(t *testing.T) {
+	godotenv.Load()
+	siatClient, _ := siat.New(os.Getenv("SIAT_URL"), nil)
+	service := siatClient.Sincronizacion()
+	sol := getCommonRequest(t)
+	req := buildSincronizacion(models.Sincronizacion().NewSincronizarParametricaEventosSignificativosBuilder(), sol)
+	runSincronizacionTest(t, "SincronizarParametricaEventosSignificativos", req, service.SincronizarParametricaEventosSignificativos)
+}
+
+func TestSincronizarParametricaMotivoAnulacion(t *testing.T) {
+	godotenv.Load()
+	siatClient, _ := siat.New(os.Getenv("SIAT_URL"), nil)
+	service := siatClient.Sincronizacion()
+	sol := getCommonRequest(t)
+	req := buildSincronizacion(models.Sincronizacion().NewSincronizarParametricaMotivoAnulacionBuilder(), sol)
+	runSincronizacionTest(t, "SincronizarParametricaMotivoAnulacion", req, service.SincronizarParametricaMotivoAnulacion)
+}
+
+func TestSincronizarParametricaPaisOrigen(t *testing.T) {
+	godotenv.Load()
+	siatClient, _ := siat.New(os.Getenv("SIAT_URL"), nil)
+	service := siatClient.Sincronizacion()
+	sol := getCommonRequest(t)
+	req := buildSincronizacion(models.Sincronizacion().NewSincronizarParametricaPaisOrigenBuilder(), sol)
+	runSincronizacionTest(t, "SincronizarParametricaPaisOrigen", req, service.SincronizarParametricaPaisOrigen)
+}
+
+func TestSincronizarParametricaTipoDocumentoIdentidad(t *testing.T) {
+	godotenv.Load()
+	siatClient, _ := siat.New(os.Getenv("SIAT_URL"), nil)
+	service := siatClient.Sincronizacion()
+	sol := getCommonRequest(t)
+	req := buildSincronizacion(models.Sincronizacion().NewSincronizarParametricaTipoDocumentoIdentidadBuilder(), sol)
+	runSincronizacionTest(t, "SincronizarParametricaTipoDocumentoIdentidad", req, service.SincronizarParametricaTipoDocumentoIdentidad)
+}
+
+func TestSincronizarParametricaTipoDocumentoSector(t *testing.T) {
+	godotenv.Load()
+	siatClient, _ := siat.New(os.Getenv("SIAT_URL"), nil)
+	service := siatClient.Sincronizacion()
+	sol := getCommonRequest(t)
+	req := buildSincronizacion(models.Sincronizacion().NewSincronizarParametricaTipoDocumentoSectorBuilder(), sol)
+	runSincronizacionTest(t, "SincronizarParametricaTipoDocumentoSector", req, service.SincronizarParametricaTipoDocumentoSector)
+}
+
+func TestSincronizarParametricaTipoEmision(t *testing.T) {
+	godotenv.Load()
+	siatClient, _ := siat.New(os.Getenv("SIAT_URL"), nil)
+	service := siatClient.Sincronizacion()
+	sol := getCommonRequest(t)
+	req := buildSincronizacion(models.Sincronizacion().NewSincronizarParametricaTipoEmisionBuilder(), sol)
+	runSincronizacionTest(t, "SincronizarParametricaTipoEmision", req, service.SincronizarParametricaTipoEmision)
+}
+
+func TestSincronizarParametricaTipoHabitacion(t *testing.T) {
+	godotenv.Load()
+	siatClient, _ := siat.New(os.Getenv("SIAT_URL"), nil)
+	service := siatClient.Sincronizacion()
+	sol := getCommonRequest(t)
+	req := buildSincronizacion(models.Sincronizacion().NewSincronizarParametricaTipoHabitacionBuilder(), sol)
+	runSincronizacionTest(t, "SincronizarParametricaTipoHabitacion", req, service.SincronizarParametricaTipoHabitacion)
+}
+
+func TestSincronizarParametricaTipoMetodoPago(t *testing.T) {
+	godotenv.Load()
+	siatClient, _ := siat.New(os.Getenv("SIAT_URL"), nil)
+	service := siatClient.Sincronizacion()
+	sol := getCommonRequest(t)
+	req := buildSincronizacion(models.Sincronizacion().NewSincronizarParametricaTipoMetodoPagoBuilder(), sol)
+	runSincronizacionTest(t, "SincronizarParametricaTipoMetodoPago", req, service.SincronizarParametricaTipoMetodoPago)
+}
+
+func TestSincronizarParametricaTipoMoneda(t *testing.T) {
+	godotenv.Load()
+	siatClient, _ := siat.New(os.Getenv("SIAT_URL"), nil)
+	service := siatClient.Sincronizacion()
+	sol := getCommonRequest(t)
+	req := buildSincronizacion(models.Sincronizacion().NewSincronizarParametricaTipoMonedaBuilder(), sol)
+	runSincronizacionTest(t, "SincronizarParametricaTipoMoneda", req, service.SincronizarParametricaTipoMoneda)
+}
+
+func TestSincronizarParametricaTipoPuntoVenta(t *testing.T) {
+	godotenv.Load()
+	siatClient, _ := siat.New(os.Getenv("SIAT_URL"), nil)
+	service := siatClient.Sincronizacion()
+	sol := getCommonRequest(t)
+	req := buildSincronizacion(models.Sincronizacion().NewSincronizarParametricaTipoPuntoVentaBuilder(), sol)
+	runSincronizacionTest(t, "SincronizarParametricaTipoPuntoVenta", req, service.SincronizarParametricaTipoPuntoVenta)
+}
+
+func TestSincronizarParametricaTiposFactura(t *testing.T) {
+	godotenv.Load()
+	siatClient, _ := siat.New(os.Getenv("SIAT_URL"), nil)
+	service := siatClient.Sincronizacion()
+	sol := getCommonRequest(t)
+	req := buildSincronizacion(models.Sincronizacion().NewSincronizarParametricaTiposFacturaBuilder(), sol)
+	runSincronizacionTest(t, "SincronizarParametricaTiposFactura", req, service.SincronizarParametricaTiposFactura)
+}
+
+func TestSincronizarParametricaUnidadMedida(t *testing.T) {
+	godotenv.Load()
+	siatClient, _ := siat.New(os.Getenv("SIAT_URL"), nil)
+	service := siatClient.Sincronizacion()
+	sol := getCommonRequest(t)
+	req := buildSincronizacion(models.Sincronizacion().NewSincronizarParametricaUnidadMedidaBuilder(), sol)
+	runSincronizacionTest(t, "SincronizarParametricaUnidadMedida", req, service.SincronizarParametricaUnidadMedida)
 }
