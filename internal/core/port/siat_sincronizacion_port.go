@@ -9,10 +9,10 @@ import (
 	"github.com/ron86i/go-siat/pkg/models"
 )
 
-// SiatSincronizacionCatalogoService define las operaciones para la sincronización de catálogos y parámetros del SIAT.
+// SiatSincronizacionService define las operaciones para la sincronización de catálogos y parámetros del SIAT.
 // Este puerto permite mantener actualizada la información base necesaria para la emisión de facturas,
 // como actividades económicas, leyendas, productos, servicios y parámetros técnicos.
-type SiatSincronizacionCatalogoService interface {
+type SiatSincronizacionService interface {
 	// SincronizarActividades obtiene el listado oficial de actividades económicas autorizadas.
 	SincronizarActividades(ctx context.Context, config config.Config, opaqueReq models.SincronizarActividades) (*soap.EnvelopeResponse[sincronizacion.SincronizarActividadesResponse], error)
 

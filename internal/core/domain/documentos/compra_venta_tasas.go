@@ -7,16 +7,12 @@ import (
 )
 
 // FacturaCompraVentaTasas representa la factura de compra-venta con tasas (sector 41).
-// Diferencias respecto a FacturaCompraVenta:
-//   - Agrega MontoTasa (nillable) en la cabecera
-//   - CodigoPuntoVenta es nillable
-//   - CodigoProductoSin en el detalle es integer (no string)
 type FacturaCompraVentaTasas struct {
-	XMLName           xml.Name                    `json:"-"`
-	XmlnsXsi          string                      `xml:"xmlns:xsi,attr" json:"-"`
-	XsiSchemaLocation string                      `xml:"xsi:noNamespaceSchemaLocation,attr" json:"-"`
-	Cabecera          CabeceraCompraVentaTasas    `xml:"cabecera" json:"cabecera"`
-	Detalle           []DetalleCompraVentaTasas   `xml:"detalle" json:"detalle"`
+	XMLName           xml.Name                  `json:"-"`
+	XmlnsXsi          string                    `xml:"xmlns:xsi,attr" json:"-"`
+	XsiSchemaLocation string                    `xml:"xsi:noNamespaceSchemaLocation,attr" json:"-"`
+	Cabecera          CabeceraCompraVentaTasas  `xml:"cabecera" json:"cabecera"`
+	Detalle           []DetalleCompraVentaTasas `xml:"detalle" json:"detalle"`
 }
 
 // CabeceraCompraVentaTasas contiene la información general de la factura de tasas.

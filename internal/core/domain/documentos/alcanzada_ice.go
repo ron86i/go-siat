@@ -6,17 +6,18 @@ import (
 	"github.com/ron86i/go-siat/internal/core/domain/datatype"
 )
 
-// FacturaCompraVentaBonificaciones representa la factura de compra-venta con bonificaciones (sector 35).
-type FacturaCompraVentaBonificaciones struct {
-	XMLName           xml.Name                           `json:"-"`
-	XmlnsXsi          string                             `xml:"xmlns:xsi,attr" json:"-"`
-	XsiSchemaLocation string                             `xml:"xsi:noNamespaceSchemaLocation,attr" json:"-"`
-	Cabecera          CabeceraCompraVentaBonificaciones  `xml:"cabecera" json:"cabecera"`
-	Detalle           []DetalleCompraVentaBonificaciones `xml:"detalle" json:"detalle"`
+// FacturaAlcanzadaIce representa la estructura de una factura del Sector 14
+// (Factura Alcanzada por el ICE).
+type FacturaAlcanzadaIce struct {
+	XMLName           xml.Name              `json:"-"`
+	XmlnsXsi          string                `xml:"xmlns:xsi,attr" json:"-"`
+	XsiSchemaLocation string                `xml:"xsi:noNamespaceSchemaLocation,attr" json:"-"`
+	Cabecera          CabeceraAlcanzadaIce  `xml:"cabecera" json:"cabecera"`
+	Detalle           []DetalleAlcanzadaIce `xml:"detalle" json:"detalle"`
 }
 
-// CabeceraCompraVentaBonificaciones contiene la información general de la factura de bonificaciones.
-type CabeceraCompraVentaBonificaciones struct {
+// CabeceraAlcanzadaIce contiene la información general y los montos ICE totales.
+type CabeceraAlcanzadaIce struct {
 	NitEmisor                    int64                     `xml:"nitEmisor" json:"nitEmisor"`
 	RazonSocialEmisor            string                    `xml:"razonSocialEmisor" json:"razonSocialEmisor"`
 	Municipio                    string                    `xml:"municipio" json:"municipio"`
@@ -36,22 +37,22 @@ type CabeceraCompraVentaBonificaciones struct {
 	CodigoMetodoPago             int                       `xml:"codigoMetodoPago" json:"codigoMetodoPago"`
 	NumeroTarjeta                datatype.Nilable[int64]   `xml:"numeroTarjeta" json:"numeroTarjeta"`
 	MontoTotal                   float64                   `xml:"montoTotal" json:"montoTotal"`
+	MontoIceEspecifico           datatype.Nilable[float64] `xml:"montoIceEspecifico" json:"montoIceEspecifico"`
+	MontoIcePorcentual           datatype.Nilable[float64] `xml:"montoIcePorcentual" json:"montoIcePorcentual"`
 	MontoTotalSujetoIva          float64                   `xml:"montoTotalSujetoIva" json:"montoTotalSujetoIva"`
 	CodigoMoneda                 int                       `xml:"codigoMoneda" json:"codigoMoneda"`
 	TipoCambio                   float64                   `xml:"tipoCambio" json:"tipoCambio"`
 	MontoTotalMoneda             float64                   `xml:"montoTotalMoneda" json:"montoTotalMoneda"`
-	MontoGiftCard                datatype.Nilable[float64] `xml:"montoGiftCard" json:"montoGiftCard"`
 	DescuentoAdicional           datatype.Nilable[float64] `xml:"descuentoAdicional" json:"descuentoAdicional"`
-	CodigoExcepcion              datatype.Nilable[int64]   `xml:"codigoExcepcion" json:"codigoExcepcion"`
+	CodigoExcepcion              datatype.Nilable[int]     `xml:"codigoExcepcion" json:"codigoExcepcion"`
 	Cafc                         datatype.Nilable[string]  `xml:"cafc" json:"cafc"`
 	Leyenda                      string                    `xml:"leyenda" json:"leyenda"`
 	Usuario                      string                    `xml:"usuario" json:"usuario"`
 	CodigoDocumentoSector        int                       `xml:"codigoDocumentoSector" json:"codigoDocumentoSector"`
 }
 
-// DetalleCompraVentaBonificaciones representa un ítem de la factura de bonificaciones.
-// CodigoProductoSin es integer según el XSD (a diferencia de la normal que es string).
-type DetalleCompraVentaBonificaciones struct {
+// DetalleAlcanzadaIce representa un ítem individual, incluyendo la lógica de ICE específico y porcentual.
+type DetalleAlcanzadaIce struct {
 	ActividadEconomica string                    `xml:"actividadEconomica" json:"actividadEconomica"`
 	CodigoProductoSin  int64                     `xml:"codigoProductoSin" json:"codigoProductoSin"`
 	CodigoProducto     string                    `xml:"codigoProducto" json:"codigoProducto"`
@@ -61,6 +62,12 @@ type DetalleCompraVentaBonificaciones struct {
 	PrecioUnitario     float64                   `xml:"precioUnitario" json:"precioUnitario"`
 	MontoDescuento     datatype.Nilable[float64] `xml:"montoDescuento" json:"montoDescuento"`
 	SubTotal           float64                   `xml:"subTotal" json:"subTotal"`
-	NumeroSerie        datatype.Nilable[string]  `xml:"numeroSerie" json:"numeroSerie"`
-	NumeroImei         datatype.Nilable[string]  `xml:"numeroImei" json:"numeroImei"`
+	MarcaIce           int                       `xml:"marcaIce" json:"marcaIce"`
+	AlicuotaIva        datatype.Nilable[float64] `xml:"alicuotaIva" json:"alicuotaIva"`
+	PrecioNetoVentaIce datatype.Nilable[float64] `xml:"precioNetoVentaIce" json:"precioNetoVentaIce"`
+	AlicuotaEspecifica datatype.Nilable[float64] `xml:"alicuotaEspecifica" json:"alicuotaEspecifica"`
+	AlicuotaPorcentual datatype.Nilable[float64] `xml:"alicuotaPorcentual" json:"alicuotaPorcentual"`
+	MontoIceEspecifico datatype.Nilable[float64] `xml:"montoIceEspecifico" json:"montoIceEspecifico"`
+	MontoIcePorcentual datatype.Nilable[float64] `xml:"montoIcePorcentual" json:"montoIcePorcentual"`
+	CantidadIce        datatype.Nilable[float64] `xml:"cantidadIce" json:"cantidadIce"`
 }

@@ -6,17 +6,17 @@ import (
 	"github.com/ron86i/go-siat/internal/core/domain/datatype"
 )
 
-// FacturaCompraVentaBonificaciones representa la factura de compra-venta con bonificaciones (sector 35).
-type FacturaCompraVentaBonificaciones struct {
-	XMLName           xml.Name                           `json:"-"`
-	XmlnsXsi          string                             `xml:"xmlns:xsi,attr" json:"-"`
-	XsiSchemaLocation string                             `xml:"xsi:noNamespaceSchemaLocation,attr" json:"-"`
-	Cabecera          CabeceraCompraVentaBonificaciones  `xml:"cabecera" json:"cabecera"`
-	Detalle           []DetalleCompraVentaBonificaciones `xml:"detalle" json:"detalle"`
+// FacturaDuttyFree representa la estructura completa de una factura Dutty Free para el SIAT.
+type FacturaDuttyFree struct {
+	XMLName           xml.Name           `json:"-"`
+	XmlnsXsi          string             `xml:"xmlns:xsi,attr" json:"-"`
+	XsiSchemaLocation string             `xml:"xsi:noNamespaceSchemaLocation,attr" json:"-"`
+	Cabecera          CabeceraDuttyFree  `xml:"cabecera" json:"cabecera"`
+	Detalle           []DetalleDuttyFree `xml:"detalle" json:"detalle"`
 }
 
-// CabeceraCompraVentaBonificaciones contiene la información general de la factura de bonificaciones.
-type CabeceraCompraVentaBonificaciones struct {
+// CabeceraDuttyFree contiene la información general y del cliente de la factura Dutty Free.
+type CabeceraDuttyFree struct {
 	NitEmisor                    int64                     `xml:"nitEmisor" json:"nitEmisor"`
 	RazonSocialEmisor            string                    `xml:"razonSocialEmisor" json:"razonSocialEmisor"`
 	Municipio                    string                    `xml:"municipio" json:"municipio"`
@@ -42,16 +42,15 @@ type CabeceraCompraVentaBonificaciones struct {
 	MontoTotalMoneda             float64                   `xml:"montoTotalMoneda" json:"montoTotalMoneda"`
 	MontoGiftCard                datatype.Nilable[float64] `xml:"montoGiftCard" json:"montoGiftCard"`
 	DescuentoAdicional           datatype.Nilable[float64] `xml:"descuentoAdicional" json:"descuentoAdicional"`
-	CodigoExcepcion              datatype.Nilable[int64]   `xml:"codigoExcepcion" json:"codigoExcepcion"`
+	CodigoExcepcion              datatype.Nilable[int]     `xml:"codigoExcepcion" json:"codigoExcepcion"`
 	Cafc                         datatype.Nilable[string]  `xml:"cafc" json:"cafc"`
 	Leyenda                      string                    `xml:"leyenda" json:"leyenda"`
 	Usuario                      string                    `xml:"usuario" json:"usuario"`
 	CodigoDocumentoSector        int                       `xml:"codigoDocumentoSector" json:"codigoDocumentoSector"`
 }
 
-// DetalleCompraVentaBonificaciones representa un ítem de la factura de bonificaciones.
-// CodigoProductoSin es integer según el XSD (a diferencia de la normal que es string).
-type DetalleCompraVentaBonificaciones struct {
+// DetalleDuttyFree representa un ítem o servicio dentro de la factura Dutty Free.
+type DetalleDuttyFree struct {
 	ActividadEconomica string                    `xml:"actividadEconomica" json:"actividadEconomica"`
 	CodigoProductoSin  int64                     `xml:"codigoProductoSin" json:"codigoProductoSin"`
 	CodigoProducto     string                    `xml:"codigoProducto" json:"codigoProducto"`
@@ -61,6 +60,4 @@ type DetalleCompraVentaBonificaciones struct {
 	PrecioUnitario     float64                   `xml:"precioUnitario" json:"precioUnitario"`
 	MontoDescuento     datatype.Nilable[float64] `xml:"montoDescuento" json:"montoDescuento"`
 	SubTotal           float64                   `xml:"subTotal" json:"subTotal"`
-	NumeroSerie        datatype.Nilable[string]  `xml:"numeroSerie" json:"numeroSerie"`
-	NumeroImei         datatype.Nilable[string]  `xml:"numeroImei" json:"numeroImei"`
 }
