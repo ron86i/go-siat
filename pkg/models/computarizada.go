@@ -4,7 +4,6 @@ import (
 	"time"
 
 	"github.com/ron86i/go-siat/internal/core/domain/datatype"
-	"github.com/ron86i/go-siat/internal/core/domain/siat/computarizada"
 	"github.com/ron86i/go-siat/internal/core/domain/siat/facturacion"
 )
 
@@ -42,12 +41,20 @@ type RecepcionMasivaFacturaComputarizada struct {
 	requestWrapper[facturacion.RecepcionMasivaFactura]
 }
 
-type RecepcionAnexosSuministroEnergia struct {
-	requestWrapper[computarizada.RecepcionAnexosSuministroEnergia]
+type RecepcionAnexosSuministroEnergiaComputarizada struct {
+	requestWrapper[facturacion.RecepcionAnexosSuministroEnergia]
 }
 
 type SuministroEnergiaAnexoComputarizada struct {
-	requestWrapper[computarizada.SuministroEnergiaAnexo]
+	requestWrapper[facturacion.SuministroEnergiaAnexo]
+}
+
+type ValidacionRecepcionMasivaFacturaComputarizada struct {
+	requestWrapper[facturacion.ValidacionRecepcionMasivaFactura]
+}
+
+type VerificacionEstadoFacturaComputarizada struct {
+	requestWrapper[facturacion.VerificacionEstadoFactura]
 }
 
 // --- Namespace ---
@@ -94,104 +101,108 @@ func (computarizadaNamespace) NewRecepcionPaqueteFacturaBuilder() *recepcionPaqu
 	}
 }
 
-func (computarizadaNamespace) NewValidacionRecepcionPaqueteFacturaComputarizadaBuilder() *validacionRecepcionPaqueteFacturaComputarizadaBuilder {
+// NewValidacionRecepcionPaqueteFacturaBuilder crea un constructor para la solicitud de validación de paquete de factura.
+func (computarizadaNamespace) NewValidacionRecepcionPaqueteFacturaBuilder() *validacionRecepcionPaqueteFacturaComputarizadaBuilder {
 	return &validacionRecepcionPaqueteFacturaComputarizadaBuilder{
 		request: &facturacion.ValidacionRecepcionPaqueteFactura{},
 	}
 }
 
-func (computarizadaNamespace) NewValidacionRecepcionMasivaFacturaComputarizadaBuilder() *validacionRecepcionMasivaFacturaComputarizadaBuilder {
+// NewValidacionRecepcionMasivaFacturaBuilder crea un constructor para la solicitud de validación de recepción masiva de factura.
+func (computarizadaNamespace) NewValidacionRecepcionMasivaFacturaBuilder() *validacionRecepcionMasivaFacturaComputarizadaBuilder {
 	return &validacionRecepcionMasivaFacturaComputarizadaBuilder{
 		request: &facturacion.ValidacionRecepcionMasivaFactura{},
 	}
 }
 
-func (computarizadaNamespace) NewVerificacionEstadoFacturaComputarizadaBuilder() *verificacionEstadoFacturaComputarizadaBuilder {
+// NewVerificacionEstadoFacturaBuilder crea un constructor para la solicitud de verificación de estado de factura.
+func (computarizadaNamespace) NewVerificacionEstadoFacturaBuilder() *verificacionEstadoFacturaComputarizadaBuilder {
 	return &verificacionEstadoFacturaComputarizadaBuilder{
 		request: &facturacion.VerificacionEstadoFactura{},
 	}
 }
 
-func (computarizadaNamespace) NewRecepcionMasivaFacturaComputarizadaBuilder() *recepcionMasivaFacturaComputarizadaBuilder {
+// NewRecepcionMasivaFacturaBuilder crea un constructor para la solicitud de recepción masiva de factura.
+func (computarizadaNamespace) NewRecepcionMasivaFacturaBuilder() *recepcionMasivaFacturaComputarizadaBuilder {
 	return &recepcionMasivaFacturaComputarizadaBuilder{
 		request: &facturacion.RecepcionMasivaFactura{},
 	}
 }
 
-func (computarizadaNamespace) NewRecepcionAnexosSuministroEnergiaBuilder() *recepcionAnexosSuministroEnergiaBuilder {
-	return &recepcionAnexosSuministroEnergiaBuilder{
-		request: &computarizada.RecepcionAnexosSuministroEnergia{},
+func (computarizadaNamespace) NewRecepcionAnexosSuministroEnergiaBuilder() *recepcionAnexosSuministroEnergiaComputarizadaBuilder {
+	return &recepcionAnexosSuministroEnergiaComputarizadaBuilder{
+		request: &facturacion.RecepcionAnexosSuministroEnergia{},
 	}
 }
 
-func (computarizadaNamespace) NewSuministroEnergiaAnexoBuilder() *suministroEnergiaAnexoBuilder {
-	return &suministroEnergiaAnexoBuilder{
-		request: &computarizada.SuministroEnergiaAnexo{},
+func (computarizadaNamespace) NewSuministroEnergiaAnexoBuilder() *suministroEnergiaAnexoComputarizadaBuilder {
+	return &suministroEnergiaAnexoComputarizadaBuilder{
+		request: &facturacion.SuministroEnergiaAnexo{},
 	}
 }
 
 // --- Implementaciones de Builders ---
 
-type recepcionAnexosSuministroEnergiaBuilder struct {
-	request *computarizada.RecepcionAnexosSuministroEnergia
+type recepcionAnexosSuministroEnergiaComputarizadaBuilder struct {
+	request *facturacion.RecepcionAnexosSuministroEnergia
 }
 
-func (b *recepcionAnexosSuministroEnergiaBuilder) WithCodigoAmbiente(codigoAmbiente int) *recepcionAnexosSuministroEnergiaBuilder {
+func (b *recepcionAnexosSuministroEnergiaComputarizadaBuilder) WithCodigoAmbiente(codigoAmbiente int) *recepcionAnexosSuministroEnergiaComputarizadaBuilder {
 	b.request.SolicitudRecepcionSuministroAnexos.CodigoAmbiente = codigoAmbiente
 	return b
 }
 
-func (b *recepcionAnexosSuministroEnergiaBuilder) WithCodigoDocumentoSector(codigoDocumentoSector int) *recepcionAnexosSuministroEnergiaBuilder {
+func (b *recepcionAnexosSuministroEnergiaComputarizadaBuilder) WithCodigoDocumentoSector(codigoDocumentoSector int) *recepcionAnexosSuministroEnergiaComputarizadaBuilder {
 	b.request.SolicitudRecepcionSuministroAnexos.CodigoDocumentoSector = codigoDocumentoSector
 	return b
 }
 
-func (b *recepcionAnexosSuministroEnergiaBuilder) WithCodigoEmision(codigoEmision int) *recepcionAnexosSuministroEnergiaBuilder {
+func (b *recepcionAnexosSuministroEnergiaComputarizadaBuilder) WithCodigoEmision(codigoEmision int) *recepcionAnexosSuministroEnergiaComputarizadaBuilder {
 	b.request.SolicitudRecepcionSuministroAnexos.CodigoEmision = codigoEmision
 	return b
 }
 
-func (b *recepcionAnexosSuministroEnergiaBuilder) WithCodigoModalidad(codigoModalidad int) *recepcionAnexosSuministroEnergiaBuilder {
+func (b *recepcionAnexosSuministroEnergiaComputarizadaBuilder) WithCodigoModalidad(codigoModalidad int) *recepcionAnexosSuministroEnergiaComputarizadaBuilder {
 	b.request.SolicitudRecepcionSuministroAnexos.CodigoModalidad = codigoModalidad
 	return b
 }
 
-func (b *recepcionAnexosSuministroEnergiaBuilder) WithCodigoPuntoVenta(codigoPuntoVenta int) *recepcionAnexosSuministroEnergiaBuilder {
+func (b *recepcionAnexosSuministroEnergiaComputarizadaBuilder) WithCodigoPuntoVenta(codigoPuntoVenta int) *recepcionAnexosSuministroEnergiaComputarizadaBuilder {
 	b.request.SolicitudRecepcionSuministroAnexos.CodigoPuntoVenta = codigoPuntoVenta
 	return b
 }
 
-func (b *recepcionAnexosSuministroEnergiaBuilder) WithCodigoSistema(codigoSistema string) *recepcionAnexosSuministroEnergiaBuilder {
+func (b *recepcionAnexosSuministroEnergiaComputarizadaBuilder) WithCodigoSistema(codigoSistema string) *recepcionAnexosSuministroEnergiaComputarizadaBuilder {
 	b.request.SolicitudRecepcionSuministroAnexos.CodigoSistema = codigoSistema
 	return b
 }
 
-func (b *recepcionAnexosSuministroEnergiaBuilder) WithCodigoSucursal(codigoSucursal int) *recepcionAnexosSuministroEnergiaBuilder {
+func (b *recepcionAnexosSuministroEnergiaComputarizadaBuilder) WithCodigoSucursal(codigoSucursal int) *recepcionAnexosSuministroEnergiaComputarizadaBuilder {
 	b.request.SolicitudRecepcionSuministroAnexos.CodigoSucursal = codigoSucursal
 	return b
 }
 
-func (b *recepcionAnexosSuministroEnergiaBuilder) WithCufd(cufd string) *recepcionAnexosSuministroEnergiaBuilder {
+func (b *recepcionAnexosSuministroEnergiaComputarizadaBuilder) WithCufd(cufd string) *recepcionAnexosSuministroEnergiaComputarizadaBuilder {
 	b.request.SolicitudRecepcionSuministroAnexos.Cufd = cufd
 	return b
 }
 
-func (b *recepcionAnexosSuministroEnergiaBuilder) WithCuis(cuis string) *recepcionAnexosSuministroEnergiaBuilder {
+func (b *recepcionAnexosSuministroEnergiaComputarizadaBuilder) WithCuis(cuis string) *recepcionAnexosSuministroEnergiaComputarizadaBuilder {
 	b.request.SolicitudRecepcionSuministroAnexos.Cuis = cuis
 	return b
 }
 
-func (b *recepcionAnexosSuministroEnergiaBuilder) WithNit(nit int64) *recepcionAnexosSuministroEnergiaBuilder {
+func (b *recepcionAnexosSuministroEnergiaComputarizadaBuilder) WithNit(nit int64) *recepcionAnexosSuministroEnergiaComputarizadaBuilder {
 	b.request.SolicitudRecepcionSuministroAnexos.Nit = nit
 	return b
 }
 
-func (b *recepcionAnexosSuministroEnergiaBuilder) WithTipoFacturaDocumento(tipo int) *recepcionAnexosSuministroEnergiaBuilder {
+func (b *recepcionAnexosSuministroEnergiaComputarizadaBuilder) WithTipoFacturaDocumento(tipo int) *recepcionAnexosSuministroEnergiaComputarizadaBuilder {
 	b.request.SolicitudRecepcionSuministroAnexos.TipoFacturaDocumento = tipo
 	return b
 }
 
-func (b *recepcionAnexosSuministroEnergiaBuilder) AddAnexos(anexos ...SuministroEnergiaAnexoComputarizada) *recepcionAnexosSuministroEnergiaBuilder {
+func (b *recepcionAnexosSuministroEnergiaComputarizadaBuilder) AddAnexos(anexos ...SuministroEnergiaAnexoComputarizada) *recepcionAnexosSuministroEnergiaComputarizadaBuilder {
 	for _, anexo := range anexos {
 		if anexo.request != nil {
 			b.request.SolicitudRecepcionSuministroAnexos.AnexosList = append(b.request.SolicitudRecepcionSuministroAnexos.AnexosList, *anexo.request)
@@ -200,36 +211,36 @@ func (b *recepcionAnexosSuministroEnergiaBuilder) AddAnexos(anexos ...Suministro
 	return b
 }
 
-func (b *recepcionAnexosSuministroEnergiaBuilder) WithGiftCard(giftCard int64) *recepcionAnexosSuministroEnergiaBuilder {
+func (b *recepcionAnexosSuministroEnergiaComputarizadaBuilder) WithGiftCard(giftCard int64) *recepcionAnexosSuministroEnergiaComputarizadaBuilder {
 	b.request.SolicitudRecepcionSuministroAnexos.GiftCard = giftCard
 	return b
 }
 
-func (b *recepcionAnexosSuministroEnergiaBuilder) Build() RecepcionAnexosSuministroEnergia {
-	return RecepcionAnexosSuministroEnergia{requestWrapper[computarizada.RecepcionAnexosSuministroEnergia]{request: b.request}}
+func (b *recepcionAnexosSuministroEnergiaComputarizadaBuilder) Build() RecepcionAnexosSuministroEnergiaComputarizada {
+	return RecepcionAnexosSuministroEnergiaComputarizada{requestWrapper[facturacion.RecepcionAnexosSuministroEnergia]{request: b.request}}
 }
 
-type suministroEnergiaAnexoBuilder struct {
-	request *computarizada.SuministroEnergiaAnexo
+type suministroEnergiaAnexoComputarizadaBuilder struct {
+	request *facturacion.SuministroEnergiaAnexo
 }
 
-func (b *suministroEnergiaAnexoBuilder) WithCufFactSuministro(cuf string) *suministroEnergiaAnexoBuilder {
+func (b *suministroEnergiaAnexoComputarizadaBuilder) WithCufFactSuministro(cuf string) *suministroEnergiaAnexoComputarizadaBuilder {
 	b.request.CufFactSuministro = cuf
 	return b
 }
 
-func (b *suministroEnergiaAnexoBuilder) WithFechaRecarga(fecha time.Time) *suministroEnergiaAnexoBuilder {
+func (b *suministroEnergiaAnexoComputarizadaBuilder) WithFechaRecarga(fecha time.Time) *suministroEnergiaAnexoComputarizadaBuilder {
 	b.request.FechaRecarga = datatype.NewTimeSiat(fecha)
 	return b
 }
 
-func (b *suministroEnergiaAnexoBuilder) WithMontoRecarga(monto float64) *suministroEnergiaAnexoBuilder {
+func (b *suministroEnergiaAnexoComputarizadaBuilder) WithMontoRecarga(monto float64) *suministroEnergiaAnexoComputarizadaBuilder {
 	b.request.MontoRecarga = monto
 	return b
 }
 
-func (b *suministroEnergiaAnexoBuilder) Build() SuministroEnergiaAnexoComputarizada {
-	return SuministroEnergiaAnexoComputarizada{requestWrapper[computarizada.SuministroEnergiaAnexo]{request: b.request}}
+func (b *suministroEnergiaAnexoComputarizadaBuilder) Build() SuministroEnergiaAnexoComputarizada {
+	return SuministroEnergiaAnexoComputarizada{requestWrapper[facturacion.SuministroEnergiaAnexo]{request: b.request}}
 }
 
 type recepcionMasivaFacturaComputarizadaBuilder struct {
@@ -365,8 +376,8 @@ func (b *verificacionEstadoFacturaComputarizadaBuilder) WithCuf(cuf string) *ver
 	return b
 }
 
-func (b *verificacionEstadoFacturaComputarizadaBuilder) Build() VerificacionEstadoFactura {
-	return VerificacionEstadoFactura{requestWrapper[facturacion.VerificacionEstadoFactura]{request: b.request}}
+func (b *verificacionEstadoFacturaComputarizadaBuilder) Build() VerificacionEstadoFacturaComputarizada {
+	return VerificacionEstadoFacturaComputarizada{requestWrapper[facturacion.VerificacionEstadoFactura]{request: b.request}}
 }
 
 type validacionRecepcionMasivaFacturaComputarizadaBuilder struct {
@@ -433,8 +444,8 @@ func (b *validacionRecepcionMasivaFacturaComputarizadaBuilder) WithCodigoRecepci
 	return b
 }
 
-func (b *validacionRecepcionMasivaFacturaComputarizadaBuilder) Build() ValidacionRecepcionMasivaFactura {
-	return ValidacionRecepcionMasivaFactura{requestWrapper[facturacion.ValidacionRecepcionMasivaFactura]{request: b.request}}
+func (b *validacionRecepcionMasivaFacturaComputarizadaBuilder) Build() ValidacionRecepcionMasivaFacturaComputarizada {
+	return ValidacionRecepcionMasivaFacturaComputarizada{requestWrapper[facturacion.ValidacionRecepcionMasivaFactura]{request: b.request}}
 }
 
 type recepcionPaqueteFacturaComputarizadaBuilder struct {

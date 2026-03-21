@@ -19,13 +19,13 @@ type RecepcionAnexosCompraVenta struct {
 	requestWrapper[compra_venta.RecepcionAnexos]
 }
 
-// VerificacionEstadoFactura representa una solicitud para la verificación del estado de una factura.
-type VerificacionEstadoFactura struct {
+// VerificacionEstadoFacturaCompraVenta representa una solicitud para la verificación del estado de una factura.
+type VerificacionEstadoFacturaCompraVenta struct {
 	requestWrapper[facturacion.VerificacionEstadoFactura]
 }
 
-// ValidacionRecepcionMasivaFactura representa una solicitud para la validación de la recepción masiva de facturas.
-type ValidacionRecepcionMasivaFactura struct {
+// ValidacionRecepcionMasivaFacturaCompraVenta representa una solicitud para la validación de la recepción masiva de facturas.
+type ValidacionRecepcionMasivaFacturaCompraVenta struct {
 	requestWrapper[facturacion.ValidacionRecepcionMasivaFactura]
 }
 
@@ -771,8 +771,8 @@ func (b *verificacionEstadoFacturaBuilder) WithCuf(cuf string) *verificacionEsta
 	return b
 }
 
-func (b *verificacionEstadoFacturaBuilder) Build() VerificacionEstadoFactura {
-	return VerificacionEstadoFactura{requestWrapper[facturacion.VerificacionEstadoFactura]{request: b.request}}
+func (b *verificacionEstadoFacturaBuilder) Build() VerificacionEstadoFacturaCompraVenta {
+	return VerificacionEstadoFacturaCompraVenta{requestWrapper[facturacion.VerificacionEstadoFactura]{request: b.request}}
 }
 
 type validacionRecepcionMasivaFacturaBuilder struct {
@@ -839,6 +839,6 @@ func (b *validacionRecepcionMasivaFacturaBuilder) WithCodigoRecepcion(codigoRece
 	return b
 }
 
-func (b *validacionRecepcionMasivaFacturaBuilder) Build() ValidacionRecepcionMasivaFactura {
-	return ValidacionRecepcionMasivaFactura{requestWrapper[facturacion.ValidacionRecepcionMasivaFactura]{request: b.request}}
+func (b *validacionRecepcionMasivaFacturaBuilder) Build() ValidacionRecepcionMasivaFacturaCompraVenta {
+	return ValidacionRecepcionMasivaFacturaCompraVenta{requestWrapper[facturacion.ValidacionRecepcionMasivaFactura]{request: b.request}}
 }

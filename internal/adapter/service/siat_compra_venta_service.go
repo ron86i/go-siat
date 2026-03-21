@@ -28,12 +28,12 @@ func (s *SiatCompraVentaService) RecepcionAnexos(ctx context.Context, config con
 }
 
 // ValidacionRecepcionMasivaFactura
-func (s *SiatCompraVentaService) ValidacionRecepcionMasivaFactura(ctx context.Context, config config.Config, opaqueReq models.ValidacionRecepcionMasivaFactura) (*soap.EnvelopeResponse[facturacion.ValidacionRecepcionMasivaFacturaResponse], error) {
+func (s *SiatCompraVentaService) ValidacionRecepcionMasivaFactura(ctx context.Context, config config.Config, opaqueReq models.ValidacionRecepcionMasivaFacturaCompraVenta) (*soap.EnvelopeResponse[facturacion.ValidacionRecepcionMasivaFacturaResponse], error) {
 	return performSoapRequest[facturacion.ValidacionRecepcionMasivaFactura, facturacion.ValidacionRecepcionMasivaFacturaResponse](ctx, s.httpClient, s.url, config.Token, opaqueReq)
 }
 
 // VerificacionEstadoFactura
-func (s *SiatCompraVentaService) VerificacionEstadoFactura(ctx context.Context, config config.Config, opaqueReq models.VerificacionEstadoFactura) (*soap.EnvelopeResponse[facturacion.VerificacionEstadoFacturaResponse], error) {
+func (s *SiatCompraVentaService) VerificacionEstadoFactura(ctx context.Context, config config.Config, opaqueReq models.VerificacionEstadoFacturaCompraVenta) (*soap.EnvelopeResponse[facturacion.VerificacionEstadoFacturaResponse], error) {
 	return performSoapRequest[facturacion.VerificacionEstadoFactura, facturacion.VerificacionEstadoFacturaResponse](ctx, s.httpClient, s.url, config.Token, opaqueReq)
 }
 

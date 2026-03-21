@@ -1361,7 +1361,7 @@ func TestSiatComputarizadaService_VerificacionEstadoFactura(t *testing.T) {
 	cufd := cufdResp.Body.Content.RespuestaCufd.Codigo
 
 	// 3. Preparar solicitud de verificación
-	req := models.Computarizada().NewVerificacionEstadoFacturaComputarizadaBuilder().
+	req := models.Computarizada().NewVerificacionEstadoFacturaBuilder().
 		WithCodigoAmbiente(codAmbiente).
 		WithCodigoModalidad(codModalidad).
 		WithCodigoSistema(os.Getenv("SIAT_CODIGO_SISTEMA")).
@@ -1569,7 +1569,7 @@ func TestSiatComputarizadaService_ValidacionRecepcionPaqueteFactura(t *testing.T
 	cufd := cufdResp.Body.Content.RespuestaCufd.Codigo
 
 	// 2. Preparar solicitud
-	req := models.Computarizada().NewValidacionRecepcionPaqueteFacturaComputarizadaBuilder().
+	req := models.Computarizada().NewValidacionRecepcionPaqueteFacturaBuilder().
 		WithCodigoAmbiente(codAmbiente).
 		WithCodigoModalidad(codModalidad).
 		WithCodigoSistema(os.Getenv("SIAT_CODIGO_SISTEMA")).
@@ -1712,7 +1712,7 @@ func TestSiatComputarizadaService_RecepcionMasivaFactura(t *testing.T) {
 	encodedArchivo := base64.StdEncoding.EncodeToString(tarGz)
 
 	// 3. Preparar solicitud
-	req := models.Computarizada().NewRecepcionMasivaFacturaComputarizadaBuilder().
+	req := models.Computarizada().NewRecepcionMasivaFacturaBuilder().
 		WithCodigoAmbiente(codAmbiente).
 		WithCodigoModalidad(codModalidad).
 		WithCodigoSistema(os.Getenv("SIAT_CODIGO_SISTEMA")).
@@ -1782,7 +1782,7 @@ func TestSiatComputarizadaService_ValidacionRecepcionMasivaFactura(t *testing.T)
 	cufd := cufdResp.Body.Content.RespuestaCufd.Codigo
 
 	// 2. Preparar solicitud
-	req := models.Computarizada().NewValidacionRecepcionMasivaFacturaComputarizadaBuilder().
+	req := models.Computarizada().NewValidacionRecepcionMasivaFacturaBuilder().
 		WithCodigoAmbiente(codAmbiente).
 		WithCodigoModalidad(codModalidad).
 		WithCodigoSistema(os.Getenv("SIAT_CODIGO_SISTEMA")).

@@ -40,10 +40,10 @@ type SiatCompraVentaService interface {
 	RecepcionMasivaFactura(ctx context.Context, config config.Config, opaqueReq models.RecepcionMasivaFacturaCompraVenta) (*soap.EnvelopeResponse[facturacion.RecepcionMasivaFacturaResponse], error)
 
 	// ValidacionRecepcionMasivaFactura verifica el estado del procesamiento de un paquete enviado masivamente.
-	ValidacionRecepcionMasivaFactura(ctx context.Context, config config.Config, opaqueReq models.ValidacionRecepcionMasivaFactura) (*soap.EnvelopeResponse[facturacion.ValidacionRecepcionMasivaFacturaResponse], error)
+	ValidacionRecepcionMasivaFactura(ctx context.Context, config config.Config, opaqueReq models.ValidacionRecepcionMasivaFacturaCompraVenta) (*soap.EnvelopeResponse[facturacion.ValidacionRecepcionMasivaFacturaResponse], error)
 
 	// VerificacionEstadoFactura consulta el estado actual de una factura específica en los registros del SIAT.
-	VerificacionEstadoFactura(ctx context.Context, config config.Config, opaqueReq models.VerificacionEstadoFactura) (*soap.EnvelopeResponse[facturacion.VerificacionEstadoFacturaResponse], error)
+	VerificacionEstadoFactura(ctx context.Context, config config.Config, opaqueReq models.VerificacionEstadoFacturaCompraVenta) (*soap.EnvelopeResponse[facturacion.VerificacionEstadoFacturaResponse], error)
 
 	RecepcionAnexos(ctx context.Context, config config.Config, opaqueReq models.RecepcionAnexosCompraVenta) (*soap.EnvelopeResponse[compra_venta.RecepcionAnexosResponse], error)
 }

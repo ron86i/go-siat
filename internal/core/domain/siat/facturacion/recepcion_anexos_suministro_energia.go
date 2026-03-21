@@ -1,10 +1,9 @@
-package computarizada
+package facturacion
 
 import (
 	"encoding/xml"
 
 	"github.com/ron86i/go-siat/internal/core/domain/datatype"
-	"github.com/ron86i/go-siat/internal/core/domain/siat/facturacion"
 )
 
 type RecepcionAnexosSuministroEnergia struct {
@@ -13,13 +12,13 @@ type RecepcionAnexosSuministroEnergia struct {
 }
 
 type SolicitudRecepcionAnexosSuministroEnergia struct {
-	facturacion.SolicitudRecepcion
+	SolicitudRecepcion
 	AnexosList []SuministroEnergiaAnexo `xml:"anexosList" json:"anexosList"`
 	GiftCard   int64                    `xml:"giftCard" json:"giftCard"`
 }
 
 type RecepcionAnexosSuministroEnergiaResponse struct {
-	RespuestaRecepcionAnexos facturacion.RespuestaRecepcion `xml:"RespuestaRecepcionAnexos" json:"respuestaRecepcionAnexos"`
+	RespuestaRecepcionAnexos RespuestaRecepcion `xml:"RespuestaRecepcionAnexos" json:"respuestaRecepcionAnexos"`
 }
 
 type SuministroEnergiaAnexo struct {

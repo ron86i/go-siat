@@ -21,6 +21,7 @@ const (
 	SiatSincronizacion SiatService = "FacturacionSincronizacion"
 	SiatCompraVenta    SiatService = "ServicioFacturacionCompraVenta"
 	SiatComputarizada  SiatService = "ServicioFacturacionComputarizada"
+	SiatElectronica    SiatService = "ServicioFacturacionElectronica"
 )
 
 // fullURL construye la URL completa para acceder a un servicio específico del SIAT,
@@ -87,7 +88,7 @@ func getInternalRequest[T any](req any) *T {
 }
 
 /*
-	performSoapRequest es una función genérica que encapsula el flujo completo de una solicitud SOAP al SIAT:
+performSoapRequest es una función genérica que encapsula el flujo completo de una solicitud SOAP al SIAT:
 
 1. Obtiene la solicitud interna desde la interfaz opaca.
 
