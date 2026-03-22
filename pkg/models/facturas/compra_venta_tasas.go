@@ -39,7 +39,9 @@ func NewCompraVentaTasasBuilder() *compraVentaTasasBuilder {
 // NewCompraVentaTasasCabeceraBuilder crea el constructor de la cabecera de tasas.
 func NewCompraVentaTasasCabeceraBuilder() *compraVentaTasasCabeceraBuilder {
 	return &compraVentaTasasCabeceraBuilder{
-		cabecera: &documentos.CabeceraCompraVentaTasas{},
+		cabecera: &documentos.CabeceraCompraVentaTasas{
+			CodigoDocumentoSector: 41, // Sector 41 para Compra y Venta de Tasa
+		},
 	}
 }
 

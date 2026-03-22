@@ -43,7 +43,9 @@ func NewCompraVentaBuilder() *compraVentaBuilder {
 // de facturas de compra y venta.
 func NewCompraVentaCabeceraBuilder() *compraVentaCabeceraBuilder {
 	return &compraVentaCabeceraBuilder{
-		cabecera: &documentos.CabeceraCompraVenta{},
+		cabecera: &documentos.CabeceraCompraVenta{
+			CodigoDocumentoSector: 1, // Sector 1 para Compra y Venta
+		},
 	}
 }
 

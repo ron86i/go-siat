@@ -39,7 +39,9 @@ func NewCompraVentaBonificacionesBuilder() *compraVentaBonificacionesBuilder {
 // NewCompraVentaBonificacionesCabeceraBuilder crea el constructor de la cabecera de bonificaciones.
 func NewCompraVentaBonificacionesCabeceraBuilder() *compraVentaBonificacionesCabeceraBuilder {
 	return &compraVentaBonificacionesCabeceraBuilder{
-		cabecera: &documentos.CabeceraCompraVentaBonificaciones{},
+		cabecera: &documentos.CabeceraCompraVentaBonificaciones{
+			CodigoDocumentoSector: 35, // Sector 35 para Compra y Venta Bonificaciones
+		},
 	}
 }
 
