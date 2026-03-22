@@ -3,6 +3,8 @@ package codigos
 import (
 	"encoding/xml"
 	"time"
+
+	"github.com/ron86i/go-siat/internal/core/domain/datatype"
 )
 
 // CufdMasivo define el sobre SOAP para la solicitud masiva de múltiples códigos CUFD.
@@ -24,7 +26,7 @@ type SolicitudCufdMasivo struct {
 // SolicitudListaCufdDto define los datos específicos para cada CUFD solicitado masivamente,
 // asociándonlo a un punto de venta y sucursal determinados.
 type SolicitudListaCufdDto struct {
-	CodigoPuntoVenta *int   `xml:"codigoPuntoVenta" json:"codigoPuntoVenta"`
+	CodigoPuntoVenta int    `xml:"codigoPuntoVenta" json:"codigoPuntoVenta"`
 	CodigoSucursal   int    `xml:"codigoSucursal" json:"codigoSucursal"`
 	Cuis             string `xml:"cuis" json:"cuis"`
 }
@@ -46,13 +48,13 @@ type RespuestaCufdMasivo struct {
 // RespuestaListaRegistroCufdSoapDto encapsula los datos individuales de un CUFD generado
 // en una solicitud masiva, incluyendo su código, control, dirección y vigencia.
 type RespuestaListaRegistroCufdSoapDto struct {
-	Codigo              string            `xml:"codigo" json:"codigo"`
-	CodigoControl       string            `xml:"codigoControl" json:"codigoControl"`
-	CodigoPuntoVenta    *int              `xml:"codigoPuntoVenta" json:"codigoPuntoVenta"`
-	CodigoSucursal      *int              `xml:"codigoSucursal" json:"codigoSucursal"`
-	Cuis                string            `xml:"cuis" json:"cuis"`
-	Direccion           string            `xml:"direccion" json:"direccion"`
-	FechaVigencia       time.Time         `xml:"fechaVigencia" json:"fechaVigencia"`
-	MensajeServicioList []MensajeServicio `xml:"mensajeServicioList" json:"mensajeServicioList"`
-	Transaccion         bool              `xml:"transaccion" json:"transaccion"`
+	Codigo              string                `xml:"codigo" json:"codigo"`
+	CodigoControl       string                `xml:"codigoControl" json:"codigoControl"`
+	CodigoPuntoVenta    datatype.Nilable[int] `xml:"codigoPuntoVenta" json:"codigoPuntoVenta"`
+	CodigoSucursal      datatype.Nilable[int] `xml:"codigoSucursal" json:"codigoSucursal"`
+	Cuis                string                `xml:"cuis" json:"cuis"`
+	Direccion           string                `xml:"direccion" json:"direccion"`
+	FechaVigencia       time.Time             `xml:"fechaVigencia" json:"fechaVigencia"`
+	MensajeServicioList []MensajeServicio     `xml:"mensajeServicioList" json:"mensajeServicioList"`
+	Transaccion         bool                  `xml:"transaccion" json:"transaccion"`
 }

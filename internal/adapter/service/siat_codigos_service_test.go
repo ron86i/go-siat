@@ -15,7 +15,6 @@ import (
 
 	"github.com/ron86i/go-siat"
 
-	"github.com/ron86i/go-siat/internal/core/domain/siat/codigos"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -276,19 +275,18 @@ func TestSolicitudCufdMasivo(t *testing.T) {
 	assert.NoError(t, err)
 	service := siatClient.Codigos()
 
+	cuis := []*models.SolicitudListaCufdDtoBuilder{}
+	cuis = append(cuis, models.Codigos().NewSolicitudListaCufdDtoBuilder().
+		WithCodigoSucursal(0).
+		WithCodigoPuntoVenta(0).
+		WithCuis("197C8240"))
 	// Configurar la lista de solicitudes masivas (por ejemplo, para la sucursal 0 y punto de venta 0)
 	req := models.Codigos().NewCufdMasivoBuilder().
 		WithCodigoAmbiente(codAmbiente).
 		WithCodigoModalidad(codModalidad).
 		WithCodigoSistema(os.Getenv("SIAT_CODIGO_SISTEMA")).
 		WithNit(nit).
-		WithDatosSolicitud([]codigos.SolicitudListaCufdDto{
-			{
-				CodigoSucursal:   0,
-				CodigoPuntoVenta: new(int), // Ajuste asumiendo que es *int
-				Cuis:             "197C8240",
-			},
-		}).
+		WithDatosSolicitud(cuis...).
 		Build()
 
 	// Ejecutar la petición masiva al SIAT
@@ -301,7 +299,7 @@ func TestSolicitudCufdMasivo(t *testing.T) {
 
 		if len(res.ListaRespuestasCufd) > 0 {
 			for _, item := range res.ListaRespuestasCufd {
-				log.Printf("CUFD Masivo Recibido para Sucursal %d: %s", *item.CodigoSucursal, item.Codigo)
+				log.Printf("CUFD Masivo Recibido para Sucursal %d: %v", *item.CodigoSucursal.Value, item)
 			}
 		}
 	}
@@ -334,18 +332,17 @@ func TestSolicitudCuisMasivo(t *testing.T) {
 	service := siatClient.Codigos()
 	assert.NoError(t, err)
 
+	listCuis := []*models.SolicitudListaCuisDtoBuilder{}
+	listCuis = append(listCuis, models.Codigos().NewSolicitudListaCuisDtoBuilder().
+		WithCodigoSucursal(0).
+		WithCodigoPuntoVenta(0))
 	// Configurar la solicitud masiva de CUIS para un punto de venta específico
 	req := models.Codigos().NewCuisMasivoBuilder().
 		WithCodigoAmbiente(codAmbiente).
 		WithCodigoModalidad(codModalidad).
 		WithCodigoSistema(os.Getenv("SIAT_CODIGO_SISTEMA")).
 		WithNit(nit).
-		WithDatosSolicitud([]codigos.SolicitudListaCuisDto{
-			{
-				CodigoSucursal:   0,
-				CodigoPuntoVenta: new(int),
-			},
-		}).
+		WithDatosSolicitud(listCuis...).
 		Build()
 
 	// Ejecutar la petición masiva al SIAT

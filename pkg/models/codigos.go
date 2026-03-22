@@ -89,6 +89,20 @@ func (codigosNamespace) NewCufdMasivoBuilder() *cufdMasivoBuilder {
 	}
 }
 
+// NewSolicitudListaCuisDtoBuilder inicia la construcción de una solicitud individual para CUIS masivo.
+func (codigosNamespace) NewSolicitudListaCuisDtoBuilder() *SolicitudListaCuisDtoBuilder {
+	return &SolicitudListaCuisDtoBuilder{
+		request: &codigos.SolicitudListaCuisDto{},
+	}
+}
+
+// NewSolicitudListaCufdDtoBuilder inicia la construcción de una solicitud individual para CUFD masivo.
+func (codigosNamespace) NewSolicitudListaCufdDtoBuilder() *SolicitudListaCufdDtoBuilder {
+	return &SolicitudListaCufdDtoBuilder{
+		request: &codigos.SolicitudListaCufdDto{},
+	}
+}
+
 // NewNotificaCertificadoRevocadoBuilder inicia la construcción de una solicitud para notificar un certificado revocado.
 func (codigosNamespace) NewNotificaCertificadoRevocadoBuilder() *notificaCertificadoRevocadoBuilder {
 	return &notificaCertificadoRevocadoBuilder{
@@ -260,8 +274,12 @@ func (b *cuisMasivoBuilder) WithNit(nit int64) *cuisMasivoBuilder {
 	return b
 }
 
-func (b *cuisMasivoBuilder) WithDatosSolicitud(datosSolicitud []codigos.SolicitudListaCuisDto) *cuisMasivoBuilder {
-	b.request.SolicitudCuisMasivoSistemas.DatosSolicitud = datosSolicitud
+func (b *cuisMasivoBuilder) WithDatosSolicitud(builders ...*SolicitudListaCuisDtoBuilder) *cuisMasivoBuilder {
+	datos := make([]codigos.SolicitudListaCuisDto, len(builders))
+	for i, builder := range builders {
+		datos[i] = builder.Build()
+	}
+	b.request.SolicitudCuisMasivoSistemas.DatosSolicitud = datos
 	return b
 }
 
@@ -295,8 +313,12 @@ func (b *cufdMasivoBuilder) WithNit(nit int64) *cufdMasivoBuilder {
 	return b
 }
 
-func (b *cufdMasivoBuilder) WithDatosSolicitud(datosSolicitud []codigos.SolicitudListaCufdDto) *cufdMasivoBuilder {
-	b.request.SolicitudCufdMasivo.DatosSolicitud = datosSolicitud
+func (b *cufdMasivoBuilder) WithDatosSolicitud(builders ...*SolicitudListaCufdDtoBuilder) *cufdMasivoBuilder {
+	datos := make([]codigos.SolicitudListaCufdDto, len(builders))
+	for i, builder := range builders {
+		datos[i] = builder.Build()
+	}
+	b.request.SolicitudCufdMasivo.DatosSolicitud = datos
 	return b
 }
 
@@ -353,6 +375,49 @@ func (b *notificaCertificadoRevocadoBuilder) WithFechaRevocacion(fechaRevocacion
 // Build retorna el objeto NotificaCertificadoRevocado configurado.
 func (b *notificaCertificadoRevocadoBuilder) Build() NotificaCertificadoRevocado {
 	return NotificaCertificadoRevocado{requestWrapper[codigos.NotificaCertificadoRevocado]{request: b.request}}
+}
+
+// SolicitudListaCuisDtoBuilder facilita la configuración de una solicitud individual de CUIS.
+type SolicitudListaCuisDtoBuilder struct {
+	request *codigos.SolicitudListaCuisDto
+}
+
+func (b *SolicitudListaCuisDtoBuilder) WithCodigoPuntoVenta(codigoPuntoVenta int) *SolicitudListaCuisDtoBuilder {
+	b.request.CodigoPuntoVenta = &codigoPuntoVenta
+	return b
+}
+
+func (b *SolicitudListaCuisDtoBuilder) WithCodigoSucursal(codigoSucursal int) *SolicitudListaCuisDtoBuilder {
+	b.request.CodigoSucursal = codigoSucursal
+	return b
+}
+
+func (b *SolicitudListaCuisDtoBuilder) Build() codigos.SolicitudListaCuisDto {
+	return *b.request
+}
+
+// SolicitudListaCufdDtoBuilder facilita la configuración de una solicitud individual de CUFD.
+type SolicitudListaCufdDtoBuilder struct {
+	request *codigos.SolicitudListaCufdDto
+}
+
+func (b *SolicitudListaCufdDtoBuilder) WithCodigoPuntoVenta(codigoPuntoVenta int) *SolicitudListaCufdDtoBuilder {
+	b.request.CodigoPuntoVenta = codigoPuntoVenta
+	return b
+}
+
+func (b *SolicitudListaCufdDtoBuilder) WithCodigoSucursal(codigoSucursal int) *SolicitudListaCufdDtoBuilder {
+	b.request.CodigoSucursal = codigoSucursal
+	return b
+}
+
+func (b *SolicitudListaCufdDtoBuilder) WithCuis(cuis string) *SolicitudListaCufdDtoBuilder {
+	b.request.Cuis = cuis
+	return b
+}
+
+func (b *SolicitudListaCufdDtoBuilder) Build() codigos.SolicitudListaCufdDto {
+	return *b.request
 }
 
 // verificarComunicacionCodigosBuilder facilita la verificación de comunicación con el SIAT.
