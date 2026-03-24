@@ -8,10 +8,10 @@ import (
 
 // FacturaHotel representa la estructura de una factura de hotel (Sector 16).
 type FacturaHotel struct {
-	XMLName           xml.Name          `json:"-"`
-	XmlnsXsi          string            `xml:"xmlns:xsi,attr" json:"-"`
-	XsiSchemaLocation string            `xml:"xsi:noNamespaceSchemaLocation,attr" json:"-"`
-	Cabecera          CabeceraHotel   `xml:"cabecera" json:"cabecera"`
+	XMLName           xml.Name       `json:"-"`
+	XmlnsXsi          string         `xml:"xmlns:xsi,attr" json:"-"`
+	XsiSchemaLocation string         `xml:"xsi:noNamespaceSchemaLocation,attr" json:"-"`
+	Cabecera          CabeceraHotel  `xml:"cabecera" json:"cabecera"`
 	Detalle           []DetalleHotel `xml:"detalle" json:"detalle"`
 }
 
@@ -56,15 +56,15 @@ type CabeceraHotel struct {
 
 // DetalleHotel representa un ítem de consumo o hospedaje.
 type DetalleHotel struct {
-	ActividadEconomica string                    `xml:"actividadEconomica" json:"actividadEconomica"`
-	CodigoProductoSin  int64                     `xml:"codigoProductoSin" json:"codigoProductoSin"`
-	CodigoProducto     string                    `xml:"codigoProducto" json:"codigoProducto"`
-	CodigoTipoHabitacion datatype.Nilable[int]   `xml:"codigoTipoHabitacion" json:"codigoTipoHabitacion"`
-	Descripcion        string                    `xml:"descripcion" json:"descripcion"`
-	Cantidad           float64                   `xml:"cantidad" json:"cantidad"`
-	UnidadMedida       int                       `xml:"unidadMedida" json:"unidadMedida"`
-	PrecioUnitario     float64                   `xml:"precioUnitario" json:"precioUnitario"`
-	MontoDescuento     datatype.Nilable[float64] `xml:"montoDescuento" json:"montoDescuento"`
-	SubTotal           float64                   `xml:"subTotal" json:"subTotal"`
-	DetalleHuespedes   datatype.Nilable[string]  `xml:"detalleHuespedes" json:"detalleHuespedes"`
+	ActividadEconomica   string                    `xml:"actividadEconomica" json:"actividadEconomica"`
+	CodigoProductoSin    int64                     `xml:"codigoProductoSin" json:"codigoProductoSin"`
+	CodigoProducto       string                    `xml:"codigoProducto" json:"codigoProducto"`
+	CodigoTipoHabitacion datatype.Nilable[int]     `xml:"codigoTipoHabitacion" json:"codigoTipoHabitacion"`
+	Descripcion          string                    `xml:"descripcion" json:"descripcion"`
+	Cantidad             float64                   `xml:"cantidad" json:"cantidad"`
+	UnidadMedida         int                       `xml:"unidadMedida" json:"unidadMedida"`
+	PrecioUnitario       float64                   `xml:"precioUnitario" json:"precioUnitario"`
+	MontoDescuento       datatype.Nilable[float64] `xml:"montoDescuento" json:"montoDescuento"`
+	SubTotal             float64                   `xml:"subTotal" json:"subTotal"`
+	DetalleHuespedes     datatype.Nilable[string]  `xml:"detalleHuespedes" json:"detalleHuespedes"`
 }
