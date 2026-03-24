@@ -10,7 +10,7 @@ import (
 	"github.com/ron86i/go-siat/internal/core/domain/datatype/soap"
 	"github.com/ron86i/go-siat/internal/core/domain/siat/facturacion"
 	"github.com/ron86i/go-siat/internal/core/port"
-	"github.com/ron86i/go-siat/pkg/config"
+
 	"github.com/ron86i/go-siat/pkg/models"
 )
 
@@ -21,53 +21,53 @@ type siatComputarizadaService struct {
 
 // RecepcionAnexosSuministroEnergia envía al SIAT la información detallada de los anexos
 // correspondientes a las recargas de suministro de energía eléctrica.
-func (s *siatComputarizadaService) RecepcionAnexosSuministroEnergia(ctx context.Context, config config.Config, opaqueReq models.RecepcionAnexosSuministroEnergiaComputarizada) (*soap.EnvelopeResponse[facturacion.RecepcionAnexosSuministroEnergiaResponse], error) {
-	return performSoapRequest[facturacion.RecepcionAnexosSuministroEnergia, facturacion.RecepcionAnexosSuministroEnergiaResponse](ctx, s.httpClient, s.url, config.Token, opaqueReq)
+func (s *siatComputarizadaService) RecepcionAnexosSuministroEnergia(ctx context.Context, config Config, opaqueReq models.RecepcionAnexosSuministroEnergiaComputarizada) (*soap.EnvelopeResponse[facturacion.RecepcionAnexosSuministroEnergiaResponse], error) {
+	return performSoapRequest[facturacion.RecepcionAnexosSuministroEnergia, facturacion.RecepcionAnexosSuministroEnergiaResponse](ctx, s.httpClient, s.url, config, opaqueReq)
 }
 
 // RecepcionMasivaFactura envía de forma masiva un paquete de facturas al SIAT.
-func (s *siatComputarizadaService) RecepcionMasivaFactura(ctx context.Context, config config.Config, opaqueReq models.RecepcionMasivaFacturaComputarizada) (*soap.EnvelopeResponse[facturacion.RecepcionMasivaFacturaResponse], error) {
-	return performSoapRequest[facturacion.RecepcionMasivaFactura, facturacion.RecepcionMasivaFacturaResponse](ctx, s.httpClient, s.url, config.Token, opaqueReq)
+func (s *siatComputarizadaService) RecepcionMasivaFactura(ctx context.Context, config Config, opaqueReq models.RecepcionMasivaFacturaComputarizada) (*soap.EnvelopeResponse[facturacion.RecepcionMasivaFacturaResponse], error) {
+	return performSoapRequest[facturacion.RecepcionMasivaFactura, facturacion.RecepcionMasivaFacturaResponse](ctx, s.httpClient, s.url, config, opaqueReq)
 }
 
 // ValidacionRecepcionMasivaFactura envia una solicitud al SIAT para validar la recepción de un paquete de facturas.
-func (s *siatComputarizadaService) ValidacionRecepcionMasivaFactura(ctx context.Context, config config.Config, opaqueReq models.ValidacionRecepcionMasivaFacturaComputarizada) (*soap.EnvelopeResponse[facturacion.ValidacionRecepcionMasivaFacturaResponse], error) {
-	return performSoapRequest[facturacion.ValidacionRecepcionMasivaFactura, facturacion.ValidacionRecepcionMasivaFacturaResponse](ctx, s.httpClient, s.url, config.Token, opaqueReq)
+func (s *siatComputarizadaService) ValidacionRecepcionMasivaFactura(ctx context.Context, config Config, opaqueReq models.ValidacionRecepcionMasivaFacturaComputarizada) (*soap.EnvelopeResponse[facturacion.ValidacionRecepcionMasivaFacturaResponse], error) {
+	return performSoapRequest[facturacion.ValidacionRecepcionMasivaFactura, facturacion.ValidacionRecepcionMasivaFacturaResponse](ctx, s.httpClient, s.url, config, opaqueReq)
 }
 
 // ValidacionRecepcionPaqueteFactura envia una solicitud al SIAT para validar la recepción de un paquete de facturas.
-func (s *siatComputarizadaService) ValidacionRecepcionPaqueteFactura(ctx context.Context, config config.Config, opaqueReq models.ValidacionRecepcionPaqueteFacturaComputarizada) (*soap.EnvelopeResponse[facturacion.ValidacionRecepcionPaqueteFacturaResponse], error) {
-	return performSoapRequest[facturacion.ValidacionRecepcionPaqueteFactura, facturacion.ValidacionRecepcionPaqueteFacturaResponse](ctx, s.httpClient, s.url, config.Token, opaqueReq)
+func (s *siatComputarizadaService) ValidacionRecepcionPaqueteFactura(ctx context.Context, config Config, opaqueReq models.ValidacionRecepcionPaqueteFacturaComputarizada) (*soap.EnvelopeResponse[facturacion.ValidacionRecepcionPaqueteFacturaResponse], error) {
+	return performSoapRequest[facturacion.ValidacionRecepcionPaqueteFactura, facturacion.ValidacionRecepcionPaqueteFacturaResponse](ctx, s.httpClient, s.url, config, opaqueReq)
 }
 
 // VerificacionEstadoFactura envia una solicitud al SIAT para verificar el estado de una factura.
-func (s *siatComputarizadaService) VerificacionEstadoFactura(ctx context.Context, config config.Config, opaqueReq models.VerificacionEstadoFacturaComputarizada) (*soap.EnvelopeResponse[facturacion.VerificacionEstadoFacturaResponse], error) {
-	return performSoapRequest[facturacion.VerificacionEstadoFactura, facturacion.VerificacionEstadoFacturaResponse](ctx, s.httpClient, s.url, config.Token, opaqueReq)
+func (s *siatComputarizadaService) VerificacionEstadoFactura(ctx context.Context, config Config, opaqueReq models.VerificacionEstadoFacturaComputarizada) (*soap.EnvelopeResponse[facturacion.VerificacionEstadoFacturaResponse], error) {
+	return performSoapRequest[facturacion.VerificacionEstadoFactura, facturacion.VerificacionEstadoFacturaResponse](ctx, s.httpClient, s.url, config, opaqueReq)
 }
 
 // ReversionAnulacionFactura envia una solicitud al SIAT para revertir una anulación de factura previamente emitida y aceptada.
-func (s *siatComputarizadaService) ReversionAnulacionFactura(ctx context.Context, config config.Config, opaqueReq models.ReversionAnulacionFacturaComputarizada) (*soap.EnvelopeResponse[facturacion.ReversionAnulacionFacturaResponse], error) {
-	return performSoapRequest[facturacion.ReversionAnulacionFactura, facturacion.ReversionAnulacionFacturaResponse](ctx, s.httpClient, s.url, config.Token, opaqueReq)
+func (s *siatComputarizadaService) ReversionAnulacionFactura(ctx context.Context, config Config, opaqueReq models.ReversionAnulacionFacturaComputarizada) (*soap.EnvelopeResponse[facturacion.ReversionAnulacionFacturaResponse], error) {
+	return performSoapRequest[facturacion.ReversionAnulacionFactura, facturacion.ReversionAnulacionFacturaResponse](ctx, s.httpClient, s.url, config, opaqueReq)
 }
 
 // AnulacionFactura envía una solicitud al SIAT para anular una factura previamente emitida y aceptada.
-func (s *siatComputarizadaService) AnulacionFactura(ctx context.Context, config config.Config, opaqueReq models.AnulacionFacturaComputarizada) (*soap.EnvelopeResponse[facturacion.AnulacionFacturaResponse], error) {
-	return performSoapRequest[facturacion.AnulacionFactura, facturacion.AnulacionFacturaResponse](ctx, s.httpClient, s.url, config.Token, opaqueReq)
+func (s *siatComputarizadaService) AnulacionFactura(ctx context.Context, config Config, opaqueReq models.AnulacionFacturaComputarizada) (*soap.EnvelopeResponse[facturacion.AnulacionFacturaResponse], error) {
+	return performSoapRequest[facturacion.AnulacionFactura, facturacion.AnulacionFacturaResponse](ctx, s.httpClient, s.url, config, opaqueReq)
 }
 
 // RecepcionFactura envía una factura computarizada al SIAT para su validación y recepción.
-func (s *siatComputarizadaService) RecepcionFactura(ctx context.Context, config config.Config, opaqueReq models.RecepcionFacturaComputarizada) (*soap.EnvelopeResponse[facturacion.RecepcionFacturaResponse], error) {
-	return performSoapRequest[facturacion.RecepcionFactura, facturacion.RecepcionFacturaResponse](ctx, s.httpClient, s.url, config.Token, opaqueReq)
+func (s *siatComputarizadaService) RecepcionFactura(ctx context.Context, config Config, opaqueReq models.RecepcionFacturaComputarizada) (*soap.EnvelopeResponse[facturacion.RecepcionFacturaResponse], error) {
+	return performSoapRequest[facturacion.RecepcionFactura, facturacion.RecepcionFacturaResponse](ctx, s.httpClient, s.url, config, opaqueReq)
 }
 
 // VerificarComunicacion comprueba la disponibilidad de los servicios del SIAT.
-func (s *siatComputarizadaService) VerificarComunicacion(ctx context.Context, config config.Config, opaqueReq models.VerificarComunicacionComputarizada) (*soap.EnvelopeResponse[facturacion.VerificarComunicacionResponse], error) {
-	return performSoapRequest[facturacion.VerificarComunicacion, facturacion.VerificarComunicacionResponse](ctx, s.httpClient, s.url, config.Token, opaqueReq)
+func (s *siatComputarizadaService) VerificarComunicacion(ctx context.Context, config Config, opaqueReq models.VerificarComunicacionComputarizada) (*soap.EnvelopeResponse[facturacion.VerificarComunicacionResponse], error) {
+	return performSoapRequest[facturacion.VerificarComunicacion, facturacion.VerificarComunicacionResponse](ctx, s.httpClient, s.url, config, opaqueReq)
 }
 
 // RecepcionPaqueteFactura envía un paquete de facturas computarizadas al SIAT para su validación y recepción.
-func (s *siatComputarizadaService) RecepcionPaqueteFactura(ctx context.Context, config config.Config, opaqueReq models.RecepcionPaqueteFacturaComputarizada) (*soap.EnvelopeResponse[facturacion.RecepcionPaqueteFacturaResponse], error) {
-	return performSoapRequest[facturacion.RecepcionPaqueteFactura, facturacion.RecepcionPaqueteFacturaResponse](ctx, s.httpClient, s.url, config.Token, opaqueReq)
+func (s *siatComputarizadaService) RecepcionPaqueteFactura(ctx context.Context, config Config, opaqueReq models.RecepcionPaqueteFacturaComputarizada) (*soap.EnvelopeResponse[facturacion.RecepcionPaqueteFacturaResponse], error) {
+	return performSoapRequest[facturacion.RecepcionPaqueteFactura, facturacion.RecepcionPaqueteFacturaResponse](ctx, s.httpClient, s.url, config, opaqueReq)
 }
 
 // NewSiatComputarizadaService crea una nueva instancia del servicio de facturación computarizada.
