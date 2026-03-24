@@ -11,57 +11,57 @@ import (
 // --- Interfaces opacas para restringir el acceso a los atributos ---
 
 type VentaAnexoCompraVenta struct {
-	requestWrapper[compra_venta.VentaAnexo]
+	RequestWrapper[compra_venta.VentaAnexo]
 }
 
 // RecepcionAnexosCompraVenta representa una solicitud para la recepción de anexos de una factura.
 type RecepcionAnexosCompraVenta struct {
-	requestWrapper[compra_venta.RecepcionAnexos]
+	RequestWrapper[compra_venta.RecepcionAnexos]
 }
 
 // VerificacionEstadoFacturaCompraVenta representa una solicitud para la verificación del estado de una factura.
 type VerificacionEstadoFacturaCompraVenta struct {
-	requestWrapper[facturacion.VerificacionEstadoFactura]
+	RequestWrapper[facturacion.VerificacionEstadoFactura]
 }
 
 // ValidacionRecepcionMasivaFacturaCompraVenta representa una solicitud para la validación de la recepción masiva de facturas.
 type ValidacionRecepcionMasivaFacturaCompraVenta struct {
-	requestWrapper[facturacion.ValidacionRecepcionMasivaFactura]
+	RequestWrapper[facturacion.ValidacionRecepcionMasivaFactura]
 }
 
 // RecepcionMasivaFacturaCompraVenta representa una solicitud para la recepción masiva de facturas.
 type RecepcionMasivaFacturaCompraVenta struct {
-	requestWrapper[facturacion.RecepcionMasivaFactura]
+	RequestWrapper[facturacion.RecepcionMasivaFactura]
 }
 
 // VerificarComunicacionCompraVenta representa una solicitud para verificar la comunicación con el SIAT.
 type VerificarComunicacionCompraVenta struct {
-	requestWrapper[facturacion.VerificarComunicacion]
+	RequestWrapper[facturacion.VerificarComunicacion]
 }
 
 // ValidacionRecepcionPaqueteFacturaCompraVenta representa una solicitud para validar la recepción de paquetes de facturas.
 type ValidacionRecepcionPaqueteFacturaCompraVenta struct {
-	requestWrapper[facturacion.ValidacionRecepcionPaqueteFactura]
+	RequestWrapper[facturacion.ValidacionRecepcionPaqueteFactura]
 }
 
 // RecepcionPaqueteFacturaCompraVenta representa una solicitud para la recepción de paquetes de facturas.
 type RecepcionPaqueteFacturaCompraVenta struct {
-	requestWrapper[facturacion.RecepcionPaqueteFactura]
+	RequestWrapper[facturacion.RecepcionPaqueteFactura]
 }
 
 // ReversionAnulacionFacturaCompraVenta representa una solicitud para la reversión de anulación de factura.
 type ReversionAnulacionFacturaCompraVenta struct {
-	requestWrapper[facturacion.ReversionAnulacionFactura]
+	RequestWrapper[facturacion.ReversionAnulacionFactura]
 }
 
 // AnulacionFacturaCompraVenta representa una solicitud para anular una factura emitida.
 type AnulacionFacturaCompraVenta struct {
-	requestWrapper[facturacion.AnulacionFactura]
+	RequestWrapper[facturacion.AnulacionFactura]
 }
 
 // RecepcionFactura representa una solicitud para el envío de una factura al SIAT.
 type RecepcionFactura struct {
-	requestWrapper[facturacion.RecepcionFactura]
+	RequestWrapper[facturacion.RecepcionFactura]
 }
 
 // --- Namespace ---
@@ -191,8 +191,8 @@ func (b *recepcionAnexosBuilder) WithCuf(cuf string) *recepcionAnexosBuilder {
 
 func (b *recepcionAnexosBuilder) AddAnexos(anexo ...VentaAnexoCompraVenta) *recepcionAnexosBuilder {
 	for _, a := range anexo {
-		if a.request != nil {
-			b.request.SolicitudRecepcionAnexos.AnexosList = append(b.request.SolicitudRecepcionAnexos.AnexosList, *a.request)
+		if internal := UnwrapInternalRequest[compra_venta.VentaAnexo](a); internal != nil {
+			b.request.SolicitudRecepcionAnexos.AnexosList = append(b.request.SolicitudRecepcionAnexos.AnexosList, *internal)
 		}
 	}
 	return b
@@ -228,9 +228,7 @@ func (b *ventaAnexoCompraVentaBuilder) WithTipoCodigo(tipoCodigo string) *ventaA
 
 // Build finaliza la construcción del anexo retornando la estructura opaca.
 func (b *ventaAnexoCompraVentaBuilder) Build() VentaAnexoCompraVenta {
-	return VentaAnexoCompraVenta{
-		requestWrapper[compra_venta.VentaAnexo]{request: b.anexo},
-	}
+	return VentaAnexoCompraVenta{RequestWrapper[compra_venta.VentaAnexo]{request: b.anexo}}
 }
 func (b *recepcionAnexosBuilder) WithCodigoDocumentoSector(codigoDocumentoSector int) *recepcionAnexosBuilder {
 	b.request.SolicitudRecepcionAnexos.CodigoDocumentoSector = codigoDocumentoSector
@@ -258,7 +256,7 @@ func (b *recepcionAnexosBuilder) WithTipoFacturaDocumento(tipoFacturaDocumento i
 }
 
 func (b *recepcionAnexosBuilder) Build() RecepcionAnexosCompraVenta {
-	return RecepcionAnexosCompraVenta{requestWrapper[compra_venta.RecepcionAnexos]{request: b.request}}
+	return RecepcionAnexosCompraVenta{RequestWrapper[compra_venta.RecepcionAnexos]{request: b.request}}
 }
 
 type recepcionPaqueteFacturaBuilder struct {
@@ -351,7 +349,7 @@ func (b *recepcionPaqueteFacturaBuilder) WithCodigoEvento(codigoEvento int64) *r
 }
 
 func (b *recepcionPaqueteFacturaBuilder) Build() RecepcionPaqueteFacturaCompraVenta {
-	return RecepcionPaqueteFacturaCompraVenta{requestWrapper[facturacion.RecepcionPaqueteFactura]{request: b.request}}
+	return RecepcionPaqueteFacturaCompraVenta{RequestWrapper[facturacion.RecepcionPaqueteFactura]{request: b.request}}
 }
 
 type reversionAnulacionFacturaBuilder struct {
@@ -419,7 +417,7 @@ func (b *reversionAnulacionFacturaBuilder) WithCuf(cuf string) *reversionAnulaci
 }
 
 func (b *reversionAnulacionFacturaBuilder) Build() ReversionAnulacionFacturaCompraVenta {
-	return ReversionAnulacionFacturaCompraVenta{requestWrapper[facturacion.ReversionAnulacionFactura]{request: b.request}}
+	return ReversionAnulacionFacturaCompraVenta{RequestWrapper[facturacion.ReversionAnulacionFactura]{request: b.request}}
 }
 
 type anulacionFacturaBuilder struct {
@@ -492,7 +490,7 @@ func (b *anulacionFacturaBuilder) WithCodigoMotivo(codigoMotivo int) *anulacionF
 }
 
 func (b *anulacionFacturaBuilder) Build() AnulacionFacturaCompraVenta {
-	return AnulacionFacturaCompraVenta{requestWrapper[facturacion.AnulacionFactura]{request: b.request}}
+	return AnulacionFacturaCompraVenta{RequestWrapper[facturacion.AnulacionFactura]{request: b.request}}
 }
 
 type recepcionFacturaBuilder struct {
@@ -570,7 +568,7 @@ func (b *recepcionFacturaBuilder) WithHashArchivo(hashArchivo string) *recepcion
 }
 
 func (b *recepcionFacturaBuilder) Build() RecepcionFactura {
-	return RecepcionFactura{requestWrapper[facturacion.RecepcionFactura]{request: b.request}}
+	return RecepcionFactura{RequestWrapper[facturacion.RecepcionFactura]{request: b.request}}
 }
 
 type recepcionMasivaFacturaBuilder struct {
@@ -639,7 +637,7 @@ func (b *recepcionMasivaFacturaBuilder) WithCantidadFacturas(cantidadFacturas in
 }
 
 func (b *recepcionMasivaFacturaBuilder) Build() RecepcionMasivaFacturaCompraVenta {
-	return RecepcionMasivaFacturaCompraVenta{requestWrapper[facturacion.RecepcionMasivaFactura]{request: b.request}}
+	return RecepcionMasivaFacturaCompraVenta{RequestWrapper[facturacion.RecepcionMasivaFactura]{request: b.request}}
 }
 
 type verificarComunicacionBuilder struct {
@@ -647,7 +645,7 @@ type verificarComunicacionBuilder struct {
 }
 
 func (b *verificarComunicacionBuilder) Build() VerificarComunicacionCompraVenta {
-	return VerificarComunicacionCompraVenta{requestWrapper[facturacion.VerificarComunicacion]{request: b.request}}
+	return VerificarComunicacionCompraVenta{RequestWrapper[facturacion.VerificarComunicacion]{request: b.request}}
 }
 
 type validacionRecepcionPaqueteFacturaBuilder struct {
@@ -704,7 +702,7 @@ func (b *validacionRecepcionPaqueteFacturaBuilder) WithCodigoRecepcion(codigoRec
 }
 
 func (b *validacionRecepcionPaqueteFacturaBuilder) Build() ValidacionRecepcionPaqueteFacturaCompraVenta {
-	return ValidacionRecepcionPaqueteFacturaCompraVenta{requestWrapper[facturacion.ValidacionRecepcionPaqueteFactura]{request: b.request}}
+	return ValidacionRecepcionPaqueteFacturaCompraVenta{RequestWrapper[facturacion.ValidacionRecepcionPaqueteFactura]{request: b.request}}
 }
 
 type verificacionEstadoFacturaBuilder struct {
@@ -772,7 +770,7 @@ func (b *verificacionEstadoFacturaBuilder) WithCuf(cuf string) *verificacionEsta
 }
 
 func (b *verificacionEstadoFacturaBuilder) Build() VerificacionEstadoFacturaCompraVenta {
-	return VerificacionEstadoFacturaCompraVenta{requestWrapper[facturacion.VerificacionEstadoFactura]{request: b.request}}
+	return VerificacionEstadoFacturaCompraVenta{RequestWrapper[facturacion.VerificacionEstadoFactura]{request: b.request}}
 }
 
 type validacionRecepcionMasivaFacturaBuilder struct {
@@ -840,5 +838,5 @@ func (b *validacionRecepcionMasivaFacturaBuilder) WithCodigoRecepcion(codigoRece
 }
 
 func (b *validacionRecepcionMasivaFacturaBuilder) Build() ValidacionRecepcionMasivaFacturaCompraVenta {
-	return ValidacionRecepcionMasivaFacturaCompraVenta{requestWrapper[facturacion.ValidacionRecepcionMasivaFactura]{request: b.request}}
+	return ValidacionRecepcionMasivaFacturaCompraVenta{RequestWrapper[facturacion.ValidacionRecepcionMasivaFactura]{request: b.request}}
 }

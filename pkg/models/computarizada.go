@@ -11,50 +11,50 @@ import (
 
 // AnulacionFacturaComputarizada representa la solicitud opaca para anular una factura en la modalidad computarizada.
 type AnulacionFacturaComputarizada struct {
-	requestWrapper[facturacion.AnulacionFactura]
+	RequestWrapper[facturacion.AnulacionFactura]
 }
 
 // RecepcionFacturaComputarizada representa la solicitud opaca para la recepción de una factura computarizada.
 type RecepcionFacturaComputarizada struct {
-	requestWrapper[facturacion.RecepcionFactura]
+	RequestWrapper[facturacion.RecepcionFactura]
 }
 
 // VerificarComunicacionComputarizada representa la solicitud opaca para verificar la conexión con el SIAT.
 type VerificarComunicacionComputarizada struct {
-	requestWrapper[facturacion.VerificarComunicacion]
+	RequestWrapper[facturacion.VerificarComunicacion]
 }
 
 // ReversionAnulacionFacturaComputarizada representa la solicitud opaca para la reversión de anulación de una factura computarizada.
 type ReversionAnulacionFacturaComputarizada struct {
-	requestWrapper[facturacion.ReversionAnulacionFactura]
+	RequestWrapper[facturacion.ReversionAnulacionFactura]
 }
 
 type RecepcionPaqueteFacturaComputarizada struct {
-	requestWrapper[facturacion.RecepcionPaqueteFactura]
+	RequestWrapper[facturacion.RecepcionPaqueteFactura]
 }
 
 type ValidacionRecepcionPaqueteFacturaComputarizada struct {
-	requestWrapper[facturacion.ValidacionRecepcionPaqueteFactura]
+	RequestWrapper[facturacion.ValidacionRecepcionPaqueteFactura]
 }
 
 type RecepcionMasivaFacturaComputarizada struct {
-	requestWrapper[facturacion.RecepcionMasivaFactura]
+	RequestWrapper[facturacion.RecepcionMasivaFactura]
 }
 
 type RecepcionAnexosSuministroEnergiaComputarizada struct {
-	requestWrapper[facturacion.RecepcionAnexosSuministroEnergia]
+	RequestWrapper[facturacion.RecepcionAnexosSuministroEnergia]
 }
 
 type SuministroEnergiaAnexoComputarizada struct {
-	requestWrapper[facturacion.SuministroEnergiaAnexo]
+	RequestWrapper[facturacion.SuministroEnergiaAnexo]
 }
 
 type ValidacionRecepcionMasivaFacturaComputarizada struct {
-	requestWrapper[facturacion.ValidacionRecepcionMasivaFactura]
+	RequestWrapper[facturacion.ValidacionRecepcionMasivaFactura]
 }
 
 type VerificacionEstadoFacturaComputarizada struct {
-	requestWrapper[facturacion.VerificacionEstadoFactura]
+	RequestWrapper[facturacion.VerificacionEstadoFactura]
 }
 
 // --- Namespace ---
@@ -204,8 +204,8 @@ func (b *recepcionAnexosSuministroEnergiaComputarizadaBuilder) WithTipoFacturaDo
 
 func (b *recepcionAnexosSuministroEnergiaComputarizadaBuilder) AddAnexos(anexos ...SuministroEnergiaAnexoComputarizada) *recepcionAnexosSuministroEnergiaComputarizadaBuilder {
 	for _, anexo := range anexos {
-		if anexo.request != nil {
-			b.request.SolicitudRecepcionSuministroAnexos.AnexosList = append(b.request.SolicitudRecepcionSuministroAnexos.AnexosList, *anexo.request)
+		if internal := UnwrapInternalRequest[facturacion.SuministroEnergiaAnexo](anexo); internal != nil {
+			b.request.SolicitudRecepcionSuministroAnexos.AnexosList = append(b.request.SolicitudRecepcionSuministroAnexos.AnexosList, *internal)
 		}
 	}
 	return b
@@ -217,7 +217,7 @@ func (b *recepcionAnexosSuministroEnergiaComputarizadaBuilder) WithGiftCard(gift
 }
 
 func (b *recepcionAnexosSuministroEnergiaComputarizadaBuilder) Build() RecepcionAnexosSuministroEnergiaComputarizada {
-	return RecepcionAnexosSuministroEnergiaComputarizada{requestWrapper[facturacion.RecepcionAnexosSuministroEnergia]{request: b.request}}
+	return RecepcionAnexosSuministroEnergiaComputarizada{RequestWrapper[facturacion.RecepcionAnexosSuministroEnergia]{request: b.request}}
 }
 
 type suministroEnergiaAnexoComputarizadaBuilder struct {
@@ -240,7 +240,7 @@ func (b *suministroEnergiaAnexoComputarizadaBuilder) WithMontoRecarga(monto floa
 }
 
 func (b *suministroEnergiaAnexoComputarizadaBuilder) Build() SuministroEnergiaAnexoComputarizada {
-	return SuministroEnergiaAnexoComputarizada{requestWrapper[facturacion.SuministroEnergiaAnexo]{request: b.request}}
+	return SuministroEnergiaAnexoComputarizada{RequestWrapper[facturacion.SuministroEnergiaAnexo]{request: b.request}}
 }
 
 type recepcionMasivaFacturaComputarizadaBuilder struct {
@@ -309,7 +309,7 @@ func (b *recepcionMasivaFacturaComputarizadaBuilder) WithCantidadFacturas(cantid
 }
 
 func (b *recepcionMasivaFacturaComputarizadaBuilder) Build() RecepcionMasivaFacturaComputarizada {
-	return RecepcionMasivaFacturaComputarizada{requestWrapper[facturacion.RecepcionMasivaFactura]{request: b.request}}
+	return RecepcionMasivaFacturaComputarizada{RequestWrapper[facturacion.RecepcionMasivaFactura]{request: b.request}}
 }
 
 type verificacionEstadoFacturaComputarizadaBuilder struct {
@@ -377,7 +377,7 @@ func (b *verificacionEstadoFacturaComputarizadaBuilder) WithCuf(cuf string) *ver
 }
 
 func (b *verificacionEstadoFacturaComputarizadaBuilder) Build() VerificacionEstadoFacturaComputarizada {
-	return VerificacionEstadoFacturaComputarizada{requestWrapper[facturacion.VerificacionEstadoFactura]{request: b.request}}
+	return VerificacionEstadoFacturaComputarizada{RequestWrapper[facturacion.VerificacionEstadoFactura]{request: b.request}}
 }
 
 type validacionRecepcionMasivaFacturaComputarizadaBuilder struct {
@@ -445,7 +445,7 @@ func (b *validacionRecepcionMasivaFacturaComputarizadaBuilder) WithCodigoRecepci
 }
 
 func (b *validacionRecepcionMasivaFacturaComputarizadaBuilder) Build() ValidacionRecepcionMasivaFacturaComputarizada {
-	return ValidacionRecepcionMasivaFacturaComputarizada{requestWrapper[facturacion.ValidacionRecepcionMasivaFactura]{request: b.request}}
+	return ValidacionRecepcionMasivaFacturaComputarizada{RequestWrapper[facturacion.ValidacionRecepcionMasivaFactura]{request: b.request}}
 }
 
 type recepcionPaqueteFacturaComputarizadaBuilder struct {
@@ -538,7 +538,7 @@ func (b *recepcionPaqueteFacturaComputarizadaBuilder) WithCodigoEvento(codigoEve
 }
 
 func (b *recepcionPaqueteFacturaComputarizadaBuilder) Build() RecepcionPaqueteFacturaComputarizada {
-	return RecepcionPaqueteFacturaComputarizada{requestWrapper[facturacion.RecepcionPaqueteFactura]{request: b.request}}
+	return RecepcionPaqueteFacturaComputarizada{RequestWrapper[facturacion.RecepcionPaqueteFactura]{request: b.request}}
 }
 
 type reversionAnulacionFacturaComputarizadaBuilder struct {
@@ -606,7 +606,7 @@ func (b *reversionAnulacionFacturaComputarizadaBuilder) WithCuf(cuf string) *rev
 }
 
 func (b *reversionAnulacionFacturaComputarizadaBuilder) Build() ReversionAnulacionFacturaComputarizada {
-	return ReversionAnulacionFacturaComputarizada{requestWrapper[facturacion.ReversionAnulacionFactura]{request: b.request}}
+	return ReversionAnulacionFacturaComputarizada{RequestWrapper[facturacion.ReversionAnulacionFactura]{request: b.request}}
 }
 
 type verificarComunicacionComputarizadaBuilder struct {
@@ -615,7 +615,7 @@ type verificarComunicacionComputarizadaBuilder struct {
 
 // Build finaliza la construcción de la solicitud de verificación de comunicación.
 func (b *verificarComunicacionComputarizadaBuilder) Build() VerificarComunicacionComputarizada {
-	return VerificarComunicacionComputarizada{requestWrapper[facturacion.VerificarComunicacion]{request: b.request}}
+	return VerificarComunicacionComputarizada{RequestWrapper[facturacion.VerificarComunicacion]{request: b.request}}
 }
 
 type anulacionFacturaComputarizadaBuilder struct {
@@ -702,7 +702,7 @@ func (b *anulacionFacturaComputarizadaBuilder) WithCodigoMotivo(codigoMotivo int
 
 // Build finaliza la construcción de la solicitud de anulación de factura.
 func (b *anulacionFacturaComputarizadaBuilder) Build() AnulacionFacturaComputarizada {
-	return AnulacionFacturaComputarizada{requestWrapper[facturacion.AnulacionFactura]{request: b.request}}
+	return AnulacionFacturaComputarizada{RequestWrapper[facturacion.AnulacionFactura]{request: b.request}}
 }
 
 type recepcionFacturaComputarizadaBuilder struct {
@@ -795,7 +795,7 @@ func (b *recepcionFacturaComputarizadaBuilder) WithHashArchivo(hashArchivo strin
 
 // Build finaliza la construcción de la solicitud de recepción de factura.
 func (b *recepcionFacturaComputarizadaBuilder) Build() RecepcionFacturaComputarizada {
-	return RecepcionFacturaComputarizada{requestWrapper[facturacion.RecepcionFactura]{request: b.request}}
+	return RecepcionFacturaComputarizada{RequestWrapper[facturacion.RecepcionFactura]{request: b.request}}
 }
 
 type validacionRecepcionPaqueteFacturaComputarizadaBuilder struct {
@@ -852,5 +852,5 @@ func (b *validacionRecepcionPaqueteFacturaComputarizadaBuilder) WithCodigoRecepc
 }
 
 func (b *validacionRecepcionPaqueteFacturaComputarizadaBuilder) Build() ValidacionRecepcionPaqueteFacturaComputarizada {
-	return ValidacionRecepcionPaqueteFacturaComputarizada{requestWrapper[facturacion.ValidacionRecepcionPaqueteFactura]{request: b.request}}
+	return ValidacionRecepcionPaqueteFacturaComputarizada{RequestWrapper[facturacion.ValidacionRecepcionPaqueteFactura]{request: b.request}}
 }

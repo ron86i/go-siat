@@ -26,48 +26,48 @@ type SiatCodigosService struct {
 // VerificarComunicacion realiza una prueba de conectividad con el servicio de códigos del SIAT.
 // Es útil para validar que las credenciales base (Token, URL) y la conexión de red
 // estén funcionando correctamente antes de realizar operaciones de negocio.
-func (s *SiatCodigosService) VerificarComunicacion(ctx context.Context, config Config, opaqueReq models.VerificarComunicacionCodigos) (*soap.EnvelopeResponse[codigos.VerificarComunicacionResponse], error) {
+func (s *SiatCodigosService) VerificarComunicacion(ctx context.Context, config port.Config, opaqueReq models.VerificarComunicacionCodigos) (*soap.EnvelopeResponse[codigos.VerificarComunicacionResponse], error) {
 	return performSoapRequest[codigos.VerificarComunicacion, codigos.VerificarComunicacionResponse](ctx, s.httpClient, s.url, config, opaqueReq)
 }
 
 // NotificaCertificadoRevocado informa al SIAT la revocación de un certificado digital.
 // Este procedimiento es crítico cuando un certificado ha sido comprometido o ya no es válido,
 // asegurando que las futuras firmas electrónicas asociadas no sean procesadas.
-func (s *SiatCodigosService) NotificaCertificadoRevocado(ctx context.Context, config Config, opaqueReq models.NotificaCertificadoRevocado) (*soap.EnvelopeResponse[codigos.NotificaCertificadoRevocadoResponse], error) {
+func (s *SiatCodigosService) NotificaCertificadoRevocado(ctx context.Context, config port.Config, opaqueReq models.NotificaCertificadoRevocado) (*soap.EnvelopeResponse[codigos.NotificaCertificadoRevocadoResponse], error) {
 	return performSoapRequest[codigos.NotificaCertificadoRevocado, codigos.NotificaCertificadoRevocadoResponse](ctx, s.httpClient, s.url, config, opaqueReq)
 }
 
 // SolicitudCufd solicita el Código Único de Facturación Diaria (CUFD) al SIAT.
 // Este código es indispensable para la emisión de facturas y tiene una vigencia de 24 horas.
 // Configura automáticamente los parámetros base (Ambiente, Modalidad, Sistema, NIT).
-func (s *SiatCodigosService) SolicitudCufd(ctx context.Context, config Config, opaqueReq models.Cufd) (*soap.EnvelopeResponse[codigos.CufdResponse], error) {
+func (s *SiatCodigosService) SolicitudCufd(ctx context.Context, config port.Config, opaqueReq models.Cufd) (*soap.EnvelopeResponse[codigos.CufdResponse], error) {
 	return performSoapRequest[codigos.Cufd, codigos.CufdResponse](ctx, s.httpClient, s.url, config, opaqueReq)
 }
 
 // SolicitudCufdMasivo permite la generación masiva de Códigos Únicos de Facturación Diaria (CUFD).
 // Es especialmente útil para sistemas que gestionan múltiples puntos de venta o sucursales de forma centralizada,
 // optimizando el proceso de obtención de credenciales de facturación.
-func (s *SiatCodigosService) SolicitudCufdMasivo(ctx context.Context, config Config, opaqueReq models.CufdMasivo) (*soap.EnvelopeResponse[codigos.CufdMasivoResponse], error) {
+func (s *SiatCodigosService) SolicitudCufdMasivo(ctx context.Context, config port.Config, opaqueReq models.CufdMasivo) (*soap.EnvelopeResponse[codigos.CufdMasivoResponse], error) {
 	return performSoapRequest[codigos.CufdMasivo, codigos.CufdMasivoResponse](ctx, s.httpClient, s.url, config, opaqueReq)
 }
 
 // SolicitudCuis solicita el Código Único de Inicio de Sistemas (CUIS) al SIAT.
 // Este código es necesario para iniciar operaciones y tiene una vigencia determinada.
-func (s *SiatCodigosService) SolicitudCuis(ctx context.Context, config Config, opaqueReq models.Cuis) (*soap.EnvelopeResponse[codigos.CuisResponse], error) {
+func (s *SiatCodigosService) SolicitudCuis(ctx context.Context, config port.Config, opaqueReq models.Cuis) (*soap.EnvelopeResponse[codigos.CuisResponse], error) {
 	return performSoapRequest[codigos.Cuis, codigos.CuisResponse](ctx, s.httpClient, s.url, config, opaqueReq)
 }
 
 // SolicitudCuisMasivo permite la generación masiva de Códigos Únicos de Inicio de Sistemas (CUIS).
 // Esta función facilita la configuración inicial de múltiples puntos de venta o sucursales de forma simultánea,
 // reduciendo la latencia de red y simplificando la gestión de credenciales.
-func (s *SiatCodigosService) SolicitudCuisMasivo(ctx context.Context, config Config, opaqueReq models.CuisMasivo) (*soap.EnvelopeResponse[codigos.CuisMasivoResponse], error) {
+func (s *SiatCodigosService) SolicitudCuisMasivo(ctx context.Context, config port.Config, opaqueReq models.CuisMasivo) (*soap.EnvelopeResponse[codigos.CuisMasivoResponse], error) {
 	return performSoapRequest[codigos.CuisMasivo, codigos.CuisMasivoResponse](ctx, s.httpClient, s.url, config, opaqueReq)
 }
 
 // VerificarNit verifica la validez de un Número de Identificación Tributaria (NIT) directamente con el servicio SIAT.
 // El proceso incluye la construcción de un sobre SOAP con las credenciales y parámetros de configuración (Ambiente, Modalidad, Sistema),
 // la ejecución de una petición HTTP POST y la posterior decodificación de la respuesta XML para determinar si el NIT se encuentra activo.
-func (s *SiatCodigosService) VerificarNit(ctx context.Context, config Config, opaqueReq models.VerificarNit) (*soap.EnvelopeResponse[codigos.VerificarNitResponse], error) {
+func (s *SiatCodigosService) VerificarNit(ctx context.Context, config port.Config, opaqueReq models.VerificarNit) (*soap.EnvelopeResponse[codigos.VerificarNitResponse], error) {
 	return performSoapRequest[codigos.VerificarNit, codigos.VerificarNitResponse](ctx, s.httpClient, s.url, config, opaqueReq)
 }
 

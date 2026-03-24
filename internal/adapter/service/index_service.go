@@ -14,9 +14,6 @@ import (
 	"github.com/ron86i/go-siat/pkg/models"
 )
 
-// Config es un alias local para port.Config, permitiendo usar Config directamente en los métodos del servicio.
-type Config = port.Config
-
 // SiatService define los diferentes servicios disponibles en el SIAT.
 type SiatService string
 
@@ -89,7 +86,7 @@ func (r requestWrapper[T]) MarshalXML(e *xml.Encoder, start xml.StartElement) er
 // delegando la operación al paquete models. Esto mantiene la opacidad hacia el usuario final
 // mientras permite que las capas internas accedan a los datos necesarios para la comunicación.
 func getInternalRequest[T any](req any) *T {
-	return models.GetInternalRequest[T](req)
+	return models.UnwrapInternalRequest[T](req)
 }
 
 /*
