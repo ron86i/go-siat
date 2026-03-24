@@ -36,7 +36,7 @@ Integrarse con los servicios web SOAP del SIAT para la facturación electrónica
 - 📦 **Abstracción SOAP Total**: Gestión transparente de la capa SOAP. El desarrollador interactúa con structs, no con XML.
 - ✍️ **Firma Digital (XMLDSig) Integrada**: Utilidades para firmar facturas automáticamente con su certificado digital.
 - 🚀 **Alto Rendimiento**: Cero dependencias innecesarias, aprovechando la velocidad nativa de Go para la manipulación y compresión de bytes.
-- 🧩 **Modular**: Múltiples servicios (`Codigos`, `Sincronizacion`, `Operaciones`, `CompraVenta`, `Computarizada`) claramente separados.
+- 🧩 **Modular**: Múltiples servicios (`Codigos`, `Sincronizacion`, `Operaciones`, `CompraVenta`, `Electronica`, `Computarizada`) claramente separados.
 - 🏢 **Multi-Sector**: Soporte nativo y verificado para **35 sectores** distintos (Compra y Venta, Hoteles, Minería, Hospitales, Hidrocarburos, etc.).
 
 ---
@@ -60,8 +60,9 @@ El SDK cubre los servicios críticos del ecosistema SIAT:
 | **Códigos** | Solicitud de CUIS/CUFD (Individual y Masivo), Validación de NIT, Comunicación. |
 | **Sincronización** | Catálogos de actividades, paramétricas, productos, servicios y documentos sector. |
 | **Operaciones** | Registro/Cierre de Puntos de Venta, Gestión de Eventos Significativos. |
-| **Electrónica en Línea** | Soporte completo para facturación con firma digital (Sector 1 y especiales). |
-| **Computarizada en Línea** | Soporte para modalidades sin firma digital (Sector 1). |
+| **Compra-Venta** | Servicio específico para compra venta, bonificaciones y tasas. |
+| **Electrónica en Línea** | Soporte completo para facturación con firma digital. |
+| **Computarizada en Línea** | Soporte para modalidades sin firma digital. |
 | **Sectores Especiales** | Soporte verificado para los **35 sectores** reglamentarios del SIAT. |
 
 ---
@@ -71,7 +72,7 @@ El SDK cubre los servicios críticos del ecosistema SIAT:
 `go-siat` incluye modelos de dominio, builders y **tests de integración** para los **35 sectores** reglamentarios del SIAT (ubicados en `pkg/models/facturas/`):
 
 ### 🏢 Estándar y Servicios
-- **Compra-Venta**: El sector estándar para la mayoría de comercios.
+- **Compra-Venta (Sector 1)**: El sector estándar para la mayoría de comercios.
 - **Alquiler de Bienes Inmuebles**: Para el sector inmobiliario y arrendamientos.
 - **Seguros**: Emisión de pólizas y servicios de aseguradoras.
 - **Servicios Básicos**: Suministro de energía eléctrica, agua, gas y telecomunicaciones.
@@ -167,9 +168,9 @@ A continuación, mostramos algunos de los flujos más comunes. Si desea ver más
 <details>
   <summary>📚 Emitir y Enviar una Factura (Flujo Completo)</summary>
 
-Este ejemplo muestra cómo construir una factura, firmarla, prepararla para el SIAT y enviarla.
+Este ejemplo muestra cómo construir una factura, firmarla, prepararla para el SIAT y enviarla usando la **Modalidad Electrónica**.
 
-**📋 Ejemplo: Recepción de Factura**
+**📋 Ejemplo: Recepción de Factura Electrónica**
 
 ```go
 package main
@@ -181,6 +182,7 @@ import (
     "time"
 
     "github.com/ron86i/go-siat"
+    "github.com/ron86i/go-siat/pkg/models"
     "github.com/ron86i/go-siat/pkg/models/facturas"
     "github.com/ron86i/go-siat/pkg/utils"
 )
@@ -214,7 +216,7 @@ func main() {
 
     detalle := facturas.NewCompraVentaDetalleBuilder().
         WithActividadEconomica("477300").
-        WithCodigoProductoSin(622539). // Ahora usa tipos numéricos correctos
+        WithCodigoProductoSin(622539).
         WithDescripcion("PRODUCTO DEMO").
         WithCantidad(1).
         WithPrecioUnitario(100).
@@ -232,8 +234,8 @@ func main() {
     signedXML, _ := utils.SignXML(xmlData, "key.pem", "cert.crt")
     hash, archivoBase64, _ := utils.CompressAndHash(signedXML)
 
-    // 5. Enviar al SIAT
-    req := models.CompraVenta().NewRecepcionFacturaBuilder().
+    // 5. Enviar al SIAT usando el namespace Electronica
+    req := models.Electronica().NewRecepcionFacturaBuilder().
         WithCodigoAmbiente(1).
         WithNit(nit).
         WithCufd("TU_CUFD").
@@ -244,7 +246,7 @@ func main() {
         WithHashArchivo(hash).
         Build()
 
-    resp, err := s.CompraVenta().RecepcionFactura(context.Background(), cfg, req)
+    resp, err := s.Electronica().RecepcionFactura(context.Background(), cfg, req)
     if err != nil {
         log.Fatal(err)
     }
@@ -265,9 +267,11 @@ Para una comprensión profunda de cada servicio, los **Tests de Integración** a
 | **Códigos** | [`siat_codigos_service_test.go`](./internal/adapter/service/siat_codigos_service_test.go) |
 | **Sincronización** | [`siat_sincronizacion_service_test.go`](./internal/adapter/service/siat_sincronizacion_service_test.go) |
 | **Operaciones** | [`siat_operaciones_service_test.go`](./internal/adapter/service/siat_operaciones_service_test.go) |
-| **Facturación (Sectores)** | [`pkg/models/facturas/`](./pkg/models/facturas/) |
+| **Compra-Venta** | [`siat_compra_venta_service_test.go`](./internal/adapter/service/siat_compra_venta_service_test.go) |
 | **Electrónica** | [`siat_electronica_service_test.go`](./internal/adapter/service/siat_electronica_service_test.go) |
 | **Computarizada** | [`siat_computarizada_service_test.go`](./internal/adapter/service/siat_computarizada_service_test.go) |
+| **Facturación (Sectores)** | [`pkg/models/facturas/`](./pkg/models/facturas/) |
+
 
 > **Configuración de Ambiente**
 > Antes de ejecutar los tests, asegúrese de crear un archivo `.env` configurado con sus credenciales del ambiente de pruebas del SIAT.
