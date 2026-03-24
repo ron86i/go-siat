@@ -1,8 +1,10 @@
 package siat
 
 import (
+	"crypto/tls"
 	"encoding/json"
 	"fmt"
+	"net"
 	"net/http"
 	"strings"
 	"time"
@@ -57,6 +59,7 @@ type SiatServices struct {
 	codigos        port.SiatCodigosService
 	compraVenta    port.SiatCompraVentaService
 	computarizada  port.SiatComputarizadaService
+	electronica    port.SiatElectronicaService
 }
 
 // Operaciones retorna el servicio para la gestión de puntos de venta y eventos significativos.
@@ -84,6 +87,11 @@ func (s *SiatServices) Computarizada() port.SiatComputarizadaService {
 	return s.computarizada
 }
 
+// Electronica retorna el servicio para el envío y anulación de facturas comerciales.
+func (s *SiatServices) Electronica() port.SiatElectronicaService {
+	return s.electronica
+}
+
 // New crea e inicializa una nueva instancia unificada de los servicios del SIAT.
 // Requiere la URL base del servicio (Pruebas o Producción) y un cliente HTTP opcional.
 // Si httpClient es nil, se utilizará uno por defecto con un tiempo de espera (timeout) de 15 segundos.
@@ -92,7 +100,24 @@ func New(baseUrl string, httpClient *http.Client) (*SiatServices, error) {
 		clonedClient := *httpClient
 		httpClient = &clonedClient
 	} else {
-		httpClient = &http.Client{Timeout: 15 * time.Second}
+		httpClient = &http.Client{
+			Transport: &http.Transport{
+				MaxIdleConns:        100,
+				MaxConnsPerHost:     100,
+				MaxIdleConnsPerHost: 20,
+				IdleConnTimeout:     90 * time.Second,
+				Proxy:               http.ProxyFromEnvironment,
+				DialContext: (&net.Dialer{
+					Timeout:   15 * time.Second,
+					KeepAlive: 30 * time.Second,
+				}).DialContext,
+				TLSHandshakeTimeout: 15 * time.Second,
+				TLSClientConfig: &tls.Config{
+					MinVersion: tls.VersionTLS12,
+				},
+			},
+			Timeout: 45 * time.Second,
+		}
 	}
 
 	baseUrl = strings.TrimSpace(baseUrl)
@@ -121,11 +146,16 @@ func New(baseUrl string, httpClient *http.Client) (*SiatServices, error) {
 	if err != nil {
 		return nil, err
 	}
+	electronica, err := service.NewSiatElectronicaService(baseUrl, httpClient)
+	if err != nil {
+		return nil, err
+	}
 	return &SiatServices{
 		operaciones:    operaciones,
 		sincronizacion: sincronizacion,
 		codigos:        codigos,
 		compraVenta:    compraVenta,
 		computarizada:  computarizada,
+		electronica:    electronica,
 	}, nil
 }
