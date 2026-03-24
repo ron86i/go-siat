@@ -6,23 +6,25 @@ import (
 	"time"
 
 	"github.com/ron86i/go-siat"
+	"github.com/ron86i/go-siat/pkg/models"
+
 	"github.com/ron86i/go-siat/internal/core/domain/datatype"
 	"github.com/ron86i/go-siat/internal/core/domain/documentos"
 )
 
 // Engarrafadoras representa la estructura completa de una factura de engarrafadoras lista para ser procesada.
 type Engarrafadoras struct {
-	requestWrapper[documentos.FacturaEngarrafadoras]
+	models.RequestWrapper[documentos.FacturaEngarrafadoras]
 }
 
 // EngarrafadorasCabecera representa la sección de cabecera de la factura.
 type EngarrafadorasCabecera struct {
-	requestWrapper[documentos.CabeceraEngarrafadoras]
+	models.RequestWrapper[documentos.CabeceraEngarrafadoras]
 }
 
 // EngarrafadorasDetalle representa un ítem individual dentro del detalle.
 type EngarrafadorasDetalle struct {
-	requestWrapper[documentos.DetalleEngarrafadoras]
+	models.RequestWrapper[documentos.DetalleEngarrafadoras]
 }
 
 // NewEngarrafadoras inicia el proceso de construcción de la factura.
@@ -57,15 +59,15 @@ type engarrafadorasBuilder struct {
 }
 
 func (b *engarrafadorasBuilder) WithCabecera(req EngarrafadorasCabecera) *engarrafadorasBuilder {
-	if req.request != nil {
-		b.factura.Cabecera = *req.request
+	if internal := models.UnwrapInternalRequest[documentos.CabeceraEngarrafadoras](req); internal != nil {
+		b.factura.Cabecera = *internal
 	}
 	return b
 }
 
 func (b *engarrafadorasBuilder) AddDetalle(req EngarrafadorasDetalle) *engarrafadorasBuilder {
-	if req.request != nil {
-		b.factura.Detalle = append(b.factura.Detalle, *req.request)
+	if internal := models.UnwrapInternalRequest[documentos.DetalleEngarrafadoras](req); internal != nil {
+		b.factura.Detalle = append(b.factura.Detalle, *internal)
 	}
 	return b
 }
@@ -83,7 +85,7 @@ func (b *engarrafadorasBuilder) WithModalidad(tipo int) *engarrafadorasBuilder {
 }
 
 func (b *engarrafadorasBuilder) Build() Engarrafadoras {
-	return Engarrafadoras{requestWrapper[documentos.FacturaEngarrafadoras]{request: b.factura}}
+	return Engarrafadoras{models.NewRequestWrapper(b.factura)}
 }
 
 type engarrafadorasCabeceraBuilder struct {
@@ -282,7 +284,7 @@ func (b *engarrafadorasCabeceraBuilder) WithCodigoDocumentoSector(v int) *engarr
 }
 
 func (b *engarrafadorasCabeceraBuilder) Build() EngarrafadorasCabecera {
-	return EngarrafadorasCabecera{requestWrapper[documentos.CabeceraEngarrafadoras]{request: b.cabecera}}
+	return EngarrafadorasCabecera{models.NewRequestWrapper(b.cabecera)}
 }
 
 type engarrafadorasDetalleBuilder struct {
@@ -344,5 +346,5 @@ func (b *engarrafadorasDetalleBuilder) WithSubTotal(v float64) *engarrafadorasDe
 }
 
 func (b *engarrafadorasDetalleBuilder) Build() EngarrafadorasDetalle {
-	return EngarrafadorasDetalle{requestWrapper[documentos.DetalleEngarrafadoras]{request: b.detalle}}
+	return EngarrafadorasDetalle{models.NewRequestWrapper(b.detalle)}
 }

@@ -7,6 +7,8 @@ import (
 	"time"
 
 	"github.com/ron86i/go-siat"
+	"github.com/ron86i/go-siat/pkg/models"
+
 	"github.com/ron86i/go-siat/internal/core/domain/datatype"
 	"github.com/ron86i/go-siat/internal/core/domain/documentos"
 )
@@ -14,17 +16,17 @@ import (
 // Hotel representa la estructura completa de una factura de hotel
 // lista para ser procesada.
 type Hotel struct {
-	requestWrapper[documentos.FacturaHotel]
+	models.RequestWrapper[documentos.FacturaHotel]
 }
 
 // HotelCabecera representa la sección de cabecera de la factura.
 type HotelCabecera struct {
-	requestWrapper[documentos.CabeceraHotel]
+	models.RequestWrapper[documentos.CabeceraHotel]
 }
 
 // HotelDetalle representa un ítem individual dentro del detalle.
 type HotelDetalle struct {
-	requestWrapper[documentos.DetalleHotel]
+	models.RequestWrapper[documentos.DetalleHotel]
 }
 
 // NewHotel inicia el proceso de construcción de la factura.
@@ -59,15 +61,15 @@ type hotelBuilder struct {
 }
 
 func (b *hotelBuilder) WithCabecera(req HotelCabecera) *hotelBuilder {
-	if req.request != nil {
-		b.factura.Cabecera = *req.request
+	if internal := models.UnwrapInternalRequest[documentos.CabeceraHotel](req); internal != nil {
+		b.factura.Cabecera = *internal
 	}
 	return b
 }
 
 func (b *hotelBuilder) AddDetalle(req HotelDetalle) *hotelBuilder {
-	if req.request != nil {
-		b.factura.Detalle = append(b.factura.Detalle, *req.request)
+	if internal := models.UnwrapInternalRequest[documentos.DetalleHotel](req); internal != nil {
+		b.factura.Detalle = append(b.factura.Detalle, *internal)
 	}
 	return b
 }
@@ -85,7 +87,7 @@ func (b *hotelBuilder) WithModalidad(tipo int) *hotelBuilder {
 }
 
 func (b *hotelBuilder) Build() Hotel {
-	return Hotel{requestWrapper[documentos.FacturaHotel]{request: b.factura}}
+	return Hotel{models.NewRequestWrapper(b.factura)}
 }
 
 type hotelCabeceraBuilder struct {
@@ -340,7 +342,7 @@ func (b *hotelCabeceraBuilder) WithCodigoDocumentoSector(v int) *hotelCabeceraBu
 }
 
 func (b *hotelCabeceraBuilder) Build() HotelCabecera {
-	return HotelCabecera{requestWrapper[documentos.CabeceraHotel]{request: b.cabecera}}
+	return HotelCabecera{models.NewRequestWrapper(b.cabecera)}
 }
 
 type hotelDetalleBuilder struct {
@@ -428,5 +430,5 @@ func (b *hotelDetalleBuilder) WithDetalleHuespedes(v any) *hotelDetalleBuilder {
 }
 
 func (b *hotelDetalleBuilder) Build() HotelDetalle {
-	return HotelDetalle{requestWrapper[documentos.DetalleHotel]{request: b.detalle}}
+	return HotelDetalle{models.NewRequestWrapper(b.detalle)}
 }

@@ -7,6 +7,8 @@ import (
 	"time"
 
 	"github.com/ron86i/go-siat"
+	"github.com/ron86i/go-siat/pkg/models"
+
 	"github.com/ron86i/go-siat/internal/core/domain/datatype"
 	"github.com/ron86i/go-siat/internal/core/domain/documentos"
 )
@@ -14,17 +16,17 @@ import (
 // ComercialExportacion representa la estructura completa de una factura comercial
 // de exportación lista para ser procesada.
 type ComercialExportacion struct {
-	requestWrapper[documentos.FacturaComercialExportacion]
+	models.RequestWrapper[documentos.FacturaComercialExportacion]
 }
 
 // ComercialExportacionCabecera representa la sección de cabecera de la factura.
 type ComercialExportacionCabecera struct {
-	requestWrapper[documentos.CabeceraComercialExportacion]
+	models.RequestWrapper[documentos.CabeceraComercialExportacion]
 }
 
 // ComercialExportacionDetalle representa un ítem individual dentro del detalle.
 type ComercialExportacionDetalle struct {
-	requestWrapper[documentos.DetalleComercialExportacion]
+	models.RequestWrapper[documentos.DetalleComercialExportacion]
 }
 
 // NewComercialExportacionBuilder inicia el proceso de construcción de la factura.
@@ -60,15 +62,15 @@ type comercialExportacionBuilder struct {
 }
 
 func (b *comercialExportacionBuilder) WithCabecera(req ComercialExportacionCabecera) *comercialExportacionBuilder {
-	if req.request != nil {
-		b.factura.Cabecera = *req.request
+	if internal := models.UnwrapInternalRequest[documentos.CabeceraComercialExportacion](req); internal != nil {
+		b.factura.Cabecera = *internal
 	}
 	return b
 }
 
 func (b *comercialExportacionBuilder) AddDetalle(req ComercialExportacionDetalle) *comercialExportacionBuilder {
-	if req.request != nil {
-		b.factura.Detalle = append(b.factura.Detalle, *req.request)
+	if internal := models.UnwrapInternalRequest[documentos.DetalleComercialExportacion](req); internal != nil {
+		b.factura.Detalle = append(b.factura.Detalle, *internal)
 	}
 	return b
 }
@@ -86,7 +88,7 @@ func (b *comercialExportacionBuilder) WithModalidad(tipo int) *comercialExportac
 }
 
 func (b *comercialExportacionBuilder) Build() ComercialExportacion {
-	return ComercialExportacion{requestWrapper[documentos.FacturaComercialExportacion]{request: b.factura}}
+	return ComercialExportacion{models.NewRequestWrapper(b.factura)}
 }
 
 type comercialExportacionCabeceraBuilder struct {
@@ -381,7 +383,7 @@ func (b *comercialExportacionCabeceraBuilder) WithCodigoDocumentoSector(v int) *
 }
 
 func (b *comercialExportacionCabeceraBuilder) Build() ComercialExportacionCabecera {
-	return ComercialExportacionCabecera{requestWrapper[documentos.CabeceraComercialExportacion]{request: b.cabecera}}
+	return ComercialExportacionCabecera{models.NewRequestWrapper(b.cabecera)}
 }
 
 type comercialExportacionDetalleBuilder struct {
@@ -448,5 +450,5 @@ func (b *comercialExportacionDetalleBuilder) WithSubTotal(v float64) *comercialE
 }
 
 func (b *comercialExportacionDetalleBuilder) Build() ComercialExportacionDetalle {
-	return ComercialExportacionDetalle{requestWrapper[documentos.DetalleComercialExportacion]{request: b.detalle}}
+	return ComercialExportacionDetalle{models.NewRequestWrapper(b.detalle)}
 }

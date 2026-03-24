@@ -8,21 +8,22 @@ import (
 	"github.com/ron86i/go-siat"
 	"github.com/ron86i/go-siat/internal/core/domain/datatype"
 	"github.com/ron86i/go-siat/internal/core/domain/documentos"
+	"github.com/ron86i/go-siat/pkg/models"
 )
 
 // CompraVentaBonificaciones representa una factura de compra-venta con bonificaciones lista para procesar.
 type CompraVentaBonificaciones struct {
-	requestWrapper[documentos.FacturaCompraVentaBonificaciones]
+	models.RequestWrapper[documentos.FacturaCompraVentaBonificaciones]
 }
 
 // CompraVentaBonificacionesCabecera representa la cabecera de una factura de bonificaciones.
 type CompraVentaBonificacionesCabecera struct {
-	requestWrapper[documentos.CabeceraCompraVentaBonificaciones]
+	models.RequestWrapper[documentos.CabeceraCompraVentaBonificaciones]
 }
 
 // CompraVentaBonificacionesDetalle representa un ítem de detalle de una factura de bonificaciones.
 type CompraVentaBonificacionesDetalle struct {
-	requestWrapper[documentos.DetalleCompraVentaBonificaciones]
+	models.RequestWrapper[documentos.DetalleCompraVentaBonificaciones]
 }
 
 // NewCompraVentaBonificacionesBuilder inicia la construcción de una factura de compra-venta con bonificaciones.
@@ -72,21 +73,21 @@ func (b *compraVentaBonificacionesBuilder) WithModalidad(tipo int) *compraVentaB
 }
 
 func (b *compraVentaBonificacionesBuilder) WithCabecera(req CompraVentaBonificacionesCabecera) *compraVentaBonificacionesBuilder {
-	if req.request != nil {
-		b.factura.Cabecera = *req.request
+	if internal := models.UnwrapInternalRequest[documentos.CabeceraCompraVentaBonificaciones](req); internal != nil {
+		b.factura.Cabecera = *internal
 	}
 	return b
 }
 
 func (b *compraVentaBonificacionesBuilder) AddDetalle(req CompraVentaBonificacionesDetalle) *compraVentaBonificacionesBuilder {
-	if req.request != nil {
-		b.factura.Detalle = append(b.factura.Detalle, *req.request)
+	if internal := models.UnwrapInternalRequest[documentos.DetalleCompraVentaBonificaciones](req); internal != nil {
+		b.factura.Detalle = append(b.factura.Detalle, *internal)
 	}
 	return b
 }
 
 func (b *compraVentaBonificacionesBuilder) Build() CompraVentaBonificaciones {
-	return CompraVentaBonificaciones{requestWrapper[documentos.FacturaCompraVentaBonificaciones]{request: b.factura}}
+	return CompraVentaBonificaciones{models.NewRequestWrapper(b.factura)}
 }
 
 // --- Builder Cabecera Bonificaciones ---
@@ -267,7 +268,7 @@ func (b *compraVentaBonificacionesCabeceraBuilder) WithCodigoDocumentoSector(v i
 	return b
 }
 func (b *compraVentaBonificacionesCabeceraBuilder) Build() CompraVentaBonificacionesCabecera {
-	return CompraVentaBonificacionesCabecera{requestWrapper[documentos.CabeceraCompraVentaBonificaciones]{request: b.cabecera}}
+	return CompraVentaBonificacionesCabecera{models.NewRequestWrapper(b.cabecera)}
 }
 
 // --- Builder Detalle Bonificaciones ---
@@ -341,5 +342,5 @@ func (b *detalleBonificacionesBuilder) WithNumeroImei(v *string) *detalleBonific
 	return b
 }
 func (b *detalleBonificacionesBuilder) Build() CompraVentaBonificacionesDetalle {
-	return CompraVentaBonificacionesDetalle{requestWrapper[documentos.DetalleCompraVentaBonificaciones]{request: b.detalle}}
+	return CompraVentaBonificacionesDetalle{models.NewRequestWrapper(b.detalle)}
 }

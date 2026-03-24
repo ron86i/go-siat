@@ -6,6 +6,8 @@ import (
 	"time"
 
 	"github.com/ron86i/go-siat"
+	"github.com/ron86i/go-siat/pkg/models"
+
 	"github.com/ron86i/go-siat/internal/core/domain/datatype"
 	"github.com/ron86i/go-siat/internal/core/domain/documentos"
 )
@@ -13,17 +15,17 @@ import (
 // AlcanzadaIce representa la estructura completa de una factura Sector 14
 // lista para ser procesada.
 type AlcanzadaIce struct {
-	requestWrapper[documentos.FacturaAlcanzadaIce]
+	models.RequestWrapper[documentos.FacturaAlcanzadaIce]
 }
 
 // AlcanzadaIceCabecera representa la sección de cabecera de la factura.
 type AlcanzadaIceCabecera struct {
-	requestWrapper[documentos.CabeceraAlcanzadaIce]
+	models.RequestWrapper[documentos.CabeceraAlcanzadaIce]
 }
 
 // AlcanzadaIceDetalle representa un ítem individual dentro del detalle.
 type AlcanzadaIceDetalle struct {
-	requestWrapper[documentos.DetalleAlcanzadaIce]
+	models.RequestWrapper[documentos.DetalleAlcanzadaIce]
 }
 
 // NewAlcanzadaIceBuilder inicia el proceso de construcción de la factura.
@@ -58,15 +60,15 @@ type alcanzadaIceBuilder struct {
 }
 
 func (b *alcanzadaIceBuilder) WithCabecera(req AlcanzadaIceCabecera) *alcanzadaIceBuilder {
-	if req.request != nil {
-		b.factura.Cabecera = *req.request
+	if internal := models.UnwrapInternalRequest[documentos.CabeceraAlcanzadaIce](req); internal != nil {
+		b.factura.Cabecera = *internal
 	}
 	return b
 }
 
 func (b *alcanzadaIceBuilder) AddDetalle(req AlcanzadaIceDetalle) *alcanzadaIceBuilder {
-	if req.request != nil {
-		b.factura.Detalle = append(b.factura.Detalle, *req.request)
+	if internal := models.UnwrapInternalRequest[documentos.DetalleAlcanzadaIce](req); internal != nil {
+		b.factura.Detalle = append(b.factura.Detalle, *internal)
 	}
 	return b
 }
@@ -84,7 +86,7 @@ func (b *alcanzadaIceBuilder) WithModalidad(tipo int) *alcanzadaIceBuilder {
 }
 
 func (b *alcanzadaIceBuilder) Build() AlcanzadaIce {
-	return AlcanzadaIce{requestWrapper[documentos.FacturaAlcanzadaIce]{request: b.factura}}
+	return AlcanzadaIce{models.NewRequestWrapper(b.factura)}
 }
 
 type alcanzadaIceCabeceraBuilder struct {
@@ -305,7 +307,7 @@ func (b *alcanzadaIceCabeceraBuilder) WithCodigoDocumentoSector(v int) *alcanzad
 }
 
 func (b *alcanzadaIceCabeceraBuilder) Build() AlcanzadaIceCabecera {
-	return AlcanzadaIceCabecera{requestWrapper[documentos.CabeceraAlcanzadaIce]{request: b.cabecera}}
+	return AlcanzadaIceCabecera{models.NewRequestWrapper(b.cabecera)}
 }
 
 type alcanzadaIceDetalleBuilder struct {
@@ -449,5 +451,5 @@ func (b *alcanzadaIceDetalleBuilder) WithCantidadIce(v *float64) *alcanzadaIceDe
 }
 
 func (b *alcanzadaIceDetalleBuilder) Build() AlcanzadaIceDetalle {
-	return AlcanzadaIceDetalle{requestWrapper[documentos.DetalleAlcanzadaIce]{request: b.detalle}}
+	return AlcanzadaIceDetalle{models.NewRequestWrapper(b.detalle)}
 }

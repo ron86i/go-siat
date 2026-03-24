@@ -6,6 +6,8 @@ import (
 	"time"
 
 	"github.com/ron86i/go-siat"
+	"github.com/ron86i/go-siat/pkg/models"
+
 	"github.com/ron86i/go-siat/internal/core/domain/datatype"
 	"github.com/ron86i/go-siat/internal/core/domain/documentos"
 )
@@ -13,17 +15,17 @@ import (
 // ComercialExportacionServicio representa la estructura completa de una factura comercial
 // de exportación de servicios lista para ser procesada.
 type ComercialExportacionServicio struct {
-	requestWrapper[documentos.FacturaComercialExportacionServicio]
+	models.RequestWrapper[documentos.FacturaComercialExportacionServicio]
 }
 
 // ComercialExportacionServicioCabecera representa la sección de cabecera de la factura.
 type ComercialExportacionServicioCabecera struct {
-	requestWrapper[documentos.CabeceraComercialExportacionServicio]
+	models.RequestWrapper[documentos.CabeceraComercialExportacionServicio]
 }
 
 // ComercialExportacionServicioDetalle representa un ítem individual dentro del detalle.
 type ComercialExportacionServicioDetalle struct {
-	requestWrapper[documentos.DetalleComercialExportacionServicio]
+	models.RequestWrapper[documentos.DetalleComercialExportacionServicio]
 }
 
 // NewComercialExportacionServicioBuilder inicia el proceso de construcción de la factura.
@@ -61,15 +63,15 @@ type comercialExportacionServicioBuilder struct {
 }
 
 func (b *comercialExportacionServicioBuilder) WithCabecera(req ComercialExportacionServicioCabecera) *comercialExportacionServicioBuilder {
-	if req.request != nil {
-		b.factura.Cabecera = *req.request
+	if internal := models.UnwrapInternalRequest[documentos.CabeceraComercialExportacionServicio](req); internal != nil {
+		b.factura.Cabecera = *internal
 	}
 	return b
 }
 
 func (b *comercialExportacionServicioBuilder) AddDetalle(req ComercialExportacionServicioDetalle) *comercialExportacionServicioBuilder {
-	if req.request != nil {
-		b.factura.Detalle = append(b.factura.Detalle, *req.request)
+	if internal := models.UnwrapInternalRequest[documentos.DetalleComercialExportacionServicio](req); internal != nil {
+		b.factura.Detalle = append(b.factura.Detalle, *internal)
 	}
 	return b
 }
@@ -87,7 +89,7 @@ func (b *comercialExportacionServicioBuilder) WithModalidad(tipo int) *comercial
 }
 
 func (b *comercialExportacionServicioBuilder) Build() ComercialExportacionServicio {
-	return ComercialExportacionServicio{requestWrapper[documentos.FacturaComercialExportacionServicio]{request: b.factura}}
+	return ComercialExportacionServicio{models.NewRequestWrapper(b.factura)}
 }
 
 type comercialExportacionServicioCabeceraBuilder struct {
@@ -311,7 +313,7 @@ func (b *comercialExportacionServicioCabeceraBuilder) WithCodigoDocumentoSector(
 }
 
 func (b *comercialExportacionServicioCabeceraBuilder) Build() ComercialExportacionServicioCabecera {
-	return ComercialExportacionServicioCabecera{requestWrapper[documentos.CabeceraComercialExportacionServicio]{request: b.cabecera}}
+	return ComercialExportacionServicioCabecera{models.NewRequestWrapper(b.cabecera)}
 }
 
 type comercialExportacionServicioDetalleBuilder struct {
@@ -373,5 +375,5 @@ func (b *comercialExportacionServicioDetalleBuilder) WithCantidad(v float64) *co
 }
 
 func (b *comercialExportacionServicioDetalleBuilder) Build() ComercialExportacionServicioDetalle {
-	return ComercialExportacionServicioDetalle{requestWrapper[documentos.DetalleComercialExportacionServicio]{request: b.detalle}}
+	return ComercialExportacionServicioDetalle{models.NewRequestWrapper(b.detalle)}
 }
