@@ -284,6 +284,18 @@ func (b *duttyFreeCabeceraBuilder) WithUsuario(v string) *duttyFreeCabeceraBuild
 	return b
 }
 
+func (b *duttyFreeCabeceraBuilder) WithMontoTotalSujetoIva(v float64) *duttyFreeCabeceraBuilder {
+	v, _ = strconv.ParseFloat(strconv.FormatFloat(v, 'f', 2, 64), 64)
+	b.cabecera.MontoTotalSujetoIva = v
+	return b
+}
+
+// WithCodigoDocumentoSector configura el código que identifica el diseño o sector de la factura.
+func (b *duttyFreeCabeceraBuilder) WithCodigoDocumentoSector(v int) *duttyFreeCabeceraBuilder {
+	b.cabecera.CodigoDocumentoSector = v
+	return b
+}
+
 func (b *duttyFreeCabeceraBuilder) Build() DuttyFreeCabecera {
 	return DuttyFreeCabecera{requestWrapper[documentos.CabeceraDuttyFree]{request: b.cabecera}}
 }

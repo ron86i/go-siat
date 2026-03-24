@@ -35,3 +35,18 @@ func ParseInt64Safe(valStr string) (int64, error) {
 	}
 	return val, nil
 }
+
+// Float64Ptr returns a pointer to the given float64 value.
+func Float64Ptr(v float64) *float64 {
+	return &v
+}
+
+// Int64Ptr returns a pointer to the given int64 value.
+func Int64Ptr(v int64) *int64 {
+	return &v
+}
+
+// IntPtr returns a pointer to the given int value.
+func IntPtr(v int) *int {
+	return &v
+}

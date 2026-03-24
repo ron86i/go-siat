@@ -298,6 +298,12 @@ func (b *alcanzadaIceCabeceraBuilder) WithUsuario(v string) *alcanzadaIceCabecer
 	return b
 }
 
+// WithCodigoDocumentoSector configura el código que identifica el diseño o sector de la factura.
+func (b *alcanzadaIceCabeceraBuilder) WithCodigoDocumentoSector(v int) *alcanzadaIceCabeceraBuilder {
+	b.cabecera.CodigoDocumentoSector = v
+	return b
+}
+
 func (b *alcanzadaIceCabeceraBuilder) Build() AlcanzadaIceCabecera {
 	return AlcanzadaIceCabecera{requestWrapper[documentos.CabeceraAlcanzadaIce]{request: b.cabecera}}
 }

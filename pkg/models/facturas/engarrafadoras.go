@@ -275,6 +275,12 @@ func (b *engarrafadorasCabeceraBuilder) WithUsuario(v string) *engarrafadorasCab
 	return b
 }
 
+// WithCodigoDocumentoSector configura el código que identifica el diseño o sector de la factura.
+func (b *engarrafadorasCabeceraBuilder) WithCodigoDocumentoSector(v int) *engarrafadorasCabeceraBuilder {
+	b.cabecera.CodigoDocumentoSector = v
+	return b
+}
+
 func (b *engarrafadorasCabeceraBuilder) Build() EngarrafadorasCabecera {
 	return EngarrafadorasCabecera{requestWrapper[documentos.CabeceraEngarrafadoras]{request: b.cabecera}}
 }

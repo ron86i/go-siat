@@ -333,6 +333,12 @@ func (b *hotelCabeceraBuilder) WithUsuario(v string) *hotelCabeceraBuilder {
 	return b
 }
 
+// WithCodigoDocumentoSector configura el código que identifica el diseño o sector de la factura.
+func (b *hotelCabeceraBuilder) WithCodigoDocumentoSector(v int) *hotelCabeceraBuilder {
+	b.cabecera.CodigoDocumentoSector = v
+	return b
+}
+
 func (b *hotelCabeceraBuilder) Build() HotelCabecera {
 	return HotelCabecera{requestWrapper[documentos.CabeceraHotel]{request: b.cabecera}}
 }

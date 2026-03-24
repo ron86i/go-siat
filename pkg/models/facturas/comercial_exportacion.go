@@ -368,6 +368,18 @@ func (b *comercialExportacionCabeceraBuilder) WithUsuario(v string) *comercialEx
 	return b
 }
 
+func (b *comercialExportacionCabeceraBuilder) WithMontoTotalSujetoIva(v float64) *comercialExportacionCabeceraBuilder {
+	v, _ = strconv.ParseFloat(strconv.FormatFloat(v, 'f', 2, 64), 64)
+	b.cabecera.MontoTotalSujetoIva = v
+	return b
+}
+
+// WithCodigoDocumentoSector configura el código que identifica el diseño o sector de la factura.
+func (b *comercialExportacionCabeceraBuilder) WithCodigoDocumentoSector(v int) *comercialExportacionCabeceraBuilder {
+	b.cabecera.CodigoDocumentoSector = v
+	return b
+}
+
 func (b *comercialExportacionCabeceraBuilder) Build() ComercialExportacionCabecera {
 	return ComercialExportacionCabecera{requestWrapper[documentos.CabeceraComercialExportacion]{request: b.cabecera}}
 }

@@ -337,6 +337,12 @@ func (b *lubricantesIehdCabeceraBuilder) WithUsuario(v string) *lubricantesIehdC
 	return b
 }
 
+// WithCodigoDocumentoSector configura el código que identifica el diseño o sector de la factura.
+func (b *lubricantesIehdCabeceraBuilder) WithCodigoDocumentoSector(v int) *lubricantesIehdCabeceraBuilder {
+	b.cabecera.CodigoDocumentoSector = v
+	return b
+}
+
 func (b *lubricantesIehdCabeceraBuilder) Build() LubricantesIehdCabecera {
 	return LubricantesIehdCabecera{requestWrapper[documentos.CabeceraLubricantesIehd]{request: b.cabecera}}
 }
