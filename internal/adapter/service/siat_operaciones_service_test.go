@@ -10,7 +10,6 @@ import (
 
 	"github.com/joho/godotenv"
 	"github.com/ron86i/go-siat"
-	"github.com/ron86i/go-siat/pkg/config"
 
 	"github.com/ron86i/go-siat/pkg/models"
 	"github.com/ron86i/go-siat/pkg/utils"
@@ -35,7 +34,7 @@ func TestRegistroPuntoVenta(t *testing.T) {
 		t.Fatalf("la variable SIAT_CODIGO_MODALIDAD debe ser un número válido: %v", err)
 	}
 
-	config := config.Config{
+	config := siat.Config{
 		Token: os.Getenv("SIAT_TOKEN"),
 	}
 
@@ -92,7 +91,7 @@ func TestRegistroPuntoVentaComisionista(t *testing.T) {
 		t.Fatalf("la variable SIAT_CODIGO_MODALIDAD debe ser un número válido: %v", err)
 	}
 
-	config := config.Config{
+	config := siat.Config{
 		Token: os.Getenv("SIAT_TOKEN"),
 	}
 
@@ -134,7 +133,7 @@ func TestRegistroPuntoVentaComisionista(t *testing.T) {
 // TestOperacionesVerificarComunicacion valida la conectividad SOAP con el servicio de Operaciones.
 func TestOperacionesVerificarComunicacion(t *testing.T) {
 	godotenv.Load()
-	config := config.Config{
+	config := siat.Config{
 		Token: os.Getenv("SIAT_TOKEN"),
 	}
 	siatClient, _ := siat.New(os.Getenv("SIAT_URL"), nil)
@@ -152,7 +151,7 @@ func TestOperacionesVerificarComunicacion(t *testing.T) {
 func TestConsultaPuntoVenta(t *testing.T) {
 	godotenv.Load()
 	nit, _ := utils.ParseInt64Safe(os.Getenv("SIAT_NIT"))
-	config := config.Config{
+	config := siat.Config{
 		Token: os.Getenv("SIAT_TOKEN"),
 	}
 	siatClient, _ := siat.New(os.Getenv("SIAT_URL"), nil)
@@ -180,7 +179,7 @@ func TestConsultaPuntoVenta(t *testing.T) {
 func TestCierrePuntoVenta(t *testing.T) {
 	godotenv.Load()
 	nit, _ := utils.ParseInt64Safe(os.Getenv("SIAT_NIT"))
-	config := config.Config{
+	config := siat.Config{
 		Token: os.Getenv("SIAT_TOKEN"),
 	}
 	siatClient, _ := siat.New(os.Getenv("SIAT_URL"), nil)
@@ -207,7 +206,7 @@ func TestCierrePuntoVenta(t *testing.T) {
 func TestCierreOperacionesSistema(t *testing.T) {
 	godotenv.Load()
 	nit, _ := utils.ParseInt64Safe(os.Getenv("SIAT_NIT"))
-	config := config.Config{
+	config := siat.Config{
 		Token: os.Getenv("SIAT_TOKEN"),
 	}
 	siatClient, _ := siat.New(os.Getenv("SIAT_URL"), nil)
@@ -240,7 +239,7 @@ func TestRegistroEventosSignificativos(t *testing.T) {
 
 	codModalidad, _ := utils.ParseIntSafe(os.Getenv("SIAT_CODIGO_MODALIDAD"))
 	codAmbiente, _ := utils.ParseIntSafe(os.Getenv("SIAT_CODIGO_AMBIENTE"))
-	config := config.Config{
+	config := siat.Config{
 		Token: os.Getenv("SIAT_TOKEN"),
 	}
 	siatClient, _ := siat.New(os.Getenv("SIAT_URL"), nil)
@@ -291,7 +290,7 @@ func TestRegistroEventosSignificativos(t *testing.T) {
 func TestConsultaEventosSignificativos(t *testing.T) {
 	godotenv.Load()
 	nit, _ := utils.ParseInt64Safe(os.Getenv("SIAT_NIT"))
-	config := config.Config{
+	config := siat.Config{
 		Token: os.Getenv("SIAT_TOKEN"),
 	}
 	siatClient, _ := siat.New(os.Getenv("SIAT_URL"), nil)

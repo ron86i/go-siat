@@ -1,18 +1,24 @@
 package siat
 
 const (
-	// ModalidadElectronica requiere firma digital de los documentos XML.
-	ModalidadElectronica = 1
-	// ModalidadComputarizada no requiere firma digital, usa un código de control.
-	ModalidadComputarizada = 2
-	// AmbienteProduccion para operaciones reales con validez tributaria.
-	AmbienteProduccion = 1
-	// AmbientePruebas para entornos de desarrollo y certificación.
-	AmbientePruebas = 2
-	// EmisionOnline emisión se realizó en línea
-	EmisionOnline = 1
-	// EmisionOffline emisión se realizó fuera de línea
-	EmisionOffline = 2
-	// EmisionMasiva para emisión masiva de factura
-	EmisionMasiva = 3
+	// AmbienteProduccion (1): Operaciones reales con validez tributaria.
+	AmbienteProduccion = iota + 1
+	// AmbientePruebas (2): Entorno de desarrollo, pruebas y certificación.
+	AmbientePruebas
+)
+
+const (
+	// ModalidadElectronica (1): Requiere firma digital de los documentos XML.
+	ModalidadElectronica = iota + 1
+	// ModalidadComputarizada (2): No requiere firma digital, usa código de control.
+	ModalidadComputarizada
+)
+
+const (
+	// EmisionOnline (1): La emisión se realizó con conexión al SIAT.
+	EmisionOnline = iota + 1
+	// EmisionOffline (2): La emisión se realizó fuera de línea (Contingencia).
+	EmisionOffline
+	// EmisionMasiva (3): Para procesos de alta demanda de facturación.
+	EmisionMasiva
 )

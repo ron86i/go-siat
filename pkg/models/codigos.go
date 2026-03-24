@@ -10,37 +10,37 @@ import (
 
 // VerificarComunicacionCodigos representa una solicitud para verificar la comunicación con el SIAT.
 type VerificarComunicacionCodigos struct {
-	requestWrapper[codigos.VerificarComunicacion]
+	RequestWrapper[codigos.VerificarComunicacion]
 }
 
 // VerificarNit representa una solicitud para validar un NIT.
 type VerificarNit struct {
-	requestWrapper[codigos.VerificarNit]
+	RequestWrapper[codigos.VerificarNit]
 }
 
 // Cuis representa una solicitud para el Código Único de Inicio de Sistemas.
 type Cuis struct {
-	requestWrapper[codigos.Cuis]
+	RequestWrapper[codigos.Cuis]
 }
 
 // Cufd representa una solicitud para el Código Único de Facturación Diaria.
 type Cufd struct {
-	requestWrapper[codigos.Cufd]
+	RequestWrapper[codigos.Cufd]
 }
 
 // CuisMasivo representa una solicitud masiva de CUIS.
 type CuisMasivo struct {
-	requestWrapper[codigos.CuisMasivo]
+	RequestWrapper[codigos.CuisMasivo]
 }
 
 // CufdMasivo representa una solicitud masiva de CUFD.
 type CufdMasivo struct {
-	requestWrapper[codigos.CufdMasivo]
+	RequestWrapper[codigos.CufdMasivo]
 }
 
 // NotificaCertificadoRevocado representa una notificación de certificado revocado.
 type NotificaCertificadoRevocado struct {
-	requestWrapper[codigos.NotificaCertificadoRevocado]
+	RequestWrapper[codigos.NotificaCertificadoRevocado]
 }
 
 // --- Namespace ---
@@ -161,7 +161,7 @@ func (b *verificarNitBuilder) WithNitParaVerificacion(nitParaVerificacion int64)
 
 // Build retorna la solicitud de verificación de NIT lista para ser enviada.
 func (b *verificarNitBuilder) Build() VerificarNit {
-	return VerificarNit{requestWrapper[codigos.VerificarNit]{request: b.request}}
+	return VerificarNit{RequestWrapper[codigos.VerificarNit]{request: b.request}}
 }
 
 // cuisBuilder ayuda a configurar los parámetros para solicitar un CUIS.
@@ -201,7 +201,7 @@ func (b *cuisBuilder) WithNit(nit int64) *cuisBuilder {
 
 // Build entrega el objeto Cuis configurado.
 func (b *cuisBuilder) Build() Cuis {
-	return Cuis{requestWrapper[codigos.Cuis]{request: b.request}}
+	return Cuis{RequestWrapper[codigos.Cuis]{request: b.request}}
 }
 
 // cufdBuilder ayuda a configurar los parámetros para solicitar un CUFD.
@@ -246,7 +246,7 @@ func (b *cufdBuilder) WithNit(nit int64) *cufdBuilder {
 
 // Build retorna el objeto Cufd configurado.
 func (b *cufdBuilder) Build() Cufd {
-	return Cufd{requestWrapper[codigos.Cufd]{request: b.request}}
+	return Cufd{RequestWrapper[codigos.Cufd]{request: b.request}}
 }
 
 // cuisMasivoBuilder facilita la configuración de solicitudes masivas de CUIS.
@@ -285,7 +285,7 @@ func (b *cuisMasivoBuilder) WithDatosSolicitud(builders ...*SolicitudListaCuisDt
 
 // Build retorna el objeto CuisMasivo configurado.
 func (b *cuisMasivoBuilder) Build() CuisMasivo {
-	return CuisMasivo{requestWrapper[codigos.CuisMasivo]{request: b.request}}
+	return CuisMasivo{RequestWrapper[codigos.CuisMasivo]{request: b.request}}
 }
 
 // cufdMasivoBuilder ayuda a configurar la solicitud masiva de códigos CUFD.
@@ -324,7 +324,7 @@ func (b *cufdMasivoBuilder) WithDatosSolicitud(builders ...*SolicitudListaCufdDt
 
 // Build retorna el objeto CufdMasivo configurado.
 func (b *cufdMasivoBuilder) Build() CufdMasivo {
-	return CufdMasivo{requestWrapper[codigos.CufdMasivo]{request: b.request}}
+	return CufdMasivo{RequestWrapper[codigos.CufdMasivo]{request: b.request}}
 }
 
 // notificaCertificadoRevocadoBuilder facilita la configuración de la notificación de certificados revocados.
@@ -374,7 +374,7 @@ func (b *notificaCertificadoRevocadoBuilder) WithFechaRevocacion(fechaRevocacion
 
 // Build retorna el objeto NotificaCertificadoRevocado configurado.
 func (b *notificaCertificadoRevocadoBuilder) Build() NotificaCertificadoRevocado {
-	return NotificaCertificadoRevocado{requestWrapper[codigos.NotificaCertificadoRevocado]{request: b.request}}
+	return NotificaCertificadoRevocado{RequestWrapper[codigos.NotificaCertificadoRevocado]{request: b.request}}
 }
 
 // SolicitudListaCuisDtoBuilder facilita la configuración de una solicitud individual de CUIS.
@@ -427,5 +427,5 @@ type verificarComunicacionCodigosBuilder struct {
 
 // Build retorna el objeto de verificación configurado.
 func (b *verificarComunicacionCodigosBuilder) Build() VerificarComunicacionCodigos {
-	return VerificarComunicacionCodigos{requestWrapper[codigos.VerificarComunicacion]{request: b.request}}
+	return VerificarComunicacionCodigos{RequestWrapper[codigos.VerificarComunicacion]{request: b.request}}
 }

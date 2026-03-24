@@ -6,23 +6,25 @@ import (
 	"time"
 
 	"github.com/ron86i/go-siat"
+	"github.com/ron86i/go-siat/pkg/models"
+
 	"github.com/ron86i/go-siat/internal/core/domain/datatype"
 	"github.com/ron86i/go-siat/internal/core/domain/documentos"
 )
 
 // DuttyFree representa la estructura completa de una factura Dutty Free lista para ser procesada.
 type DuttyFree struct {
-	requestWrapper[documentos.FacturaDuttyFree]
+	models.RequestWrapper[documentos.FacturaDuttyFree]
 }
 
 // DuttyFreeCabecera representa la sección de cabecera de una factura Dutty Free.
 type DuttyFreeCabecera struct {
-	requestWrapper[documentos.CabeceraDuttyFree]
+	models.RequestWrapper[documentos.CabeceraDuttyFree]
 }
 
 // DuttyFreeDetalle representa un ítem individual dentro del detalle de una factura Dutty Free.
 type DuttyFreeDetalle struct {
-	requestWrapper[documentos.DetalleDuttyFree]
+	models.RequestWrapper[documentos.DetalleDuttyFree]
 }
 
 // NewDuttyFree inicia el proceso de construcción de una DuttyFree.
@@ -61,15 +63,15 @@ type duttyFreeBuilder struct {
 }
 
 func (b *duttyFreeBuilder) WithCabecera(req DuttyFreeCabecera) *duttyFreeBuilder {
-	if req.request != nil {
-		b.factura.Cabecera = *req.request
+	if internal := models.UnwrapInternalRequest[documentos.CabeceraDuttyFree](req); internal != nil {
+		b.factura.Cabecera = *internal
 	}
 	return b
 }
 
 func (b *duttyFreeBuilder) AddDetalle(req DuttyFreeDetalle) *duttyFreeBuilder {
-	if req.request != nil {
-		b.factura.Detalle = append(b.factura.Detalle, *req.request)
+	if internal := models.UnwrapInternalRequest[documentos.DetalleDuttyFree](req); internal != nil {
+		b.factura.Detalle = append(b.factura.Detalle, *internal)
 	}
 	return b
 }
@@ -87,7 +89,7 @@ func (b *duttyFreeBuilder) WithModalidad(tipo int) *duttyFreeBuilder {
 }
 
 func (b *duttyFreeBuilder) Build() DuttyFree {
-	return DuttyFree{requestWrapper[documentos.FacturaDuttyFree]{request: b.factura}}
+	return DuttyFree{models.NewRequestWrapper(b.factura)}
 }
 
 type duttyFreeCabeceraBuilder struct {
@@ -284,8 +286,20 @@ func (b *duttyFreeCabeceraBuilder) WithUsuario(v string) *duttyFreeCabeceraBuild
 	return b
 }
 
+func (b *duttyFreeCabeceraBuilder) WithMontoTotalSujetoIva(v float64) *duttyFreeCabeceraBuilder {
+	v, _ = strconv.ParseFloat(strconv.FormatFloat(v, 'f', 2, 64), 64)
+	b.cabecera.MontoTotalSujetoIva = v
+	return b
+}
+
+// WithCodigoDocumentoSector configura el código que identifica el diseño o sector de la factura.
+func (b *duttyFreeCabeceraBuilder) WithCodigoDocumentoSector(v int) *duttyFreeCabeceraBuilder {
+	b.cabecera.CodigoDocumentoSector = v
+	return b
+}
+
 func (b *duttyFreeCabeceraBuilder) Build() DuttyFreeCabecera {
-	return DuttyFreeCabecera{requestWrapper[documentos.CabeceraDuttyFree]{request: b.cabecera}}
+	return DuttyFreeCabecera{models.NewRequestWrapper(b.cabecera)}
 }
 
 type duttyFreeDetalleBuilder struct {
@@ -347,5 +361,5 @@ func (b *duttyFreeDetalleBuilder) WithSubTotal(v float64) *duttyFreeDetalleBuild
 }
 
 func (b *duttyFreeDetalleBuilder) Build() DuttyFreeDetalle {
-	return DuttyFreeDetalle{requestWrapper[documentos.DetalleDuttyFree]{request: b.detalle}}
+	return DuttyFreeDetalle{models.NewRequestWrapper(b.detalle)}
 }

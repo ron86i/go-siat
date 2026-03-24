@@ -8,21 +8,22 @@ import (
 	"github.com/ron86i/go-siat"
 	"github.com/ron86i/go-siat/internal/core/domain/datatype"
 	"github.com/ron86i/go-siat/internal/core/domain/documentos"
+	"github.com/ron86i/go-siat/pkg/models"
 )
 
 // CompraVentaTasas representa una factura de compra-venta con tasas lista para procesar.
 type CompraVentaTasas struct {
-	requestWrapper[documentos.FacturaCompraVentaTasas]
+	models.RequestWrapper[documentos.FacturaCompraVentaTasas]
 }
 
 // CompraVentaTasasCabecera representa la cabecera de una factura de tasas.
 type CompraVentaTasasCabecera struct {
-	requestWrapper[documentos.CabeceraCompraVentaTasas]
+	models.RequestWrapper[documentos.CabeceraCompraVentaTasas]
 }
 
 // CompraVentaTasasDetalle representa un ítem de detalle de una factura de tasas.
 type CompraVentaTasasDetalle struct {
-	requestWrapper[documentos.DetalleCompraVentaTasas]
+	models.RequestWrapper[documentos.DetalleCompraVentaTasas]
 }
 
 // NewCompraVentaTasasBuilder inicia la construcción de una factura de compra-venta con tasas.
@@ -73,23 +74,25 @@ func (b *compraVentaTasasBuilder) WithModalidad(tipo int) *compraVentaTasasBuild
 
 // WithCabecera asocia la cabecera a la factura.
 func (b *compraVentaTasasBuilder) WithCabecera(req CompraVentaTasasCabecera) *compraVentaTasasBuilder {
-	if req.request != nil {
-		b.factura.Cabecera = *req.request
+	if internal := models.UnwrapInternalRequest[documentos.CabeceraCompraVentaTasas](req); internal != nil {
+		b.factura.Cabecera = *internal
 	}
 	return b
 }
 
 // AddDetalle añade un ítem de detalle a la factura.
-func (b *compraVentaTasasBuilder) AddDetalle(req CompraVentaTasasDetalle) *compraVentaTasasBuilder {
-	if req.request != nil {
-		b.factura.Detalle = append(b.factura.Detalle, *req.request)
+func (b *compraVentaTasasBuilder) AddDetalle(req ...CompraVentaTasasDetalle) *compraVentaTasasBuilder {
+	for _, r := range req {
+		if internal := models.UnwrapInternalRequest[documentos.DetalleCompraVentaTasas](r); internal != nil {
+			b.factura.Detalle = append(b.factura.Detalle, *internal)
+		}
 	}
 	return b
 }
 
 // Build finaliza la construcción y retorna la estructura opaca.
 func (b *compraVentaTasasBuilder) Build() CompraVentaTasas {
-	return CompraVentaTasas{requestWrapper[documentos.FacturaCompraVentaTasas]{request: b.factura}}
+	return CompraVentaTasas{models.NewRequestWrapper(b.factura)}
 }
 
 // --- Builder Cabecera Tasas ---
@@ -281,7 +284,7 @@ func (b *compraVentaTasasCabeceraBuilder) WithCodigoDocumentoSector(v int) *comp
 	return b
 }
 func (b *compraVentaTasasCabeceraBuilder) Build() CompraVentaTasasCabecera {
-	return CompraVentaTasasCabecera{requestWrapper[documentos.CabeceraCompraVentaTasas]{request: b.cabecera}}
+	return CompraVentaTasasCabecera{models.NewRequestWrapper(b.cabecera)}
 }
 
 // --- Builder Detalle Tasas ---
@@ -355,5 +358,5 @@ func (b *detalleTasasBuilder) WithNumeroImei(v *string) *detalleTasasBuilder {
 	return b
 }
 func (b *detalleTasasBuilder) Build() CompraVentaTasasDetalle {
-	return CompraVentaTasasDetalle{requestWrapper[documentos.DetalleCompraVentaTasas]{request: b.detalle}}
+	return CompraVentaTasasDetalle{models.NewRequestWrapper(b.detalle)}
 }

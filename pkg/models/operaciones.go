@@ -9,42 +9,42 @@ import (
 // --- Interfaces opacas para las solicitudes de Operaciones ---
 
 type VerificarComunicacionOperaciones struct {
-	requestWrapper[operaciones.VerificarComunicacion]
+	RequestWrapper[operaciones.VerificarComunicacion]
 }
 
 // RegistroPuntoVenta representa una solicitud para registrar un nuevo punto de venta.
 type RegistroPuntoVenta struct {
-	requestWrapper[operaciones.RegistroPuntoVenta]
+	RequestWrapper[operaciones.RegistroPuntoVenta]
 }
 
 // ConsultaPuntoVenta representa una solicitud para listar puntos de venta registrados.
 type ConsultaPuntoVenta struct {
-	requestWrapper[operaciones.ConsultaPuntoVenta]
+	RequestWrapper[operaciones.ConsultaPuntoVenta]
 }
 
 // CierrePuntoVenta representa una solicitud para cerrar un punto de venta.
 type CierrePuntoVenta struct {
-	requestWrapper[operaciones.CierrePuntoVenta]
+	RequestWrapper[operaciones.CierrePuntoVenta]
 }
 
 // RegistroPuntoVentaComisionista representa una solicitud para registrar un comisionista.
 type RegistroPuntoVentaComisionista struct {
-	requestWrapper[operaciones.RegistroPuntoVentaComisionista]
+	RequestWrapper[operaciones.RegistroPuntoVentaComisionista]
 }
 
 // CierreOperacionesSistema representa una solicitud para el cierre del sistema.
 type CierreOperacionesSistema struct {
-	requestWrapper[operaciones.CierreOperacionesSistema]
+	RequestWrapper[operaciones.CierreOperacionesSistema]
 }
 
 // ConsultaEventoSignificativo representa una solicitud para consultar eventos registrados.
 type ConsultaEventoSignificativo struct {
-	requestWrapper[operaciones.ConsultaEventoSignificativo]
+	RequestWrapper[operaciones.ConsultaEventoSignificativo]
 }
 
 // RegistroEventoSignificativo representa una solicitud para informar un evento significativo.
 type RegistroEventoSignificativo struct {
-	requestWrapper[operaciones.RegistroEventoSignificativo]
+	RequestWrapper[operaciones.RegistroEventoSignificativo]
 }
 
 // --- Namespace ---
@@ -166,7 +166,7 @@ func (b *registroPuntoVentaBuilder) WithNombrePuntoVenta(nombrePuntoVenta string
 
 // Build retorna el objeto RegistroPuntoVenta configurado.
 func (b *registroPuntoVentaBuilder) Build() RegistroPuntoVenta {
-	return RegistroPuntoVenta{requestWrapper[operaciones.RegistroPuntoVenta]{request: b.request}}
+	return RegistroPuntoVenta{RequestWrapper[operaciones.RegistroPuntoVenta]{request: b.request}}
 }
 
 // consultaPuntoVentaBuilder facilita la configuración de la consulta de puntos de venta.
@@ -201,7 +201,7 @@ func (b *consultaPuntoVentaBuilder) WithNit(nit int64) *consultaPuntoVentaBuilde
 
 // Build retorna el objeto ConsultaPuntoVenta configurado.
 func (b *consultaPuntoVentaBuilder) Build() ConsultaPuntoVenta {
-	return ConsultaPuntoVenta{requestWrapper[operaciones.ConsultaPuntoVenta]{request: b.request}}
+	return ConsultaPuntoVenta{RequestWrapper[operaciones.ConsultaPuntoVenta]{request: b.request}}
 }
 
 // cierrePuntoVentaBuilder ayuda a configurar el cierre de un punto de venta.
@@ -241,7 +241,7 @@ func (b *cierrePuntoVentaBuilder) WithNit(nit int64) *cierrePuntoVentaBuilder {
 
 // Build retorna el objeto CierrePuntoVenta configurado.
 func (b *cierrePuntoVentaBuilder) Build() CierrePuntoVenta {
-	return CierrePuntoVenta{requestWrapper[operaciones.CierrePuntoVenta]{request: b.request}}
+	return CierrePuntoVenta{RequestWrapper[operaciones.CierrePuntoVenta]{request: b.request}}
 }
 
 // registroPuntoVentaComisionistaBuilder facilita la configuración de puntos de venta comisionistas.
@@ -311,7 +311,7 @@ func (b *registroPuntoVentaComisionistaBuilder) WithFechaFin(fechaFin time.Time)
 
 // Build retorna el objeto RegistroPuntoVentaComisionista configurado.
 func (b *registroPuntoVentaComisionistaBuilder) Build() RegistroPuntoVentaComisionista {
-	return RegistroPuntoVentaComisionista{requestWrapper[operaciones.RegistroPuntoVentaComisionista]{request: b.request}}
+	return RegistroPuntoVentaComisionista{RequestWrapper[operaciones.RegistroPuntoVentaComisionista]{request: b.request}}
 }
 
 // cierreOperacionesSistemaBuilder ayuda a configurar el cierre de operaciones del sistema.
@@ -356,7 +356,7 @@ func (b *cierreOperacionesSistemaBuilder) WithNit(nit int64) *cierreOperacionesS
 
 // Build retorna el objeto CierreOperacionesSistema configurado.
 func (b *cierreOperacionesSistemaBuilder) Build() CierreOperacionesSistema {
-	return CierreOperacionesSistema{requestWrapper[operaciones.CierreOperacionesSistema]{request: b.request}}
+	return CierreOperacionesSistema{RequestWrapper[operaciones.CierreOperacionesSistema]{request: b.request}}
 }
 
 // RegistroEventoSignificativoBuilder ayuda a configurar el registro de un evento significativo.
@@ -365,7 +365,7 @@ type verificarComunicacionOperacionesBuilder struct {
 }
 
 func (b *verificarComunicacionOperacionesBuilder) Build() VerificarComunicacionOperaciones {
-	return VerificarComunicacionOperaciones{requestWrapper[operaciones.VerificarComunicacion]{request: b.request}}
+	return VerificarComunicacionOperaciones{RequestWrapper[operaciones.VerificarComunicacion]{request: b.request}}
 }
 
 // registroEventoSignificativoBuilder ayuda a configurar el registro de un evento significativo.
@@ -434,7 +434,7 @@ func (b *registroEventoSignificativoBuilder) WithNit(nit int64) *registroEventoS
 }
 
 func (b *registroEventoSignificativoBuilder) Build() RegistroEventoSignificativo {
-	return RegistroEventoSignificativo{requestWrapper[operaciones.RegistroEventoSignificativo]{request: b.request}}
+	return RegistroEventoSignificativo{RequestWrapper[operaciones.RegistroEventoSignificativo]{request: b.request}}
 }
 
 // consultaEventoSignificativoBuilder ayuda a configurar la consulta de eventos significativos.
@@ -478,5 +478,5 @@ func (b *consultaEventoSignificativoBuilder) WithNit(nit int64) *consultaEventoS
 }
 
 func (b *consultaEventoSignificativoBuilder) Build() ConsultaEventoSignificativo {
-	return ConsultaEventoSignificativo{requestWrapper[operaciones.ConsultaEventoSignificativo]{request: b.request}}
+	return ConsultaEventoSignificativo{RequestWrapper[operaciones.ConsultaEventoSignificativo]{request: b.request}}
 }

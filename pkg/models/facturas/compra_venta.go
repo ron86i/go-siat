@@ -8,21 +8,22 @@ import (
 	"github.com/ron86i/go-siat"
 	"github.com/ron86i/go-siat/internal/core/domain/datatype"
 	"github.com/ron86i/go-siat/internal/core/domain/documentos"
+	"github.com/ron86i/go-siat/pkg/models"
 )
 
 // CompraVenta representa la estructura completa de una factura lista para ser procesada.
 type CompraVenta struct {
-	requestWrapper[documentos.FacturaCompraVenta]
+	models.RequestWrapper[documentos.FacturaCompraVenta]
 }
 
 // CompraVentaCabecera representa la sección de cabecera de una factura de compra y venta.
 type CompraVentaCabecera struct {
-	requestWrapper[documentos.CabeceraCompraVenta]
+	models.RequestWrapper[documentos.CabeceraCompraVenta]
 }
 
 // CompraVentaDetalle representa un ítem individual dentro del detalle de una factura.
 type CompraVentaDetalle struct {
-	requestWrapper[documentos.DetalleCompraVenta]
+	models.RequestWrapper[documentos.DetalleCompraVenta]
 }
 
 // NewCompraVentaBuilder inicia el proceso de construcción de una CompraVenta,
@@ -63,16 +64,16 @@ type compraVentaBuilder struct {
 
 // WithCabecera asocia la cabecera construida previamente a la factura.
 func (b *compraVentaBuilder) WithCabecera(req CompraVentaCabecera) *compraVentaBuilder {
-	if req.request != nil {
-		b.factura.Cabecera = *req.request
+	if internal := models.UnwrapInternalRequest[documentos.CabeceraCompraVenta](req); internal != nil {
+		b.factura.Cabecera = *internal
 	}
 	return b
 }
 
 // AddDetalle añade un ítem de detalle a la lista de detalles de la factura.
 func (b *compraVentaBuilder) AddDetalle(req CompraVentaDetalle) *compraVentaBuilder {
-	if req.request != nil {
-		b.factura.Detalle = append(b.factura.Detalle, *req.request)
+	if internal := models.UnwrapInternalRequest[documentos.DetalleCompraVenta](req); internal != nil {
+		b.factura.Detalle = append(b.factura.Detalle, *internal)
 	}
 	return b
 }
@@ -92,7 +93,7 @@ func (b *compraVentaBuilder) WithModalidad(tipo int) *compraVentaBuilder {
 
 // Build finaliza la construcción y retorna la estructura opaca lista para ser firmada y enviada.
 func (b *compraVentaBuilder) Build() CompraVenta {
-	return CompraVenta{requestWrapper[documentos.FacturaCompraVenta]{request: b.factura}}
+	return CompraVenta{models.NewRequestWrapper(b.factura)}
 }
 
 // compraVentaCabeceraBuilder ayuda a configurar la cabecera de la factura de compra y venta.
@@ -350,7 +351,7 @@ func (b *compraVentaCabeceraBuilder) WithCodigoDocumentoSector(v int) *compraVen
 
 // Build finaliza la construcción de la cabecera retornando la estructura opaca.
 func (b *compraVentaCabeceraBuilder) Build() CompraVentaCabecera {
-	return CompraVentaCabecera{requestWrapper[documentos.CabeceraCompraVenta]{request: b.cabecera}}
+	return CompraVentaCabecera{models.NewRequestWrapper(b.cabecera)}
 }
 
 // detalleBuilder ayuda a configurar un ítem individual de detalle de la factura.
@@ -448,5 +449,5 @@ func (b *detalleBuilder) WithNumeroImei(v *string) *detalleBuilder {
 
 // Build finaliza la construcción del detalle retornando la estructura opaca.
 func (b *detalleBuilder) Build() CompraVentaDetalle {
-	return CompraVentaDetalle{requestWrapper[documentos.DetalleCompraVenta]{request: b.detalle}}
+	return CompraVentaDetalle{models.NewRequestWrapper(b.detalle)}
 }

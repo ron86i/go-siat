@@ -7,8 +7,10 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strings"
 
 	"github.com/ron86i/go-siat/internal/core/domain/datatype/soap"
+	"github.com/ron86i/go-siat/internal/core/port"
 	"github.com/ron86i/go-siat/pkg/models"
 )
 
@@ -84,7 +86,7 @@ func (r requestWrapper[T]) MarshalXML(e *xml.Encoder, start xml.StartElement) er
 // delegando la operación al paquete models. Esto mantiene la opacidad hacia el usuario final
 // mientras permite que las capas internas accedan a los datos necesarios para la comunicación.
 func getInternalRequest[T any](req any) *T {
-	return models.GetInternalRequest[T](req)
+	return models.UnwrapInternalRequest[T](req)
 }
 
 /*
@@ -100,7 +102,8 @@ performSoapRequest es una función genérica que encapsula el flujo completo de 
 
 5. Procesa y decodifica la respuesta SOAP.
 */
-func performSoapRequest[TReq any, TResp any](ctx context.Context, httpClient *http.Client, url, token string, opaqueReq any) (*soap.EnvelopeResponse[TResp], error) {
+func performSoapRequest[TReq any, TResp any](ctx context.Context, httpClient *http.Client, url string, config port.Config, opaqueReq any) (*soap.EnvelopeResponse[TResp], error) {
+
 	req := getInternalRequest[TReq](opaqueReq)
 	xmlBody, err := buildRequest(req)
 	if err != nil {
@@ -112,8 +115,13 @@ func performSoapRequest[TReq any, TResp any](ctx context.Context, httpClient *ht
 		return nil, err
 	}
 
+	ua := config.UserAgent
+	if strings.TrimSpace(ua) == "" {
+		ua = "go-siat"
+	}
+	httpReq.Header.Set("User-Agent", ua)
 	httpReq.Header.Set("Content-Type", "application/xml")
-	httpReq.Header.Set("apiKey", fmt.Sprintf("TokenApi %s", token))
+	httpReq.Header.Set("apiKey", fmt.Sprintf("TokenApi %s", config.Token))
 
 	resp, err := httpClient.Do(httpReq)
 	if err != nil {

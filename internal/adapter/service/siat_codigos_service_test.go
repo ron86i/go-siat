@@ -9,7 +9,6 @@ import (
 	"time"
 
 	"github.com/joho/godotenv"
-	"github.com/ron86i/go-siat/pkg/config"
 	"github.com/ron86i/go-siat/pkg/models"
 	"github.com/ron86i/go-siat/pkg/utils"
 
@@ -34,7 +33,7 @@ func TestNotificaCertificadoRevocado(t *testing.T) {
 	if err != nil {
 		t.Fatalf("la variable SIAT_CODIGO_AMBIENTE debe ser un número válido: %v", err)
 	}
-	config := config.Config{
+	config := siat.Config{
 		Token: os.Getenv("SIAT_TOKEN"),
 	}
 
@@ -99,7 +98,7 @@ func TestVerificarNit(t *testing.T) {
 	if err != nil {
 		t.Fatalf("la variable SIAT_CODIGO_AMBIENTE debe ser un número válido: %v", err)
 	}
-	config := config.Config{
+	config := siat.Config{
 		Token: os.Getenv("SIAT_TOKEN"),
 	}
 
@@ -160,7 +159,7 @@ func TestSolicitudCuis(t *testing.T) {
 	if err != nil {
 		t.Fatalf("la variable SIAT_CODIGO_AMBIENTE debe ser un número válido: %v", err)
 	}
-	config := config.Config{
+	config := siat.Config{
 		Token: os.Getenv("SIAT_TOKEN"),
 	}
 	siatClient, _ := siat.New(os.Getenv("SIAT_URL"), nil)
@@ -210,7 +209,7 @@ func TestSolicitudCufd(t *testing.T) {
 	if err != nil {
 		t.Fatalf("la variable SIAT_CODIGO_AMBIENTE debe ser un número válido: %v", err)
 	}
-	config := config.Config{
+	config := siat.Config{
 		Token: os.Getenv("SIAT_TOKEN"),
 	}
 	siatClient, _ := siat.New(os.Getenv("SIAT_URL"), nil)
@@ -268,7 +267,7 @@ func TestSolicitudCufdMasivo(t *testing.T) {
 	if err != nil {
 		t.Fatalf("la variable SIAT_NIT debe ser un número válido: %v", err)
 	}
-	config := config.Config{
+	config := siat.Config{
 		Token: os.Getenv("SIAT_TOKEN"),
 	}
 	siatClient, err := siat.New(os.Getenv("SIAT_URL"), nil)
@@ -325,7 +324,7 @@ func TestSolicitudCuisMasivo(t *testing.T) {
 	if err != nil {
 		t.Fatalf("la variable SIAT_CODIGO_AMBIENTE debe ser un número válido: %v", err)
 	}
-	config := config.Config{
+	config := siat.Config{
 		Token: os.Getenv("SIAT_TOKEN"),
 	}
 	siatClient, _ := siat.New(os.Getenv("SIAT_URL"), nil)
@@ -368,7 +367,7 @@ func TestVerificarComunicacion(t *testing.T) {
 	// Cargar configuración desde .env
 	godotenv.Load()
 
-	config := config.Config{
+	config := siat.Config{
 		Token: os.Getenv("SIAT_TOKEN"),
 	}
 	siatClient, err := siat.New(os.Getenv("SIAT_URL"), nil)

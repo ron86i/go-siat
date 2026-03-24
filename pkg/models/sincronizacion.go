@@ -9,58 +9,58 @@ import (
 // --- Interfaces opacas para las solicitudes de Sincronización ---
 
 type SincronizarActividades struct {
-	requestWrapper[sincronizacion.SincronizarActividades]
+	RequestWrapper[sincronizacion.SincronizarActividades]
 }
 type SincronizarListaActividadesDocumentoSector struct {
-	requestWrapper[sincronizacion.SincronizarListaActividadesDocumentoSector]
+	RequestWrapper[sincronizacion.SincronizarListaActividadesDocumentoSector]
 }
 type SincronizarListaLeyendasFactura struct {
-	requestWrapper[sincronizacion.SincronizarListaLeyendasFactura]
+	RequestWrapper[sincronizacion.SincronizarListaLeyendasFactura]
 }
 type SincronizarListaMensajesServicios struct {
-	requestWrapper[sincronizacion.SincronizarListaMensajesServicios]
+	RequestWrapper[sincronizacion.SincronizarListaMensajesServicios]
 }
 type SincronizarListaProductosServicios struct {
-	requestWrapper[sincronizacion.SincronizarListaProductosServicios]
+	RequestWrapper[sincronizacion.SincronizarListaProductosServicios]
 }
 type SincronizarParametricaEventosSignificativos struct {
-	requestWrapper[sincronizacion.SincronizarParametricaEventosSignificativos]
+	RequestWrapper[sincronizacion.SincronizarParametricaEventosSignificativos]
 }
 type SincronizarParametricaMotivoAnulacion struct {
-	requestWrapper[sincronizacion.SincronizarParametricaMotivoAnulacion]
+	RequestWrapper[sincronizacion.SincronizarParametricaMotivoAnulacion]
 }
 type SincronizarParametricaPaisOrigen struct {
-	requestWrapper[sincronizacion.SincronizarParametricaPaisOrigen]
+	RequestWrapper[sincronizacion.SincronizarParametricaPaisOrigen]
 }
 type SincronizarParametricaTipoDocumentoIdentidad struct {
-	requestWrapper[sincronizacion.SincronizarParametricaTipoDocumentoIdentidad]
+	RequestWrapper[sincronizacion.SincronizarParametricaTipoDocumentoIdentidad]
 }
 type SincronizarParametricaTipoDocumentoSector struct {
-	requestWrapper[sincronizacion.SincronizarParametricaTipoDocumentoSector]
+	RequestWrapper[sincronizacion.SincronizarParametricaTipoDocumentoSector]
 }
 type SincronizarParametricaTipoEmision struct {
-	requestWrapper[sincronizacion.SincronizarParametricaTipoEmision]
+	RequestWrapper[sincronizacion.SincronizarParametricaTipoEmision]
 }
 type SincronizarParametricaTipoHabitacion struct {
-	requestWrapper[sincronizacion.SincronizarParametricaTipoHabitacion]
+	RequestWrapper[sincronizacion.SincronizarParametricaTipoHabitacion]
 }
 type SincronizarParametricaTipoMetodoPago struct {
-	requestWrapper[sincronizacion.SincronizarParametricaTipoMetodoPago]
+	RequestWrapper[sincronizacion.SincronizarParametricaTipoMetodoPago]
 }
 type SincronizarParametricaTipoMoneda struct {
-	requestWrapper[sincronizacion.SincronizarParametricaTipoMoneda]
+	RequestWrapper[sincronizacion.SincronizarParametricaTipoMoneda]
 }
 type SincronizarParametricaTipoPuntoVenta struct {
-	requestWrapper[sincronizacion.SincronizarParametricaTipoPuntoVenta]
+	RequestWrapper[sincronizacion.SincronizarParametricaTipoPuntoVenta]
 }
 type SincronizarParametricaTiposFactura struct {
-	requestWrapper[sincronizacion.SincronizarParametricaTiposFactura]
+	RequestWrapper[sincronizacion.SincronizarParametricaTiposFactura]
 }
 type SincronizarParametricaUnidadMedida struct {
-	requestWrapper[sincronizacion.SincronizarParametricaUnidadMedida]
+	RequestWrapper[sincronizacion.SincronizarParametricaUnidadMedida]
 }
 type VerificarComunicacionSincronizacion struct {
-	requestWrapper[sincronizacion.VerificarComunicacion]
+	RequestWrapper[sincronizacion.VerificarComunicacion]
 }
 
 // --- Namespace ---
@@ -85,7 +85,7 @@ func (sincronizacionNamespace) NewSincronizarActividadesBuilder() Sincronizacion
 	return &sincronizacionBuilder[sincronizacion.SincronizarActividades, SincronizarActividades]{
 		request: req,
 		sol:     &req.SolicitudSincronizacion,
-		wrap: func(rw requestWrapper[sincronizacion.SincronizarActividades]) SincronizarActividades {
+		wrap: func(rw RequestWrapper[sincronizacion.SincronizarActividades]) SincronizarActividades {
 			return SincronizarActividades{rw}
 		},
 	}
@@ -97,7 +97,7 @@ func (sincronizacionNamespace) NewSincronizarListaActividadesDocumentoSectorBuil
 	return &sincronizacionBuilder[sincronizacion.SincronizarListaActividadesDocumentoSector, SincronizarListaActividadesDocumentoSector]{
 		request: req,
 		sol:     &req.SolicitudSincronizacion,
-		wrap: func(rw requestWrapper[sincronizacion.SincronizarListaActividadesDocumentoSector]) SincronizarListaActividadesDocumentoSector {
+		wrap: func(rw RequestWrapper[sincronizacion.SincronizarListaActividadesDocumentoSector]) SincronizarListaActividadesDocumentoSector {
 			return SincronizarListaActividadesDocumentoSector{rw}
 		},
 	}
@@ -109,7 +109,7 @@ func (sincronizacionNamespace) NewSincronizarListaLeyendasFacturaBuilder() Sincr
 	return &sincronizacionBuilder[sincronizacion.SincronizarListaLeyendasFactura, SincronizarListaLeyendasFactura]{
 		request: req,
 		sol:     &req.SolicitudSincronizacion,
-		wrap: func(rw requestWrapper[sincronizacion.SincronizarListaLeyendasFactura]) SincronizarListaLeyendasFactura {
+		wrap: func(rw RequestWrapper[sincronizacion.SincronizarListaLeyendasFactura]) SincronizarListaLeyendasFactura {
 			return SincronizarListaLeyendasFactura{rw}
 		},
 	}
@@ -121,7 +121,7 @@ func (sincronizacionNamespace) NewSincronizarListaMensajesServiciosBuilder() Sin
 	return &sincronizacionBuilder[sincronizacion.SincronizarListaMensajesServicios, SincronizarListaMensajesServicios]{
 		request: req,
 		sol:     &req.SolicitudSincronizacion,
-		wrap: func(rw requestWrapper[sincronizacion.SincronizarListaMensajesServicios]) SincronizarListaMensajesServicios {
+		wrap: func(rw RequestWrapper[sincronizacion.SincronizarListaMensajesServicios]) SincronizarListaMensajesServicios {
 			return SincronizarListaMensajesServicios{rw}
 		},
 	}
@@ -133,7 +133,7 @@ func (sincronizacionNamespace) NewSincronizarListaProductosServiciosBuilder() Si
 	return &sincronizacionBuilder[sincronizacion.SincronizarListaProductosServicios, SincronizarListaProductosServicios]{
 		request: req,
 		sol:     &req.SolicitudSincronizacion,
-		wrap: func(rw requestWrapper[sincronizacion.SincronizarListaProductosServicios]) SincronizarListaProductosServicios {
+		wrap: func(rw RequestWrapper[sincronizacion.SincronizarListaProductosServicios]) SincronizarListaProductosServicios {
 			return SincronizarListaProductosServicios{rw}
 		},
 	}
@@ -145,7 +145,7 @@ func (sincronizacionNamespace) NewSincronizarParametricaEventosSignificativosBui
 	return &sincronizacionBuilder[sincronizacion.SincronizarParametricaEventosSignificativos, SincronizarParametricaEventosSignificativos]{
 		request: req,
 		sol:     &req.SolicitudSincronizacion,
-		wrap: func(rw requestWrapper[sincronizacion.SincronizarParametricaEventosSignificativos]) SincronizarParametricaEventosSignificativos {
+		wrap: func(rw RequestWrapper[sincronizacion.SincronizarParametricaEventosSignificativos]) SincronizarParametricaEventosSignificativos {
 			return SincronizarParametricaEventosSignificativos{rw}
 		},
 	}
@@ -157,7 +157,7 @@ func (sincronizacionNamespace) NewSincronizarParametricaMotivoAnulacionBuilder()
 	return &sincronizacionBuilder[sincronizacion.SincronizarParametricaMotivoAnulacion, SincronizarParametricaMotivoAnulacion]{
 		request: req,
 		sol:     &req.SolicitudSincronizacion,
-		wrap: func(rw requestWrapper[sincronizacion.SincronizarParametricaMotivoAnulacion]) SincronizarParametricaMotivoAnulacion {
+		wrap: func(rw RequestWrapper[sincronizacion.SincronizarParametricaMotivoAnulacion]) SincronizarParametricaMotivoAnulacion {
 			return SincronizarParametricaMotivoAnulacion{rw}
 		},
 	}
@@ -169,7 +169,7 @@ func (sincronizacionNamespace) NewSincronizarParametricaPaisOrigenBuilder() Sinc
 	return &sincronizacionBuilder[sincronizacion.SincronizarParametricaPaisOrigen, SincronizarParametricaPaisOrigen]{
 		request: req,
 		sol:     &req.SolicitudSincronizacion,
-		wrap: func(rw requestWrapper[sincronizacion.SincronizarParametricaPaisOrigen]) SincronizarParametricaPaisOrigen {
+		wrap: func(rw RequestWrapper[sincronizacion.SincronizarParametricaPaisOrigen]) SincronizarParametricaPaisOrigen {
 			return SincronizarParametricaPaisOrigen{rw}
 		},
 	}
@@ -181,7 +181,7 @@ func (sincronizacionNamespace) NewSincronizarParametricaTipoDocumentoIdentidadBu
 	return &sincronizacionBuilder[sincronizacion.SincronizarParametricaTipoDocumentoIdentidad, SincronizarParametricaTipoDocumentoIdentidad]{
 		request: req,
 		sol:     &req.SolicitudSincronizacion,
-		wrap: func(rw requestWrapper[sincronizacion.SincronizarParametricaTipoDocumentoIdentidad]) SincronizarParametricaTipoDocumentoIdentidad {
+		wrap: func(rw RequestWrapper[sincronizacion.SincronizarParametricaTipoDocumentoIdentidad]) SincronizarParametricaTipoDocumentoIdentidad {
 			return SincronizarParametricaTipoDocumentoIdentidad{rw}
 		},
 	}
@@ -193,7 +193,7 @@ func (sincronizacionNamespace) NewSincronizarParametricaTipoDocumentoSectorBuild
 	return &sincronizacionBuilder[sincronizacion.SincronizarParametricaTipoDocumentoSector, SincronizarParametricaTipoDocumentoSector]{
 		request: req,
 		sol:     &req.SolicitudSincronizacion,
-		wrap: func(rw requestWrapper[sincronizacion.SincronizarParametricaTipoDocumentoSector]) SincronizarParametricaTipoDocumentoSector {
+		wrap: func(rw RequestWrapper[sincronizacion.SincronizarParametricaTipoDocumentoSector]) SincronizarParametricaTipoDocumentoSector {
 			return SincronizarParametricaTipoDocumentoSector{rw}
 		},
 	}
@@ -205,7 +205,7 @@ func (sincronizacionNamespace) NewSincronizarParametricaTipoEmisionBuilder() Sin
 	return &sincronizacionBuilder[sincronizacion.SincronizarParametricaTipoEmision, SincronizarParametricaTipoEmision]{
 		request: req,
 		sol:     &req.SolicitudSincronizacion,
-		wrap: func(rw requestWrapper[sincronizacion.SincronizarParametricaTipoEmision]) SincronizarParametricaTipoEmision {
+		wrap: func(rw RequestWrapper[sincronizacion.SincronizarParametricaTipoEmision]) SincronizarParametricaTipoEmision {
 			return SincronizarParametricaTipoEmision{rw}
 		},
 	}
@@ -217,7 +217,7 @@ func (sincronizacionNamespace) NewSincronizarParametricaTipoHabitacionBuilder() 
 	return &sincronizacionBuilder[sincronizacion.SincronizarParametricaTipoHabitacion, SincronizarParametricaTipoHabitacion]{
 		request: req,
 		sol:     &req.SolicitudSincronizacion,
-		wrap: func(rw requestWrapper[sincronizacion.SincronizarParametricaTipoHabitacion]) SincronizarParametricaTipoHabitacion {
+		wrap: func(rw RequestWrapper[sincronizacion.SincronizarParametricaTipoHabitacion]) SincronizarParametricaTipoHabitacion {
 			return SincronizarParametricaTipoHabitacion{rw}
 		},
 	}
@@ -229,7 +229,7 @@ func (sincronizacionNamespace) NewSincronizarParametricaTipoMetodoPagoBuilder() 
 	return &sincronizacionBuilder[sincronizacion.SincronizarParametricaTipoMetodoPago, SincronizarParametricaTipoMetodoPago]{
 		request: req,
 		sol:     &req.SolicitudSincronizacion,
-		wrap: func(rw requestWrapper[sincronizacion.SincronizarParametricaTipoMetodoPago]) SincronizarParametricaTipoMetodoPago {
+		wrap: func(rw RequestWrapper[sincronizacion.SincronizarParametricaTipoMetodoPago]) SincronizarParametricaTipoMetodoPago {
 			return SincronizarParametricaTipoMetodoPago{rw}
 		},
 	}
@@ -241,7 +241,7 @@ func (sincronizacionNamespace) NewSincronizarParametricaTipoMonedaBuilder() Sinc
 	return &sincronizacionBuilder[sincronizacion.SincronizarParametricaTipoMoneda, SincronizarParametricaTipoMoneda]{
 		request: req,
 		sol:     &req.SolicitudSincronizacion,
-		wrap: func(rw requestWrapper[sincronizacion.SincronizarParametricaTipoMoneda]) SincronizarParametricaTipoMoneda {
+		wrap: func(rw RequestWrapper[sincronizacion.SincronizarParametricaTipoMoneda]) SincronizarParametricaTipoMoneda {
 			return SincronizarParametricaTipoMoneda{rw}
 		},
 	}
@@ -253,7 +253,7 @@ func (sincronizacionNamespace) NewSincronizarParametricaTipoPuntoVentaBuilder() 
 	return &sincronizacionBuilder[sincronizacion.SincronizarParametricaTipoPuntoVenta, SincronizarParametricaTipoPuntoVenta]{
 		request: req,
 		sol:     &req.SolicitudSincronizacion,
-		wrap: func(rw requestWrapper[sincronizacion.SincronizarParametricaTipoPuntoVenta]) SincronizarParametricaTipoPuntoVenta {
+		wrap: func(rw RequestWrapper[sincronizacion.SincronizarParametricaTipoPuntoVenta]) SincronizarParametricaTipoPuntoVenta {
 			return SincronizarParametricaTipoPuntoVenta{rw}
 		},
 	}
@@ -265,7 +265,7 @@ func (sincronizacionNamespace) NewSincronizarParametricaTiposFacturaBuilder() Si
 	return &sincronizacionBuilder[sincronizacion.SincronizarParametricaTiposFactura, SincronizarParametricaTiposFactura]{
 		request: req,
 		sol:     &req.SolicitudSincronizacion,
-		wrap: func(rw requestWrapper[sincronizacion.SincronizarParametricaTiposFactura]) SincronizarParametricaTiposFactura {
+		wrap: func(rw RequestWrapper[sincronizacion.SincronizarParametricaTiposFactura]) SincronizarParametricaTiposFactura {
 			return SincronizarParametricaTiposFactura{rw}
 		},
 	}
@@ -277,7 +277,7 @@ func (sincronizacionNamespace) NewSincronizarParametricaUnidadMedidaBuilder() Si
 	return &sincronizacionBuilder[sincronizacion.SincronizarParametricaUnidadMedida, SincronizarParametricaUnidadMedida]{
 		request: req,
 		sol:     &req.SolicitudSincronizacion,
-		wrap: func(rw requestWrapper[sincronizacion.SincronizarParametricaUnidadMedida]) SincronizarParametricaUnidadMedida {
+		wrap: func(rw RequestWrapper[sincronizacion.SincronizarParametricaUnidadMedida]) SincronizarParametricaUnidadMedida {
 			return SincronizarParametricaUnidadMedida{rw}
 		},
 	}
@@ -291,7 +291,7 @@ type verificarComunicacionSincronizacionBuilder struct {
 }
 
 func (b *verificarComunicacionSincronizacionBuilder) Build() VerificarComunicacionSincronizacion {
-	return VerificarComunicacionSincronizacion{requestWrapper[sincronizacion.VerificarComunicacion]{request: b.request}}
+	return VerificarComunicacionSincronizacion{RequestWrapper[sincronizacion.VerificarComunicacion]{request: b.request}}
 }
 
 // SincronizacionBuilder define la interfaz para configurar solicitudes de sincronización.
@@ -309,7 +309,7 @@ type SincronizacionBuilder[T any, R any] interface {
 type sincronizacionBuilder[T any, R any] struct {
 	request *T
 	sol     *sincronizacion.SolicitudSincronizacion
-	wrap    func(requestWrapper[T]) R
+	wrap    func(RequestWrapper[T]) R
 }
 
 func (b *sincronizacionBuilder[T, R]) WithCodigoAmbiente(codigoAmbiente int) SincronizacionBuilder[T, R] {
@@ -344,5 +344,5 @@ func (b *sincronizacionBuilder[T, R]) WithNit(nit int64) SincronizacionBuilder[T
 
 // Build entrega el objeto de solicitud configurado.
 func (b *sincronizacionBuilder[T, R]) Build() R {
-	return b.wrap(requestWrapper[T]{request: b.request})
+	return b.wrap(RequestWrapper[T]{request: b.request})
 }

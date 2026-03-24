@@ -6,6 +6,8 @@ import (
 	"time"
 
 	"github.com/ron86i/go-siat"
+	"github.com/ron86i/go-siat/pkg/models"
+
 	"github.com/ron86i/go-siat/internal/core/domain/datatype"
 	"github.com/ron86i/go-siat/internal/core/domain/documentos"
 )
@@ -13,17 +15,17 @@ import (
 // LubricantesIehd representa la estructura completa de una factura Sector 53
 // lista para ser procesada.
 type LubricantesIehd struct {
-	requestWrapper[documentos.FacturaLubricantesIehd]
+	models.RequestWrapper[documentos.FacturaLubricantesIehd]
 }
 
 // LubricantesIehdCabecera representa la sección de cabecera de la factura.
 type LubricantesIehdCabecera struct {
-	requestWrapper[documentos.CabeceraLubricantesIehd]
+	models.RequestWrapper[documentos.CabeceraLubricantesIehd]
 }
 
 // LubricantesIehdDetalle representa un ítem individual dentro del detalle.
 type LubricantesIehdDetalle struct {
-	requestWrapper[documentos.DetalleLubricantesIehd]
+	models.RequestWrapper[documentos.DetalleLubricantesIehd]
 }
 
 // NewLubricantesIehd inicia el proceso de construcción de la factura.
@@ -58,15 +60,15 @@ type lubricantesIehdBuilder struct {
 }
 
 func (b *lubricantesIehdBuilder) WithCabecera(req LubricantesIehdCabecera) *lubricantesIehdBuilder {
-	if req.request != nil {
-		b.factura.Cabecera = *req.request
+	if internal := models.UnwrapInternalRequest[documentos.CabeceraLubricantesIehd](req); internal != nil {
+		b.factura.Cabecera = *internal
 	}
 	return b
 }
 
 func (b *lubricantesIehdBuilder) AddDetalle(req LubricantesIehdDetalle) *lubricantesIehdBuilder {
-	if req.request != nil {
-		b.factura.Detalle = append(b.factura.Detalle, *req.request)
+	if internal := models.UnwrapInternalRequest[documentos.DetalleLubricantesIehd](req); internal != nil {
+		b.factura.Detalle = append(b.factura.Detalle, *internal)
 	}
 	return b
 }
@@ -84,7 +86,7 @@ func (b *lubricantesIehdBuilder) WithModalidad(tipo int) *lubricantesIehdBuilder
 }
 
 func (b *lubricantesIehdBuilder) Build() LubricantesIehd {
-	return LubricantesIehd{requestWrapper[documentos.FacturaLubricantesIehd]{request: b.factura}}
+	return LubricantesIehd{models.NewRequestWrapper(b.factura)}
 }
 
 type lubricantesIehdCabeceraBuilder struct {
@@ -337,8 +339,14 @@ func (b *lubricantesIehdCabeceraBuilder) WithUsuario(v string) *lubricantesIehdC
 	return b
 }
 
+// WithCodigoDocumentoSector configura el código que identifica el diseño o sector de la factura.
+func (b *lubricantesIehdCabeceraBuilder) WithCodigoDocumentoSector(v int) *lubricantesIehdCabeceraBuilder {
+	b.cabecera.CodigoDocumentoSector = v
+	return b
+}
+
 func (b *lubricantesIehdCabeceraBuilder) Build() LubricantesIehdCabecera {
-	return LubricantesIehdCabecera{requestWrapper[documentos.CabeceraLubricantesIehd]{request: b.cabecera}}
+	return LubricantesIehdCabecera{models.NewRequestWrapper(b.cabecera)}
 }
 
 type lubricantesIehdDetalleBuilder struct {
@@ -417,5 +425,5 @@ func (b *lubricantesIehdDetalleBuilder) WithPorcentajeDeduccionIehdDS25530(v *fl
 }
 
 func (b *lubricantesIehdDetalleBuilder) Build() LubricantesIehdDetalle {
-	return LubricantesIehdDetalle{requestWrapper[documentos.DetalleLubricantesIehd]{request: b.detalle}}
+	return LubricantesIehdDetalle{models.NewRequestWrapper(b.detalle)}
 }

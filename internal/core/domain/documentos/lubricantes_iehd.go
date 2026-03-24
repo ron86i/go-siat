@@ -12,7 +12,7 @@ type FacturaLubricantesIehd struct {
 	XMLName           xml.Name                 `json:"-"`
 	XmlnsXsi          string                   `xml:"xmlns:xsi,attr" json:"-"`
 	XsiSchemaLocation string                   `xml:"xsi:noNamespaceSchemaLocation,attr" json:"-"`
-	Cabecera          CabeceraLubricantesIehd   `xml:"cabecera" json:"cabecera"`
+	Cabecera          CabeceraLubricantesIehd  `xml:"cabecera" json:"cabecera"`
 	Detalle           []DetalleLubricantesIehd `xml:"detalle" json:"detalle"`
 }
 
@@ -57,15 +57,15 @@ type CabeceraLubricantesIehd struct {
 
 // DetalleLubricantesIehd representa un ítem de detalle para Sector 53.
 type DetalleLubricantesIehd struct {
-	ActividadEconomica               string                    `xml:"actividadEconomica" json:"actividadEconomica"`
-	CodigoProductoSin                int64                     `xml:"codigoProductoSin" json:"codigoProductoSin"`
-	CodigoProducto                   string                    `xml:"codigoProducto" json:"codigoProducto"`
-	Descripcion                      string                    `xml:"descripcion" json:"descripcion"`
-	Cantidad                         float64                   `xml:"cantidad" json:"cantidad"`
-	UnidadMedida                     int                       `xml:"unidadMedida" json:"unidadMedida"`
-	PrecioUnitario                   float64                   `xml:"precioUnitario" json:"precioUnitario"`
-	MontoDescuento                   datatype.Nilable[float64] `xml:"montoDescuento" json:"montoDescuento"`
-	SubTotal                         float64                   `xml:"subTotal" json:"subTotal"`
-	CantidadLitros                   float64                   `xml:"cantidadLitros" json:"cantidadLitros"`
-	PorcentajeDeduccionIehdDS25530   datatype.Nilable[float64] `xml:"porcentajeDeduccionIehdDS25530" json:"porcentajeDeduccionIehdDS25530"`
+	ActividadEconomica             string                    `xml:"actividadEconomica" json:"actividadEconomica"`
+	CodigoProductoSin              int64                     `xml:"codigoProductoSin" json:"codigoProductoSin"`
+	CodigoProducto                 string                    `xml:"codigoProducto" json:"codigoProducto"`
+	Descripcion                    string                    `xml:"descripcion" json:"descripcion"`
+	Cantidad                       float64                   `xml:"cantidad" json:"cantidad"`
+	UnidadMedida                   int                       `xml:"unidadMedida" json:"unidadMedida"`
+	PrecioUnitario                 float64                   `xml:"precioUnitario" json:"precioUnitario"`
+	MontoDescuento                 datatype.Nilable[float64] `xml:"montoDescuento" json:"montoDescuento"`
+	SubTotal                       float64                   `xml:"subTotal" json:"subTotal"`
+	CantidadLitros                 float64                   `xml:"cantidadLitros" json:"cantidadLitros"`
+	PorcentajeDeduccionIehdDS25530 datatype.Nilable[float64] `xml:"porcentajeDeduccionIehdDS25530" json:"porcentajeDeduccionIehdDS25530"`
 }

@@ -37,16 +37,17 @@ Integrarse con los servicios web SOAP del SIAT para la facturación electrónica
 - ✍️ **Firma Digital (XMLDSig) Integrada**: Utilidades para firmar facturas automáticamente con su certificado digital.
 - 🚀 **Alto Rendimiento**: Cero dependencias innecesarias, aprovechando la velocidad nativa de Go para la manipulación y compresión de bytes.
 - 🧩 **Modular**: Múltiples servicios (`Codigos`, `Sincronizacion`, `Operaciones`, `CompraVenta`, `Computarizada`) claramente separados.
-- 🏢 **Multi-Sector**: Soporte nativo para diversos documentos sector (Compra y Venta, Hoteles, Duty Free, Hidrocarburos, etc.).
+- 🏢 **Multi-Sector**: Soporte nativo y verificado para **35 sectores** distintos (Compra y Venta, Hoteles, Minería, Hospitales, Hidrocarburos, etc.).
 
 ---
 
 ## Tabla de Contenidos
 
 1. [Capacidades Implementadas](#capacidades-implementadas)
-2. [Guía de Inicio Rápido](#guía-de-inicio-rápido)
-3. [Referencia de Uso (Tests)](#referencia-de-uso-tests)
-4. [Licencia](#licencia)
+2. [Sectores Soportados](#sectores-soportados)
+3. [Guía de Inicio Rápido](#guía-de-inicio-rápido)
+4. [Referencia de Uso (Tests)](#referencia-de-uso-tests)
+5. [Licencia](#licencia)
 
 ---
 
@@ -59,8 +60,51 @@ El SDK cubre los servicios críticos del ecosistema SIAT:
 | **Códigos** | Solicitud de CUIS/CUFD (Individual y Masivo), Validación de NIT, Comunicación. |
 | **Sincronización** | Catálogos de actividades, paramétricas, productos, servicios y documentos sector. |
 | **Operaciones** | Registro/Cierre de Puntos de Venta, Gestión de Eventos Significativos. |
-| **Compra y Venta** | Generación de CUF, Firma Digital XML, Recepción y Anulación de Facturas. |
-| **Computarizada** | Recepción de Facturas y Paquetes para modalidades de facturación computarizada. |
+| **Electrónica en Línea** | Soporte completo para facturación con firma digital (Sector 1 y especiales). |
+| **Computarizada en Línea** | Soporte para modalidades sin firma digital (Sector 1). |
+| **Sectores Especiales** | Soporte verificado para los **35 sectores** reglamentarios del SIAT. |
+
+---
+
+## Sectores Soportados
+
+`go-siat` incluye modelos de dominio, builders y **tests de integración** para los **35 sectores** reglamentarios del SIAT (ubicados en `pkg/models/facturas/`):
+
+### 🏢 Estándar y Servicios
+- **Compra-Venta**: El sector estándar para la mayoría de comercios.
+- **Alquiler de Bienes Inmuebles**: Para el sector inmobiliario y arrendamientos.
+- **Seguros**: Emisión de pólizas y servicios de aseguradoras.
+- **Servicios Básicos**: Suministro de energía eléctrica, agua, gas y telecomunicaciones.
+- **Servicios Turísticos y Hospedaje / Hoteles**: Para el sector hotelero y operadores turísticos.
+- **Hospitales y Clínicas**: Servicios de salud (Nacional y Zona Franca).
+- **Seguridad Alimentaria**: Comercialización de productos de la canasta básica.
+
+### 🏺 Exportación y Zona Franca
+- **Exportación de Bienes y Servicios**: Comercial de Exportación, Servicios y Libre Consignación.
+- **Zona Franca**: Facturas de Zona Franca, Alquiler ZF y Servicios Hospitalarios ZF.
+- **Duty Free**: Facturación para tiendas libres de impuestos en aeropuertos.
+
+### ⛽ Hidrocarburos y Energía
+- **Comercialización de Hidrocarburos**: Combustibles, Lubricantes (con y sin IEHD).
+- **Engarrafadoras**: Sector de distribución de GLP.
+- **GNC y GNV**: Comercialización de Gas Natural Vehicular.
+- **Combustible No Subvencionado**: Para la venta a precio internacional.
+
+### ⛰️ Minería y Metales
+- **Venta de Minerales**: Venta Interna y Exportación de Minerales.
+- **Venta al BCB**: Venta de oro y minerales al **Banco Central de Bolivia**.
+
+### 🎓 Educación
+- **Sectores Educativos**: Colegios, Universidades e Institutos (Nacional y Zona Franca).
+
+### 🎲 Otros Sectores Especiales
+- **Juegos de Azar**: Casinos y salas de entretenimiento.
+- **Tasa Cero**: Libros y transporte internacional de carga.
+- **Productos ICE**: Artículos alcanzados por el Impuesto al Consumo Específico.
+- **Pagos Anticipados y Factura Compartida**: Flujos de facturación complejos.
+- **Prevalorada**: Facturas con precio fijo y servicio tributario recurrente.
+- **Compra y Venta de Moneda Extranjera**: Casas de cambio y entidades financieras.
+
 
 ---
 
@@ -83,7 +127,6 @@ import (
     "context"
     "log"
     "github.com/ron86i/go-siat"
-    "github.com/ron86i/go-siat/pkg/config"
     "github.com/ron86i/go-siat/pkg/models"
 )
 
@@ -106,7 +149,7 @@ func main() {
 
     // 3. Ejecutar operación
     ctx := context.Background()
-    cfg := config.Config{Token: "TU_TOKEN_API"}
+    cfg := siat.Config{Token: "TU_TOKEN_API"}
     resp, err := s.Codigos().SolicitudCuis(ctx, cfg, req)
     if err != nil {
         log.Fatal("Error en la solicitud:", err)
@@ -138,8 +181,6 @@ import (
     "time"
 
     "github.com/ron86i/go-siat"
-    "github.com/ron86i/go-siat/pkg/config"
-    "github.com/ron86i/go-siat/pkg/models"
     "github.com/ron86i/go-siat/pkg/models/facturas"
     "github.com/ron86i/go-siat/pkg/utils"
 )
@@ -147,7 +188,7 @@ import (
 func main() {
     // 1. Inicializar cliente y credenciales (Asumiendo que ya tiene CUIS y CUFD)
     s, _ := siat.New("https://pilotosiatservicios.impuestos.gob.bo/v2", nil)
-    cfg := config.Config{Token: "TU_TOKEN"}
+    cfg := siat.Config{Token: "TU_TOKEN"}
     nit := int64(123456789)
     cufdControl := "CODIGO_CONTROL_CUFD"
 
@@ -160,6 +201,8 @@ func main() {
     cabecera := facturas.NewCompraVentaCabeceraBuilder().
         WithNitEmisor(nit).
         WithRazonSocialEmisor("Mi Empresa S.R.L.").
+        WithMunicipio("La Paz").
+        WithDireccion("Av. 123").
         WithNumeroFactura(1).
         WithCuf(cuf).
         WithCufd("TU_CUFD").
@@ -171,7 +214,7 @@ func main() {
 
     detalle := facturas.NewCompraVentaDetalleBuilder().
         WithActividadEconomica("477300").
-        WithCodigoProductoSin("622539").
+        WithCodigoProductoSin(622539). // Ahora usa tipos numéricos correctos
         WithDescripcion("PRODUCTO DEMO").
         WithCantidad(1).
         WithPrecioUnitario(100).
@@ -179,6 +222,7 @@ func main() {
         Build()
 
     factura := facturas.NewCompraVentaBuilder().
+        WithModalidad(siat.ModalidadElectronica).
         WithCabecera(cabecera).
         AddDetalle(detalle).
         Build()
@@ -189,7 +233,7 @@ func main() {
     hash, archivoBase64, _ := utils.CompressAndHash(signedXML)
 
     // 5. Enviar al SIAT
-    req := models.CompraVenta().NewRecepcionFactura().
+    req := models.CompraVenta().NewRecepcionFacturaBuilder().
         WithCodigoAmbiente(1).
         WithNit(nit).
         WithCufd("TU_CUFD").
@@ -221,7 +265,8 @@ Para una comprensión profunda de cada servicio, los **Tests de Integración** a
 | **Códigos** | [`siat_codigos_service_test.go`](./internal/adapter/service/siat_codigos_service_test.go) |
 | **Sincronización** | [`siat_sincronizacion_service_test.go`](./internal/adapter/service/siat_sincronizacion_service_test.go) |
 | **Operaciones** | [`siat_operaciones_service_test.go`](./internal/adapter/service/siat_operaciones_service_test.go) |
-| **Compra y Venta** | [`siat_compra_venta_service_test.go`](./internal/adapter/service/siat_compra_venta_service_test.go) |
+| **Facturación (Sectores)** | [`pkg/models/facturas/`](./pkg/models/facturas/) |
+| **Electrónica** | [`siat_electronica_service_test.go`](./internal/adapter/service/siat_electronica_service_test.go) |
 | **Computarizada** | [`siat_computarizada_service_test.go`](./internal/adapter/service/siat_computarizada_service_test.go) |
 
 > **Configuración de Ambiente**

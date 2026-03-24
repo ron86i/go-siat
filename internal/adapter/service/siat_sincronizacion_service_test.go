@@ -10,7 +10,8 @@ import (
 	"github.com/ron86i/go-siat"
 
 	"github.com/ron86i/go-siat/internal/core/domain/siat/sincronizacion"
-	"github.com/ron86i/go-siat/pkg/config"
+	"github.com/ron86i/go-siat/internal/core/port"
+
 	"github.com/ron86i/go-siat/pkg/models"
 	"github.com/ron86i/go-siat/pkg/utils"
 	"github.com/stretchr/testify/assert"
@@ -20,12 +21,12 @@ func runSincronizacionTest[V any, ReqType any](
 	t *testing.T,
 	name string,
 	req ReqType,
-	fn func(context.Context, config.Config, ReqType) (*V, error),
+	fn func(context.Context, port.Config, ReqType) (*V, error),
 ) {
 	t.Run(name, func(t *testing.T) {
 		godotenv.Load()
 
-		config := config.Config{
+		config := siat.Config{
 			Token: os.Getenv("SIAT_TOKEN"),
 		}
 
