@@ -112,7 +112,17 @@ El SDK cubre los servicios críticos del ecosistema SIAT:
 
 
 ---
+## 📚 Referencia de Documentación
 
+El SDK incluye documentación detallada para casos de uso avanzados:
+
+| Documento | Descripción |
+| :--- | :--- |
+| [ARCHITECTURE.md](ARCHITECTURE.md) | Diseño arquitectónico, patrones, y decisiones de diseño del SDK. |
+| [CONTRIBUTING.md](CONTRIBUTING.md) | Guía para contribuidores: cómo reportar bugs y enviar pull requests. |
+| [CONTEXT_BEST_PRACTICES.md](CONTEXT_BEST_PRACTICES.md) | Mejores prácticas para usar `context.Context` en aplicaciones que llaman al SDK. |
+
+---
 ## Guía de Inicio Rápido
 
 ### Instalación
@@ -521,7 +531,7 @@ func main() {
 </details>
 
 <details>
-  <summary>🏪 Obtener Catálogos Maestros (Sincronización)</summary>
+  <summary>🏪 Obtener Catálogos (Sincronización)</summary>
 
 Sincronizar catálogos de actividades económicas, monedas, tipos de cambio, etc.:
 

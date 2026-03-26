@@ -122,6 +122,11 @@ func performSoapRequest[TReq any, TResp any](ctx context.Context, httpClient *ht
 	httpReq.Header.Set("User-Agent", ua)
 	httpReq.Header.Set("Content-Type", "application/xml")
 	httpReq.Header.Set("apiKey", fmt.Sprintf("TokenApi %s", config.Token))
+	
+	// Inyectar X-Trace-ID si está disponible
+	if strings.TrimSpace(config.TraceId) != "" {
+		httpReq.Header.Set("X-Trace-ID", config.TraceId)
+	}
 
 	resp, err := httpClient.Do(httpReq)
 	if err != nil {

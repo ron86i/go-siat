@@ -3,6 +3,8 @@ package codigos
 import (
 	"encoding/xml"
 	"time"
+
+	"github.com/ron86i/go-siat/internal/core/domain/siat/common"
 )
 
 // Cuis representa el sobre SOAP para la solicitud de un Código Único de Inicio de Sistemas.
@@ -31,8 +33,18 @@ type CuisResponse struct {
 // RespuestaCuis encapsula el resultado de la solicitud de CUIS, incluyendo el código generado,
 // su fecha de vigencia y cualquier notificación o error emitido por el SIAT.
 type RespuestaCuis struct {
-	Codigo        string            `xml:"codigo,omitempty" json:"codigo,omitempty"`
-	FechaVigencia time.Time         `xml:"fechaVigencia,omitempty" json:"fechaVigencia,omitempty"`
-	MensajesList  []MensajeServicio `xml:"mensajesList,omitempty" json:"mensajesList,omitempty"`
-	Transaccion   bool              `xml:"transaccion,omitempty" json:"transaccion,omitempty"`
+	Codigo        string                   `xml:"codigo,omitempty" json:"codigo,omitempty"`
+	FechaVigencia time.Time                `xml:"fechaVigencia,omitempty" json:"fechaVigencia,omitempty"`
+	MensajesList  []common.MensajeServicio `xml:"mensajesList,omitempty" json:"mensajesList,omitempty"`
+	Transaccion   bool                     `xml:"transaccion,omitempty" json:"transaccion,omitempty"`
+}
+
+// IsSuccess implementa la interfaz common.Result.
+func (r RespuestaCuis) IsSuccess() bool {
+	return r.Transaccion
+}
+
+// GetMessages implementa la interfaz common.Result.
+func (r RespuestaCuis) GetMessages() []common.MensajeServicio {
+	return r.MensajesList
 }

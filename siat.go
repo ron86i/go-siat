@@ -4,9 +4,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"reflect"
 	"strings"
 
 	"github.com/ron86i/go-siat/internal/adapter/service"
+	"github.com/ron86i/go-siat/internal/core/domain/siat/common"
 	"github.com/ron86i/go-siat/internal/core/port"
 )
 
@@ -70,6 +72,7 @@ type SiatServices struct {
 	compraVenta    port.SiatCompraVentaService
 	computarizada  port.SiatComputarizadaService
 	electronica    port.SiatElectronicaService
+	traceID        string // Opcional, para correlacionar solicitudes en sistemas distribuidos
 }
 
 // Operaciones retorna el servicio para la gestión de puntos de venta (PV),
@@ -113,6 +116,31 @@ func (s *SiatServices) Computarizada() port.SiatComputarizadaService {
 // Este es el tipo de facturación más moderno y flexible del SIAT.
 func (s *SiatServices) Electronica() port.SiatElectronicaService {
 	return s.electronica
+}
+
+// WithConfig retorna una nueva instancia de port.Config con el traceID actual.
+// Esto permite que el usuario establezca el traceID una sola vez con WithTraceID()
+// y que automáticamente se inyecte en todas las solicitudes posteriores.
+//
+// El usuario debe proporcionar el Token de autenticación del SIAT.
+// El UserAgent se establece en una cadena vacía y puede ser personalizado.
+//
+// Parámetros:
+//   - token: El token de autenticación del SIAT (obligatorio)
+//
+// Retorna:
+//   - port.Config con TraceID pre-establecido
+//
+// Ejemplo:
+//
+//	s.WithTraceID("trace-12345")
+//	config := s.WithConfig("myToken123")
+//	// config.TraceID es "trace-12345" automáticamente
+func (s *SiatServices) WithConfig(token string) port.Config {
+	return port.Config{
+		Token:   token,
+		TraceId: s.traceID,
+	}
 }
 
 // New crea e inicializa una nueva instancia de SiatServices.
@@ -181,5 +209,126 @@ func New(baseUrl string, httpClient *http.Client) (*SiatServices, error) {
 		compraVenta:    compraVenta,
 		computarizada:  computarizada,
 		electronica:    electronica,
+		traceID:        "", // Inicialmente vacío
 	}, nil
+}
+
+// WithTraceID establece un ID de seguimiento (trace ID) para correlacionar solicitudes
+// en sistemas distribuidos. El trace ID se inyecta en el encabezado HTTP "X-Trace-ID"
+// en todas las solicitudes posteriores.
+//
+// El trace ID es completamente opcional y no afecta la funcionalidad del SDK si no se proporciona.
+// Es útil para:
+//   - Correlacionar logs entre múltiples servicios
+//   - Rastrear solicitudes a través de sistemas distribuidos
+//   - Debugging de problemas en producción
+//
+// Parámetros:
+//   - id: El ID de seguimiento (puede estar vacío para limpiar el trace ID anterior)
+//
+// Retorna el receptor (SiatServices) para permitir encadenamiento de métodos.
+//
+// Ejemplo:
+//
+//	s.WithTraceID("trace-12345-dev").Operaciones()...
+//	// El trace-12345-dev se incluirá en el encabezado X-Trace-ID de todas las solicitudes
+func (s *SiatServices) WithTraceID(id string) *SiatServices {
+	s.traceID = id
+	return s
+}
+
+// Verify analiza una respuesta del SIAT y determina si la operación fue exitosa.
+// Si la respuesta contiene errores del SIAT (Transaccion=false o mensajes de error),
+// construye y retorna un *SiatError detallado.
+//
+// Es compatible con cualquier objeto de respuesta del SDK (RespuestaCuis, RespuestaRecepcion, etc.)
+// utilizando reflexión para extraer los campos 'Transaccion' y 'MensajesList'.
+//
+// Ejemplo:
+//
+//	resp, err := s.Codigos().VerificarNit(ctx, cfg, req)
+//	if err != nil { return err } // Error de red
+//	if err := siat.Verify(resp.Body.Content.RespuestaCuis); err != nil {
+//	    return err // Error del SIAT (ej: NIT inválido)
+//	}
+func Verify(resp interface{}) error {
+	if resp == nil {
+		return nil
+	}
+
+	// Intentar usar la interfaz común primero (más eficiente y seguro)
+	if res, ok := resp.(common.Result); ok {
+		return checkResult(res.IsSuccess(), res.GetMessages())
+	}
+
+	// Fallback por reflexión para objetos que aún no implementan la interfaz
+	val := reflect.ValueOf(resp)
+	if val.Kind() == reflect.Ptr {
+		val = val.Elem()
+	}
+
+	if val.Kind() != reflect.Struct {
+		return nil
+	}
+
+	// Extraer campo Transaccion (bool)
+	transaccionField := val.FieldByName("Transaccion")
+	success := true
+	if transaccionField.IsValid() && transaccionField.Kind() == reflect.Bool {
+		success = transaccionField.Bool()
+	}
+
+	// Extraer campo MensajesList (slice)
+	mensajesField := val.FieldByName("MensajesList")
+	var messages []common.MensajeServicio
+
+	if mensajesField.IsValid() && mensajesField.Kind() == reflect.Slice {
+		for i := 0; i < mensajesField.Len(); i++ {
+			msgVal := mensajesField.Index(i)
+			codeField := msgVal.FieldByName("Codigo")
+			descField := msgVal.FieldByName("Descripcion")
+
+			if codeField.IsValid() && descField.IsValid() {
+				messages = append(messages, common.MensajeServicio{
+					Codigo:      int(codeField.Int()),
+					Descripcion: descField.String(),
+				})
+			}
+		}
+	}
+
+	return checkResult(success, messages)
+}
+
+// checkResult es un helper interno para validar el éxito y categorizar mensajes.
+func checkResult(success bool, mensajes []common.MensajeServicio) error {
+	var messagesStr []string
+	var firstErrorCode int
+	hasErrors := false
+
+	for _, m := range mensajes {
+		// Categorizar: solo fallar si no es un warning
+		if !IsWarningCode(m.Codigo) {
+			hasErrors = true
+			if firstErrorCode == 0 {
+				firstErrorCode = m.Codigo
+			}
+		}
+		messagesStr = append(messagesStr, fmt.Sprintf("[%d] %s", m.Codigo, m.Descripcion))
+	}
+
+	// Si Transaccion es false o hay mensajes que no son warnings, es un error
+	if !success || hasErrors {
+		fullMsg := strings.Join(messagesStr, "; ")
+		if fullMsg == "" {
+			fullMsg = "Operación rechazada por el SIAT sin mensajes específicos"
+		}
+
+		err := NewSiatError(firstErrorCode, fullMsg)
+		// Enriquecer con metadatos de categoría
+		err.IsRetryable = IsRetryableCode(firstErrorCode)
+		return err
+	}
+
+	return nil
 }
