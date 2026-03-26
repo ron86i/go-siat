@@ -1,110 +1,114 @@
-# Guía de Contribución
+# Contribution Guide
 
-Agradecemos el interés en contribuir a go-siat. Este documento describe el proceso y las mejores prácticas.
+Thank you for your interest in contributing to **go-siat**. This document describes the process and best practices.
 
-## 📋 Requisitos Previos
+## 📋 Prerequisites
 
-- Go 1.25 o superior
+- Go 1.25 or higher
 - Git
-- Familiaridad con SIAT (Sistema Integrado de Administración Tributaria)
-- Lectura de [ARCHITECTURE.md](ARCHITECTURE.md)
+- Familiarity with SIAT (Integrated Tax Administration System)
+- Read [ARCHITECTURE.md](ARCHITECTURE.md)
 
-## 🚀 Comenzar
+---
 
-### 1. Fork y Clonar
+## 🚀 Getting Started
+
+### 1. Fork and Clone
 
 ```bash
-# Fork el repositorio en GitHub
-git clone https://github.com/tu-usuario/go-siat.git
+# Fork the repository on GitHub
+git clone https://github.com/your-user/go-siat.git
 cd go-siat
 ```
 
-### 2. Crear una Rama
+### 2. Create a Branch
 
 ```bash
-# Cree una rama para su feature o fix
-git checkout -b feature/mi-feature
-# o
-git checkout -b fix/numero-issue
+# Create a branch for your feature or fix
+git checkout -b feature/my-feature
+# or
+git checkout -b fix/issue-number
 ```
 
-### 3. Configurar el Ambiente
+### 3. Setup the Environment
 
 ```bash
-# Descargar dependencias
+# Download dependencies
 go mod tidy
 
-# Verificar que todo compila
+# Verify everything compiles
 go build ./...
 
-# Ejecutar los tests
+# Run the tests
 go test ./...
 ```
 
-## 💻 Desarrollo
+---
 
-### Estándares de Código
+## 💻 Development
 
-#### Comentarios y Documentación
+### Code Standards
 
-- **Godoc**: Todo tipo, función o método público debe tener comentario en formato godoc
-- **Ejemplos**: Incluir ejemplos en tests para documentación
+#### Comments and Documentation
+
+- **Godoc**: Every public type, function, or method must have a comment in godoc format.
+- **Examples**: Include examples in tests for documentation.
 
 ```go
-// SolicitudCuis obtiene el Código Único de Inicio de Sistemas necesario para operar ante el SIAT.
+// SolicitudCuis obtains the Unique System Initiation Code required to operate with SIAT.
 //
-// Parámetros:
-//   - ctx: Contexto para cancelación e timeouts
-//   - config: Configuración con token de autenticación
-//   - req: Solicitud CUIS construida con builder
+// Parameters:
+//   - ctx: Context for cancellation and timeouts
+//   - config: Configuration with authentication token
+//   - req: CUIS request built with builder
 //
-// Retorna EnvelopeResponse con la respuesta SOAP o error.
+// Returns EnvelopeResponse with the SOAP response or error.
 func (s *SiatCodigosService) SolicitudCuis(ctx context.Context, config Config, req models.Cuis) (*soap.EnvelopeResponse[codigos.CuisResponse], error) {
 ```
 
-#### Nombres
+#### Naming
 
-- Variables: `camelCase` (ej: `cufsResponse`, `errorMessage`)
-- Constantes: `UPPER_SNAKE_CASE` (ej: `DEFAULT_TIMEOUT`, `MAX_RETRIES`)
-- Funciones Públicas: `PascalCase` (ej: `SolicitudCuis`)
-- Métodos Privados: `camelCase` (ej: `buildSoapEnvelope`)
+- Variables: `camelCase` (e.g., `cufsResponse`, `errorMessage`)
+- Constants: `UPPER_SNAKE_CASE` (e.g., `DEFAULT_TIMEOUT`, `MAX_RETRIES`)
+- Public Functions: `PascalCase` (e.g., `SolicitudCuis`)
+- Private Methods: `camelCase` (e.g., `buildSoapEnvelope`)
 
-#### Errores
+#### Errors
 
-- Siempre usar `fmt.Errorf` o `errors.New` con contexto
-- Evitar retornar `nil` para errores sin usar `error` como tipo
+- Always use `fmt.Errorf` or `errors.New` with context.
+- Avoid returning `nil` for errors without using `error` as the type.
 
 ```go
-// Bien
+// Good
 if err != nil {
-    return nil, fmt.Errorf("falló compilar SOAP: %w", err)
+    return nil, fmt.Errorf("failed to compile SOAP: %w", err)
 }
 
-// Evitar
+// Avoid
 if err != nil {
-    return nil, err  // Pierde contexto
+    return nil, err  // Context is lost
 }
 ```
 
 #### Type-Safety
 
-- Preferir tipos específicos sobre `interface{}`
-- Usar builders cuando sea posible
+- Prefer specific types over `interface{}`.
+- Use builders when possible.
 
 ```go
-// Bien
+// Good
 type SolicitudCuis struct {
     CodigoAmbiente int64
     NIT            int64
 }
 
-// Evitar
+// Avoid
 type SolicitudCuis map[string]interface{}
 ```
 
-### Estructura de Tests
+### Test Structure
 
-Los tests deben seguir el patrón de tabla (table-driven tests):
+Tests should follow the table-driven test pattern:
 
 ```go
 func TestSolicitudCuis(t *testing.T) {
@@ -115,14 +119,14 @@ func TestSolicitudCuis(t *testing.T) {
         setupMock func()
     }{
         {
-            name: "solicitud válida",
+            name: "valid request",
             req: models.Codigos().NewCuisBuilder().
                 WithCodigoAmbiente(1).
                 Build(),
             wantErr: false,
         },
         {
-            name: "ambiente inválido",
+            name: "invalid environment",
             req: models.Codigos().NewCuisBuilder().
                 WithCodigoAmbiente(99).
                 Build(),
@@ -140,216 +144,234 @@ func TestSolicitudCuis(t *testing.T) {
 
 ### Commits
 
-- **Mensajes claros**: Describe qué y por qué, no cómo
-- **Scope**: `[feature|fix|docs|test|refactor]: descripción`
+- **Clear messages**: Describe *what* and *why*, not *how*.
+- **Scope**: `[feature|fix|docs|test|refactor]: description`
 
 ```bash
-# Bien
-git commit -m "fix: validar NIT antes de enviar CUFD" \
-           -m "El SIAT rechaza CUFD con inconsistencias en el NIT" \
+# Good
+git commit -m "fix: validate NIT before sending CUFD" \
+           -m "SIAT rejects CUFD with inconsistencies in the NIT" \
            -m "Closes #123"
 
-# Evitar
-git commit -m "arreglo de bug"
+# Avoid
+git commit -m "bug fix"
 ```
+
+---
 
 ## 🧪 Testing
 
-### Cobertura Mínima
+### Minimum Coverage
 
-- **Código nuevo**: 80% de cobertura
-- **Cambios a código existente**: No disminuir la cobertura actual
+- **New code**: 80% coverage.
+- **Changes to existing code**: Do not decrease the current coverage.
 
 ```bash
-# Ejecutar tests con cobertura
+# Run tests with coverage
 go test -cover ./...
 
-# Generar reporte HTML de cobertura
+# Generate HTML coverage report
 go test -coverprofile=coverage.out ./...
 go tool cover -html=coverage.out
 ```
 
-### Tipos de Tests
+### Test Types
 
-| Tipo | Ubicación | Propósito |
+| Type | Location | Purpose |
 |------|-----------|-----------|
-| **Unit** | `*_test.go` en el mismo paquete | Verificar lógica en aislamiento |
-| **Integration** | `*_integration_test.go` | Verificar comportamiento con SIAT real (solo en CI) |
-| **Regression** | `testdata/` | Validar contra respuestas conocidas |
+| **Unit** | `*_test.go` in the same package | Verify logic in isolation |
+| **Integration** | `*_integration_test.go` | Verify behavior with real SIAT (CI only) |
+| **Regression** | `testdata/` | Validate against known responses |
 
-### Variables de Entorno para Tests
+### Environment Variables for Tests
 
 ```bash
-# Tests de integración requieren estos valores
-export SIAT_API_TOKEN="tu_token"
-export SIAT_NIT="tu_nit"
+# Integration tests require these values
+export SIAT_API_TOKEN="your_token"
+export SIAT_NIT="your_nit"
 export SIAT_BASE_URL="https://pilotosiatservicios.impuestos.gob.bo/v2"
 
-# Ejecutar tests de integración
+# Run integration tests
 go test -tags=integration ./...
 ```
 
-## 📦 Tipos de Contribución
+---
 
-### 1. Nuevas Funcionalidades
+## 📦 Contribution Types
 
-- Crear issue primero describiendo el cambio
-- Esperar aprobación antes de comenzar
-- Incluir tests y documentación
-- Actualizar ejemplos si aplica
+### 1. New Features
+
+- Create an issue first describing the change.
+- Wait for approval before starting.
+- Include tests and documentation.
+- Update examples if applicable.
 
 ### 2. Bug Fixes
 
-- Incluir test que reproduca el bug
-- Arreglarlo
-- Verificar que el test pase
-- Documentar en el commit
+- Include a test that reproduces the bug.
+- Fix it.
+- Verify that the test passes.
+- Document it in the commit.
 
-### 3. Mejoras en Documentación
+### 3. Documentation Improvements
 
-- Actualizar README.md, ARCHITECTURE.md o crear nuevos .md
-- Mejorar comentarios godoc
-- Agregar ejemplos
-- No necesita aprobación previa
+- Update `README.md`, `ARCHITECTURE.md`, or create new `.md` files.
+- Improve godoc comments.
+- Add examples.
+- Does not need prior approval.
 
-### 4. Mejoras en Performance
+### 4. Performance Improvements
 
-- Incluir benchmarks que demuestren la mejora
-- No sacrificar legibilidad
-- Documentar la decisión de diseño
+- Include benchmarks demonstrating the improvement.
+- Do not sacrifice readability.
+- Document the design decision.
 
-## 🔄 Proceso de Pull Request
+---
 
-### Paso 1: Preparar el PR
+## 🔄 Pull Request Process
+
+### Step 1: Prepare the PR
 
 ```bash
-# Verificar que todo está ok
+# Verify everything is ok
 go fmt ./...
 go vet ./...
 go test ./...
 
-# Push a tu rama
-git push origin feature/mi-feature
+# Push to your branch
+git push origin feature/my-feature
 ```
 
-### Paso 2: Crear el Pull Request
+### Step 2: Create the Pull Request
 
-En GitHub:
+On GitHub:
 
-1. Título: `[tipo] descripción breve`
-2. Descripción: Explicar el cambio, por qué, y qué pruebas se incluyeron
-3. Referencia: `Closes #issueNumber` si aplica
+1. Title: `[type] brief description`
+2. Description: Explain what changed, why, and what tests were included.
+3. Reference: `Closes #issueNumber` if applicable.
 
-**Template de descripción:**
+**Description Template:**
 
 ```markdown
-## Descripción
-Breve descripción del cambio.
+## Description
+Brief description of the change.
 
-## Tipo de Cambio
+## Type of Change
 - [ ] Bug fix
-- [ ] Nueva funcionalidad
+- [ ] New feature
 - [ ] Breaking change
-- [ ] Mejora de documentación
+- [ ] Documentation improvement
 
 ## Testing
-- [ ] Tests unitarios agregados/modificados
-- [ ] Tests de integración (si aplica)
-- [ ] Cobertura >= 80%
+- [ ] Unit tests added/modified
+- [ ] Integration tests (if applicable)
+- [ ] Coverage >= 80%
 
 ## Checklist
-- [ ] Código sigue los estándares del proyecto
-- [ ] Todos los tests pasan
-- [ ] Documentación actualizada
-- [ ] Sin problemas de linting
+- [ ] Code follows project standards
+- [ ] All tests pass
+- [ ] Documentation updated
+- [ ] No linting issues
 ```
 
-### Paso 3: Revisión
+### Step 3: Review
 
-- Esperar revisión de los maintainers
-- Responder comentarios en el PR
-- Hacer cambios solicitados
-- Re-request review
+- Wait for review from maintainers.
+- Respond to comments in the PR.
+- Make requested changes.
+- Re-request review.
 
-### Paso 4: Merge
+### Step 4: Merge
 
-Una vez aprobado, un maintainer hará el merge.
+Once approved, a maintainer will perform the merge.
 
-## 📋 Checklist de Calidad
+---
 
-Antes de abrir un PR:
+## 📋 Quality Checklist
 
-- [ ] `go fmt ./...` ha sido ejecutado
-- [ ] `go vet ./...` sin errores
-- [ ] `go test ./...` pasan todos los tests
-- [ ] Cobertura de tests >= 80% para código nuevo
-- [ ] Todos los tipos/funciones públicas tienen documentación godoc
-- [ ] Ejemplos en comentarios si es complejo
-- [ ] Sin cambios no relacionados (keep PRs focused)
-- [ ] Commits con mensajes claros
-- [ ] README.md actualizado si hay cambios en la API
+Before opening a PR:
 
-## 🐛 Reportar Bugs
+- [ ] `go fmt ./...` has been executed.
+- [ ] `go vet ./...` no errors.
+- [ ] `go test ./...` all tests pass.
+- [ ] Test coverage >= 80% for new code.
+- [ ] All public types/functions have godoc documentation.
+- [ ] Examples in comments if complex.
+- [ ] No unrelated changes (keep PRs focused).
+- [ ] Commits with clear messages.
+- [ ] `README.md` updated if there are API changes.
 
-1. Verificar que no exista un issue similar
-2. Crear issue con:
-   - Título descriptivo
-   - Descripción detallada
-   - Código que reproduce el problema
-   - Versión de Go y go-siat
-   - Versión del SIAT (producción/pruebas)
+---
 
-**Ejemplo:**
+## 🐛 Reporting Bugs
+
+1. Verify that a similar issue does not already exist.
+2. Create an issue with:
+   - Descriptive title.
+   - Detailed description.
+   - Code that reproduces the problem.
+   - Go and go-siat versions.
+   - SIAT version (production/testing).
+
+**Example:**
 
 ```markdown
-## Descripción
-CUFD rechazado con error "Código de Control inválido"
+## Description
+CUFD rejected with error "Invalid Control Code"
 
-## Pasos para Reproducir
-1. Llamar a SolicitudCufd con...
-2. Observar el error...
+## Steps to Reproduce
+1. Call SolicitudCufd with...
+2. Observe the error...
 
-## Salida Esperada
-Código CUFD válido
+## Expected Output
+Valid CUFD code
 
-## Información del Sistema
+## System Information
 - Go: 1.25
 - go-siat: v1.2.0
-- SIAT: Producción
+- SIAT: Production
 ```
 
-## 🎓 Convenciones del Proyecto
+---
 
-### Estructura de Paquetes
+## 🎓 Project Conventions
 
-- `pkg/`: API pública
-- `internal/`: Implementación privada
-- Mantener paquetes enfocados en una responsabilidad
+### Package Structure
 
-### Dependencias
+- `pkg/`: Public API.
+- `internal/`: Private implementation.
+- Keep packages focused on a single responsibility.
 
-- Mantener `go.mod` limpio
-- Justificar nuevas dependencias externas
-- Preferir stdlib cuando sea posible
+### Dependencies
 
-### Versionado Semántico
+- Keep `go.mod` clean.
+- Justify new external dependencies.
+- Prefer stdlib when possible.
 
-- MAJOR: Breaking changes
-- MINOR: Nuevas funcionalidades (backward compatible)
-- PATCH: Bug fixes
+### Semantic Versioning
 
-## 💬 Comunicación
+- MAJOR: Breaking changes.
+- MINOR: New features (backward compatible).
+- PATCH: Bug fixes.
 
-- **Issues**: Para reportar bugs o proponer features
-- **Discussions**: Para preguntas y conversaciones generales
-- **Email**: Contactar a los maintainers si es necesario
+---
 
-## 📖 Recursos
+## 💬 Communication
+
+- **Issues**: To report bugs or propose features.
+- **Discussions**: For general questions and conversations.
+- **Email**: Contact maintainers if necessary.
+
+---
+
+## 📖 Resources
 
 - [Go Code Review Comments](https://github.com/golang/go/wiki/CodeReviewComments)
-- [ARCHITECTURE.md](ARCHITECTURE.md) - Diseño del proyecto
-- [SIAT Documentation](https://www.impuestos.gob.bo/) - Documentación oficial SIAT
+- [ARCHITECTURE.md](ARCHITECTURE.md) - Project Design
+- [SIAT Documentation](https://www.impuestos.gob.bo/) - Official SIAT Documentation
 
-## ✨ Gracias
+---
 
-Gracias por contribuir a go-siat. Tus aportes hacen que la facturación electrónica en Bolivia sea más accesible para todos los desarrolladores.
+## ✨ Thanks
+
+Thank you for contributing to **go-siat**. Your contributions make electronic invoicing in Bolivia more accessible for all developers.

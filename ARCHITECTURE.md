@@ -1,29 +1,29 @@
-# Arquitectura de go-siat
+# go-siat Architecture
 
-Este documento describe la arquitectura, estructura de carpetas y patrones de diseño del SDK go-siat.
+This document describes the architecture, folder structure, and design patterns of the **go-siat** SDK.
 
-## 🏗️ Visión General
+## 🏗️ Overview
 
-go-siat implementa una **arquitectura modular inspirada en Hexagonal Architecture (Puertos y Adaptadores)** con una clara separación de responsabilidades:
+**go-siat** implements a **modular architecture inspired by Hexagonal Architecture (Ports and Adapters)** with a clear separation of concerns:
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                   Código del Usuario                         │
-│          (Utiliza el SDK a través de SiatServices)          │
+│                    User Code                                │
+│          (Uses the SDK through SiatServices)                │
 └─────────────────────┬───────────────────────────────────────┘
                       │
 ┌─────────────────────▼───────────────────────────────────────┐
-│              SiatServices (Punto de Entrada)                │
-│   - Operaciones()                                           │
-│   - Sincronizacion()                                        │
-│   - Codigos()                                               │
-│   - CompraVenta()                                           │
-│   - Computarizada()                                         │
-│   - Electronica()                                           │
+│              SiatServices (Entry Point)                     │
+│   - Operations()                                            │
+│   - Synchronization()                                       │
+│   - Codes()                                                 │
+│   - PurchaseSale()                                          │
+│   - Computerized()                                          │
+│   - Electronic()                                            │
 └─────────────────────┬───────────────────────────────────────┘
                       │
 ┌─────────────────────▼───────────────────────────────────────┐
-│              Puertos (Interfaces)                            │
+│              Ports (Interfaces)                             │
 │   - SiatCodigosService                                      │
 │   - SiatSincronizacionService                               │
 │   - SiatOperacionesPort                                     │
@@ -33,64 +33,64 @@ go-siat implementa una **arquitectura modular inspirada en Hexagonal Architectur
 └─────────────────────┬───────────────────────────────────────┘
                       │
 ┌─────────────────────▼───────────────────────────────────────┐
-│            Adaptadores (Implementaciones)                    │
+│            Adapters (Implementations)                       │
 │   - SiatCodigosService (HTTP/SOAP)                          │
 │   - SiatSincronizacionService (HTTP/SOAP)                   │
 │   - SiatOperacionesService (HTTP/SOAP)                      │
-│   - ... (otros servicios)                                   │
+│   - ... (other services)                                    │
 └─────────────────────┬───────────────────────────────────────┘
                       │
 ┌─────────────────────▼───────────────────────────────────────┐
-│              Núcleo de Dominio                              │
-│   - Modelos SOAP                                            │
-│   - Estructuras de Respuesta                                │
-│   - Tipos de Datos del SIAT                                 │
+│              Domain Core                                    │
+│   - SOAP Models                                             │
+│   - Response Structures                                     │
+│   - SIAT Data Types                                         │
 └─────────────────────┬───────────────────────────────────────┘
                       │
 ┌─────────────────────▼───────────────────────────────────────┐
-│             Utilidades (Capa de Utilidad)                   │
+│             Utilities (Utility Layer)                       │
 │   - XML Signing (XMLDSig)                                   │
-│   - Compresión y Hash                                       │
-│   - Codificación Base64                                     │
-│   - Generación de CUF                                       │
+│   - Compression and Hash                                    │
+│   - Base64 Encoding                                         │
+│   - CUF Generation                                          │
 └─────────────────────────────────────────────────────────────┘
 ```
 
-## 📂 Estructura de Carpetas
+## 📂 Folder Structure
 
 ```
 go-siat/
-├── README.md                      # Documentación principal
-├── ARCHITECTURE.md               # Este archivo
+├── README.md                      # Main documentation
+├── ARCHITECTURE.md               # This file
 ├── LICENSE                       # MIT License
-├── go.mod                        # Módulo Go
+├── go.mod                        # Go module
 │
-├── pkg/                          # Código público del SDK
-│   ├── config/                   # Configuración
-│   ├── models/                   # Modelos de datos del usuario
-│   │   ├── codigos.go           # Builders para códigos
-│   │   ├── electronica.go       # Builders para facturas electrónicas
-│   │   ├── computarizada.go     # Builders para facturas computarizadas
-│   │   ├── compra_venta.go      # Builders para compra-venta
-│   │   ├── operaciones.go       # Builders para operaciones
-│   │   ├── sincronizacion.go    # Builders para sincronización
-│   │   └── facturas/             # 35 sectores específicos
+├── pkg/                          # SDK Public Code
+│   ├── config/                   # Configuration
+│   ├── models/                   # User Data Models
+│   │   ├── codigos.go           # Builders for codes
+│   │   ├── electronica.go       # Builders for electronic invoices
+│   │   ├── computarizada.go     # Builders for computerized invoices
+│   │   ├── compra_venta.go      # Builders for purchase-sale
+│   │   ├── operaciones.go       # Builders for operations
+│   │   ├── sincronizacion.go    # Builders for synchronization
+│   │   └── invoices/             # 35 specific sectors
 │   │       ├── compra_venta.go
 │   │       ├── hoteles.go
 │   │       ├── mineria.go
-│   │       ├── ... (otros sectores)
+│   │       ├── ... (other sectors)
 │   │
-│   └── utils/                    # Utilidades públicas
-│       ├── crypto.go             # Funciones criptográficas
-│       ├── cuf.go                # Generación de CUF
-│       ├── encoding.go           # Codificación/Decodificación
-│       ├── parse.go              # Parseo de estructuras
-│       └── signXML.go            # Firma digital XMLDSig
+│   └── utils/                    # Public Utilities
+│       ├── crypto.go             # Cryptographic functions
+│       ├── cuf.go                # CUF generation
+│       ├── encoding.go           # Encoding/Decoding
+│       ├── parse.go              # Structure parsing
+│       └── signXML.go            # XMLDSig digital signature
 │
-├── internal/                     # Código privado del SDK
+├── internal/                     # SDK Private Code
 │   │
-│   ├── adapter/                  # Implementaciones concretas (Adaptadores)
-│   │   └── service/              # Servicios HTTP/SOAP
+│   ├── adapter/                  # Concrete Implementations (Adapters)
+│   │   └── service/              # HTTP/SOAP Services
 │   │       ├── siat_codigos_service.go
 │   │       ├── siat_electronica_service.go
 │   │       ├── siat_operaciones_service.go
@@ -98,113 +98,49 @@ go-siat/
 │   │       ├── siat_compra_venta_service.go
 │   │       └── siat_computarizada_service.go
 │   │
-│   └── core/                     # Lógica de dominio y puertos
-│       ├── domain/               # Modelos del dominio
-│       │   ├── datatype/         # Tipos de datos especializados
-│       │   │   ├── soap/         # Estructuras SOAP
-│       │   │   ├── nilable.go    # Tipos anulables seguros
-│       │   │   └── ... (tipos)
-│       │   │
-│       │   └── siat/             # Modelos específicos del SIAT
-│       │       ├── codigos/      # Respuestas de códigos
-│       │       ├── electronica/  # Respuestas electrónicas
-│       │       └── ... (otros)
-│       │
-│       └── port/                 # Puertos (Interfaces)
-│           ├── config.go         # Configuración compartida
-│           ├── siat_codigos_port.go
-│           ├── siat_electronica_port.go
-│           ├── siat_operaciones_port.go
-│           ├── siat_sincronizacion_port.go
-│           ├── siat_compra_venta_port.go
-│           └── siat_computarizada_port.go
-│
-├── siat.go                       # Punto de entrada (SiatServices)
-├── constants.go                  # Constantes globales
-├── config.go                     # Exposición pública de Config
-└── codigos_errores.go            # Catálogo de códigos de error
+│   ├── core/                     # Domain Core
+│   │   ├── domain/               # Domain Models (Internal)
+│   │   │   ├── datatype/         # Custom SIAT SIAT types
+│   │   │   │   └── soap/         # SOAP Envelopes/Faults
+│   │   │   └── siat/             # SOAP Request/Response definitions
+│   │   │       ├── codigos/
+│   │   │       ├── facturacion/
+│   │   │       ├── operaciones/
+│   │   │       └── sincronizacion/
+│   │   │
+│   │   └── port/                 # Port Definitions (Interfaces)
+│   │       ├── siat_codigos_port.go
+│   │       └── ...
+│   │
+│   └── errors/                   # Internal Error management
 ```
 
-## 🔄 Patrones de Diseño
+## 🧩 Key Design Patterns
 
-### 1. **Puertos y Adaptadores (Hexagonal Architecture)**
-
-- **Puertos**: Son interfaces que definen contratos (ubicadas en `internal/core/port/`)
-- **Adaptadores**: Son implementaciones concretas de esos puertos (ubicadas en `internal/adapter/service/`)
-
-**Beneficio**: Fácil testing y cambio de implementaciones sin afectar el código cliente.
+### 1. **Hexagonal Architecture (Ports and Adapters)**
+The SDK defines ports (interfaces) in `internal/core/port` and implements them in `internal/adapter/service`. This allows the communication layer (HTTP/SOAP) to be separated from the business logic, facilitating mock testing and future updates to the underlying protocol.
 
 ### 2. **Builder Pattern**
+Given the complexity of SIAT data structures (especially in invoices), we use the **Builder Pattern** to provide a fluent and safe API for the user.
+- **Location**: `pkg/models/`
+- **Example**: `models.Codigos().NewCuisBuilder().WithNit(...).Build()`
 
-Utilizamos el patrón Builder para la construcción intuitiva de solicitudes complejas, proporcionando una sintaxis fluida y verificación de tipos en tiempo de compilación.
+### 3. **Request/Response Wrapper (Envelope)**
+All SOAP web service calls are encapsulated in a generic `Envelope` that manages the standard SOAP headers and handles `Fault` (SOAP errors) automatically.
+- **Location**: `internal/core/domain/datatype/soap/envelope.go`
 
-**Beneficio**: Sintaxis fluida, type-safe, y validaciones en tiempo de compilación.
+### 4. **Safe Parsing (Nilable Types)**
+SIAT often requires specific treatments for null or omitted values in XML. We use a custom `Nilable[T]` type or pointers to ensure correct serialization to XML.
 
-### 3. **Dependency Injection**
+---
 
-Los servicios reciben dependencias (como `http.Client`) en su inicialización, en lugar de crear instancias globales.
+## 🛡️ Principles and Best Practices
 
-**Beneficio**: Testeable, flexible, sin estado global.
+1.  **Immutability**: Once an `EnvelopeResponse` is received, it is treated as immutable.
+2.  **Context-Aware**: All public methods of the SDK accept a `context.Context` to allow cancellation, timeouts, and tracing.
+3.  **No Global State**: The SDK does not use global variables. Each `SiatServices` client is isolated.
+4.  **Fail Fast**: We validate critical fields in builders before executing the request to save bandwidth and improve the developer experience.
 
-### 4. **Type Aliasing**
+## 🤝 Next Steps and Contributions
 
-Se utiliza para exponer tipos internos de forma pública sin duplicar definiciones.
-
-**Beneficio**: Abstracción clara del paquete `internal/`.
-
-## 🎯 Flujo de Datos
-
-Toda operación sigue un flujo predecible:
-
-1. El usuario construye una solicitud usando builders
-2. Llama al método correspondiente en SiatServices 
-3. SiatServices delega a la interfaz (Puerto)
-4. El adaptador maneja la comunicación SOAP/HTTP
-5. Se retorna la respuesta parseada y actualizada
-
-## 🔌 Responsabilidades por Capa
-
-| Capa | Responsabilidad |
-|------|-----------------|
-| **SiatServices** | Orquestar y exponer servicios al usuario |
-| **Puertos** | Definir contratos y abstracciones |
-| **Adaptadores** | Implementar lógica de comunicación SOAP/HTTP |
-| **Dominio** | Modelar estructuras de datos SIAT |
-| **Utilidades** | Proporcionar funciones transversales |
-
-## 🧪 Arquitectura para Testing
-
-Debido a la arquitectura de puertos y adaptadores:
-
-1. **Tests Unitarios**: Mock fácil de interfaces (puertos)
-2. **Tests de Integración**: Utilizar el cliente real con ambiente de pruebas
-3. **Tests de Regresión**: Validar modelos contra respuestas conocidas
-
-## 🔐 Seguridad
-
-- **TLS 1.2+**: Configurado por defecto en `New()`
-- **XMLDSig**: Integrado en utilidades para firma de facturas
-- **Tokens**: Manejados securely en `Config`
-
-## 📊 Decisiones Arquitectónicas
-
-| Decisión | Razón |
-|----------|-------|
-| Struct methods sobre funciones globales | Namespace y organización |
-| Interfaces pequeñas (un servicio por interfaz) | Flexibilidad y cleanup |
-| Type-safe builders | Evitar errores en compilación |
-| Context en todas las operaciones | Cancellations y timeouts |
-| http.Client inyectable | Testing y configuración personalizada |
-
-## 🚀 Cómo Agregar un Nuevo Servicio
-
-1. Crear la interfaz en `internal/core/port/siat_nuevo_service.go`
-2. Implementarly en `internal/adapter/service/siat_nuevo_service.go`
-3. Crear modelos en `pkg/models/nuevo_modulo.go`
-4. Exponer en `SiatServices` mediante getter
-5. Actualizar documentación y ejemplos
-
-## 📚 Referencias
-
-- [Hexagonal Architecture (Alistair Cockburn)](https://alistair.cockburn.us/hexagonal-architecture/)
-- [Clean Architecture (Robert C. Martin)](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
+If you want to contribute, please review the [CONTRIBUTING.md](CONTRIBUTING.md) guide. For usage examples, see the `*_test.go` files in `internal/adapter/service/`.
