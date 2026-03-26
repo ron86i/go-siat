@@ -1,0 +1,62 @@
+{
+  "name": "go-siat",
+  "logo": {
+    "light": "/.github/logo.svg",
+    "dark": "/.github/logo.svg"
+  },
+  "favicon": "/.github/logo.svg",
+  "colors": {
+    "primary": "#00add8",
+    "light": "#5ad7ff",
+    "dark": "#007a9e"
+  },
+  "topbarLinks": [
+    {
+      "name": "GitHub",
+      "url": "https://github.com/ron86i/go-siat"
+    }
+  ],
+  "navigation": [
+    {
+      "group": "Introduction",
+      "pages": [
+        "docs/introduction",
+        "docs/architecture",
+        "docs/assistant"
+      ]
+    },
+    {
+      "group": "Core Services",
+      "pages": [
+        "docs/services/codes",
+        "docs/services/synchronization",
+        "docs/services/operations",
+        "docs/services/sales"
+      ]
+    },
+    {
+      "group": "Invoicing Modalidades",
+      "pages": [
+        "docs/services/electronic",
+        "docs/services/computerized",
+        "docs/services/sectors"
+      ]
+    },
+    {
+      "group": "Security & Utils",
+      "pages": [
+        "docs/utils/crypto",
+        "docs/middleware"
+      ]
+    },
+    {
+      "group": "Development",
+      "pages": [
+        "docs/development/contributing"
+      ]
+    }
+  ],
+  "footerSocials": {
+    "github": "https://github.com/ron86i/go-siat"
+  }
+}
