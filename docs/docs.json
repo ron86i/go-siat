@@ -20,49 +20,49 @@
     {
       "group": "Introduction",
       "pages": [
-        "docs/introduction",
-        "docs/architecture",
-        "docs/assistant"
+        "introduction",
+        "architecture",
+        "assistant"
       ]
     },
     {
       "group": "Core Services",
       "pages": [
-        "docs/services/codes",
-        "docs/services/synchronization",
-        "docs/services/operations",
-        "docs/services/sales"
+        "services/codes",
+        "services/synchronization",
+        "services/operations",
+        "services/sales"
       ]
     },
     {
       "group": "Invoicing Modalidades",
       "pages": [
-        "docs/services/electronic",
-        "docs/services/computerized",
-        "docs/services/sectors"
+        "services/electronic",
+        "services/computerized",
+        "services/sectors"
       ]
     },
     {
       "group": "Security & Utils",
       "pages": [
-        "docs/utils/crypto",
-        "docs/middleware"
+        "utils/crypto",
+        "middleware"
       ]
     },
     {
       "group": "Development",
       "pages": [
-        "docs/development/contributing"
+        "development/contributing"
       ]
     },
     {
       "group": "Español (Castellano)",
       "pages": [
-        "docs/es/introduction",
-        "docs/es/architecture",
-        "docs/es/services/codes",
-        "docs/es/services/sales",
-        "docs/es/utils/crypto"
+        "es/introduction",
+        "es/architecture",
+        "es/services/codes",
+        "es/services/sales",
+        "es/utils/crypto"
       ]
     }
   ],
