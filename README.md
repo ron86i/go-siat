@@ -108,7 +108,7 @@ The SDK covers the critical services of the SIAT ecosystem:
 
 ### 1. Requirements
 
-- Go 1.18 or higher.
+- Go 1.25 or higher.
 - Valid digital certificate (p12/pfx) and private key (for Electronic modality).
 
 ### 2. Installation
