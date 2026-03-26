@@ -54,6 +54,16 @@
       "pages": [
         "docs/development/contributing"
       ]
+    },
+    {
+      "group": "Español (Castellano)",
+      "pages": [
+        "docs/es/introduction",
+        "docs/es/architecture",
+        "docs/es/services/codes",
+        "docs/es/services/sales",
+        "docs/es/utils/crypto"
+      ]
     }
   ],
   "footerSocials": {
