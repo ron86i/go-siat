@@ -139,7 +139,7 @@ func main() {
 		Build()
 
 	// 3. Execute call
-	resp, err := s.Codes().VerificarNit(context.Background(), req)
+	resp, err := s.Codigos().VerificarNit(context.Background(), req)
 	if err != nil {
 		panic(err)
 	}
@@ -156,7 +156,7 @@ The project follows a modular architecture based on **Ports and Adapters (Hexago
 
 - **`internal/core/domain/`**: Pure business logic and SIAT data structures.
 - **`internal/core/port/`**: Definition of interfaces (contracts).
-- **`internal/adapter/service/`**: Implementation of SOAP clients and communication.
+- **`internal/adapter/services/`**: Implementation of SOAP clients and communication.
 - **`pkg/builders/`**: Fluent entities for building complex XML/JSON (Invoices).
 - **`pkg/utils/`**: Utilities for signatures, compression, and formatting.
 
