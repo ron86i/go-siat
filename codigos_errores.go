@@ -402,3 +402,33 @@ func GetMensaje(code int) string {
 	}
 	return fmt.Sprintf("Código de respuesta SIAT desconocido: %d", code)
 }
+
+// IsRetryableCode retorna true si el código de error del SIAT sugiere que la operación
+// puede ser reintentada después de un tiempo (ej: saturación o timeout de base de datos).
+func IsRetryableCode(code int) bool {
+	switch code {
+	case 967, 991, 995, 999, 123:
+		return true
+	}
+	return false
+}
+
+// IsValidationCode retorna true si el código indica un error de validación de datos
+// (ej: NIT inexistente, formato XSD inválido).
+func IsValidationCode(code int) bool {
+	return code >= 919 && code <= 940 || code >= 1000 && code <= 1061
+}
+
+// IsWarningCode retorna true si el código es informativo o una advertencia que no impide el proceso.
+func IsWarningCode(code int) bool {
+	return code >= 2000 && code <= 3008
+}
+
+// IsConfigCode retorna true si el código indica un error de configuración del sistema o credenciales.
+func IsConfigCode(code int) bool {
+	switch code {
+	case 910, 911, 912, 917, 958, 959, 975, 989:
+		return true
+	}
+	return false
+}

@@ -1,7 +1,6 @@
 package operaciones
 
+import "github.com/ron86i/go-siat/internal/core/domain/siat/common"
+
 // MensajeServicio representa un mensaje devuelto por el servidor del SIAT
-type MensajeServicio struct {
-	Codigo      int    `xml:"codigo" json:"codigo"`
-	Descripcion string `xml:"descripcion" json:"descripcion"`
-}
+type MensajeServicio = common.MensajeServicio

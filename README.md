@@ -5,292 +5,185 @@
     <img src="https://img.shields.io/badge/status-active-success?style=flat-square" alt="Status">
   </a>
   <a href="https://go.dev/">
-    <img src="https://img.shields.io/badge/go-1.25+-00ADD8?style=flat-square" alt="Go Version">
+    <img src="https://img.shields.io/badge/go-1.18+-00ADD8?style=flat-square" alt="Go Version">
   </a>
   <a href="LICENSE">
     <img src="https://img.shields.io/badge/license-MIT-green?style=flat-square" alt="License">
   </a>
+  <a href="i18n/es/README.md">
+    <img src="https://img.shields.io/badge/lang-español-blue?style=flat-square" alt="Spanish Version">
+  </a>
 </h1>
 
 <p align="center">
-  <em><b>go-siat</b> es un SDK profesional desarrollado en Go, diseñado para simplificar la integración con los servicios web SOAP del <b>SIAT (Sistema Integrado de Administración Tributaria)</b>.</em>
+  <em><b>go-siat</b> is a professional SDK developed in Go, designed to simplify integration with <b>SIAT (Integrated Tax Administration System)</b> SOAP web services.</em>
 </p>
 
-## 💡¿Por qué go-siat?
+## 💡 Why go-siat?
 
-Integrarse con los servicios web SOAP del SIAT para la facturación electrónica en Bolivia suele ser un proceso complejo que involucra el manejo manual de XML, firmas digitales (XMLDSig) y estructuras de datos anidadas propensas a errores.
+Integrating with SIAT's SOAP web services for electronic invoicing in Bolivia is often a complex process involving manual XML handling, digital signatures (XMLDSig), and error-prone nested data structures.
 
-**go-siat** abstrae toda esta complejidad detrás de un SDK moderno, idiomático y seguro frente a tipos (type-safe). Nuestro objetivo es permitir a los desarrolladores bolivianos concentrarse en la lógica de negocio de sus aplicaciones (puntos de venta, ERPs), mientras el SDK se encarga de:
+**go-siat** abstracts all this complexity behind a modern, idiomatic, and type-safe SDK. Our goal is to allow Bolivian developers to focus on the business logic of their applications (POS, ERPs), while the SDK handles:
 
-- La construcción de sobres SOAP perfectos.
-- La firma digital exigida por el fisco.
-- La compresión y codificación de paquetes de facturas.
-- La gestión estructurada de catálogos y operaciones.
-
----
-
-## 🎯 Características
-
-- 🛡️ **Type-Safe**: Estructuras de datos rigurosas para TODAS las solicitudes y respuestas (adiós a los mapas genéricos y strings hardcodeados).
-- 🏗️ **Builder Pattern**: Construcción intuitiva de solicitudes complejas (como facturas y anulaciones) mediante interfaces fluidas.
-- 📦 **Abstracción SOAP Total**: Gestión transparente de la capa SOAP. El desarrollador interactúa con structs, no con XML.
-- ✍️ **Firma Digital (XMLDSig) Integrada**: Utilidades para firmar facturas automáticamente con su certificado digital.
-- 🚀 **Alto Rendimiento**: Cero dependencias innecesarias, aprovechando la velocidad nativa de Go para la manipulación y compresión de bytes.
-- 🧩 **Modular**: Múltiples servicios (`Codigos`, `Sincronizacion`, `Operaciones`, `CompraVenta`, `Electronica`, `Computarizada`) claramente separados.
-- 🏢 **Multi-Sector**: Soporte nativo y verificado para **35 sectores** distintos (Compra y Venta, Hoteles, Minería, Hospitales, Hidrocarburos, etc.).
+- Building perfect SOAP envelopes.
+- Digital signatures required by the tax authority.
+- Compression and encoding of invoice packages.
+- Structured management of catalogs and operations.
 
 ---
 
-## Tabla de Contenidos
+## 🎯 Features
 
-1. [Capacidades Implementadas](#capacidades-implementadas)
-2. [Sectores Soportados](#sectores-soportados)
-3. [Guía de Inicio Rápido](#guía-de-inicio-rápido)
-4. [Referencia de Uso (Tests)](#referencia-de-uso-tests)
-5. [Licencia](#licencia)
+- 🛡️ **Type-Safe**: Rigorous data structures for ALL requests and responses (goodbye to generic maps and hardcoded strings).
+- 🏗️ **Builder Pattern**: Intuitive construction of complex requests (such as invoices and cancellations) through fluid interfaces.
+- 📦 **Total SOAP Abstraction**: Transparent management of the SOAP layer. The developer interacts with structs, not XML.
+- ✍️ **Integrated Digital Signature (XMLDSig)**: Utilities to automatically sign invoices with your digital certificate.
+- 🚀 **High Performance**: Zero unnecessary dependencies, leveraging Go's native speed for byte manipulation and compression.
+- 🧩 **Modular**: Multiple services (`Codes`, `Synchronization`, `Operations`, `Sales`, `Electronic`, `Computerized`) clearly separated.
+- 🏢 **Multi-Sector**: Native and verified support for **35 different sectors** (Sales, Hotels, Mining, Hospitals, Hydrocarbons, etc.).
 
 ---
 
-## Capacidades Implementadas
+## 📖 Table of Contents
 
-El SDK cubre los servicios críticos del ecosistema SIAT:
+1. [Why go-siat?](#-why-go-siat)
+2. [Features](#-features)
+3. [Quick Start Guide](#quick-start-guide)
+4. [Advanced Examples](#-advanced-examples)
+5. [Project Architecture](#-project-architecture)
+6. [Documentation Reference](#-documentation-reference)
+7. [Usage Reference (Tests)](#-usage-reference-tests)
+8. [Contribution and Support](#-contribution-and-support)
+9. [License](#-license)
 
-| Servicios | Funcionalidades Clave |
+---
+
+## Implemented Capabilities
+
+The SDK covers the critical services of the SIAT ecosystem:
+
+| Services | Key Functionalities |
 | :--- | :--- |
-| **Códigos** | Solicitud de CUIS/CUFD (Individual y Masivo), Validación de NIT, Comunicación. |
-| **Sincronización** | Catálogos de actividades, paramétricas, productos, servicios y documentos sector. |
-| **Operaciones** | Registro/Cierre de Puntos de Venta, Gestión de Eventos Significativos. |
-| **Compra-Venta** | Servicio específico para compra venta, bonificaciones y tasas. |
-| **Electrónica en Línea** | Soporte completo para facturación con firma digital. |
-| **Computarizada en Línea** | Soporte para modalidades sin firma digital. |
-| **Sectores Especiales** | Soporte verificado para los **35 sectores** reglamentarios del SIAT. |
+| **Codes** | CUIS/CUFD Request (Individual and Massive), NIT Validation, Communication. |
+| **Synchronization** | Catalogs for activities, parametric, products, services, and sector documents. |
+| **Operations** | POS Registration/Closing, Significant Event Management. |
+| **Sales** | Specific service for sales, bonuses, and fees. |
+| **Online Electronic** | Full support for invoicing with digital signature. |
+| **Online Computerized** | Support for modalities without digital signature. |
+| **Special Sectors** | Verified support for the **35 regulatory sectors** of SIAT. |
 
 ---
 
-## Sectores Soportados
+## Supported Sectors
 
-`go-siat` incluye modelos de dominio, builders y **tests de integración** para los **35 sectores** reglamentarios del SIAT (ubicados en `pkg/models/facturas/`):
+`go-siat` includes domain models, builders, and **integration tests** for the **35 regulatory sectors** of SIAT (located in `pkg/models/invoices/`):
 
-### 🏢 Estándar y Servicios
-- **Compra-Venta (Sector 1)**: El sector estándar para la mayoría de comercios.
-- **Alquiler de Bienes Inmuebles**: Para el sector inmobiliario y arrendamientos.
-- **Seguros**: Emisión de pólizas y servicios de aseguradoras.
-- **Servicios Básicos**: Suministro de energía eléctrica, agua, gas y telecomunicaciones.
-- **Servicios Turísticos y Hospedaje / Hoteles**: Para el sector hotelero y operadores turísticos.
-- **Hospitales y Clínicas**: Servicios de salud (Nacional y Zona Franca).
-- **Seguridad Alimentaria**: Comercialización de productos de la canasta básica.
+### 🏢 Standard and Services
+- **Sales (Sector 1)**: The standard sector for most businesses.
+- **Rental of Real Estate**: For the real estate and leasing sector.
+- **Insurance**: Issuance of policies and insurance services.
+- **Basic Services**: Electricity, water, gas, and telecommunications.
+- **Tourism and Lodging / Hotels**: For the hotel sector and tour operators.
+- **Hospitals and Clinics**: Health services (National and Free Trade Zone).
+- **Food Security**: Commercialization of basic food basket products.
 
-### 🏺 Exportación y Zona Franca
-- **Exportación de Bienes y Servicios**: Comercial de Exportación, Servicios y Libre Consignación.
-- **Zona Franca**: Facturas de Zona Franca, Alquiler ZF y Servicios Hospitalarios ZF.
-- **Duty Free**: Facturación para tiendas libres de impuestos en aeropuertos.
+### 🏺 Export and Free Trade Zone
+- **Export of Goods and Services**: Commercial Export, Services, and Free Consignment.
+- **Free Trade Zone**: ZF Invoices, ZF Rental, and ZF Hospital Services.
+- **Duty Free**: Invoicing for duty-free shops in airports.
 
-### ⛽ Hidrocarburos y Energía
-- **Comercialización de Hidrocarburos**: Combustibles, Lubricantes (con y sin IEHD).
-- **Engarrafadoras**: Sector de distribución de GLP.
-- **GNC y GNV**: Comercialización de Gas Natural Vehicular.
-- **Combustible No Subvencionado**: Para la venta a precio internacional.
+### ⛽ Hydrocarbons and Energy
+- **Commercialization of Hydrocarbons**: Fuels, Lubricants (with and without IEHD).
+- **Bottling Plants**: LPG distribution sector.
+- **CNG and GNV**: Commercialization of Natural Gas for Vehicles.
+- **Unsubsidized Fuel**: For sale at international price.
 
-### ⛰️ Minería y Metales
-- **Venta de Minerales**: Venta Interna y Exportación de Minerales.
-- **Venta al BCB**: Venta de oro y minerales al **Banco Central de Bolivia**.
-
-### 🎓 Educación
-- **Sectores Educativos**: Colegios, Universidades e Institutos (Nacional y Zona Franca).
-
-### 🎲 Otros Sectores Especiales
-- **Juegos de Azar**: Casinos y salas de entretenimiento.
-- **Tasa Cero**: Libros y transporte internacional de carga.
-- **Productos ICE**: Artículos alcanzados por el Impuesto al Consumo Específico.
-- **Pagos Anticipados y Factura Compartida**: Flujos de facturación complejos.
-- **Prevalorada**: Facturas con precio fijo y servicio tributario recurrente.
-- **Compra y Venta de Moneda Extranjera**: Casas de cambio y entidades financieras.
-
+### ⛰️ Mining and Metals
+- **Sale of Minerals**: Internal Sale and Export of Minerals.
+- **Sale to BCB**: Sale of gold and minerals to the **Central Bank of Bolivia**.
 
 ---
 
-## Guía de Inicio Rápido
+## 🚀 Quick Start Guide
 
-### Instalación
+### 1. Requirements
+
+- Go 1.18 or higher.
+- Valid digital certificate (p12/pfx) and private key (for Electronic modality).
+
+### 2. Installation
 
 ```bash
 go get github.com/ron86i/go-siat
 ```
 
-### Uso Básico
-
-El siguiente ejemplo demuestra cómo inicializar el cliente y realizar una solicitud de código CUIS:
+### 3. Usage Example: Verifying NIT
 
 ```go
 package main
 
 import (
-    "context"
-    "log"
-    "github.com/ron86i/go-siat"
-    "github.com/ron86i/go-siat/pkg/models"
+	"context"
+	"fmt"
+	"github.com/ron86i/go-siat"
+	"github.com/ron86i/go-siat/pkg/models"
 )
 
 func main() {
-    // 1. Configurar cliente unificado
-    s, err := siat.New("https://pilotosiatservicios.impuestos.gob.bo/v2", nil)
-    if err != nil {
-        log.Fatal("Error al inicializar SDK:", err)
-    }
+	// 1. Initialize the client
+	s, _ := siat.New("YOUR_SIAT_URL", nil)
 
-    // 2. Construir solicitud usando el Builder
-    req := models.Codigos().NewCuisBuilder().
-		WithCodigoAmbiente(1).
-		WithCodigoModalidad(1).
-		WithCodigoPuntoVenta(0).
-		WithCodigoSucursal(0).
-		WithCodigoSistema("ABC123DEF").
+	// 2. Prepare the request using builders
+	req := models.Codigos().NewVerificarNitBuilder().
 		WithNit(123456789).
 		Build()
 
-    // 3. Ejecutar operación
-    ctx := context.Background()
-    cfg := siat.Config{Token: "TU_TOKEN_API"}
-    resp, err := s.Codigos().SolicitudCuis(ctx, cfg, req)
-    if err != nil {
-        log.Fatal("Error en la solicitud:", err)
-    }
-    log.Println("Código CUIS obtenido:", resp.Body.Content.RespuestaCuis.Codigo)
+	// 3. Execute call
+	resp, err := s.Codes().VerificarNit(context.Background(), req)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("NIT Transaction status: %v\n", resp.Body.Content.RespuestaVerificarNit.Transaccion)
 }
 ```
 
 ---
 
-## 👀 Ejemplos Avanzados
+## 🏗️ Project Architecture
 
-A continuación, mostramos algunos de los flujos más comunes. Si desea ver más ejemplos, revise nuestro repositorio de [Tests de Integración](#referencia-de-uso-tests).
+The project follows a modular architecture based on **Ports and Adapters (Hexagonal)** to ensure maintainability and testability:
 
-<details>
-  <summary>📚 Emitir y Enviar una Factura (Flujo Completo)</summary>
-
-Este ejemplo muestra cómo construir una factura, firmarla, prepararla para el SIAT y enviarla usando la **Modalidad Electrónica**.
-
-**📋 Ejemplo: Recepción de Factura Electrónica**
-
-```go
-package main
-
-import (
-    "context"
-    "encoding/xml"
-    "log"
-    "time"
-
-    "github.com/ron86i/go-siat"
-    "github.com/ron86i/go-siat/pkg/models"
-    "github.com/ron86i/go-siat/pkg/models/facturas"
-    "github.com/ron86i/go-siat/pkg/utils"
-)
-
-func main() {
-    // 1. Inicializar cliente y credenciales (Asumiendo que ya tiene CUIS y CUFD)
-    s, _ := siat.New("https://pilotosiatservicios.impuestos.gob.bo/v2", nil)
-    cfg := siat.Config{Token: "TU_TOKEN"}
-    nit := int64(123456789)
-    cufdControl := "CODIGO_CONTROL_CUFD"
-
-    // 2. Generar CUF
-    fechaEmision := time.Now()
-    cuf, _ := utils.GenerarCUF(nit, fechaEmision, 0, 1, 1, 1, 1, 1, 0, cufdControl)
-
-    // 3. Construir Cabecera y Detalle con el Builder
-    nombre := "JUAN PEREZ"
-    cabecera := facturas.NewCompraVentaCabeceraBuilder().
-        WithNitEmisor(nit).
-        WithRazonSocialEmisor("Mi Empresa S.R.L.").
-        WithMunicipio("La Paz").
-        WithDireccion("Av. 123").
-        WithNumeroFactura(1).
-        WithCuf(cuf).
-        WithCufd("TU_CUFD").
-        WithFechaEmision(fechaEmision).
-        WithNombreRazonSocial(&nombre).
-        WithMontoTotal(100).
-        WithCodigoDocumentoSector(1).
-        Build()
-
-    detalle := facturas.NewCompraVentaDetalleBuilder().
-        WithActividadEconomica("477300").
-        WithCodigoProductoSin(622539).
-        WithDescripcion("PRODUCTO DEMO").
-        WithCantidad(1).
-        WithPrecioUnitario(100).
-        WithSubTotal(100).
-        Build()
-
-    factura := facturas.NewCompraVentaBuilder().
-        WithModalidad(siat.ModalidadElectronica).
-        WithCabecera(cabecera).
-        AddDetalle(detalle).
-        Build()
-
-    // 4. Serializar, Firmar y Preparar (GZIP -> SHA256 -> Base64)
-    xmlData, _ := xml.Marshal(factura)
-    signedXML, _ := utils.SignXML(xmlData, "key.pem", "cert.crt")
-    hash, archivoBase64, _ := utils.CompressAndHash(signedXML)
-
-    // 5. Enviar al SIAT usando el namespace Electronica
-    req := models.Electronica().NewRecepcionFacturaBuilder().
-        WithCodigoAmbiente(1).
-        WithNit(nit).
-        WithCufd("TU_CUFD").
-        WithCuis("TU_CUIS").
-        WithTipoFacturaDocumento(1).
-        WithArchivo(archivoBase64).
-        WithFechaEnvio(fechaEmision).
-        WithHashArchivo(hash).
-        Build()
-
-    resp, err := s.Electronica().RecepcionFactura(context.Background(), cfg, req)
-    if err != nil {
-        log.Fatal(err)
-    }
-    
-    log.Printf("Estado de Recepción: %v", resp.Body.Content.RespuestaServicioFacturacion.CodigoEstado)
-}
-```
-</details>
+- **`internal/core/domain/`**: Pure business logic and SIAT data structures.
+- **`internal/core/port/`**: Definition of interfaces (contracts).
+- **`internal/adapter/service/`**: Implementation of SOAP clients and communication.
+- **`pkg/builders/`**: Fluent entities for building complex XML/JSON (Invoices).
+- **`pkg/utils/`**: Utilities for signatures, compression, and formatting.
 
 ---
 
-## 🛠️ Referencia de Uso (Tests)
+## 📂 Documentation Reference
 
-Para una comprensión profunda de cada servicio, los **Tests de Integración** actúan como la documentación técnica principal.
-
-| Categoría | Archivo de Test |
-| :--- | :--- |
-| **Códigos** | [`siat_codigos_service_test.go`](./internal/adapter/service/siat_codigos_service_test.go) |
-| **Sincronización** | [`siat_sincronizacion_service_test.go`](./internal/adapter/service/siat_sincronizacion_service_test.go) |
-| **Operaciones** | [`siat_operaciones_service_test.go`](./internal/adapter/service/siat_operaciones_service_test.go) |
-| **Compra-Venta** | [`siat_compra_venta_service_test.go`](./internal/adapter/service/siat_compra_venta_service_test.go) |
-| **Electrónica** | [`siat_electronica_service_test.go`](./internal/adapter/service/siat_electronica_service_test.go) |
-| **Computarizada** | [`siat_computarizada_service_test.go`](./internal/adapter/service/siat_computarizada_service_test.go) |
-| **Facturación (Sectores)** | [`pkg/models/facturas/`](./pkg/models/facturas/) |
-
-
-> **Configuración de Ambiente**
-> Antes de ejecutar los tests, asegúrese de crear un archivo `.env` configurado con sus credenciales del ambiente de pruebas del SIAT.
-
+For detailed guides and implementation details, see:
+- [Architecture Overview](ARCHITECTURE.md)
+- [Best Practices](CONTEXT_BEST_PRACTICES.md)
 
 ---
 
-## 👍 Contribución y Soporte
+## 🛠️ Usage Reference (Tests)
 
-¡Las contribuciones son bienvenidas! Si deseas ayudar a mejorar `go-siat`, puedes:
-
-1. Abrir un **Issue** para reportar bugs o solicitar nuevas características (por favor revisa el [`CONTRIBUTING.md`](./.github/CONTRIBUTING.md)).
-2. Enviar un **Pull Request** con mejoras o correcciones.
-3. Dejar una ⭐️ en el repositorio si este SDK te ha ahorrado horas de lidiar con SOAP.
-
-Si necesitas ayuda técnica o soporte comercial para integrar la facturación electrónica en tu empresa, revisa nuestro [`SUPPORT.md`](./.github/SUPPORT.md).
+The best way to learn how to use each service is by reviewing the integration tests:
+- `siat_test.go`: End-to-end flows.
+- `pkg/models/invoices/`: Specific examples for each of the 35 sectors.
 
 ---
 
-## 🧾 Licencia
+## 🤝 Contribution and Support
 
-Distribuido bajo la **Licencia MIT**. Consulte el archivo [`LICENSE`](./LICENSE) para más detalles.
+Contributions are welcome! If you find a bug or have a suggestion, please open an **Issue** or a **Pull Request**.
+
+---
+
+## 📄 License
+
+This project is licensed under the **MIT License**. See the `LICENSE` file for details.

@@ -43,3 +43,43 @@ type Fault struct {
 	FaultString string   `xml:"faultstring"` // Descripción legible del error
 	Detail      string   `xml:"detail"`      // Detalles adicionales o trazas de error
 }
+
+// String retorna una representación legible del error SOAP Fault.
+func (f *Fault) String() string {
+	if f == nil {
+		return ""
+	}
+	msg := f.FaultString
+	if f.Detail != "" {
+		msg += " (detail: " + f.Detail + ")"
+	}
+	return msg
+}
+
+// Error implementa la interfaz error para que *Fault pueda ser retornado como error.
+func (f *Fault) Error() string {
+	return f.String()
+}
+
+// GetContent es un helper que retorna el contenido si fue exitoso, o un error si hay Fault.
+// Es más ergonómico que revisar manualmente resp.Body.Fault != nil.
+//
+// Ejemplo:
+//
+//	resp, err := s.Codigos().SolicitudCuis(ctx, cfg, req)
+//	if err != nil {
+//		return err
+//	}
+//	content, err := resp.GetContent()
+//	if err != nil {
+//		// Error SOAP del lado del servidor
+//		return err
+//	}
+//	// Usar content sin preocuparse por Fault
+func (e *EnvelopeResponse[T]) GetContent() (T, error) {
+	if e.Body.Fault != nil {
+		var zero T
+		return zero, e.Body.Fault
+	}
+	return e.Body.Content, nil
+}

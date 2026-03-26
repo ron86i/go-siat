@@ -24,12 +24,12 @@ type VerificacionEstadoFacturaCompraVenta struct {
 	RequestWrapper[facturacion.VerificacionEstadoFactura]
 }
 
-// ValidacionRecepcionMasivaFacturaCompraVenta representa una solicitud para la validación de la recepción masiva de facturas.
+// ValidacionRecepcionMasivaFacturaCompraVenta representa una solicitud para la validación de la recepción masiva de invoices.
 type ValidacionRecepcionMasivaFacturaCompraVenta struct {
 	RequestWrapper[facturacion.ValidacionRecepcionMasivaFactura]
 }
 
-// RecepcionMasivaFacturaCompraVenta representa una solicitud para la recepción masiva de facturas.
+// RecepcionMasivaFacturaCompraVenta representa una solicitud para la recepción masiva de invoices.
 type RecepcionMasivaFacturaCompraVenta struct {
 	RequestWrapper[facturacion.RecepcionMasivaFactura]
 }
@@ -39,12 +39,12 @@ type VerificarComunicacionCompraVenta struct {
 	RequestWrapper[facturacion.VerificarComunicacion]
 }
 
-// ValidacionRecepcionPaqueteFacturaCompraVenta representa una solicitud para validar la recepción de paquetes de facturas.
+// ValidacionRecepcionPaqueteFacturaCompraVenta representa una solicitud para validar la recepción de paquetes de invoices.
 type ValidacionRecepcionPaqueteFacturaCompraVenta struct {
 	RequestWrapper[facturacion.ValidacionRecepcionPaqueteFactura]
 }
 
-// RecepcionPaqueteFacturaCompraVenta representa una solicitud para la recepción de paquetes de facturas.
+// RecepcionPaqueteFacturaCompraVenta representa una solicitud para la recepción de paquetes de invoices.
 type RecepcionPaqueteFacturaCompraVenta struct {
 	RequestWrapper[facturacion.RecepcionPaqueteFactura]
 }
