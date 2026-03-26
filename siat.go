@@ -7,9 +7,9 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/ron86i/go-siat/internal/adapter/service"
+	"github.com/ron86i/go-siat/internal/adapter/services"
 	"github.com/ron86i/go-siat/internal/core/domain/siat/common"
-	"github.com/ron86i/go-siat/internal/core/port"
+	"github.com/ron86i/go-siat/internal/core/ports"
 )
 
 // Map es un alias para map[string]interface{} que proporciona métodos de utilidad
@@ -66,25 +66,25 @@ func (m Map) ToStruct(v interface{}) error {
 // y proporciona acceso a ellos a través de métodos orientados a objetivos.
 // Los usuarios deben crear una instancia usando New().
 type SiatServices struct {
-	operaciones    port.SiatOperacionesPort
-	sincronizacion port.SiatSincronizacionService
-	codigos        port.SiatCodigosService
-	compraVenta    port.SiatCompraVentaService
-	computarizada  port.SiatComputarizadaService
-	electronica    port.SiatElectronicaService
+	operaciones    ports.SiatOperacionesPort
+	sincronizacion ports.SiatSincronizacionService
+	codigos        ports.SiatCodigosService
+	compraVenta    ports.SiatCompraVentaService
+	computarizada  ports.SiatComputarizadaService
+	electronica    ports.SiatElectronicaService
 	traceID        string // Opcional, para correlacionar solicitudes en sistemas distribuidos
 }
 
 // Operaciones retorna el servicio para la gestión de puntos de venta (PV),
 // cierre de períodos de facturación y eventos significativos (cambios de modalidad, etc.).
-func (s *SiatServices) Operaciones() port.SiatOperacionesPort {
+func (s *SiatServices) Operaciones() ports.SiatOperacionesPort {
 	return s.operaciones
 }
 
 // Sincronizacion retorna el servicio que proporciona acceso a catálogos maestros:
 // actividades económicas, documentos fiscales, monedas, tipos de cambio, etc.
-// Estos catálogos son esenciales para validar datos antes de emitir facturas.
-func (s *SiatServices) Sincronizacion() port.SiatSincronizacionService {
+// Estos catálogos son esenciales para validar datos antes de emitir invoices.
+func (s *SiatServices) Sincronizacion() ports.SiatSincronizacionService {
 	return s.sincronizacion
 }
 
@@ -92,33 +92,33 @@ func (s *SiatServices) Sincronizacion() port.SiatSincronizacionService {
 // - Solicitud de códigos CUIS (Código Único de Identificación de Sistemas)
 // - Solicitud de códigos CUFD (Código Único de Facturación por Dirección)
 // - Validación de números NIT (Rol Tributario)
-// Los códigos CUIS y CUFD son obligatorios para emitir facturas.
-func (s *SiatServices) Codigos() port.SiatCodigosService {
+// Los códigos CUIS y CUFD son obligatorios para emitir invoices.
+func (s *SiatServices) Codigos() ports.SiatCodigosService {
 	return s.codigos
 }
 
 // CompraVenta retorna el servicio para el sector de compra-venta (Sector 1).
 // Permite enviar, recibir y anular facturas comerciales estándar.
 // Este es el sector más común para comercios generales.
-func (s *SiatServices) CompraVenta() port.SiatCompraVentaService {
+func (s *SiatServices) CompraVenta() ports.SiatCompraVentaService {
 	return s.compraVenta
 }
 
 // Computarizada retorna el servicio para facturación computarizada
 // (sin firma digital, basada en máquinas registradoras fiscales).
 // Permite enviar, recibir y anular facturas de este tipo.
-func (s *SiatServices) Computarizada() port.SiatComputarizadaService {
+func (s *SiatServices) Computarizada() ports.SiatComputarizadaService {
 	return s.computarizada
 }
 
 // Electronica retorna el servicio para facturación electrónica (con firma digital).
 // Permite enviar, recibir y anular facturas electrónicas de todos los sectores.
 // Este es el tipo de facturación más moderno y flexible del SIAT.
-func (s *SiatServices) Electronica() port.SiatElectronicaService {
+func (s *SiatServices) Electronica() ports.SiatElectronicaService {
 	return s.electronica
 }
 
-// WithConfig retorna una nueva instancia de port.Config con el traceID actual.
+// WithConfig retorna una nueva instancia de ports.Config con el traceID actual.
 // Esto permite que el usuario establezca el traceID una sola vez con WithTraceID()
 // y que automáticamente se inyecte en todas las solicitudes posteriores.
 //
@@ -129,15 +129,15 @@ func (s *SiatServices) Electronica() port.SiatElectronicaService {
 //   - token: El token de autenticación del SIAT (obligatorio)
 //
 // Retorna:
-//   - port.Config con TraceID pre-establecido
+//   - ports.Config con TraceID pre-establecido
 //
 // Ejemplo:
 //
 //	s.WithTraceID("trace-12345")
 //	config := s.WithConfig("myToken123")
 //	// config.TraceID es "trace-12345" automáticamente
-func (s *SiatServices) WithConfig(token string) port.Config {
-	return port.Config{
+func (s *SiatServices) WithConfig(token string) ports.Config {
+	return ports.Config{
 		Token:   token,
 		TraceId: s.traceID,
 	}
@@ -169,7 +169,7 @@ func New(baseUrl string, httpClient *http.Client) (*SiatServices, error) {
 		httpClient = &clonedClient
 	} else {
 		// Usar HTTPConfig para crear cliente optimizado por defecto
-		httpClient = service.NewHTTPClient(service.DefaultHTTPConfig())
+		httpClient = services.NewHTTPClient(services.DefaultHTTPConfig())
 	}
 
 	baseUrl = strings.TrimSpace(baseUrl)
@@ -177,28 +177,28 @@ func New(baseUrl string, httpClient *http.Client) (*SiatServices, error) {
 		return nil, fmt.Errorf("baseUrl is empty")
 	}
 
-	operaciones, err := service.NewSiatOperacionesService(baseUrl, httpClient)
+	operaciones, err := services.NewSiatOperacionesService(baseUrl, httpClient)
 	if err != nil {
 		return nil, err
 	}
-	sincronizacion, err := service.NewSiatSincronizacionService(baseUrl, httpClient)
+	sincronizacion, err := services.NewSiatSincronizacionService(baseUrl, httpClient)
 	if err != nil {
 		return nil, err
 	}
-	codigos, err := service.NewSiatCodigosService(baseUrl, httpClient)
+	codigos, err := services.NewSiatCodigosService(baseUrl, httpClient)
 	if err != nil {
 		return nil, err
 	}
-	compraVenta, err := service.NewSiatCompraVentaService(baseUrl, httpClient)
+	compraVenta, err := services.NewSiatCompraVentaService(baseUrl, httpClient)
 	if err != nil {
 		return nil, err
 	}
 
-	computarizada, err := service.NewSiatComputarizadaService(baseUrl, httpClient)
+	computarizada, err := services.NewSiatComputarizadaService(baseUrl, httpClient)
 	if err != nil {
 		return nil, err
 	}
-	electronica, err := service.NewSiatElectronicaService(baseUrl, httpClient)
+	electronica, err := services.NewSiatElectronicaService(baseUrl, httpClient)
 	if err != nil {
 		return nil, err
 	}

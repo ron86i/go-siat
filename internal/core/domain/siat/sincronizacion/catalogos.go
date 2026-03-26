@@ -94,7 +94,7 @@ type ListaActividadesDocumentoSector struct {
 
 // --- Sincronizar lista leyendas factura ---
 
-// SincronizarListaLeyendasFactura representa la solicitud para obtener el catálogo de leyendas para las facturas.
+// SincronizarListaLeyendasFactura representa la solicitud para obtener el catálogo de leyendas para las invoices.
 type SincronizarListaLeyendasFactura struct {
 	XMLName                 xml.Name                `xml:"ns:sincronizarListaLeyendasFactura" json:"-"`
 	SolicitudSincronizacion SolicitudSincronizacion `xml:"SolicitudSincronizacion" json:"solicitudSincronizacion"`
@@ -193,7 +193,7 @@ type SincronizarParametricaEventosSignificativosResponse struct {
 
 // --- Sincronizar paramétrica motivo anulación ---
 
-// SincronizarParametricaMotivoAnulacion representa la solicitud para obtener los motivos de anulación de facturas.
+// SincronizarParametricaMotivoAnulacion representa la solicitud para obtener los motivos de anulación de invoices.
 type SincronizarParametricaMotivoAnulacion struct {
 	XMLName                 xml.Name                `xml:"ns:sincronizarParametricaMotivoAnulacion" json:"-"`
 	SolicitudSincronizacion SolicitudSincronizacion `xml:"SolicitudSincronizacion" json:"solicitudSincronizacion"`

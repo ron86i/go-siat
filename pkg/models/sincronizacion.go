@@ -103,7 +103,7 @@ func (sincronizacionNamespace) NewSincronizarListaActividadesDocumentoSectorBuil
 	}
 }
 
-// NewSincronizarListaLeyendasFacturaBuilder inicia la construcción para obtener leyendas de facturas.
+// NewSincronizarListaLeyendasFacturaBuilder inicia la construcción para obtener leyendas de invoices.
 func (sincronizacionNamespace) NewSincronizarListaLeyendasFacturaBuilder() SincronizacionBuilder[sincronizacion.SincronizarListaLeyendasFactura, SincronizarListaLeyendasFactura] {
 	req := &sincronizacion.SincronizarListaLeyendasFactura{}
 	return &sincronizacionBuilder[sincronizacion.SincronizarListaLeyendasFactura, SincronizarListaLeyendasFactura]{

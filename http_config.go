@@ -3,7 +3,7 @@ package siat
 import (
 	"net/http"
 
-	"github.com/ron86i/go-siat/internal/adapter/service"
+	"github.com/ron86i/go-siat/internal/adapter/services"
 )
 
 // HTTPConfig es la configuración pública para personalizar el cliente HTTP del SDK.
@@ -23,7 +23,7 @@ import (
 //	}
 //	client := siat.NewHTTPClient(cfg)
 //	s, _ := siat.New(baseUrl, client)
-type HTTPConfig = service.HTTPConfig
+type HTTPConfig = services.HTTPConfig
 
 // DefaultHTTPConfig retorna la configuración HTTP recomendada para producción.
 //
@@ -36,7 +36,7 @@ type HTTPConfig = service.HTTPConfig
 //
 // Esta es la configuración usada por defecto si no pasas un http.Client a New().
 func DefaultHTTPConfig() HTTPConfig {
-	return service.DefaultHTTPConfig()
+	return services.DefaultHTTPConfig()
 }
 
 // NewHTTPClient crea un cliente HTTP optimizado basado en HTTPConfig.
@@ -49,5 +49,5 @@ func DefaultHTTPConfig() HTTPConfig {
 //	client := siat.NewHTTPClient(cfg)
 //	s, err := siat.New(baseUrl, client)
 func NewHTTPClient(cfg HTTPConfig) *http.Client {
-	return service.NewHTTPClient(cfg)
+	return services.NewHTTPClient(cfg)
 }
