@@ -5,7 +5,7 @@
     <img src="https://img.shields.io/badge/status-active-success?style=flat-square" alt="Status">
   </a>
   <a href="https://go.dev/">
-    <img src="https://img.shields.io/badge/go-1.18+-00ADD8?style=flat-square" alt="Go Version">
+    <img src="https://img.shields.io/badge/go-1.25+-00ADD8?style=flat-square" alt="Go Version">
   </a>
   <a href="LICENSE">
     <img src="https://img.shields.io/badge/license-MIT-green?style=flat-square" alt="License">
@@ -186,4 +186,4 @@ Contributions are welcome! If you find a bug or have a suggestion, please open a
 
 ## 📄 License
 
-This project is licensed under the **MIT License**. See the `LICENSE` file for details.
+This project is licensed under the **MIT License**. See the [`LICENSE`](LICENSE) file for details.
