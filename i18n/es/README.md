@@ -50,25 +50,12 @@ Integrarse con los servicios web SOAP del SIAT para la facturación electrónica
 2. [Características](#-características)
 3. [Guía de Inicio Rápido](#guía-de-inicio-rápido)
 4. [Ejemplos Avanzados](#-ejemplos-avanzados)
-5. [Arquitectura del Proyecto](#-arquitectura-del-proyecto)
-6. [Referencia de Documentación](#-referencia-de-documentación)
-7. [Referencia de Uso (Tests)](#-referencia-de-uso-tests)
-8. [Contribución y Soporte](#-contribución-y-soporte)
-9. [Licencia](#-licencia)
+5. [Referencia de Uso (Tests)](#-referencia-de-uso-tests)
+6. [Contribución y Soporte](#-contribución-y-soporte)
+7. [Licencia](#-licencia)
 
 ---
 
-## 🏗️ Arquitectura del Proyecto
-
-El proyecto sigue una arquitectura modular basada en **Ports and Adapters (Hexagonal)** para garantizar flexibilidad, testeabilidad y desacoplamiento de los servicios web de Impuestos:
-
-- **`internal/core/domain/`**: Lógica de negocio pura y estructuras de datos del SIAT.
-- **`internal/core/port/`**: Definición de interfaces (contratos) de entrada y salida.
-- **`internal/adapter/services/`**: Implementación de los clientes SOAP y comunicación con SIAT.
-- **`pkg/models/invoices/`**: Modelos de dominio y builders fluidos para los 35 sectores del SIAT.
-- **`pkg/utils/`**: Utilidades genéricas (Firmas, Compresión, Formateo).
-
----
 
 ## Capacidades Implementadas
 
@@ -127,24 +114,20 @@ El SDK cubre los servicios críticos del ecosistema SIAT:
 
 
 ---
-## 📚 Referencia de Documentación
-
-El SDK incluye documentación detallada para casos de uso avanzados:
-
-| Documento | Descripción |
-| :--- | :--- |
-| [ARCHITECTURE.md](ARCHITECTURE.md) | Diseño arquitectónico, patrones, y decisiones de diseño del SDK. |
-| [CONTRIBUTING.md](CONTRIBUTING.md) | Guía para contribuidores: cómo reportar bugs y enviar pull requests. |
-| [CONTEXT_BEST_PRACTICES.md](CONTEXT_BEST_PRACTICES.md) | Mejores prácticas para usar `context.Context` en aplicaciones que llaman al SDK. |
+```bash
+go get github.com/ron86i/go-siat
+```
 
 ---
 ## Guía de Inicio Rápido
 
 ### Instalación
 
-```bash
-go get github.com/ron86i/go-siat
-```
+- Go 1.25 o superior.
+- Certificado digital válido (p12/pfx) y clave privada.
+
+> [!TIP]
+> **Mejores Prácticas de Contexto**: Proporcione siempre un contexto con timeout (ej. 30s) en todas las llamadas al SDK. Evite el uso directo de `context.Background()` para prevenir peticiones suspendidas si el servidor del SIAT está lento.
 
 ### Uso Básico
 

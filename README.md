@@ -50,11 +50,9 @@ Integrating with SIAT's SOAP web services for electronic invoicing in Bolivia is
 2. [Features](#-features)
 3. [Quick Start Guide](#quick-start-guide)
 4. [Advanced Examples](#-advanced-examples)
-5. [Project Architecture](#-project-architecture)
-6. [Documentation Reference](#-documentation-reference)
-7. [Usage Reference (Tests)](#-usage-reference-tests)
-8. [Contribution and Support](#-contribution-and-support)
-9. [License](#-license)
+5. [Usage Reference (Tests)](#-usage-reference-tests)
+6. [Contribution and Support](#-contribution-and-support)
+7. [License](#-license)
 
 ---
 
@@ -122,6 +120,9 @@ The SDK covers the critical services of the SIAT ecosystem:
 - Go 1.25 or higher.
 - Valid digital certificate (p12/pfx) and private key (for Electronic modality).
 
+> [!TIP]
+> **Context Best Practices**: Always provide a context with a timeout (e.g., 30s) to all SDK calls. Avoid using `context.Background()` directly to prevent hanging requests if the SIAT server is slow.
+
 ### 2. Installation
 
 ```bash
@@ -160,29 +161,6 @@ func main() {
 ```
 
 ---
-
-## 🏗️ Project Architecture
-
-The project follows a modular architecture based on **Ports and Adapters (Hexagonal)** to ensure maintainability and testability:
-
-- **`internal/core/domain/`**: Pure business logic and SIAT data structures.
-- **`internal/core/port/`**: Definition of interfaces (contracts).
-- **`internal/adapter/services/`**: Implementation of SOAP clients and communication.
-- **`pkg/models/invoices/`**: Domain models and fluent builders for the 35 SIAT sectors.
-- **`pkg/utils/`**: Utilities for signatures, compression, and formatting.
-
----
-
-## 📂 Documentation Reference
-
-For detailed guides and implementation details, see:
-
-| Document | Description |
-| :--- | :--- |
-| [ARCHITECTURE.md](ARCHITECTURE.md) | Architectural design, patterns, and design decisions of the SDK. |
-| [CONTRIBUTING.md](.github/CONTRIBUTING.md) | Contributor guide: how to report bugs and send pull requests. |
-| [CONTEXT_BEST_PRACTICES.md](CONTEXT_BEST_PRACTICES.md) | Best practices for using `context.Context` in applications calling the SDK. |
-| [SUPPORT.md](.github/SUPPORT.md) | Technical and commercial support for electronic invoicing. |
 
 ---
 
