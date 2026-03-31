@@ -135,8 +135,8 @@ func (b *recepcionDocumentoAjusteBuilder) WithHashArchivo(v string) *recepcionDo
 	return b
 }
 
-func (b *recepcionDocumentoAjusteBuilder) Build() *RecepcionDocumentoAjuste {
-	return &RecepcionDocumentoAjuste{RequestWrapper[documento_ajuste.RecepcionDocumentoAjuste]{request: b.request}}
+func (b *recepcionDocumentoAjusteBuilder) Build() RecepcionDocumentoAjuste {
+	return RecepcionDocumentoAjuste{RequestWrapper[documento_ajuste.RecepcionDocumentoAjuste]{request: b.request}}
 }
 
 func (documentoAjusteNamespace) NewAnulacionDocumentoAjuste() *anulacionDocumentoAjusteBuilder {
@@ -200,8 +200,8 @@ func (b *anulacionDocumentoAjusteBuilder) WithTipoFacturaDocumento(v int) *anula
 	return b
 }
 
-func (b *anulacionDocumentoAjusteBuilder) Build() *AnulacionDocumentoAjuste {
-	return &AnulacionDocumentoAjuste{RequestWrapper[documento_ajuste.AnulacionDocumentoAjuste]{request: b.request}}
+func (b *anulacionDocumentoAjusteBuilder) Build() AnulacionDocumentoAjuste {
+	return AnulacionDocumentoAjuste{RequestWrapper[documento_ajuste.AnulacionDocumentoAjuste]{request: b.request}}
 }
 
 func (documentoAjusteNamespace) NewReversionAnulacionDocumentoAjuste() *reversionAnulacionDocumentoAjusteBuilder {
@@ -270,8 +270,8 @@ func (b *reversionAnulacionDocumentoAjusteBuilder) WithCuf(v string) *reversionA
 	return b
 }
 
-func (b *reversionAnulacionDocumentoAjusteBuilder) Build() *ReversionAnulacionDocumentoAjuste {
-	return &ReversionAnulacionDocumentoAjuste{RequestWrapper[documento_ajuste.ReversionAnulacionDocumentoAjuste]{request: b.request}}
+func (b *reversionAnulacionDocumentoAjusteBuilder) Build() ReversionAnulacionDocumentoAjuste {
+	return ReversionAnulacionDocumentoAjuste{RequestWrapper[documento_ajuste.ReversionAnulacionDocumentoAjuste]{request: b.request}}
 }
 
 func (documentoAjusteNamespace) NewVerificacionEstadoDocumentoAjuste() *verificacionEstadoDocumentoAjusteBuilder {
@@ -340,16 +340,16 @@ func (b *verificacionEstadoDocumentoAjusteBuilder) WithCuf(v string) *verificaci
 	return b
 }
 
-func (b *verificacionEstadoDocumentoAjusteBuilder) Build() *VerificacionEstadoDocumentoAjuste {
-	return &VerificacionEstadoDocumentoAjuste{RequestWrapper[documento_ajuste.VerificacionEstadoDocumentoAjuste]{request: b.request}}
+func (b *verificacionEstadoDocumentoAjusteBuilder) Build() VerificacionEstadoDocumentoAjuste {
+	return VerificacionEstadoDocumentoAjuste{RequestWrapper[documento_ajuste.VerificacionEstadoDocumentoAjuste]{request: b.request}}
 }
 
-func (documentoAjusteNamespace) NewVerificarComunicacionDocumentoAjuste() *verificarComunicacionDocumentoAjusteBuilder {
+func (documentoAjusteNamespace) NewVerificarComunicacionBuilder() *verificarComunicacionDocumentoAjusteBuilder {
 	return &verificarComunicacionDocumentoAjusteBuilder{
 		request: &documento_ajuste.VerificarComunicacion{},
 	}
 }
 
-func (b *verificarComunicacionDocumentoAjusteBuilder) Build() *VerificarComunicacionDocumentoAjuste {
-	return &VerificarComunicacionDocumentoAjuste{RequestWrapper[documento_ajuste.VerificarComunicacion]{request: b.request}}
+func (b *verificarComunicacionDocumentoAjusteBuilder) Build() VerificarComunicacionDocumentoAjuste {
+	return VerificarComunicacionDocumentoAjuste{RequestWrapper[documento_ajuste.VerificarComunicacion]{request: b.request}}
 }
