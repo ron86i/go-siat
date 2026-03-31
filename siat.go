@@ -66,13 +66,14 @@ func (m Map) ToStruct(v interface{}) error {
 // y proporciona acceso a ellos a través de métodos orientados a objetivos.
 // Los usuarios deben crear una instancia usando New().
 type SiatServices struct {
-	operaciones    ports.SiatOperacionesPort
-	sincronizacion ports.SiatSincronizacionService
-	codigos        ports.SiatCodigosService
-	compraVenta    ports.SiatCompraVentaService
-	computarizada  ports.SiatComputarizadaService
-	electronica    ports.SiatElectronicaService
-	traceID        string // Opcional, para correlacionar solicitudes en sistemas distribuidos
+	operaciones     ports.SiatOperacionesPort
+	sincronizacion  ports.SiatSincronizacionService
+	codigos         ports.SiatCodigosService
+	compraVenta     ports.SiatCompraVentaService
+	computarizada   ports.SiatComputarizadaService
+	electronica     ports.SiatElectronicaService
+	documentoAjuste ports.SiatDocumentoAjusteService
+	traceID         string // Opcional, para correlacionar solicitudes en sistemas distribuidos
 }
 
 // Operaciones retorna el servicio para la gestión de puntos de venta (PV),
@@ -116,6 +117,12 @@ func (s *SiatServices) Computarizada() ports.SiatComputarizadaService {
 // Este es el tipo de facturación más moderno y flexible del SIAT.
 func (s *SiatServices) Electronica() ports.SiatElectronicaService {
 	return s.electronica
+}
+
+// DocumentoAjuste retorna el servicio para el sector de documento de ajuste.
+// Permite enviar, recibir y anular facturas de este tipo.
+func (s *SiatServices) DocumentoAjuste() ports.SiatDocumentoAjusteService {
+	return s.documentoAjuste
 }
 
 // WithConfig retorna una nueva instancia de ports.Config con el traceID actual.
@@ -202,14 +209,21 @@ func New(baseUrl string, httpClient *http.Client) (*SiatServices, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	documentoAjuste, err := services.NewSiatDocumentoAjusteService(baseUrl, httpClient)
+	if err != nil {
+		return nil, err
+	}
+
 	return &SiatServices{
-		operaciones:    operaciones,
-		sincronizacion: sincronizacion,
-		codigos:        codigos,
-		compraVenta:    compraVenta,
-		computarizada:  computarizada,
-		electronica:    electronica,
-		traceID:        "", // Inicialmente vacío
+		operaciones:     operaciones,
+		sincronizacion:  sincronizacion,
+		codigos:         codigos,
+		compraVenta:     compraVenta,
+		computarizada:   computarizada,
+		electronica:     electronica,
+		documentoAjuste: documentoAjuste,
+		traceID:         "", // Inicialmente vacío
 	}, nil
 }
 
