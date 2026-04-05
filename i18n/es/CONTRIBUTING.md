@@ -2,14 +2,14 @@
 
 Agradecemos el interés en contribuir a go-siat. Este documento describe el proceso y las mejores prácticas.
 
-[English Version](../../CONTRIBUTING.md)
+[English Version](../../.github/CONTRIBUTING.md)
 
 ## 📋 Requisitos Previos
 
 - Go 1.25 o superior
 - Git
 - Familiaridad con SIAT (Sistema Integrado de Administración Tributaria)
-- Lectura de [ARCHITECTURE.md](../../ARCHITECTURE.md)
+- Lectura de la [Guía de Arquitectura](../../docs/es/arquitectura.md)
 
 ## 🚀 Comenzar
 
@@ -209,7 +209,7 @@ go test -tags=integration ./...
 
 ### 3. Mejoras en Documentación
 
-- Actualizar README.md, ARCHITECTURE.md o crear nuevos .md
+- Actualizar README.md o archivos en el directorio `docs/`
 - Mejorar comentarios godoc
 - Agregar ejemplos
 - No necesita aprobación previa
@@ -349,7 +349,7 @@ Código CUFD válido
 ## 📖 Recursos
 
 - [Go Code Review Comments](https://github.com/golang/go/wiki/CodeReviewComments)
-- [ARCHITECTURE.md](../../ARCHITECTURE.md) - Diseño del proyecto
+- [Guía de Arquitectura](../../docs/es/arquitectura.md) - Diseño del proyecto
 - [SIAT Documentation](https://www.impuestos.gob.bo/) - Documentación oficial SIAT
 
 ## ✨ Gracias

@@ -7,7 +7,7 @@ Thank you for your interest in contributing to **go-siat**. This document descri
 - Go 1.25 or higher
 - Git
 - Familiarity with SIAT (Integrated Tax Administration System)
-- Read [ARCHITECTURE.md](ARCHITECTURE.md)
+- Read the [Architecture Guide](../docs/en/architecture.md)
 
 ---
 
@@ -215,7 +215,7 @@ go test -tags=integration ./...
 
 ### 3. Documentation Improvements
 
-- Update `README.md`, `ARCHITECTURE.md`, or create new `.md` files.
+- Update `README.md` or files in the `docs/` directory.
 - Improve godoc comments.
 - Add examples.
 - Does not need prior approval.
@@ -367,7 +367,7 @@ Valid CUFD code
 ## 📖 Resources
 
 - [Go Code Review Comments](https://github.com/golang/go/wiki/CodeReviewComments)
-- [ARCHITECTURE.md](ARCHITECTURE.md) - Project Design
+- [Architecture Guide](../docs/en/architecture.md) - Project Design
 - [SIAT Documentation](https://www.impuestos.gob.bo/) - Official SIAT Documentation
 
 ---
