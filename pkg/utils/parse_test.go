@@ -37,6 +37,11 @@ func TestParseInt64Safe(t *testing.T) {
 		assert.Error(t, err)
 		assert.Equal(t, "value is empty, expected a number", err.Error())
 	})
+
+	t.Run("Invalid Int64", func(t *testing.T) {
+		_, err := ParseInt64Safe("not-a-number")
+		assert.Error(t, err)
+	})
 }
 
 func TestPointers(t *testing.T) {
