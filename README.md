@@ -66,6 +66,7 @@ The SDK covers the critical services of the SIAT ecosystem:
 | **Synchronization** | Catalogs for activities, parametric, products, services, and sector documents. |
 | **Operations** | POS Registration/Closing, Significant Event Management. |
 | **Sales** | Specific service for sales, bonuses, and fees. |
+| **Adjustment Documents** | Management of Credit/Debit notes, Conciliation, and Reversions. |
 | **Online Electronic** | Full support for invoicing with digital signature. |
 | **Online Computerized** | Support for modalities without digital signature. |
 | **Special Sectors** | Verified support for the **35 regulatory sectors** of SIAT. |
@@ -181,7 +182,7 @@ The best way to learn how to use each service is by reviewing the integration te
 | **Adjustment Documents** | [`siat_documento_ajuste_service_test.go`](internal/adapter/services/siat_documento_ajuste_service_test.go) |
 | **Invoicing (Sectors)** | [`pkg/models/invoices/`](pkg/models/invoices/) |
 | **End-to-End** | [`siat_test.go`](siat_test.go) |
-s
+
 ---
 
 Contributions are welcome! If you find a bug or have a suggestion, please open an **Issue** or a **Pull Request** (please review the [`CONTRIBUTING.md`](.github/CONTRIBUTING.md)).

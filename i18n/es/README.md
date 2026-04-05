@@ -67,6 +67,7 @@ El SDK cubre los servicios críticos del ecosistema SIAT:
 | **Sincronización** | Catálogos de actividades, paramétricas, productos, servicios y documentos sector. |
 | **Operaciones** | Registro/Cierre de Puntos de Venta, Gestión de Eventos Significativos. |
 | **Compra-Venta** | Servicio específico para compra venta, bonificaciones y tasas. |
+| **Documentos de Ajuste** | Gestión de notas de Crédito/Débito, Conciliación y reversiones. |
 | **Electrónica en Línea** | Soporte completo para facturación con firma digital. |
 | **Computarizada en Línea** | Soporte para modalidades sin firma digital. |
 | **Sectores Especiales** | Soporte verificado para los **35 sectores** reglamentarios del SIAT. |
