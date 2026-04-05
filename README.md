@@ -19,6 +19,10 @@
   <em><b>go-siat</b> is a professional SDK developed in Go, designed to simplify integration with <b>SIAT (Integrated Tax Administration System)</b> SOAP web services.</em>
 </p>
 
+> 📚 **Full Documentation**: [English](docs/en/README.md) | [Español](docs/es/README.md)
+>
+> Architecture, API Reference, Invoicing Guide, Error Codes, Utilities, and Configuration.
+
 ## 💡 Why go-siat?
 
 Integrating with SIAT's SOAP web services for electronic invoicing in Bolivia is often a complex process involving manual XML handling, digital signatures (XMLDSig), and error-prone nested data structures.
@@ -44,18 +48,6 @@ Integrating with SIAT's SOAP web services for electronic invoicing in Bolivia is
 
 ---
 
-## 📖 Table of Contents
-
-1. [Why go-siat?](#-why-go-siat)
-2. [Features](#-features)
-3. [Quick Start Guide](#quick-start-guide)
-4. [Advanced Examples](#-advanced-examples)
-5. [Usage Reference (Tests)](#-usage-reference-tests)
-6. [Contribution and Support](#-contribution-and-support)
-7. [License](#-license)
-
----
-
 ## Implemented Capabilities
 
 The SDK covers the critical services of the SIAT ecosystem:
@@ -73,54 +65,15 @@ The SDK covers the critical services of the SIAT ecosystem:
 
 ---
 
-## Supported Sectors
-
-`go-siat` includes domain models, builders, and **integration tests** for the **35 regulatory sectors** of SIAT (located in `pkg/models/invoices/`):
-
-### 🏢 Standard and Services
-- **Sales (Sector 1)**: The standard sector for most businesses.
-- **Rental of Real Estate**: For the real estate and leasing sector.
-- **Insurance**: Issuance of policies and insurance services.
-- **Basic Services**: Electricity, water, gas, and telecommunications.
-- **Tourism and Lodging / Hotels**: For the hotel sector and tour operators.
-- **Hospitals and Clinics**: Health services (National and Free Trade Zone).
-- **Food Security**: Commercialization of basic food basket products.
-
-### 🏺 Export and Free Trade Zone
-- **Export of Goods and Services**: Commercial Export, Services, and Free Consignment.
-- **Free Trade Zone**: ZF Invoices, ZF Rental, and ZF Hospital Services.
-- **Duty Free**: Invoicing for duty-free shops in airports.
-
-### ⛽ Hydrocarbons and Energy
-- **Commercialization of Hydrocarbons**: Fuels, Lubricants (with and without IEHD).
-- **Bottling Plants**: LPG distribution sector.
-- **CNG and GNV**: Commercialization of Natural Gas for Vehicles.
-- **Unsubsidized Fuel**: For sale at international price.
-
-### ⛰️ Mining and Metals
-- **Sale of Minerals**: Internal Sale and Export of Minerals.
-- **Sale to BCB**: Sale of gold and minerals to the **Central Bank of Bolivia**.
-
-### 🎓 Education
-- **Educational Sectors**: Schools, Universities, and Institutes (National and Free Trade Zone).
-
-### 🔄 Adjustment Documents
-- **Credit / Debit Notes**: Standard, ICE, and Fiscal credit/debit notes.
-- **Conciliation Notes**: Conciliation notes for billing adjustments.
-
-### 🎲 Other Special Sectors
-- **Games of Chance**: Casinos and entertainment venues.
-- **Zero Tax (Tasa Cero)**: Books and international cargo transportation.
-- **ICE Products**: Items covered by the Specific Consumption Tax.
-- **Prepayments and Shared Invoice**: Complex invoicing flows.
-- **Prevalued**: Invoices with fixed price and recurring tax service.
-- **Foreign Currency Exchange**: Exchange houses and financial entities.
-
----
-
 ## 🚀 Quick Start Guide
 
-### 1. Requirements
+### Installation
+
+```bash
+go get github.com/ron86i/go-siat
+```
+
+### Requirements
 
 - Go 1.25 or higher.
 - Valid digital certificate (p12/pfx) and private key (for Electronic modality).
@@ -128,48 +81,44 @@ The SDK covers the critical services of the SIAT ecosystem:
 > [!TIP]
 > **Context Best Practices**: Always provide a context with a timeout (e.g., 30s) to all SDK calls. Avoid using `context.Background()` directly to prevent hanging requests if the SIAT server is slow.
 
-### 2. Installation
-
-```bash
-go get github.com/ron86i/go-siat
-```
-
-### 3. Usage Example: Verifying NIT
+### Example: Verifying NIT
 
 ```go
 package main
 
 import (
-	"context"
-	"fmt"
-	"github.com/ron86i/go-siat"
-	"github.com/ron86i/go-siat/pkg/models"
+    "context"
+    "fmt"
+    "github.com/ron86i/go-siat"
+    "github.com/ron86i/go-siat/pkg/models"
 )
 
 func main() {
-	// 1. Initialize the client
-	s, _ := siat.New("YOUR_SIAT_URL", nil)
+    // 1. Initialize the client
+    s, _ := siat.New("YOUR_SIAT_URL", nil)
 
-	// 2. Prepare the request using builders
-	req := models.Codigos().NewVerificarNitBuilder().
-		WithNit(123456789).
-		Build()
+    // 2. Prepare the request using builders
+    req := models.Codigos().NewVerificarNitBuilder().
+        WithNit(123456789).
+        Build()
 
-	// 3. Execute call
-	resp, err := s.Codigos().VerificarNit(context.Background(), req)
-	if err != nil {
-		panic(err)
-	}
+    // 3. Execute call
+    resp, err := s.Codigos().VerificarNit(context.Background(), req)
+    if err != nil {
+        panic(err)
+    }
 
-	fmt.Printf("NIT Transaction status: %v\n", resp.Body.Content.RespuestaVerificarNit.Transaccion)
+    fmt.Printf("NIT Transaction status: %v\n", resp.Body.Content.RespuestaVerificarNit.Transaccion)
 }
 ```
 
----
+> For advanced guides (full invoicing flow, digital signatures, error handling, middleware), see the [**Full Documentation**](docs/en/README.md).
 
 ---
 
-The best way to learn how to use each service is by reviewing the integration tests:
+## 🛠️ Usage Reference (Tests)
+
+The **Integration Tests** serve as living technical documentation for the SDK:
 
 | Category | Test File |
 | :--- | :--- |
@@ -184,6 +133,8 @@ The best way to learn how to use each service is by reviewing the integration te
 | **End-to-End** | [`siat_test.go`](siat_test.go) |
 
 ---
+
+## 👍 Contribution and Support
 
 Contributions are welcome! If you find a bug or have a suggestion, please open an **Issue** or a **Pull Request** (please review the [`CONTRIBUTING.md`](.github/CONTRIBUTING.md)).
 
