@@ -12,6 +12,6 @@ type RecepcionDocumentoAjuste struct {
 }
 
 type RecepcionDocumentoAjusteResponse struct {
-	XMLName                   xml.Name                       `xml:"ns:recepcionDocumentoAjusteResponse" json:"-"`
+	XMLName                   xml.Name                       `xml:"recepcionDocumentoAjusteResponse" json:"-"`
 	RespuestaRecepcionFactura facturacion.RespuestaRecepcion `xml:"RespuestaServicioFacturacion" json:"respuestaServicioFacturacion"`
 }

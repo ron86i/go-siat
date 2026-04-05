@@ -7,25 +7,25 @@ import "fmt"
 type SiatError struct {
 	// Code es un identificador único del error (ej: "INVALID_CUIS", "NETWORK_ERROR", "AUTH_FAILED")
 	Code string
-	
+
 	// Message es la descripción del error en lenguaje natural
 	Message string
-	
+
 	// SiatCode es el código de error retornado por el SIAT (si aplica)
 	SiatCode int
-	
+
 	// StatusCode es el código HTTP (si aplica)
 	StatusCode int
-	
+
 	// IsNetworkError indica si el error fue de red (timeout, connection refused, etc)
 	IsNetworkError bool
-	
+
 	// IsRetryable indica si la operación puede/debe ser reintentada
 	IsRetryable bool
-	
+
 	// Details contiene información adicional para debugging
 	Details map[string]interface{}
-	
+
 	// WrappedErr es el error subyacente (si existe)
 	WrappedErr error
 }
@@ -64,9 +64,9 @@ func NewNetworkError(msg string, err error) *SiatError {
 // NewSiatError crea un error del servidor SIAT
 func NewSiatError(code int, msg string) *SiatError {
 	return &SiatError{
-		Code:       "SIAT_SERVER_ERROR",
-		Message:    msg,
-		SiatCode:   code,
+		Code:        "SIAT_SERVER_ERROR",
+		Message:     msg,
+		SiatCode:    code,
 		IsRetryable: false, // El servidor rechazó por algo específico
 	}
 }
@@ -83,10 +83,10 @@ func NewAuthError(msg string) *SiatError {
 // NewTimeoutError crea un error de timeout
 func NewTimeoutError(msg string) *SiatError {
 	return &SiatError{
-		Code:            "TIMEOUT",
-		Message:         msg,
-		IsNetworkError:  true,
-		IsRetryable:     true,
+		Code:           "TIMEOUT",
+		Message:        msg,
+		IsNetworkError: true,
+		IsRetryable:    true,
 	}
 }
 
