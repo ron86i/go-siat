@@ -103,6 +103,10 @@ The SDK covers the critical services of the SIAT ecosystem:
 ### 🎓 Education
 - **Educational Sectors**: Schools, Universities, and Institutes (National and Free Trade Zone).
 
+### 🔄 Adjustment Documents
+- **Credit / Debit Notes**: Standard, ICE, and Fiscal credit/debit notes.
+- **Conciliation Notes**: Conciliation notes for billing adjustments.
+
 ### 🎲 Other Special Sectors
 - **Games of Chance**: Casinos and entertainment venues.
 - **Zero Tax (Tasa Cero)**: Books and international cargo transportation.
@@ -174,9 +178,10 @@ The best way to learn how to use each service is by reviewing the integration te
 | **Sales** | [`siat_compra_venta_service_test.go`](internal/adapter/services/siat_compra_venta_service_test.go) |
 | **Electronic** | [`siat_electronica_service_test.go`](internal/adapter/services/siat_electronica_service_test.go) |
 | **Computerized** | [`siat_computarizada_service_test.go`](internal/adapter/services/siat_computarizada_service_test.go) |
+| **Adjustment Documents** | [`siat_documento_ajuste_service_test.go`](internal/adapter/services/siat_documento_ajuste_service_test.go) |
 | **Invoicing (Sectors)** | [`pkg/models/invoices/`](pkg/models/invoices/) |
 | **End-to-End** | [`siat_test.go`](siat_test.go) |
-
+s
 ---
 
 Contributions are welcome! If you find a bug or have a suggestion, please open an **Issue** or a **Pull Request** (please review the [`CONTRIBUTING.md`](.github/CONTRIBUTING.md)).

@@ -104,6 +104,10 @@ El SDK cubre los servicios críticos del ecosistema SIAT:
 ### 🎓 Educación
 - **Sectores Educativos**: Colegios, Universidades e Institutos (Nacional y Zona Franca).
 
+### 🔄 Documentos de Ajuste
+- **Notas de Crédito / Débito**: Notas estándar, ICE y Fiscales.
+- **Notas de Conciliación**: Notas de conciliación para ajustes de facturación.
+
 ### 🎲 Otros Sectores Especiales
 - **Juegos de Azar**: Casinos y salas de entretenimiento.
 - **Tasa Cero**: Libros y transporte internacional de carga.
@@ -724,6 +728,7 @@ Para una comprensión profunda de cada servicio, los **Tests de Integración** a
 | **Compra-Venta** | [`siat_compra_venta_service_test.go`](../../internal/adapter/services/siat_compra_venta_service_test.go) |
 | **Electrónica** | [`siat_electronica_service_test.go`](../../internal/adapter/services/siat_electronica_service_test.go) |
 | **Computarizada** | [`siat_computarizada_service_test.go`](../../internal/adapter/services/siat_computarizada_service_test.go) |
+| **Documentos de Ajuste** | [`siat_documento_ajuste_service_test.go`](../../internal/adapter/services/siat_documento_ajuste_service_test.go) |
 | **Facturación (Sectores)** | [`pkg/models/invoices/`](../../pkg/models/invoices/) |
 | **Flujos Completos** | [`siat_test.go`](../../siat_test.go) |
 
