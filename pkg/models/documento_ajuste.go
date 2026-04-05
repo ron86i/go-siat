@@ -200,6 +200,16 @@ func (b *anulacionDocumentoAjusteBuilder) WithTipoFacturaDocumento(v int) *anula
 	return b
 }
 
+func (b *anulacionDocumentoAjusteBuilder) WithCuf(v string) *anulacionDocumentoAjusteBuilder {
+	b.request.SolicitudServicioAnulacionDocumentoAjuste.Cuf = v
+	return b
+}
+
+func (b *anulacionDocumentoAjusteBuilder) WithCodigoMotivo(v int) *anulacionDocumentoAjusteBuilder {
+	b.request.SolicitudServicioAnulacionDocumentoAjuste.CodigoMotivo = v
+	return b
+}
+
 func (b *anulacionDocumentoAjusteBuilder) Build() AnulacionDocumentoAjuste {
 	return AnulacionDocumentoAjuste{RequestWrapper[documento_ajuste.AnulacionDocumentoAjuste]{request: b.request}}
 }
