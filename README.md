@@ -2,12 +2,18 @@
   <img src="./.github/logo.svg" alt="go-siat logo" width="300">
 </p>
 
-[![Stability: Active](https://masterminds.github.io/stability/active.svg)](https://masterminds.github.io/stability/active.html)
-[![GoDoc](https://godoc.org/github.com/ron86i/go-siat?status.png)](https://pkg.go.dev/github.com/ron86i/go-siat)
-![unit tests](https://github.com/ron86i/go-siat/actions/workflows/codecov.yml/badge.svg)
-[![report card](https://goreportcard.com/badge/github.com/ron86i/go-siat)](https://goreportcard.com/report/github.com/ron86i/go-siat)
-[![codecov](https://codecov.io/gh/ron86i/go-siat/branch/main/graph/badge.svg)](https://codecov.io/gh/ron86i/go-siat)
-[![Spanish Version](https://img.shields.io/badge/lang-español-blue?style=flat-square)](i18n/es/README.md)
+<p align="center">
+  <a href="https://masterminds.github.io/stability/active.html"><img src="https://masterminds.github.io/stability/active.svg" alt="Stability: Active"></a>
+  <a href="https://github.com/ron86i/go-siat/actions/workflows/codecov.yml"><img src="https://github.com/ron86i/go-siat/actions/workflows/codecov.yml/badge.svg" alt="CI"></a>
+  <a href="https://codecov.io/gh/ron86i/go-siat"><img src="https://codecov.io/gh/ron86i/go-siat/branch/main/graph/badge.svg" alt="codecov"></a>
+  <a href="https://goreportcard.com/report/github.com/ron86i/go-siat"><img src="https://goreportcard.com/badge/github.com/ron86i/go-siat" alt="Go Report Card"></a>
+  <br>
+  <a href="https://pkg.go.dev/github.com/ron86i/go-siat"><img src="https://pkg.go.dev/badge/github.com/ron86i/go-siat.svg" alt="Go Reference"></a>
+  <a href="https://go.dev/"><img src="https://img.shields.io/github/go-mod/go-version/ron86i/go-siat?style=flat" alt="Go Version"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/github/license/ron86i/go-siat?style=flat" alt="License"></a>
+  <a href="https://github.com/ron86i/go-siat/releases"><img src="https://img.shields.io/github/v/release/ron86i/go-siat?style=flat&label=release" alt="Latest Release"></a>
+  <a href="i18n/es/README.md"><img src="https://img.shields.io/badge/lang-español-blue?style=flat" alt="Spanish Version"></a>
+</p>
 
 
 <p align="center">
