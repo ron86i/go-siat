@@ -4,8 +4,6 @@
 
 <p align="center">
   <a href="https://masterminds.github.io/stability/active.html"><img src="https://masterminds.github.io/stability/active.svg" alt="Stability: Active"></a>
-  <a href="https://github.com/ron86i/go-siat/actions/workflows/codecov.yml"><img src="https://github.com/ron86i/go-siat/actions/workflows/codecov.yml/badge.svg" alt="CI"></a>
-  <a href="https://codecov.io/gh/ron86i/go-siat"><img src="https://codecov.io/gh/ron86i/go-siat/branch/main/graph/badge.svg" alt="codecov"></a>
   <a href="https://goreportcard.com/report/github.com/ron86i/go-siat"><img src="https://goreportcard.com/badge/github.com/ron86i/go-siat" alt="Go Report Card"></a>
   <br>
   <a href="https://pkg.go.dev/github.com/ron86i/go-siat"><img src="https://pkg.go.dev/badge/github.com/ron86i/go-siat.svg" alt="Go Reference"></a>
