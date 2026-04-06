@@ -1,25 +1,27 @@
-<h1 align="center">
+<p align="center">
   <img src="./.github/logo.svg" alt="go-siat logo" width="300">
+</p>
+
+<p align="center">
+  <a href="https://masterminds.github.io/stability/active.html"><img src="https://masterminds.github.io/stability/active.svg" alt="Stability: Active"></a>
+  <a href="https://github.com/ron86i/go-siat/actions/workflows/codecov.yml"><img src="https://github.com/ron86i/go-siat/actions/workflows/codecov.yml/badge.svg" alt="CI"></a>
+  <a href="https://codecov.io/gh/ron86i/go-siat"><img src="https://codecov.io/gh/ron86i/go-siat/branch/main/graph/badge.svg" alt="codecov"></a>
+  <a href="https://goreportcard.com/report/github.com/ron86i/go-siat"><img src="https://goreportcard.com/badge/github.com/ron86i/go-siat" alt="Go Report Card"></a>
   <br>
-  <a href="https://github.com/ron86i/go-siat">
-    <img src="https://img.shields.io/badge/status-active-success?style=flat-square" alt="Status">
-  </a>
-  <a href="https://go.dev/">
-    <img src="https://img.shields.io/badge/go-1.25+-00ADD8?style=flat-square" alt="Go Version">
-  </a>
-  <a href="LICENSE">
-    <img src="https://img.shields.io/badge/license-MIT-green?style=flat-square" alt="License">
-  </a>
-  <a href="i18n/es/README.md">
-    <img src="https://img.shields.io/badge/lang-español-blue?style=flat-square" alt="Spanish Version">
-  </a>
-</h1>
+  <a href="https://pkg.go.dev/github.com/ron86i/go-siat"><img src="https://pkg.go.dev/badge/github.com/ron86i/go-siat.svg" alt="Go Reference"></a>
+  <a href="https://go.dev/"><img src="https://img.shields.io/github/go-mod/go-version/ron86i/go-siat?style=flat" alt="Go Version"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/github/license/ron86i/go-siat?style=flat" alt="License"></a>
+  <a href="https://github.com/ron86i/go-siat/releases"><img src="https://img.shields.io/github/v/release/ron86i/go-siat?style=flat&label=release" alt="Latest Release"></a>
+  <a href="i18n/es/README.md"><img src="https://img.shields.io/badge/lang-español-blue?style=flat" alt="Spanish Version"></a>
+</p>
+
 
 <p align="center">
   <em><b>go-siat</b> is a professional SDK developed in Go, designed to simplify integration with <b>SIAT (Integrated Tax Administration System)</b> SOAP web services.</em>
 </p>
 
-> 📚 **Full Documentation**: [English](docs/en/README.md) | [Español](docs/es/README.md)
+> [!IMPORTANT]
+> **Full Documentation**: [English](docs/en/README.md) | [Español](docs/es/README.md)
 >
 > Architecture, API Reference, Invoicing Guide, Error Codes, Utilities, and Configuration.
 
