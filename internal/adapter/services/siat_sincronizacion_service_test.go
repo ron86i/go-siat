@@ -221,3 +221,12 @@ func TestSincronizarParametricaUnidadMedida(t *testing.T) {
 	req := buildSincronizacion(models.Sincronizacion().NewSincronizarParametricaUnidadMedidaBuilder(), sol)
 	runSincronizacionTest(t, "SincronizarParametricaUnidadMedida", req, service.SincronizarParametricaUnidadMedida)
 }
+
+func TestSincronizarFechaHora(t *testing.T) {
+	godotenv.Load()
+	siatClient, _ := siat.New(os.Getenv("SIAT_URL"), nil)
+	service := siatClient.Sincronizacion()
+	sol := getCommonRequest(t)
+	req := buildSincronizacion(models.Sincronizacion().NewSincronizarFechaHoraBuilder(), sol)
+	runSincronizacionTest(t, "SincronizarFechaHora", req, service.SincronizarFechaHora)
+}

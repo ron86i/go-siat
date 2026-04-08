@@ -88,6 +88,10 @@ func (s *SiatSincronizacionService) SincronizarParametricaUnidadMedida(ctx conte
 	return performSoapRequest[sincronizacion.SincronizarParametricaUnidadMedida, sincronizacion.SincronizarParametricaUnidadMedidaResponse](ctx, s.httpClient, s.url, config, req)
 }
 
+func (s *SiatSincronizacionService) SincronizarFechaHora(ctx context.Context, config ports.Config, req models.SincronizarFechaHora) (*soap.EnvelopeResponse[sincronizacion.SincronizarFechaHoraResponse], error) {
+	return performSoapRequest[sincronizacion.SincronizarFechaHora, sincronizacion.SincronizarFechaHoraResponse](ctx, s.httpClient, s.url, config, req)
+}
+
 func (s *SiatSincronizacionService) VerificarComunicacion(ctx context.Context, config ports.Config, opaqueReq models.VerificarComunicacionSincronizacion) (*soap.EnvelopeResponse[sincronizacion.VerificarComunicacionResponse], error) {
 	return performSoapRequest[sincronizacion.VerificarComunicacion, sincronizacion.VerificarComunicacionResponse](ctx, s.httpClient, s.url, config, opaqueReq)
 }
