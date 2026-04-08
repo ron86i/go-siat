@@ -59,6 +59,9 @@ type SincronizarParametricaTiposFactura struct {
 type SincronizarParametricaUnidadMedida struct {
 	RequestWrapper[sincronizacion.SincronizarParametricaUnidadMedida]
 }
+type SincronizarFechaHora struct {
+	RequestWrapper[sincronizacion.SincronizarFechaHora]
+}
 type VerificarComunicacionSincronizacion struct {
 	RequestWrapper[sincronizacion.VerificarComunicacion]
 }
@@ -123,6 +126,18 @@ func (sincronizacionNamespace) NewSincronizarListaMensajesServiciosBuilder() Sin
 		sol:     &req.SolicitudSincronizacion,
 		wrap: func(rw RequestWrapper[sincronizacion.SincronizarListaMensajesServicios]) SincronizarListaMensajesServicios {
 			return SincronizarListaMensajesServicios{rw}
+		},
+	}
+}
+
+// NewSincronizarFechaHoraBuilder inicia la construcción para obtener la fecha y hora oficial del servidor del SIAT.
+func (sincronizacionNamespace) NewSincronizarFechaHoraBuilder() SincronizacionBuilder[sincronizacion.SincronizarFechaHora, SincronizarFechaHora] {
+	req := &sincronizacion.SincronizarFechaHora{}
+	return &sincronizacionBuilder[sincronizacion.SincronizarFechaHora, SincronizarFechaHora]{
+		request: req,
+		sol:     &req.SolicitudSincronizacion,
+		wrap: func(rw RequestWrapper[sincronizacion.SincronizarFechaHora]) SincronizarFechaHora {
+			return SincronizarFechaHora{rw}
 		},
 	}
 }

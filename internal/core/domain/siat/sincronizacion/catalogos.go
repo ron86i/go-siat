@@ -2,7 +2,8 @@ package sincronizacion
 
 import (
 	"encoding/xml"
-	"time"
+
+	"github.com/ron86i/go-siat/internal/core/domain/datatype"
 )
 
 // SolicitudSincronizacion representa los parámetros comunes requeridos para las solicitudes de sincronización al SIAT.
@@ -60,8 +61,8 @@ type SincronizarFechaHoraResponse struct {
 
 // RespuestaFechaHora contiene la fecha y hora sincronizada con el SIAT.
 type RespuestaFechaHora struct {
-	Transaccion bool      `xml:"transaccion" json:"transaccion"`
-	FechaHora   time.Time `xml:"fechaHora" json:"fechaHora"`
+	Transaccion bool              `xml:"transaccion" json:"transaccion"`
+	FechaHora   datatype.TimeSiat `xml:"fechaHora" json:"fechaHora"`
 }
 
 // --- Sincronizar lista actividades documento sector ---
