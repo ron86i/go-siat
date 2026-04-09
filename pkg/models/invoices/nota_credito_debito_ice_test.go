@@ -215,7 +215,7 @@ func TestNotaCreditoDebitoIceIntegration_Computarizada(t *testing.T) {
 	// 6. Solicitud de recepción
 	req := models.DocumentoAjuste().NewRecepcionBuilder().
 		WithCodigoAmbiente(codAmbiente).
-		WithDocumentoSector(48).
+		WithCodigoDocumentoSector(48).
 		WithCodigoEmision(siat.EmisionOnline).
 		WithCodigoModalidad(siat.ModalidadComputarizada).
 		WithCodigoPuntoVenta(0).
@@ -369,7 +369,7 @@ func TestNotaCreditoDebitoIceIntegration_Electronica(t *testing.T) {
 	// 6. Solicitud de recepción
 	req := models.DocumentoAjuste().NewRecepcionBuilder().
 		WithCodigoAmbiente(codAmbiente).
-		WithDocumentoSector(48).
+		WithCodigoDocumentoSector(48).
 		WithCodigoEmision(siat.EmisionOnline).
 		WithCodigoModalidad(siat.ModalidadElectronica).
 		WithCodigoPuntoVenta(0).
