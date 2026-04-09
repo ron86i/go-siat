@@ -181,7 +181,7 @@ func TestSiatDocumentoAjuste_RecepcionDocumentoAjuste(t *testing.T) {
 		WithCuis(cuis.Body.Content.RespuestaCuis.Codigo).
 		WithCufd(cufd.Body.Content.RespuestaCufd.Codigo).
 		WithNit(nit).
-		WithDocumentoSector(29).
+		WithCodigoDocumentoSector(29).
 		WithCodigoEmision(siat.EmisionOnline).
 		WithCodigoModalidad(codModalidad).
 		WithTipoFacturaDocumento(3).
@@ -236,7 +236,7 @@ func TestSiatDocumentoAjuste_AnulacionDocumentoAjuste(t *testing.T) {
 		WithCuis(cuis).
 		WithCufd(cufd).
 		WithNit(nit).
-		WithDocumentoSector(29).
+		WithCodigoDocumentoSector(29).
 		WithCodigoEmision(siat.EmisionOnline).
 		WithCodigoModalidad(codModalidad).
 		WithTipoFacturaDocumento(3).
@@ -289,7 +289,7 @@ func TestSiatDocumentoAjuste_ReversionAnulacionDocumentoAjuste(t *testing.T) {
 		WithCuis(cuis).
 		WithCufd(cufd).
 		WithNit(nit).
-		WithDocumentoSector(29).
+		WithCodigoDocumentoSector(29).
 		WithCodigoEmision(siat.EmisionOnline).
 		WithCodigoModalidad(codModalidad).
 		WithTipoFacturaDocumento(3).
@@ -343,7 +343,7 @@ func TestSiatDocumentoAjuste_VerificacionEstadoDocumentoAjuste(t *testing.T) {
 		WithCuis(cuis).
 		WithCufd(cufd).
 		WithNit(nit).
-		WithDocumentoSector(29).
+		WithCodigoDocumentoSector(29).
 		WithCodigoEmision(siat.EmisionOnline).
 		WithCodigoModalidad(codModalidad).
 		WithTipoFacturaDocumento(3).
