@@ -154,41 +154,49 @@ type recepcionAnexosBuilder struct {
 	request *compra_venta.RecepcionAnexos
 }
 
+// WithCodigoAmbiente establece el código de ambiente (Piloto o Producción).
 func (b *recepcionAnexosBuilder) WithCodigoAmbiente(codigoAmbiente int) *recepcionAnexosBuilder {
 	b.request.SolicitudRecepcionAnexos.CodigoAmbiente = codigoAmbiente
 	return b
 }
 
+// WithCodigoPuntoVenta establece el código del punto de venta.
 func (b *recepcionAnexosBuilder) WithCodigoPuntoVenta(codigoPuntoVenta int) *recepcionAnexosBuilder {
 	b.request.SolicitudRecepcionAnexos.CodigoPuntoVenta = codigoPuntoVenta
 	return b
 }
 
+// WithCodigoSistema establece el código del sistema autorizado.
 func (b *recepcionAnexosBuilder) WithCodigoSistema(codigoSistema string) *recepcionAnexosBuilder {
 	b.request.SolicitudRecepcionAnexos.CodigoSistema = codigoSistema
 	return b
 }
 
+// WithCodigoSucursal establece el código de la sucursal.
 func (b *recepcionAnexosBuilder) WithCodigoSucursal(codigoSucursal int) *recepcionAnexosBuilder {
 	b.request.SolicitudRecepcionAnexos.CodigoSucursal = codigoSucursal
 	return b
 }
 
+// WithCuis establece el Código Único de Inicio de Sistemas.
 func (b *recepcionAnexosBuilder) WithCuis(cuis string) *recepcionAnexosBuilder {
 	b.request.SolicitudRecepcionAnexos.Cuis = cuis
 	return b
 }
 
+// WithNit establece el NIT del emisor.
 func (b *recepcionAnexosBuilder) WithNit(nit int64) *recepcionAnexosBuilder {
 	b.request.SolicitudRecepcionAnexos.Nit = nit
 	return b
 }
 
+// WithCuf establece el Código Único de Facturación de la factura asociada.
 func (b *recepcionAnexosBuilder) WithCuf(cuf string) *recepcionAnexosBuilder {
 	b.request.SolicitudRecepcionAnexos.Cuf = cuf
 	return b
 }
 
+// AddAnexos añade uno o más anexos de venta a la solicitud.
 func (b *recepcionAnexosBuilder) AddAnexos(anexo ...VentaAnexoCompraVenta) *recepcionAnexosBuilder {
 	for _, a := range anexo {
 		if internal := UnwrapInternalRequest[compra_venta.VentaAnexo](a); internal != nil {
@@ -230,26 +238,31 @@ func (b *ventaAnexoCompraVentaBuilder) WithTipoCodigo(tipoCodigo string) *ventaA
 func (b *ventaAnexoCompraVentaBuilder) Build() VentaAnexoCompraVenta {
 	return VentaAnexoCompraVenta{RequestWrapper[compra_venta.VentaAnexo]{request: b.anexo}}
 }
+// WithCodigoDocumentoSector establece el código del documento sector.
 func (b *recepcionAnexosBuilder) WithCodigoDocumentoSector(codigoDocumentoSector int) *recepcionAnexosBuilder {
 	b.request.SolicitudRecepcionAnexos.CodigoDocumentoSector = codigoDocumentoSector
 	return b
 }
 
+// WithCodigoEmision establece el tipo de emisión.
 func (b *recepcionAnexosBuilder) WithCodigoEmision(codigoEmision int) *recepcionAnexosBuilder {
 	b.request.SolicitudRecepcionAnexos.CodigoEmision = codigoEmision
 	return b
 }
 
+// WithCodigoModalidad establece el código de la modalidad.
 func (b *recepcionAnexosBuilder) WithCodigoModalidad(codigoModalidad int) *recepcionAnexosBuilder {
 	b.request.SolicitudRecepcionAnexos.CodigoModalidad = codigoModalidad
 	return b
 }
 
+// WithCufd establece el CUFD.
 func (b *recepcionAnexosBuilder) WithCufd(cufd string) *recepcionAnexosBuilder {
 	b.request.SolicitudRecepcionAnexos.Cufd = cufd
 	return b
 }
 
+// WithTipoFacturaDocumento establece el tipo de documento.
 func (b *recepcionAnexosBuilder) WithTipoFacturaDocumento(tipoFacturaDocumento int) *recepcionAnexosBuilder {
 	b.request.SolicitudRecepcionAnexos.TipoFacturaDocumento = tipoFacturaDocumento
 	return b
@@ -263,86 +276,103 @@ type recepcionPaqueteFacturaBuilder struct {
 	request *facturacion.RecepcionPaqueteFactura
 }
 
+// WithCodigoAmbiente establece el código de ambiente.
 func (b *recepcionPaqueteFacturaBuilder) WithCodigoAmbiente(codigoAmbiente int) *recepcionPaqueteFacturaBuilder {
 	b.request.SolicitudServicioRecepcionPaquete.SolicitudRecepcion.CodigoAmbiente = codigoAmbiente
 	return b
 }
 
+// WithCodigoDocumentoSector establece el código del documento sector.
 func (b *recepcionPaqueteFacturaBuilder) WithCodigoDocumentoSector(codigoDocumentoSector int) *recepcionPaqueteFacturaBuilder {
 	b.request.SolicitudServicioRecepcionPaquete.SolicitudRecepcion.CodigoDocumentoSector = codigoDocumentoSector
 	return b
 }
 
+// WithCodigoEmision establece el tipo de emisión.
 func (b *recepcionPaqueteFacturaBuilder) WithCodigoEmision(codigoEmision int) *recepcionPaqueteFacturaBuilder {
 	b.request.SolicitudServicioRecepcionPaquete.SolicitudRecepcion.CodigoEmision = codigoEmision
 	return b
 }
 
+// WithCodigoModalidad establece el código de la modalidad.
 func (b *recepcionPaqueteFacturaBuilder) WithCodigoModalidad(codigoModalidad int) *recepcionPaqueteFacturaBuilder {
 	b.request.SolicitudServicioRecepcionPaquete.SolicitudRecepcion.CodigoModalidad = codigoModalidad
 	return b
 }
 
+// WithCodigoPuntoVenta establece el código del punto de venta.
 func (b *recepcionPaqueteFacturaBuilder) WithCodigoPuntoVenta(codigoPuntoVenta int) *recepcionPaqueteFacturaBuilder {
 	b.request.SolicitudServicioRecepcionPaquete.SolicitudRecepcion.CodigoPuntoVenta = codigoPuntoVenta
 	return b
 }
 
+// WithCodigoSistema establece el código del sistema.
 func (b *recepcionPaqueteFacturaBuilder) WithCodigoSistema(codigoSistema string) *recepcionPaqueteFacturaBuilder {
 	b.request.SolicitudServicioRecepcionPaquete.SolicitudRecepcion.CodigoSistema = codigoSistema
 	return b
 }
 
+// WithCodigoSucursal establece el código de la sucursal.
 func (b *recepcionPaqueteFacturaBuilder) WithCodigoSucursal(codigoSucursal int) *recepcionPaqueteFacturaBuilder {
 	b.request.SolicitudServicioRecepcionPaquete.SolicitudRecepcion.CodigoSucursal = codigoSucursal
 	return b
 }
 
+// WithCufd establece el CUFD.
 func (b *recepcionPaqueteFacturaBuilder) WithCufd(cufd string) *recepcionPaqueteFacturaBuilder {
 	b.request.SolicitudServicioRecepcionPaquete.SolicitudRecepcion.Cufd = cufd
 	return b
 }
 
+// WithCuis establece el CUIS.
 func (b *recepcionPaqueteFacturaBuilder) WithCuis(cuis string) *recepcionPaqueteFacturaBuilder {
 	b.request.SolicitudServicioRecepcionPaquete.SolicitudRecepcion.Cuis = cuis
 	return b
 }
 
+// WithNit establece el NIT del emisor.
 func (b *recepcionPaqueteFacturaBuilder) WithNit(nit int64) *recepcionPaqueteFacturaBuilder {
 	b.request.SolicitudServicioRecepcionPaquete.SolicitudRecepcion.Nit = nit
 	return b
 }
 
+// WithTipoFacturaDocumento establece el tipo de documento.
 func (b *recepcionPaqueteFacturaBuilder) WithTipoFacturaDocumento(tipoFacturaDocumento int) *recepcionPaqueteFacturaBuilder {
 	b.request.SolicitudServicioRecepcionPaquete.SolicitudRecepcion.TipoFacturaDocumento = tipoFacturaDocumento
 	return b
 }
 
+// WithArchivo establece el archivo comprimido (.tar.gz) en Base64.
 func (b *recepcionPaqueteFacturaBuilder) WithArchivo(archivo string) *recepcionPaqueteFacturaBuilder {
 	b.request.SolicitudServicioRecepcionPaquete.Archivo = archivo
 	return b
 }
 
+// WithFechaEnvio establece la fecha y hora de envío del paquete.
 func (b *recepcionPaqueteFacturaBuilder) WithFechaEnvio(fechaEnvio time.Time) *recepcionPaqueteFacturaBuilder {
 	b.request.SolicitudServicioRecepcionPaquete.FechaEnvio = datatype.NewTimeSiat(fechaEnvio)
 	return b
 }
 
+// WithHashArchivo establece el hash del archivo comprimido.
 func (b *recepcionPaqueteFacturaBuilder) WithHashArchivo(hashArchivo string) *recepcionPaqueteFacturaBuilder {
 	b.request.SolicitudServicioRecepcionPaquete.HashArchivo = hashArchivo
 	return b
 }
 
+// WithCafc establece el CAFC si aplica.
 func (b *recepcionPaqueteFacturaBuilder) WithCafc(cafc string) *recepcionPaqueteFacturaBuilder {
 	b.request.SolicitudServicioRecepcionPaquete.Cafc = cafc
 	return b
 }
 
+// WithCantidadFacturas establece la cantidad de facturas en el paquete.
 func (b *recepcionPaqueteFacturaBuilder) WithCantidadFacturas(cantidadFacturas int) *recepcionPaqueteFacturaBuilder {
 	b.request.SolicitudServicioRecepcionPaquete.CantidadFacturas = cantidadFacturas
 	return b
 }
 
+// WithCodigoEvento establece el código de evento significativo asociado.
 func (b *recepcionPaqueteFacturaBuilder) WithCodigoEvento(codigoEvento int64) *recepcionPaqueteFacturaBuilder {
 	b.request.SolicitudServicioRecepcionPaquete.CodigoEvento = codigoEvento
 	return b
@@ -356,61 +386,73 @@ type reversionAnulacionFacturaBuilder struct {
 	request *facturacion.ReversionAnulacionFactura
 }
 
+// WithCodigoAmbiente establece el código de ambiente.
 func (b *reversionAnulacionFacturaBuilder) WithCodigoAmbiente(codigoAmbiente int) *reversionAnulacionFacturaBuilder {
 	b.request.SolicitudReversionAnulacion.CodigoAmbiente = codigoAmbiente
 	return b
 }
 
+// WithCodigoDocumentoSector establece el código del documento sector.
 func (b *reversionAnulacionFacturaBuilder) WithCodigoDocumentoSector(codigoDocumentoSector int) *reversionAnulacionFacturaBuilder {
 	b.request.SolicitudReversionAnulacion.CodigoDocumentoSector = codigoDocumentoSector
 	return b
 }
 
+// WithCodigoEmision establece el tipo de emisión.
 func (b *reversionAnulacionFacturaBuilder) WithCodigoEmision(codigoEmision int) *reversionAnulacionFacturaBuilder {
 	b.request.SolicitudReversionAnulacion.CodigoEmision = codigoEmision
 	return b
 }
 
+// WithCodigoModalidad establece el código de la modalidad.
 func (b *reversionAnulacionFacturaBuilder) WithCodigoModalidad(codigoModalidad int) *reversionAnulacionFacturaBuilder {
 	b.request.SolicitudReversionAnulacion.CodigoModalidad = codigoModalidad
 	return b
 }
 
+// WithCodigoPuntoVenta establece el código del punto de venta.
 func (b *reversionAnulacionFacturaBuilder) WithCodigoPuntoVenta(codigoPuntoVenta int) *reversionAnulacionFacturaBuilder {
 	b.request.SolicitudReversionAnulacion.CodigoPuntoVenta = codigoPuntoVenta
 	return b
 }
 
+// WithCodigoSistema establece el código del sistema.
 func (b *reversionAnulacionFacturaBuilder) WithCodigoSistema(codigoSistema string) *reversionAnulacionFacturaBuilder {
 	b.request.SolicitudReversionAnulacion.CodigoSistema = codigoSistema
 	return b
 }
 
+// WithCodigoSucursal establece el código de la sucursal.
 func (b *reversionAnulacionFacturaBuilder) WithCodigoSucursal(codigoSucursal int) *reversionAnulacionFacturaBuilder {
 	b.request.SolicitudReversionAnulacion.CodigoSucursal = codigoSucursal
 	return b
 }
 
+// WithCufd establece el CUFD.
 func (b *reversionAnulacionFacturaBuilder) WithCufd(cufd string) *reversionAnulacionFacturaBuilder {
 	b.request.SolicitudReversionAnulacion.Cufd = cufd
 	return b
 }
 
+// WithCuis establece el CUIS.
 func (b *reversionAnulacionFacturaBuilder) WithCuis(cuis string) *reversionAnulacionFacturaBuilder {
 	b.request.SolicitudReversionAnulacion.Cuis = cuis
 	return b
 }
 
+// WithNit establece el NIT del emisor.
 func (b *reversionAnulacionFacturaBuilder) WithNit(nit int64) *reversionAnulacionFacturaBuilder {
 	b.request.SolicitudReversionAnulacion.Nit = nit
 	return b
 }
 
+// WithTipoFacturaDocumento establece el tipo de documento.
 func (b *reversionAnulacionFacturaBuilder) WithTipoFacturaDocumento(tipoFacturaDocumento int) *reversionAnulacionFacturaBuilder {
 	b.request.SolicitudReversionAnulacion.TipoFacturaDocumento = tipoFacturaDocumento
 	return b
 }
 
+// WithCuf establece el CUF de la factura a revertir.
 func (b *reversionAnulacionFacturaBuilder) WithCuf(cuf string) *reversionAnulacionFacturaBuilder {
 	b.request.SolicitudReversionAnulacion.Cuf = cuf
 	return b
@@ -424,66 +466,79 @@ type anulacionFacturaBuilder struct {
 	request *facturacion.AnulacionFactura
 }
 
+// WithCodigoAmbiente establece el código de ambiente.
 func (b *anulacionFacturaBuilder) WithCodigoAmbiente(codigoAmbiente int) *anulacionFacturaBuilder {
 	b.request.SolicitudAnulacion.CodigoAmbiente = codigoAmbiente
 	return b
 }
 
+// WithCodigoDocumentoSector establece el código del documento sector.
 func (b *anulacionFacturaBuilder) WithCodigoDocumentoSector(codigoDocumentoSector int) *anulacionFacturaBuilder {
 	b.request.SolicitudAnulacion.CodigoDocumentoSector = codigoDocumentoSector
 	return b
 }
 
+// WithCodigoEmision establece el tipo de emisión.
 func (b *anulacionFacturaBuilder) WithCodigoEmision(codigoEmision int) *anulacionFacturaBuilder {
 	b.request.SolicitudAnulacion.CodigoEmision = codigoEmision
 	return b
 }
 
+// WithCodigoModalidad establece el código de la modalidad.
 func (b *anulacionFacturaBuilder) WithCodigoModalidad(codigoModalidad int) *anulacionFacturaBuilder {
 	b.request.SolicitudAnulacion.CodigoModalidad = codigoModalidad
 	return b
 }
 
+// WithCodigoPuntoVenta establece el código del punto de venta.
 func (b *anulacionFacturaBuilder) WithCodigoPuntoVenta(codigoPuntoVenta int) *anulacionFacturaBuilder {
 	b.request.SolicitudAnulacion.CodigoPuntoVenta = codigoPuntoVenta
 	return b
 }
 
+// WithCodigoSistema establece el código del sistema.
 func (b *anulacionFacturaBuilder) WithCodigoSistema(codigoSistema string) *anulacionFacturaBuilder {
 	b.request.SolicitudAnulacion.CodigoSistema = codigoSistema
 	return b
 }
 
+// WithCodigoSucursal establece el código de la sucursal.
 func (b *anulacionFacturaBuilder) WithCodigoSucursal(codigoSucursal int) *anulacionFacturaBuilder {
 	b.request.SolicitudAnulacion.CodigoSucursal = codigoSucursal
 	return b
 }
 
+// WithCufd establece el CUFD.
 func (b *anulacionFacturaBuilder) WithCufd(cufd string) *anulacionFacturaBuilder {
 	b.request.SolicitudAnulacion.Cufd = cufd
 	return b
 }
 
+// WithCuf establece el CUF de la factura a anular.
 func (b *anulacionFacturaBuilder) WithCuf(cuf string) *anulacionFacturaBuilder {
 	b.request.SolicitudAnulacion.Cuf = cuf
 	return b
 }
 
+// WithCuis establece el CUIS.
 func (b *anulacionFacturaBuilder) WithCuis(cuis string) *anulacionFacturaBuilder {
 	b.request.SolicitudAnulacion.Cuis = cuis
 	return b
 }
 
+// WithNit establece el NIT del emisor.
 func (b *anulacionFacturaBuilder) WithNit(nit int64) *anulacionFacturaBuilder {
 	b.request.SolicitudAnulacion.Nit = nit
 	return b
 }
 
+// WithTipoFacturaDocumento establece el tipo de documento.
 func (b *anulacionFacturaBuilder) WithTipoFacturaDocumento(tipoFacturaDocumento int) *anulacionFacturaBuilder {
 	b.request.SolicitudAnulacion.TipoFacturaDocumento = tipoFacturaDocumento
 	return b
 }
 
+// WithCodigoMotivo establece el motivo de la anulación (según catálogo del SIN).
 func (b *anulacionFacturaBuilder) WithCodigoMotivo(codigoMotivo int) *anulacionFacturaBuilder {
 	b.request.SolicitudAnulacion.CodigoMotivo = codigoMotivo
 	return b
@@ -497,71 +552,85 @@ type recepcionFacturaBuilder struct {
 	request *facturacion.RecepcionFactura
 }
 
+// WithCodigoAmbiente establece el código de ambiente.
 func (b *recepcionFacturaBuilder) WithCodigoAmbiente(codigoAmbiente int) *recepcionFacturaBuilder {
 	b.request.SolicitudServicioRecepcionFactura.SolicitudRecepcion.CodigoAmbiente = codigoAmbiente
 	return b
 }
 
+// WithCodigoDocumentoSector establece el código del documento sector.
 func (b *recepcionFacturaBuilder) WithCodigoDocumentoSector(codigoDocumentoSector int) *recepcionFacturaBuilder {
 	b.request.SolicitudServicioRecepcionFactura.SolicitudRecepcion.CodigoDocumentoSector = codigoDocumentoSector
 	return b
 }
 
+// WithCodigoEmision establece el tipo de emisión.
 func (b *recepcionFacturaBuilder) WithCodigoEmision(codigoEmision int) *recepcionFacturaBuilder {
 	b.request.SolicitudServicioRecepcionFactura.SolicitudRecepcion.CodigoEmision = codigoEmision
 	return b
 }
 
+// WithCodigoModalidad establece el código de la modalidad.
 func (b *recepcionFacturaBuilder) WithCodigoModalidad(codigoModalidad int) *recepcionFacturaBuilder {
 	b.request.SolicitudServicioRecepcionFactura.SolicitudRecepcion.CodigoModalidad = codigoModalidad
 	return b
 }
 
+// WithCodigoPuntoVenta establece el código del punto de venta.
 func (b *recepcionFacturaBuilder) WithCodigoPuntoVenta(codigoPuntoVenta int) *recepcionFacturaBuilder {
 	b.request.SolicitudServicioRecepcionFactura.SolicitudRecepcion.CodigoPuntoVenta = codigoPuntoVenta
 	return b
 }
 
+// WithCodigoSistema establece el código del sistema.
 func (b *recepcionFacturaBuilder) WithCodigoSistema(codigoSistema string) *recepcionFacturaBuilder {
 	b.request.SolicitudServicioRecepcionFactura.SolicitudRecepcion.CodigoSistema = codigoSistema
 	return b
 }
 
+// WithCodigoSucursal establece el código de la sucursal.
 func (b *recepcionFacturaBuilder) WithCodigoSucursal(codigoSucursal int) *recepcionFacturaBuilder {
 	b.request.SolicitudServicioRecepcionFactura.SolicitudRecepcion.CodigoSucursal = codigoSucursal
 	return b
 }
 
+// WithCufd establece el CUFD.
 func (b *recepcionFacturaBuilder) WithCufd(cufd string) *recepcionFacturaBuilder {
 	b.request.SolicitudServicioRecepcionFactura.SolicitudRecepcion.Cufd = cufd
 	return b
 }
 
+// WithCuis establece el CUIS.
 func (b *recepcionFacturaBuilder) WithCuis(cuis string) *recepcionFacturaBuilder {
 	b.request.SolicitudServicioRecepcionFactura.SolicitudRecepcion.Cuis = cuis
 	return b
 }
 
+// WithNit establece el NIT del emisor.
 func (b *recepcionFacturaBuilder) WithNit(nit int64) *recepcionFacturaBuilder {
 	b.request.SolicitudServicioRecepcionFactura.SolicitudRecepcion.Nit = nit
 	return b
 }
 
+// WithTipoFacturaDocumento establece el tipo de documento.
 func (b *recepcionFacturaBuilder) WithTipoFacturaDocumento(tipoFacturaDocumento int) *recepcionFacturaBuilder {
 	b.request.SolicitudServicioRecepcionFactura.SolicitudRecepcion.TipoFacturaDocumento = tipoFacturaDocumento
 	return b
 }
 
+// WithArchivo establece el XML de la factura comprimido en Gzip y en Base64.
 func (b *recepcionFacturaBuilder) WithArchivo(archivo string) *recepcionFacturaBuilder {
 	b.request.SolicitudServicioRecepcionFactura.Archivo = archivo
 	return b
 }
 
+// WithFechaEnvio establece la fecha y hora de emisión de la factura.
 func (b *recepcionFacturaBuilder) WithFechaEnvio(fechaEnvio time.Time) *recepcionFacturaBuilder {
 	b.request.SolicitudServicioRecepcionFactura.FechaEnvio = datatype.NewTimeSiat(fechaEnvio)
 	return b
 }
 
+// WithHashArchivo establece el hash SHA-256 del archivo XML.
 func (b *recepcionFacturaBuilder) WithHashArchivo(hashArchivo string) *recepcionFacturaBuilder {
 	b.request.SolicitudServicioRecepcionFactura.HashArchivo = hashArchivo
 	return b
@@ -575,62 +644,91 @@ type recepcionMasivaFacturaBuilder struct {
 	request *facturacion.RecepcionMasivaFactura
 }
 
+// WithCodigoAmbiente establece el código de ambiente.
 func (b *recepcionMasivaFacturaBuilder) WithCodigoAmbiente(codigoAmbiente int) *recepcionMasivaFacturaBuilder {
 	b.request.SolicitudServicioRecepcionMasiva.SolicitudRecepcionFactura.SolicitudRecepcion.CodigoAmbiente = codigoAmbiente
 	return b
 }
+
+// WithCodigoDocumentoSector establece el código del documento sector.
 func (b *recepcionMasivaFacturaBuilder) WithCodigoDocumentoSector(codigoDocumentoSector int) *recepcionMasivaFacturaBuilder {
 	b.request.SolicitudServicioRecepcionMasiva.SolicitudRecepcionFactura.SolicitudRecepcion.CodigoDocumentoSector = codigoDocumentoSector
 	return b
 }
+
+// WithCodigoEmision establece el tipo de emisión.
 func (b *recepcionMasivaFacturaBuilder) WithCodigoEmision(codigoEmision int) *recepcionMasivaFacturaBuilder {
 	b.request.SolicitudServicioRecepcionMasiva.SolicitudRecepcionFactura.SolicitudRecepcion.CodigoEmision = codigoEmision
 	return b
 }
+
+// WithCodigoModalidad establece el código de la modalidad.
 func (b *recepcionMasivaFacturaBuilder) WithCodigoModalidad(codigoModalidad int) *recepcionMasivaFacturaBuilder {
 	b.request.SolicitudServicioRecepcionMasiva.SolicitudRecepcionFactura.SolicitudRecepcion.CodigoModalidad = codigoModalidad
 	return b
 }
+
+// WithCodigoPuntoVenta establece el código del punto de venta.
 func (b *recepcionMasivaFacturaBuilder) WithCodigoPuntoVenta(codigoPuntoVenta int) *recepcionMasivaFacturaBuilder {
 	b.request.SolicitudServicioRecepcionMasiva.SolicitudRecepcionFactura.SolicitudRecepcion.CodigoPuntoVenta = codigoPuntoVenta
 	return b
 }
+
+// WithCodigoSistema establece el código del sistema.
 func (b *recepcionMasivaFacturaBuilder) WithCodigoSistema(codigoSistema string) *recepcionMasivaFacturaBuilder {
 	b.request.SolicitudServicioRecepcionMasiva.SolicitudRecepcionFactura.SolicitudRecepcion.CodigoSistema = codigoSistema
 	return b
 }
+
+// WithCodigoSucursal establece el código de la sucursal.
 func (b *recepcionMasivaFacturaBuilder) WithCodigoSucursal(codigoSucursal int) *recepcionMasivaFacturaBuilder {
 	b.request.SolicitudServicioRecepcionMasiva.SolicitudRecepcionFactura.SolicitudRecepcion.CodigoSucursal = codigoSucursal
 	return b
 }
+
+// WithCufd establece el CUFD.
 func (b *recepcionMasivaFacturaBuilder) WithCufd(cufd string) *recepcionMasivaFacturaBuilder {
 	b.request.SolicitudServicioRecepcionMasiva.SolicitudRecepcionFactura.SolicitudRecepcion.Cufd = cufd
 	return b
 }
+
+// WithCuis establece el CUIS.
 func (b *recepcionMasivaFacturaBuilder) WithCuis(cuis string) *recepcionMasivaFacturaBuilder {
 	b.request.SolicitudServicioRecepcionMasiva.SolicitudRecepcionFactura.SolicitudRecepcion.Cuis = cuis
 	return b
 }
+
+// WithNit establece el NIT del emisor.
 func (b *recepcionMasivaFacturaBuilder) WithNit(nit int64) *recepcionMasivaFacturaBuilder {
 	b.request.SolicitudServicioRecepcionMasiva.SolicitudRecepcionFactura.SolicitudRecepcion.Nit = nit
 	return b
 }
+
+// WithTipoFacturaDocumento establece el tipo de documento.
 func (b *recepcionMasivaFacturaBuilder) WithTipoFacturaDocumento(tipoFacturaDocumento int) *recepcionMasivaFacturaBuilder {
 	b.request.SolicitudServicioRecepcionMasiva.SolicitudRecepcionFactura.SolicitudRecepcion.TipoFacturaDocumento = tipoFacturaDocumento
 	return b
 }
+
+// WithArchivo establece el archivo XML (tar.gz) en Base64.
 func (b *recepcionMasivaFacturaBuilder) WithArchivo(archivo string) *recepcionMasivaFacturaBuilder {
 	b.request.SolicitudServicioRecepcionMasiva.SolicitudRecepcionFactura.Archivo = archivo
 	return b
 }
+
+// WithFechaEnvio establece la fecha y hora de envío masivo.
 func (b *recepcionMasivaFacturaBuilder) WithFechaEnvio(fechaEnvio time.Time) *recepcionMasivaFacturaBuilder {
 	b.request.SolicitudServicioRecepcionMasiva.SolicitudRecepcionFactura.FechaEnvio = datatype.NewTimeSiat(fechaEnvio)
 	return b
 }
+
+// WithHashArchivo establece el hash del archivo masivo.
 func (b *recepcionMasivaFacturaBuilder) WithHashArchivo(hashArchivo string) *recepcionMasivaFacturaBuilder {
 	b.request.SolicitudServicioRecepcionMasiva.SolicitudRecepcionFactura.HashArchivo = hashArchivo
 	return b
 }
+
+// WithCantidadFacturas establece la cantidad de facturas en el envío masivo.
 func (b *recepcionMasivaFacturaBuilder) WithCantidadFacturas(cantidadFacturas int) *recepcionMasivaFacturaBuilder {
 	b.request.SolicitudServicioRecepcionMasiva.CantidadFacturas = cantidadFacturas
 	return b
@@ -652,50 +750,73 @@ type validacionRecepcionPaqueteFacturaBuilder struct {
 	request *facturacion.ValidacionRecepcionPaqueteFactura
 }
 
+// WithCodigoAmbiente establece el código de ambiente.
 func (b *validacionRecepcionPaqueteFacturaBuilder) WithCodigoAmbiente(codigoAmbiente int) *validacionRecepcionPaqueteFacturaBuilder {
 	b.request.SolicitudServicioValidacionRecepcionPaquete.SolicitudRecepcion.CodigoAmbiente = codigoAmbiente
 	return b
 }
+
+// WithCodigoDocumentoSector establece el código del documento sector.
 func (b *validacionRecepcionPaqueteFacturaBuilder) WithCodigoDocumentoSector(codigoDocumentoSector int) *validacionRecepcionPaqueteFacturaBuilder {
 	b.request.SolicitudServicioValidacionRecepcionPaquete.SolicitudRecepcion.CodigoDocumentoSector = codigoDocumentoSector
 	return b
 }
+
+// WithCodigoEmision establece el tipo de emisión.
 func (b *validacionRecepcionPaqueteFacturaBuilder) WithCodigoEmision(codigoEmision int) *validacionRecepcionPaqueteFacturaBuilder {
 	b.request.SolicitudServicioValidacionRecepcionPaquete.SolicitudRecepcion.CodigoEmision = codigoEmision
 	return b
 }
+
+// WithCodigoModalidad establece el código de la modalidad.
 func (b *validacionRecepcionPaqueteFacturaBuilder) WithCodigoModalidad(codigoModalidad int) *validacionRecepcionPaqueteFacturaBuilder {
 	b.request.SolicitudServicioValidacionRecepcionPaquete.SolicitudRecepcion.CodigoModalidad = codigoModalidad
 	return b
 }
+
+// WithCodigoPuntoVenta establece el código del punto de venta.
 func (b *validacionRecepcionPaqueteFacturaBuilder) WithCodigoPuntoVenta(codigoPuntoVenta int) *validacionRecepcionPaqueteFacturaBuilder {
 	b.request.SolicitudServicioValidacionRecepcionPaquete.SolicitudRecepcion.CodigoPuntoVenta = codigoPuntoVenta
 	return b
 }
+
+// WithCodigoSistema establece el código del sistema.
 func (b *validacionRecepcionPaqueteFacturaBuilder) WithCodigoSistema(codigoSistema string) *validacionRecepcionPaqueteFacturaBuilder {
 	b.request.SolicitudServicioValidacionRecepcionPaquete.SolicitudRecepcion.CodigoSistema = codigoSistema
 	return b
 }
+
+// WithCodigoSucursal establece el código de la sucursal.
 func (b *validacionRecepcionPaqueteFacturaBuilder) WithCodigoSucursal(codigoSucursal int) *validacionRecepcionPaqueteFacturaBuilder {
 	b.request.SolicitudServicioValidacionRecepcionPaquete.SolicitudRecepcion.CodigoSucursal = codigoSucursal
 	return b
 }
+
+// WithCufd establece el CUFD.
 func (b *validacionRecepcionPaqueteFacturaBuilder) WithCufd(cufd string) *validacionRecepcionPaqueteFacturaBuilder {
 	b.request.SolicitudServicioValidacionRecepcionPaquete.SolicitudRecepcion.Cufd = cufd
 	return b
 }
+
+// WithCuis establece el CUIS.
 func (b *validacionRecepcionPaqueteFacturaBuilder) WithCuis(cuis string) *validacionRecepcionPaqueteFacturaBuilder {
 	b.request.SolicitudServicioValidacionRecepcionPaquete.SolicitudRecepcion.Cuis = cuis
 	return b
 }
+
+// WithNit establece el NIT del emisor.
 func (b *validacionRecepcionPaqueteFacturaBuilder) WithNit(nit int64) *validacionRecepcionPaqueteFacturaBuilder {
 	b.request.SolicitudServicioValidacionRecepcionPaquete.SolicitudRecepcion.Nit = nit
 	return b
 }
+
+// WithTipoFacturaDocumento establece el tipo de documento.
 func (b *validacionRecepcionPaqueteFacturaBuilder) WithTipoFacturaDocumento(tipoFacturaDocumento int) *validacionRecepcionPaqueteFacturaBuilder {
 	b.request.SolicitudServicioValidacionRecepcionPaquete.SolicitudRecepcion.TipoFacturaDocumento = tipoFacturaDocumento
 	return b
 }
+
+// WithCodigoRecepcion establece el código de recepción del paquete a validar.
 func (b *validacionRecepcionPaqueteFacturaBuilder) WithCodigoRecepcion(codigoRecepcion string) *validacionRecepcionPaqueteFacturaBuilder {
 	b.request.SolicitudServicioValidacionRecepcionPaquete.CodigoRecepcion = codigoRecepcion
 	return b
@@ -709,61 +830,73 @@ type verificacionEstadoFacturaBuilder struct {
 	request *facturacion.VerificacionEstadoFactura
 }
 
+// WithCodigoAmbiente establece el código de ambiente.
 func (b *verificacionEstadoFacturaBuilder) WithCodigoAmbiente(codigoAmbiente int) *verificacionEstadoFacturaBuilder {
 	b.request.SolicitudServicioVerificacionEstadoFactura.CodigoAmbiente = codigoAmbiente
 	return b
 }
 
+// WithCodigoDocumentoSector establece el código del documento sector.
 func (b *verificacionEstadoFacturaBuilder) WithCodigoDocumentoSector(codigoDocumentoSector int) *verificacionEstadoFacturaBuilder {
 	b.request.SolicitudServicioVerificacionEstadoFactura.CodigoDocumentoSector = codigoDocumentoSector
 	return b
 }
 
+// WithCodigoEmision establece el tipo de emisión.
 func (b *verificacionEstadoFacturaBuilder) WithCodigoEmision(codigoEmision int) *verificacionEstadoFacturaBuilder {
 	b.request.SolicitudServicioVerificacionEstadoFactura.CodigoEmision = codigoEmision
 	return b
 }
 
+// WithCodigoModalidad establece el código de la modalidad.
 func (b *verificacionEstadoFacturaBuilder) WithCodigoModalidad(codigoModalidad int) *verificacionEstadoFacturaBuilder {
 	b.request.SolicitudServicioVerificacionEstadoFactura.CodigoModalidad = codigoModalidad
 	return b
 }
 
+// WithCodigoPuntoVenta establece el código del punto de venta.
 func (b *verificacionEstadoFacturaBuilder) WithCodigoPuntoVenta(codigoPuntoVenta int) *verificacionEstadoFacturaBuilder {
 	b.request.SolicitudServicioVerificacionEstadoFactura.CodigoPuntoVenta = codigoPuntoVenta
 	return b
 }
 
+// WithCodigoSistema establece el código del sistema.
 func (b *verificacionEstadoFacturaBuilder) WithCodigoSistema(codigoSistema string) *verificacionEstadoFacturaBuilder {
 	b.request.SolicitudServicioVerificacionEstadoFactura.CodigoSistema = codigoSistema
 	return b
 }
 
+// WithCodigoSucursal establece el código de la sucursal.
 func (b *verificacionEstadoFacturaBuilder) WithCodigoSucursal(codigoSucursal int) *verificacionEstadoFacturaBuilder {
 	b.request.SolicitudServicioVerificacionEstadoFactura.CodigoSucursal = codigoSucursal
 	return b
 }
 
+// WithCufd establece el CUFD.
 func (b *verificacionEstadoFacturaBuilder) WithCufd(cufd string) *verificacionEstadoFacturaBuilder {
 	b.request.SolicitudServicioVerificacionEstadoFactura.Cufd = cufd
 	return b
 }
 
+// WithCuis establece el CUIS.
 func (b *verificacionEstadoFacturaBuilder) WithCuis(cuis string) *verificacionEstadoFacturaBuilder {
 	b.request.SolicitudServicioVerificacionEstadoFactura.Cuis = cuis
 	return b
 }
 
+// WithNit establece el NIT del emisor.
 func (b *verificacionEstadoFacturaBuilder) WithNit(nit int64) *verificacionEstadoFacturaBuilder {
 	b.request.SolicitudServicioVerificacionEstadoFactura.Nit = nit
 	return b
 }
 
+// WithTipoFacturaDocumento establece el tipo de documento.
 func (b *verificacionEstadoFacturaBuilder) WithTipoFacturaDocumento(tipoFacturaDocumento int) *verificacionEstadoFacturaBuilder {
 	b.request.SolicitudServicioVerificacionEstadoFactura.TipoFacturaDocumento = tipoFacturaDocumento
 	return b
 }
 
+// WithCuf establece el CUF de la factura a verificar.
 func (b *verificacionEstadoFacturaBuilder) WithCuf(cuf string) *verificacionEstadoFacturaBuilder {
 	b.request.SolicitudServicioVerificacionEstadoFactura.Cuf = cuf
 	return b
@@ -777,61 +910,73 @@ type validacionRecepcionMasivaFacturaBuilder struct {
 	request *facturacion.ValidacionRecepcionMasivaFactura
 }
 
+// WithCodigoAmbiente establece el código de ambiente.
 func (b *validacionRecepcionMasivaFacturaBuilder) WithCodigoAmbiente(codigoAmbiente int) *validacionRecepcionMasivaFacturaBuilder {
 	b.request.SolicitudServicioValidacionRecepcionMasivaFactura.CodigoAmbiente = codigoAmbiente
 	return b
 }
 
+// WithCodigoDocumentoSector establece el código del documento sector.
 func (b *validacionRecepcionMasivaFacturaBuilder) WithCodigoDocumentoSector(codigoDocumentoSector int) *validacionRecepcionMasivaFacturaBuilder {
 	b.request.SolicitudServicioValidacionRecepcionMasivaFactura.CodigoDocumentoSector = codigoDocumentoSector
 	return b
 }
 
+// WithCodigoEmision establece el tipo de emisión.
 func (b *validacionRecepcionMasivaFacturaBuilder) WithCodigoEmision(codigoEmision int) *validacionRecepcionMasivaFacturaBuilder {
 	b.request.SolicitudServicioValidacionRecepcionMasivaFactura.CodigoEmision = codigoEmision
 	return b
 }
 
+// WithCodigoModalidad establece el código de la modalidad.
 func (b *validacionRecepcionMasivaFacturaBuilder) WithCodigoModalidad(codigoModalidad int) *validacionRecepcionMasivaFacturaBuilder {
 	b.request.SolicitudServicioValidacionRecepcionMasivaFactura.CodigoModalidad = codigoModalidad
 	return b
 }
 
+// WithCodigoPuntoVenta establece el código del punto de venta.
 func (b *validacionRecepcionMasivaFacturaBuilder) WithCodigoPuntoVenta(codigoPuntoVenta int) *validacionRecepcionMasivaFacturaBuilder {
 	b.request.SolicitudServicioValidacionRecepcionMasivaFactura.CodigoPuntoVenta = codigoPuntoVenta
 	return b
 }
 
+// WithCodigoSistema establece el código del sistema.
 func (b *validacionRecepcionMasivaFacturaBuilder) WithCodigoSistema(codigoSistema string) *validacionRecepcionMasivaFacturaBuilder {
 	b.request.SolicitudServicioValidacionRecepcionMasivaFactura.CodigoSistema = codigoSistema
 	return b
 }
 
+// WithCodigoSucursal establece el código de la sucursal.
 func (b *validacionRecepcionMasivaFacturaBuilder) WithCodigoSucursal(codigoSucursal int) *validacionRecepcionMasivaFacturaBuilder {
 	b.request.SolicitudServicioValidacionRecepcionMasivaFactura.CodigoSucursal = codigoSucursal
 	return b
 }
 
+// WithCufd establece el CUFD.
 func (b *validacionRecepcionMasivaFacturaBuilder) WithCufd(cufd string) *validacionRecepcionMasivaFacturaBuilder {
 	b.request.SolicitudServicioValidacionRecepcionMasivaFactura.Cufd = cufd
 	return b
 }
 
+// WithCuis establece el CUIS.
 func (b *validacionRecepcionMasivaFacturaBuilder) WithCuis(cuis string) *validacionRecepcionMasivaFacturaBuilder {
 	b.request.SolicitudServicioValidacionRecepcionMasivaFactura.Cuis = cuis
 	return b
 }
 
+// WithNit establece el NIT del emisor.
 func (b *validacionRecepcionMasivaFacturaBuilder) WithNit(nit int64) *validacionRecepcionMasivaFacturaBuilder {
 	b.request.SolicitudServicioValidacionRecepcionMasivaFactura.Nit = nit
 	return b
 }
 
+// WithTipoFacturaDocumento establece el tipo de documento.
 func (b *validacionRecepcionMasivaFacturaBuilder) WithTipoFacturaDocumento(tipoFacturaDocumento int) *validacionRecepcionMasivaFacturaBuilder {
 	b.request.SolicitudServicioValidacionRecepcionMasivaFactura.TipoFacturaDocumento = tipoFacturaDocumento
 	return b
 }
 
+// WithCodigoRecepcion establece el código de recepción obtenido en el envío masivo.
 func (b *validacionRecepcionMasivaFacturaBuilder) WithCodigoRecepcion(codigoRecepcion string) *validacionRecepcionMasivaFacturaBuilder {
 	b.request.SolicitudServicioValidacionRecepcionMasivaFactura.CodigoRecepcion = codigoRecepcion
 	return b

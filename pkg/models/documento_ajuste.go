@@ -65,71 +65,85 @@ func (documentoAjusteNamespace) NewRecepcionBuilder() *recepcionDocumentoAjusteB
 	}
 }
 
+// WithCodigoAmbiente establece el código de ambiente.
 func (b *recepcionDocumentoAjusteBuilder) WithCodigoAmbiente(v int) *recepcionDocumentoAjusteBuilder {
 	b.request.SolicitudRecepcionFactura.CodigoAmbiente = v
 	return b
 }
 
-func (b *recepcionDocumentoAjusteBuilder) WithDocumentoSector(v int) *recepcionDocumentoAjusteBuilder {
+// WithCodigoDocumentoSector establece el código del documento sector.
+func (b *recepcionDocumentoAjusteBuilder) WithCodigoDocumentoSector(v int) *recepcionDocumentoAjusteBuilder {
 	b.request.SolicitudRecepcionFactura.CodigoDocumentoSector = v
 	return b
 }
 
+// WithCodigoEmision establece el tipo de emisión.
 func (b *recepcionDocumentoAjusteBuilder) WithCodigoEmision(v int) *recepcionDocumentoAjusteBuilder {
 	b.request.SolicitudRecepcionFactura.CodigoEmision = v
 	return b
 }
 
+// WithCodigoModalidad establece el código de la modalidad.
 func (b *recepcionDocumentoAjusteBuilder) WithCodigoModalidad(v int) *recepcionDocumentoAjusteBuilder {
 	b.request.SolicitudRecepcionFactura.CodigoModalidad = v
 	return b
 }
 
+// WithCodigoPuntoVenta establece el código del punto de venta.
 func (b *recepcionDocumentoAjusteBuilder) WithCodigoPuntoVenta(v int) *recepcionDocumentoAjusteBuilder {
 	b.request.SolicitudRecepcionFactura.CodigoPuntoVenta = v
 	return b
 }
 
+// WithCodigoSistema establece el código del sistema.
 func (b *recepcionDocumentoAjusteBuilder) WithCodigoSistema(v string) *recepcionDocumentoAjusteBuilder {
 	b.request.SolicitudRecepcionFactura.CodigoSistema = v
 	return b
 }
 
+// WithCodigoSucursal establece el código de la sucursal.
 func (b *recepcionDocumentoAjusteBuilder) WithCodigoSucursal(v int) *recepcionDocumentoAjusteBuilder {
 	b.request.SolicitudRecepcionFactura.CodigoSucursal = v
 	return b
 }
 
+// WithCufd establece el CUFD.
 func (b *recepcionDocumentoAjusteBuilder) WithCufd(v string) *recepcionDocumentoAjusteBuilder {
 	b.request.SolicitudRecepcionFactura.Cufd = v
 	return b
 }
 
+// WithCuis establece el CUIS.
 func (b *recepcionDocumentoAjusteBuilder) WithCuis(v string) *recepcionDocumentoAjusteBuilder {
 	b.request.SolicitudRecepcionFactura.Cuis = v
 	return b
 }
 
+// WithNit establece el NIT del emisor.
 func (b *recepcionDocumentoAjusteBuilder) WithNit(v int64) *recepcionDocumentoAjusteBuilder {
 	b.request.SolicitudRecepcionFactura.Nit = v
 	return b
 }
 
+// WithTipoFacturaDocumento establece el tipo de documento.
 func (b *recepcionDocumentoAjusteBuilder) WithTipoFacturaDocumento(v int) *recepcionDocumentoAjusteBuilder {
 	b.request.SolicitudRecepcionFactura.TipoFacturaDocumento = v
 	return b
 }
 
+// WithArchivo establece el archivo XML en Base64.
 func (b *recepcionDocumentoAjusteBuilder) WithArchivo(v string) *recepcionDocumentoAjusteBuilder {
 	b.request.SolicitudRecepcionFactura.Archivo = v
 	return b
 }
 
+// WithFechaEnvio establece la fecha y hora de emisión.
 func (b *recepcionDocumentoAjusteBuilder) WithFechaEnvio(v time.Time) *recepcionDocumentoAjusteBuilder {
 	b.request.SolicitudRecepcionFactura.FechaEnvio = datatype.TimeSiat(v)
 	return b
 }
 
+// WithHashArchivo establece el hash del archivo.
 func (b *recepcionDocumentoAjusteBuilder) WithHashArchivo(v string) *recepcionDocumentoAjusteBuilder {
 	b.request.SolicitudRecepcionFactura.HashArchivo = v
 	return b
@@ -145,66 +159,79 @@ func (documentoAjusteNamespace) NewAnulacionBuilder() *anulacionDocumentoAjusteB
 	}
 }
 
+// WithCodigoAmbiente establece el código de ambiente.
 func (b *anulacionDocumentoAjusteBuilder) WithCodigoAmbiente(v int) *anulacionDocumentoAjusteBuilder {
 	b.request.SolicitudServicioAnulacionDocumentoAjuste.CodigoAmbiente = v
 	return b
 }
 
-func (b *anulacionDocumentoAjusteBuilder) WithDocumentoSector(v int) *anulacionDocumentoAjusteBuilder {
+// WithCodigoDocumentoSector establece el código del documento sector.
+func (b *anulacionDocumentoAjusteBuilder) WithCodigoDocumentoSector(v int) *anulacionDocumentoAjusteBuilder {
 	b.request.SolicitudServicioAnulacionDocumentoAjuste.CodigoDocumentoSector = v
 	return b
 }
 
+// WithCodigoEmision establece el tipo de emisión.
 func (b *anulacionDocumentoAjusteBuilder) WithCodigoEmision(v int) *anulacionDocumentoAjusteBuilder {
 	b.request.SolicitudServicioAnulacionDocumentoAjuste.CodigoEmision = v
 	return b
 }
 
+// WithCodigoModalidad establece el código de la modalidad.
 func (b *anulacionDocumentoAjusteBuilder) WithCodigoModalidad(v int) *anulacionDocumentoAjusteBuilder {
 	b.request.SolicitudServicioAnulacionDocumentoAjuste.CodigoModalidad = v
 	return b
 }
 
+// WithCodigoPuntoVenta establece el código del punto de venta.
 func (b *anulacionDocumentoAjusteBuilder) WithCodigoPuntoVenta(v int) *anulacionDocumentoAjusteBuilder {
 	b.request.SolicitudServicioAnulacionDocumentoAjuste.CodigoPuntoVenta = v
 	return b
 }
 
+// WithCodigoSistema establece el código del sistema.
 func (b *anulacionDocumentoAjusteBuilder) WithCodigoSistema(v string) *anulacionDocumentoAjusteBuilder {
 	b.request.SolicitudServicioAnulacionDocumentoAjuste.CodigoSistema = v
 	return b
 }
 
+// WithCodigoSucursal establece el código de la sucursal.
 func (b *anulacionDocumentoAjusteBuilder) WithCodigoSucursal(v int) *anulacionDocumentoAjusteBuilder {
 	b.request.SolicitudServicioAnulacionDocumentoAjuste.CodigoSucursal = v
 	return b
 }
 
+// WithCufd establece el CUFD.
 func (b *anulacionDocumentoAjusteBuilder) WithCufd(v string) *anulacionDocumentoAjusteBuilder {
 	b.request.SolicitudServicioAnulacionDocumentoAjuste.Cufd = v
 	return b
 }
 
+// WithCuis establece el CUIS.
 func (b *anulacionDocumentoAjusteBuilder) WithCuis(v string) *anulacionDocumentoAjusteBuilder {
 	b.request.SolicitudServicioAnulacionDocumentoAjuste.Cuis = v
 	return b
 }
 
+// WithNit establece el NIT del emisor.
 func (b *anulacionDocumentoAjusteBuilder) WithNit(v int64) *anulacionDocumentoAjusteBuilder {
 	b.request.SolicitudServicioAnulacionDocumentoAjuste.Nit = v
 	return b
 }
 
+// WithTipoFacturaDocumento establece el tipo de documento.
 func (b *anulacionDocumentoAjusteBuilder) WithTipoFacturaDocumento(v int) *anulacionDocumentoAjusteBuilder {
 	b.request.SolicitudServicioAnulacionDocumentoAjuste.TipoFacturaDocumento = v
 	return b
 }
 
+// WithCuf establece el CUF del documento a anular.
 func (b *anulacionDocumentoAjusteBuilder) WithCuf(v string) *anulacionDocumentoAjusteBuilder {
 	b.request.SolicitudServicioAnulacionDocumentoAjuste.Cuf = v
 	return b
 }
 
+// WithCodigoMotivo establece el código del motivo de anulación.
 func (b *anulacionDocumentoAjusteBuilder) WithCodigoMotivo(v int) *anulacionDocumentoAjusteBuilder {
 	b.request.SolicitudServicioAnulacionDocumentoAjuste.CodigoMotivo = v
 	return b
@@ -220,61 +247,73 @@ func (documentoAjusteNamespace) NewReversionAnulacionBuilder() *reversionAnulaci
 	}
 }
 
+// WithCodigoAmbiente establece el código de ambiente.
 func (b *reversionAnulacionDocumentoAjusteBuilder) WithCodigoAmbiente(v int) *reversionAnulacionDocumentoAjusteBuilder {
 	b.request.SolicitudServicioReversionAnulacionDocumentoAjuste.CodigoAmbiente = v
 	return b
 }
 
-func (b *reversionAnulacionDocumentoAjusteBuilder) WithDocumentoSector(v int) *reversionAnulacionDocumentoAjusteBuilder {
+// WithCodigoDocumentoSector establece el código del documento sector.
+func (b *reversionAnulacionDocumentoAjusteBuilder) WithCodigoDocumentoSector(v int) *reversionAnulacionDocumentoAjusteBuilder {
 	b.request.SolicitudServicioReversionAnulacionDocumentoAjuste.CodigoDocumentoSector = v
 	return b
 }
 
+// WithCodigoEmision establece el tipo de emisión.
 func (b *reversionAnulacionDocumentoAjusteBuilder) WithCodigoEmision(v int) *reversionAnulacionDocumentoAjusteBuilder {
 	b.request.SolicitudServicioReversionAnulacionDocumentoAjuste.CodigoEmision = v
 	return b
 }
 
+// WithCodigoModalidad establece el código de la modalidad.
 func (b *reversionAnulacionDocumentoAjusteBuilder) WithCodigoModalidad(v int) *reversionAnulacionDocumentoAjusteBuilder {
 	b.request.SolicitudServicioReversionAnulacionDocumentoAjuste.CodigoModalidad = v
 	return b
 }
 
+// WithCodigoPuntoVenta establece el código del punto de venta.
 func (b *reversionAnulacionDocumentoAjusteBuilder) WithCodigoPuntoVenta(v int) *reversionAnulacionDocumentoAjusteBuilder {
 	b.request.SolicitudServicioReversionAnulacionDocumentoAjuste.CodigoPuntoVenta = v
 	return b
 }
 
+// WithCodigoSistema establece el código del sistema.
 func (b *reversionAnulacionDocumentoAjusteBuilder) WithCodigoSistema(v string) *reversionAnulacionDocumentoAjusteBuilder {
 	b.request.SolicitudServicioReversionAnulacionDocumentoAjuste.CodigoSistema = v
 	return b
 }
 
+// WithCodigoSucursal establece el código de la sucursal.
 func (b *reversionAnulacionDocumentoAjusteBuilder) WithCodigoSucursal(v int) *reversionAnulacionDocumentoAjusteBuilder {
 	b.request.SolicitudServicioReversionAnulacionDocumentoAjuste.CodigoSucursal = v
 	return b
 }
 
+// WithCufd establece el CUFD.
 func (b *reversionAnulacionDocumentoAjusteBuilder) WithCufd(v string) *reversionAnulacionDocumentoAjusteBuilder {
 	b.request.SolicitudServicioReversionAnulacionDocumentoAjuste.Cufd = v
 	return b
 }
 
+// WithCuis establece el CUIS.
 func (b *reversionAnulacionDocumentoAjusteBuilder) WithCuis(v string) *reversionAnulacionDocumentoAjusteBuilder {
 	b.request.SolicitudServicioReversionAnulacionDocumentoAjuste.Cuis = v
 	return b
 }
 
+// WithNit establece el NIT del emisor.
 func (b *reversionAnulacionDocumentoAjusteBuilder) WithNit(v int64) *reversionAnulacionDocumentoAjusteBuilder {
 	b.request.SolicitudServicioReversionAnulacionDocumentoAjuste.Nit = v
 	return b
 }
 
+// WithTipoFacturaDocumento establece el tipo de documento.
 func (b *reversionAnulacionDocumentoAjusteBuilder) WithTipoFacturaDocumento(v int) *reversionAnulacionDocumentoAjusteBuilder {
 	b.request.SolicitudServicioReversionAnulacionDocumentoAjuste.TipoFacturaDocumento = v
 	return b
 }
 
+// WithCuf establece el CUF del documento a revertir.
 func (b *reversionAnulacionDocumentoAjusteBuilder) WithCuf(v string) *reversionAnulacionDocumentoAjusteBuilder {
 	b.request.SolicitudServicioReversionAnulacionDocumentoAjuste.Cuf = v
 	return b
@@ -290,61 +329,73 @@ func (documentoAjusteNamespace) NewVerificacionEstadoBuilder() *verificacionEsta
 	}
 }
 
+// WithCodigoAmbiente establece el código de ambiente.
 func (b *verificacionEstadoDocumentoAjusteBuilder) WithCodigoAmbiente(v int) *verificacionEstadoDocumentoAjusteBuilder {
 	b.request.SolicitudServicioVerificacionEstado.CodigoAmbiente = v
 	return b
 }
 
-func (b *verificacionEstadoDocumentoAjusteBuilder) WithDocumentoSector(v int) *verificacionEstadoDocumentoAjusteBuilder {
+// WithCodigoDocumentoSector establece el código del documento sector.
+func (b *verificacionEstadoDocumentoAjusteBuilder) WithCodigoDocumentoSector(v int) *verificacionEstadoDocumentoAjusteBuilder {
 	b.request.SolicitudServicioVerificacionEstado.CodigoDocumentoSector = v
 	return b
 }
 
+// WithCodigoEmision establece el tipo de emisión.
 func (b *verificacionEstadoDocumentoAjusteBuilder) WithCodigoEmision(v int) *verificacionEstadoDocumentoAjusteBuilder {
 	b.request.SolicitudServicioVerificacionEstado.CodigoEmision = v
 	return b
 }
 
+// WithCodigoModalidad establece el código de la modalidad.
 func (b *verificacionEstadoDocumentoAjusteBuilder) WithCodigoModalidad(v int) *verificacionEstadoDocumentoAjusteBuilder {
 	b.request.SolicitudServicioVerificacionEstado.CodigoModalidad = v
 	return b
 }
 
+// WithCodigoPuntoVenta establece el código del punto de venta.
 func (b *verificacionEstadoDocumentoAjusteBuilder) WithCodigoPuntoVenta(v int) *verificacionEstadoDocumentoAjusteBuilder {
 	b.request.SolicitudServicioVerificacionEstado.CodigoPuntoVenta = v
 	return b
 }
 
+// WithCodigoSistema establece el código del sistema.
 func (b *verificacionEstadoDocumentoAjusteBuilder) WithCodigoSistema(v string) *verificacionEstadoDocumentoAjusteBuilder {
 	b.request.SolicitudServicioVerificacionEstado.CodigoSistema = v
 	return b
 }
 
+// WithCodigoSucursal establece el código de la sucursal.
 func (b *verificacionEstadoDocumentoAjusteBuilder) WithCodigoSucursal(v int) *verificacionEstadoDocumentoAjusteBuilder {
 	b.request.SolicitudServicioVerificacionEstado.CodigoSucursal = v
 	return b
 }
 
+// WithCufd establece el CUFD.
 func (b *verificacionEstadoDocumentoAjusteBuilder) WithCufd(v string) *verificacionEstadoDocumentoAjusteBuilder {
 	b.request.SolicitudServicioVerificacionEstado.Cufd = v
 	return b
 }
 
+// WithCuis establece el CUIS.
 func (b *verificacionEstadoDocumentoAjusteBuilder) WithCuis(v string) *verificacionEstadoDocumentoAjusteBuilder {
 	b.request.SolicitudServicioVerificacionEstado.Cuis = v
 	return b
 }
 
+// WithNit establece el NIT del emisor.
 func (b *verificacionEstadoDocumentoAjusteBuilder) WithNit(v int64) *verificacionEstadoDocumentoAjusteBuilder {
 	b.request.SolicitudServicioVerificacionEstado.Nit = v
 	return b
 }
 
+// WithTipoFacturaDocumento establece el tipo de documento.
 func (b *verificacionEstadoDocumentoAjusteBuilder) WithTipoFacturaDocumento(v int) *verificacionEstadoDocumentoAjusteBuilder {
 	b.request.SolicitudServicioVerificacionEstado.TipoFacturaDocumento = v
 	return b
 }
 
+// WithCuf establece el CUF del documento.
 func (b *verificacionEstadoDocumentoAjusteBuilder) WithCuf(v string) *verificacionEstadoDocumentoAjusteBuilder {
 	b.request.SolicitudServicioVerificacionEstado.Cuf = v
 	return b

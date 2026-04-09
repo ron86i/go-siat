@@ -309,14 +309,21 @@ func (b *verificarComunicacionSincronizacionBuilder) Build() VerificarComunicaci
 	return VerificarComunicacionSincronizacion{RequestWrapper[sincronizacion.VerificarComunicacion]{request: b.request}}
 }
 
-// SincronizacionBuilder define la interfaz para configurar solicitudes de sincronización.
+// SincronizacionBuilder define la interfaz para configurar las diversas solicitudes de sincronización del SIAT.
 type SincronizacionBuilder[T any, R any] interface {
+	// WithCodigoAmbiente establece el código de ambiente (Piloto o Producción).
 	WithCodigoAmbiente(int) SincronizacionBuilder[T, R]
+	// WithCodigoPuntoVenta establece el código del punto de venta.
 	WithCodigoPuntoVenta(int) SincronizacionBuilder[T, R]
+	// WithCodigoSistema establece el código del sistema autorizado por el SIN.
 	WithCodigoSistema(string) SincronizacionBuilder[T, R]
+	// WithCodigoSucursal establece el código de la sucursal.
 	WithCodigoSucursal(int) SincronizacionBuilder[T, R]
+	// WithCuis establece el Código Único de Inicio de Sistemas.
 	WithCuis(string) SincronizacionBuilder[T, R]
+	// WithNit establece el NIT del emisor.
 	WithNit(int64) SincronizacionBuilder[T, R]
+	// Build construye y retorna la solicitud configurada.
 	Build() R
 }
 
@@ -327,31 +334,37 @@ type sincronizacionBuilder[T any, R any] struct {
 	wrap    func(RequestWrapper[T]) R
 }
 
+// WithCodigoAmbiente establece el código de ambiente.
 func (b *sincronizacionBuilder[T, R]) WithCodigoAmbiente(codigoAmbiente int) SincronizacionBuilder[T, R] {
 	b.sol.CodigoAmbiente = codigoAmbiente
 	return b
 }
 
+// WithCodigoPuntoVenta establece el código del punto de venta.
 func (b *sincronizacionBuilder[T, R]) WithCodigoPuntoVenta(codigoPuntoVenta int) SincronizacionBuilder[T, R] {
 	b.sol.CodigoPuntoVenta = codigoPuntoVenta
 	return b
 }
 
+// WithCodigoSistema establece el código del sistema authorized.
 func (b *sincronizacionBuilder[T, R]) WithCodigoSistema(codigoSistema string) SincronizacionBuilder[T, R] {
 	b.sol.CodigoSistema = codigoSistema
 	return b
 }
 
+// WithCodigoSucursal establece el código de la sucursal.
 func (b *sincronizacionBuilder[T, R]) WithCodigoSucursal(codigoSucursal int) SincronizacionBuilder[T, R] {
 	b.sol.CodigoSucursal = codigoSucursal
 	return b
 }
 
+// WithCuis establece el CUIS.
 func (b *sincronizacionBuilder[T, R]) WithCuis(cuis string) SincronizacionBuilder[T, R] {
 	b.sol.Cuis = cuis
 	return b
 }
 
+// WithNit establece el NIT del emisor.
 func (b *sincronizacionBuilder[T, R]) WithNit(nit int64) SincronizacionBuilder[T, R] {
 	b.sol.NIT = nit
 	return b
