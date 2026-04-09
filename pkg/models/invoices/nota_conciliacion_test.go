@@ -203,7 +203,7 @@ func TestNotaConciliacionIntegration_Computarizada(t *testing.T) {
 	// 6. Crear solicitud de recepción
 	req := models.DocumentoAjuste().NewRecepcionBuilder().
 		WithCodigoAmbiente(codAmbiente).
-		WithDocumentoSector(29).
+		WithCodigoDocumentoSector(29).
 		WithCodigoEmision(siat.EmisionOnline).
 		WithCodigoModalidad(siat.ModalidadComputarizada).
 		WithCodigoPuntoVenta(0).
@@ -353,7 +353,7 @@ func TestNotaConciliacionIntegration_Electronica(t *testing.T) {
 	// 6. Crear solicitud de recepción
 	req := models.DocumentoAjuste().NewRecepcionBuilder().
 		WithCodigoAmbiente(codAmbiente).
-		WithDocumentoSector(29).
+		WithCodigoDocumentoSector(29).
 		WithCodigoEmision(siat.EmisionOnline).
 		WithCodigoModalidad(siat.ModalidadElectronica).
 		WithCodigoPuntoVenta(0).
