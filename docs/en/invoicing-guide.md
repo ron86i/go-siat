@@ -355,6 +355,8 @@ resp, err := s.DocumentoAjuste().RecepcionDocumentoAjuste(ctx, cfg, req)
 | Hotels | `Hotel` | `hotel.go` | `hotel_test.go` |
 | Hospital & Clinics | `HospitalClinica` | `hospital_clinica.go` | `hospital_clinica_test.go` |
 | Food Security | `SeguridadAlimentaria` | `seguridad_alimentaria.go` | `seguridad_alimentaria_test.go` |
+| Financial Entities | `EntidadFinanciera` | `entidad_financiera.go` | `entidad_financiera_test.go` |
+| Airline Tickets | `BoletoAereo` | `boleto_aereo.go` | `boleto_aereo_test.go` |
 
 ### Export and Free Trade Zone
 

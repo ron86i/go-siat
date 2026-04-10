@@ -302,6 +302,8 @@ Los documentos de ajuste (Notas de Crédito/Débito, Notas de Conciliación) man
 | Hoteles | `Hotel` | `hotel.go` |
 | Hospitales y Clínicas | `HospitalClinica` | `hospital_clinica.go` |
 | Seguridad Alimentaria | `SeguridadAlimentaria` | `seguridad_alimentaria.go` |
+| Entidades Financieras | `EntidadFinanciera` | `entidad_financiera.go` |
+| Boletos Aéreos | `BoletoAereo` | `boleto_aereo.go` |
 
 ### Exportación y Zona Franca
 
