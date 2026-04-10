@@ -304,6 +304,8 @@ Los documentos de ajuste (Notas de Crédito/Débito, Notas de Conciliación) man
 | Seguridad Alimentaria | `SeguridadAlimentaria` | `seguridad_alimentaria.go` |
 | Entidades Financieras | `EntidadFinanciera` | `entidad_financiera.go` |
 | Boletos Aéreos | `BoletoAereo` | `boleto_aereo.go` |
+| Telecomunicaciones | `Telecomunicaciones` | `telecomunicaciones.go` |
+| Servicios Básicos | `ServicioBasico` | `servicio_basico.go` |
 
 ### Exportación y Zona Franca
 
@@ -316,6 +318,8 @@ Los documentos de ajuste (Notas de Crédito/Débito, Notas de Conciliación) man
 | Zona Franca | `ZonaFranca` | `zona_franca.go` |
 | Alquiler Zona Franca | `AlquilerZonaFranca` | `alquiler_zona_franca.go` |
 | Hospital Zona Franca | `HospitalClinicaZonaFranca` | `hospital_clinica_zona_franca.go` |
+| Telecomunicaciones Zona Franca | `TelecomunicacionesZf` | `telecomunicaciones_zf.go` |
+| Servicios Básicos Zona Franca | `ServicioBasicoZf` | `servicio_basico_zf.go` |
 | Duty Free | `DuttyFree` | `dutty_free.go` |
 
 ### Hidrocarburos y Energía
