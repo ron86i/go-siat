@@ -29,7 +29,7 @@ Welcome to the **go-siat** technical documentation. This guide is organized to h
 |:--|:---------|:------------|
 | 1 | [**Architecture**](architecture.md) | Hexagonal design, layers, design patterns, and internal data flow. |
 | 2 | [**Getting Started**](getting-started.md) | Installation, prerequisites, environment setup, and your first API call. |
-| 3 | [**API Reference**](api-reference.md) | Complete reference for all 7 SIAT services and 67+ methods. |
+| 3 | [**API Reference**](api-reference.md) | Complete reference for all 12 SIAT services and 67+ methods. |
 | 4 | [**Invoicing Guide**](invoicing-guide.md) | Invoice lifecycle, 35 regulatory sectors, digital signatures, and batch processing. |
 | 5 | [**Error Handling**](error-handling.md) | Error types, 150+ SIAT error codes, retry strategies, and response verification. |
 | 6 | [**Utilities**](utilities.md) | CUF generation, XML signing, compression, hashing, and parsing helpers. |

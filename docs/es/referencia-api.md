@@ -2,7 +2,7 @@
 
 [← Volver al Índice](README.md)
 
-> Referencia completa de los 7 servicios SIAT expuestos por el SDK `go-siat`. Cada método incluye su firma, builder y navegación de respuesta.
+> Referencia completa de los 12 servicios SIAT expuestos por el SDK `go-siat`. Cada método incluye su firma, builder y navegación de respuesta.
 
 ---
 
@@ -16,7 +16,8 @@
 6. [Servicio Electrónica](#servicio-electrónica)
 7. [Servicio Computarizada](#servicio-computarizada)
 8. [Servicio Documento de Ajuste](#servicio-documento-de-ajuste)
-9. [Verificación de Respuestas](#verificación-de-respuestas)
+9. [Servicios de Sectores Especializados](#servicios-de-sectores-especializados)
+10. [Verificación de Respuestas](#verificación-de-respuestas)
 
 ---
 
@@ -48,13 +49,18 @@ s, err := siat.NewWithMiddleware(baseURL, nil, &LoggingMiddleware{})
 ### Accesores de Servicios
 
 ```go
-s.Codigos()         // → SiatCodigosService
-s.Sincronizacion()  // → SiatSincronizacionService
-s.Operaciones()     // → SiatOperacionesPort
-s.CompraVenta()     // → SiatCompraVentaService
-s.Electronica()     // → SiatElectronicaService
-s.Computarizada()   // → SiatComputarizadaService
-s.DocumentoAjuste() // → SiatDocumentoAjusteService
+s.Codigos()            // → SiatCodigosService
+s.Sincronizacion()     // → SiatSincronizacionService
+s.Operaciones()        // → SiatOperacionesPort
+s.CompraVenta()        // → SiatCompraVentaService
+s.Electronica()        // → SiatElectronicaService
+s.Computarizada()      // → SiatComputarizadaService
+s.DocumentoAjuste()    // → SiatDocumentoAjusteService
+s.Telecomunicaciones() // → SiatTelecomunicacionesService
+s.ServicioBasico()     // → SiatServicioBasicoService
+s.EntidadFinanciera()  // → SiatEntidadFinancieraService
+s.BoletoAereo()        // → SiatBoletoAereoService
+s.RecepcionCompras()   // → SiatRecepcionComprasService
 ```
 
 ### Métodos Auxiliares
@@ -314,6 +320,36 @@ Gestiona documentos de ajuste: notas de crédito/débito, notas de conciliación
 | `VerificarComunicacion` | Prueba de conectividad |
 
 **Tests de integración**: [`siat_documento_ajuste_service_test.go`](../../internal/adapter/services/siat_documento_ajuste_service_test.go)
+
+---
+
+## Servicios de Sectores Especializados
+
+Varios sectores del SIAT requieren endpoints SOAP dedicados en lugar de usar los servicios genéricos `Electronica` o `Computarizada`. `go-siat` proporciona clientes nativos para todos ellos.
+
+**Acceso**: 
+- `s.Telecomunicaciones()`
+- `s.ServicioBasico()`
+- `s.EntidadFinanciera()`
+- `s.BoletoAereo()`
+- `s.RecepcionCompras()`
+
+### Operaciones Comunes
+
+Los servicios especializados siguen los mismos patrones de métodos que los generales:
+
+| Método | Descripción |
+|:-------|:------------|
+| `RecepcionFactura` | Enviar una factura individual al endpoint especializado |
+| `AnulacionFactura` | Anular una factura |
+| `ReversionAnulacionFactura` | Revertir una anulación |
+| `RecepcionPaqueteFactura` | Enviar lote (hasta 500) |
+| `RecepcionMasivaFactura` | Envío masivo |
+| `VerificacionEstadoFactura` | Consultar estado de factura |
+| `VerificarComunicacion` | Prueba de conectividad |
+
+> [!NOTE]
+> No todos los servicios soportan todas las operaciones. Por ejemplo, `BoletoAereo` solo admite `RecepcionMasivaFactura` para envío en lote, como requiere el SIAT para las aerolíneas.
 
 ---
 

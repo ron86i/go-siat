@@ -61,6 +61,7 @@ The SDK covers the critical services of the SIAT ecosystem:
 | **Adjustment Documents** | Management of Credit/Debit notes, Conciliation, and Reversions. |
 | **Online Electronic** | Full support for invoicing with digital signature. |
 | **Online Computerized** | Support for modalities without digital signature. |
+| **Specialized Sectors** | Services for Telecommunications, Basic Services, Financial Entities, and Airline Tickets. |
 | **Special Sectors** | Verified support for the **35 regulatory sectors** of SIAT. |
 
 ---
@@ -129,6 +130,10 @@ The **Integration Tests** serve as living technical documentation for the SDK:
 | **Electronic** | [`siat_electronica_service_test.go`](internal/adapter/services/siat_electronica_service_test.go) |
 | **Computerized** | [`siat_computarizada_service_test.go`](internal/adapter/services/siat_computarizada_service_test.go) |
 | **Adjustment Documents** | [`siat_documento_ajuste_service_test.go`](internal/adapter/services/siat_documento_ajuste_service_test.go) |
+| **Telecommunications** | [`siat_telecomunicaciones_service_test.go`](internal/adapter/services/siat_telecomunicaciones_service_test.go) |
+| **Basic Services** | [`siat_servicio_basico_service_test.go`](internal/adapter/services/siat_servicio_basico_service_test.go) |
+| **Financial Entities** | [`siat_entidad_financiera_service_test.go`](internal/adapter/services/siat_entidad_financiera_service_test.go) |
+| **Airline Tickets** | [`siat_boleto_aereo_service_test.go`](internal/adapter/services/siat_boleto_aereo_service_test.go) |
 | **Invoicing (Sectors)** | [`pkg/models/invoices/`](pkg/models/invoices/) |
 | **End-to-End** | [`siat_test.go`](siat_test.go) |
 

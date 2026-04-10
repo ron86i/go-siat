@@ -61,6 +61,7 @@ El SDK cubre los servicios críticos del ecosistema SIAT:
 | **Documentos de Ajuste** | Gestión de notas de Crédito/Débito, Conciliación y reversiones. |
 | **Electrónica en Línea** | Soporte completo para facturación con firma digital. |
 | **Computarizada en Línea** | Soporte para modalidades sin firma digital. |
+| **Sectores Especializados** | Soporte para servicios de Telecomunicaciones, Servicios Básicos, Entidades Financieras y Boletos Aéreos. |
 | **Sectores Especiales** | Soporte verificado para los **35 sectores** reglamentarios del SIAT. |
 
 ---
@@ -129,6 +130,10 @@ Los **Tests de Integración** actúan como la documentación técnica viviente d
 | **Electrónica** | [`siat_electronica_service_test.go`](../../internal/adapter/services/siat_electronica_service_test.go) |
 | **Computarizada** | [`siat_computarizada_service_test.go`](../../internal/adapter/services/siat_computarizada_service_test.go) |
 | **Documentos de Ajuste** | [`siat_documento_ajuste_service_test.go`](../../internal/adapter/services/siat_documento_ajuste_service_test.go) |
+| **Telecomunicaciones** | [`siat_telecomunicaciones_service_test.go`](../../internal/adapter/services/siat_telecomunicaciones_service_test.go) |
+| **Servicios Básicos** | [`siat_servicio_basico_service_test.go`](../../internal/adapter/services/siat_servicio_basico_service_test.go) |
+| **Entidades Financieras** | [`siat_entidad_financiera_service_test.go`](../../internal/adapter/services/siat_entidad_financiera_service_test.go) |
+| **Boletos Aéreos** | [`siat_boleto_aereo_service_test.go`](../../internal/adapter/services/siat_boleto_aereo_service_test.go) |
 | **Facturación (Sectores)** | [`pkg/models/invoices/`](../../pkg/models/invoices/) |
 | **Flujos Completos** | [`siat_test.go`](../../siat_test.go) |
 
