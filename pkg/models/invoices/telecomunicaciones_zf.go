@@ -2,13 +2,13 @@ package invoices
 
 import (
 	"encoding/xml"
-	"strconv"
 	"time"
 
 	"github.com/ron86i/go-siat"
 	"github.com/ron86i/go-siat/internal/core/domain/datatype"
 	"github.com/ron86i/go-siat/internal/core/domain/documents"
 	"github.com/ron86i/go-siat/pkg/models"
+	"github.com/ron86i/go-siat/pkg/utils"
 )
 
 // TelecomunicacionesZF representa la estructura completa de una factura de telecomunicaciones en Zona Franca.
@@ -224,8 +224,7 @@ func (b *telecomunicacionesZFCabeceraBuilder) WithNumeroTarjeta(v *int64) *telec
 }
 
 func (b *telecomunicacionesZFCabeceraBuilder) WithMontoTotal(v float64) *telecomunicacionesZFCabeceraBuilder {
-	v, _ = strconv.ParseFloat(strconv.FormatFloat(v, 'f', 2, 64), 64)
-	b.cabecera.MontoTotal = v
+	b.cabecera.MontoTotal = utils.Round(v, 2)
 	return b
 }
 
@@ -235,14 +234,12 @@ func (b *telecomunicacionesZFCabeceraBuilder) WithCodigoMoneda(v int) *telecomun
 }
 
 func (b *telecomunicacionesZFCabeceraBuilder) WithTipoCambio(v float64) *telecomunicacionesZFCabeceraBuilder {
-	v, _ = strconv.ParseFloat(strconv.FormatFloat(v, 'f', 2, 64), 64)
-	b.cabecera.TipoCambio = v
+	b.cabecera.TipoCambio = utils.Round(v, 2)
 	return b
 }
 
 func (b *telecomunicacionesZFCabeceraBuilder) WithMontoTotalMoneda(v float64) *telecomunicacionesZFCabeceraBuilder {
-	v, _ = strconv.ParseFloat(strconv.FormatFloat(v, 'f', 2, 64), 64)
-	b.cabecera.MontoTotalMoneda = v
+	b.cabecera.MontoTotalMoneda = utils.Round(v, 2)
 	return b
 }
 
@@ -250,8 +247,7 @@ func (b *telecomunicacionesZFCabeceraBuilder) WithMontoGiftCard(v *float64) *tel
 	if v == nil {
 		b.cabecera.MontoGiftCard = datatype.Nilable[float64]{Value: nil}
 	} else {
-		val := *v
-		val, _ = strconv.ParseFloat(strconv.FormatFloat(val, 'f', 2, 64), 64)
+		val := utils.Round(*v, 2)
 		b.cabecera.MontoGiftCard = datatype.Nilable[float64]{Value: &val}
 	}
 	return b
@@ -261,8 +257,7 @@ func (b *telecomunicacionesZFCabeceraBuilder) WithDescuentoAdicional(v *float64)
 	if v == nil {
 		b.cabecera.DescuentoAdicional = datatype.Nilable[float64]{Value: nil}
 	} else {
-		val := *v
-		val, _ = strconv.ParseFloat(strconv.FormatFloat(val, 'f', 2, 64), 64)
+		val := utils.Round(*v, 2)
 		b.cabecera.DescuentoAdicional = datatype.Nilable[float64]{Value: &val}
 	}
 	return b
@@ -329,8 +324,7 @@ func (b *telecomunicacionesZFDetalleBuilder) WithDescripcion(v string) *telecomu
 }
 
 func (b *telecomunicacionesZFDetalleBuilder) WithCantidad(v float64) *telecomunicacionesZFDetalleBuilder {
-	v, _ = strconv.ParseFloat(strconv.FormatFloat(v, 'f', 2, 64), 64)
-	b.detalle.Cantidad = v
+	b.detalle.Cantidad = utils.Round(v, 5)
 	return b
 }
 
@@ -340,8 +334,7 @@ func (b *telecomunicacionesZFDetalleBuilder) WithUnidadMedida(v int) *telecomuni
 }
 
 func (b *telecomunicacionesZFDetalleBuilder) WithPrecioUnitario(v float64) *telecomunicacionesZFDetalleBuilder {
-	v, _ = strconv.ParseFloat(strconv.FormatFloat(v, 'f', 2, 64), 64)
-	b.detalle.PrecioUnitario = v
+	b.detalle.PrecioUnitario = utils.Round(v, 5)
 	return b
 }
 
@@ -349,16 +342,14 @@ func (b *telecomunicacionesZFDetalleBuilder) WithMontoDescuento(v *float64) *tel
 	if v == nil {
 		b.detalle.MontoDescuento = datatype.Nilable[float64]{Value: nil}
 	} else {
-		val := *v
-		val, _ = strconv.ParseFloat(strconv.FormatFloat(val, 'f', 2, 64), 64)
+		val := utils.Round(*v, 5)
 		b.detalle.MontoDescuento = datatype.Nilable[float64]{Value: &val}
 	}
 	return b
 }
 
 func (b *telecomunicacionesZFDetalleBuilder) WithSubTotal(v float64) *telecomunicacionesZFDetalleBuilder {
-	v, _ = strconv.ParseFloat(strconv.FormatFloat(v, 'f', 2, 64), 64)
-	b.detalle.SubTotal = v
+	b.detalle.SubTotal = utils.Round(v, 5)
 	return b
 }
 

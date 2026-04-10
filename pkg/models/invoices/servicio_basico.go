@@ -8,6 +8,7 @@ import (
 	"github.com/ron86i/go-siat/internal/core/domain/datatype"
 	"github.com/ron86i/go-siat/internal/core/domain/documents"
 	"github.com/ron86i/go-siat/pkg/models"
+	"github.com/ron86i/go-siat/pkg/utils"
 )
 
 // ServicioBasico representa la estructura completa de una factura de servicio básico lista para ser procesada.
@@ -253,12 +254,12 @@ func (b *servicioBasicoCabeceraBuilder) WithNumeroTarjeta(v *int64) *servicioBas
 }
 
 func (b *servicioBasicoCabeceraBuilder) WithMontoTotal(v float64) *servicioBasicoCabeceraBuilder {
-	b.cabecera.MontoTotal = datatype.Float64Round(v, 2)
+	b.cabecera.MontoTotal = utils.Round(v, 2)
 	return b
 }
 
 func (b *servicioBasicoCabeceraBuilder) WithMontoTotalSujetoIva(v float64) *servicioBasicoCabeceraBuilder {
-	b.cabecera.MontoTotalSujetoIva = datatype.Float64Round(v, 2)
+	b.cabecera.MontoTotalSujetoIva = utils.Round(v, 2)
 	return b
 }
 
@@ -266,7 +267,7 @@ func (b *servicioBasicoCabeceraBuilder) WithConsumoPeriodo(v *float64) *servicio
 	if v == nil {
 		b.cabecera.ConsumoPeriodo = datatype.Nilable[float64]{Value: nil}
 	} else {
-		r := datatype.Float64Round(*v, 2)
+		r := utils.Round(*v, 2)
 		b.cabecera.ConsumoPeriodo = datatype.Nilable[float64]{Value: &r}
 	}
 	return b
@@ -286,7 +287,7 @@ func (b *servicioBasicoCabeceraBuilder) WithMontoDescuentoLey1886(v *float64) *s
 	if v == nil {
 		b.cabecera.MontoDescuentoLey1886 = datatype.Nilable[float64]{Value: nil}
 	} else {
-		r := datatype.Float64Round(*v, 2)
+		r := utils.Round(*v, 2)
 		b.cabecera.MontoDescuentoLey1886 = datatype.Nilable[float64]{Value: &r}
 	}
 	return b
@@ -296,7 +297,7 @@ func (b *servicioBasicoCabeceraBuilder) WithMontoDescuentoTarifaDignidad(v *floa
 	if v == nil {
 		b.cabecera.MontoDescuentoTarifaDignidad = datatype.Nilable[float64]{Value: nil}
 	} else {
-		r := datatype.Float64Round(*v, 2)
+		r := utils.Round(*v, 2)
 		b.cabecera.MontoDescuentoTarifaDignidad = datatype.Nilable[float64]{Value: &r}
 	}
 	return b
@@ -306,7 +307,7 @@ func (b *servicioBasicoCabeceraBuilder) WithTasaAseo(v *float64) *servicioBasico
 	if v == nil {
 		b.cabecera.TasaAseo = datatype.Nilable[float64]{Value: nil}
 	} else {
-		r := datatype.Float64Round(*v, 2)
+		r := utils.Round(*v, 2)
 		b.cabecera.TasaAseo = datatype.Nilable[float64]{Value: &r}
 	}
 	return b
@@ -316,7 +317,7 @@ func (b *servicioBasicoCabeceraBuilder) WithTasaAlumbrado(v *float64) *servicioB
 	if v == nil {
 		b.cabecera.TasaAlumbrado = datatype.Nilable[float64]{Value: nil}
 	} else {
-		r := datatype.Float64Round(*v, 2)
+		r := utils.Round(*v, 2)
 		b.cabecera.TasaAlumbrado = datatype.Nilable[float64]{Value: &r}
 	}
 	return b
@@ -326,7 +327,7 @@ func (b *servicioBasicoCabeceraBuilder) WithAjusteNoSujetoIva(v *float64) *servi
 	if v == nil {
 		b.cabecera.AjusteNoSujetoIva = datatype.Nilable[float64]{Value: nil}
 	} else {
-		r := datatype.Float64Round(*v, 2)
+		r := utils.Round(*v, 2)
 		b.cabecera.AjusteNoSujetoIva = datatype.Nilable[float64]{Value: &r}
 	}
 	return b
@@ -346,7 +347,7 @@ func (b *servicioBasicoCabeceraBuilder) WithAjusteSujetoIva(v *float64) *servici
 	if v == nil {
 		b.cabecera.AjusteSujetoIva = datatype.Nilable[float64]{Value: nil}
 	} else {
-		r := datatype.Float64Round(*v, 2)
+		r := utils.Round(*v, 2)
 		b.cabecera.AjusteSujetoIva = datatype.Nilable[float64]{Value: &r}
 	}
 	return b
@@ -366,7 +367,7 @@ func (b *servicioBasicoCabeceraBuilder) WithOtrosPagosNoSujetoIva(v *float64) *s
 	if v == nil {
 		b.cabecera.OtrosPagosNoSujetoIva = datatype.Nilable[float64]{Value: nil}
 	} else {
-		r := datatype.Float64Round(*v, 2)
+		r := utils.Round(*v, 2)
 		b.cabecera.OtrosPagosNoSujetoIva = datatype.Nilable[float64]{Value: &r}
 	}
 	return b
@@ -386,7 +387,7 @@ func (b *servicioBasicoCabeceraBuilder) WithOtrasTasas(v *float64) *servicioBasi
 	if v == nil {
 		b.cabecera.OtrasTasas = datatype.Nilable[float64]{Value: nil}
 	} else {
-		r := datatype.Float64Round(*v, 2)
+		r := utils.Round(*v, 2)
 		b.cabecera.OtrasTasas = datatype.Nilable[float64]{Value: &r}
 	}
 	return b
@@ -398,12 +399,12 @@ func (b *servicioBasicoCabeceraBuilder) WithCodigoMoneda(v int) *servicioBasicoC
 }
 
 func (b *servicioBasicoCabeceraBuilder) WithTipoCambio(v float64) *servicioBasicoCabeceraBuilder {
-	b.cabecera.TipoCambio = datatype.Float64Round(v, 2)
+	b.cabecera.TipoCambio = utils.Round(v, 2)
 	return b
 }
 
 func (b *servicioBasicoCabeceraBuilder) WithMontoTotalMoneda(v float64) *servicioBasicoCabeceraBuilder {
-	b.cabecera.MontoTotalMoneda = datatype.Float64Round(v, 2)
+	b.cabecera.MontoTotalMoneda = utils.Round(v, 2)
 	return b
 }
 
@@ -411,7 +412,7 @@ func (b *servicioBasicoCabeceraBuilder) WithDescuentoAdicional(v *float64) *serv
 	if v == nil {
 		b.cabecera.DescuentoAdicional = datatype.Nilable[float64]{Value: nil}
 	} else {
-		r := datatype.Float64Round(*v, 2)
+		r := utils.Round(*v, 2)
 		b.cabecera.DescuentoAdicional = datatype.Nilable[float64]{Value: &r}
 	}
 	return b
@@ -483,7 +484,7 @@ func (b *servicioBasicoDetalleBuilder) WithDescripcion(v string) *servicioBasico
 }
 
 func (b *servicioBasicoDetalleBuilder) WithCantidad(v float64) *servicioBasicoDetalleBuilder {
-	b.detalle.Cantidad = datatype.Float64Round(v, 2)
+	b.detalle.Cantidad = utils.Round(v, 2)
 	return b
 }
 
@@ -493,7 +494,7 @@ func (b *servicioBasicoDetalleBuilder) WithUnidadMedida(v int) *servicioBasicoDe
 }
 
 func (b *servicioBasicoDetalleBuilder) WithPrecioUnitario(v float64) *servicioBasicoDetalleBuilder {
-	b.detalle.PrecioUnitario = datatype.Float64Round(v, 2)
+	b.detalle.PrecioUnitario = utils.Round(v, 2)
 	return b
 }
 
@@ -501,14 +502,14 @@ func (b *servicioBasicoDetalleBuilder) WithMontoDescuento(v *float64) *servicioB
 	if v == nil {
 		b.detalle.MontoDescuento = datatype.Nilable[float64]{Value: nil}
 	} else {
-		r := datatype.Float64Round(*v, 2)
+		r := utils.Round(*v, 2)
 		b.detalle.MontoDescuento = datatype.Nilable[float64]{Value: &r}
 	}
 	return b
 }
 
 func (b *servicioBasicoDetalleBuilder) WithSubTotal(v float64) *servicioBasicoDetalleBuilder {
-	b.detalle.SubTotal = datatype.Float64Round(v, 2)
+	b.detalle.SubTotal = utils.Round(v, 2)
 	return b
 }
 
