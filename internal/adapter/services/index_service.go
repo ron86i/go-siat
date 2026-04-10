@@ -18,13 +18,18 @@ import (
 type SiatService string
 
 const (
-	SiatCodigos         SiatService = "FacturacionCodigos"
-	SiatOperaciones     SiatService = "FacturacionOperaciones"
-	SiatSincronizacion  SiatService = "FacturacionSincronizacion"
-	SiatCompraVenta     SiatService = "ServicioFacturacionCompraVenta"
-	SiatComputarizada   SiatService = "ServicioFacturacionComputarizada"
-	SiatElectronica     SiatService = "ServicioFacturacionElectronica"
-	SiatDocumentoAjuste SiatService = "ServicioFacturacionDocumentoAjuste"
+	SiatCodigos            SiatService = "FacturacionCodigos"
+	SiatOperaciones        SiatService = "FacturacionOperaciones"
+	SiatSincronizacion     SiatService = "FacturacionSincronizacion"
+	SiatCompraVenta        SiatService = "ServicioFacturacionCompraVenta"
+	SiatComputarizada      SiatService = "ServicioFacturacionComputarizada"
+	SiatElectronica        SiatService = "ServicioFacturacionElectronica"
+	SiatDocumentoAjuste    SiatService = "ServicioFacturacionDocumentoAjuste"
+	SiatTelecomunicaciones SiatService = "ServicioFacturacionTelecomunicaciones"
+	SiatServicioBasico     SiatService = "ServicioFacturacionServicioBasico"
+	SiatEntidadFinanciera  SiatService = "ServicioFacturacionEntidadFinanciera"
+	SiatBoletoAereo        SiatService = "ServicioFacturacionBoletoAereo"
+	SiatRecepcionCompras   SiatService = "ServicioRecepcionCompras"
 )
 
 // fullURL construye la URL completa para acceder a un servicio específico del SIAT,

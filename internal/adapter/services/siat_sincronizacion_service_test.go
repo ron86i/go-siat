@@ -24,6 +24,9 @@ func runSincronizacionTest[V any, ReqType any](
 	fn func(context.Context, ports.Config, ReqType) (*V, error),
 ) {
 	t.Run(name, func(t *testing.T) {
+		if _, err := os.Stat(".env"); os.IsNotExist(err) {
+			t.Skip("Saltando prueba de integración: .env no encontrado")
+		}
 		godotenv.Load()
 
 		config := siat.Config{
@@ -70,6 +73,9 @@ func buildSincronizacion[T any, R any](b models.SincronizacionBuilder[T, R], sol
 }
 
 func TestSincronizarActividades(t *testing.T) {
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		t.Skip("Saltando prueba de integración: .env no encontrado")
+	}
 	godotenv.Load()
 	siatClient, _ := siat.New(os.Getenv("SIAT_URL"), nil)
 	service := siatClient.Sincronizacion()
@@ -79,6 +85,9 @@ func TestSincronizarActividades(t *testing.T) {
 }
 
 func TestSincronizarListaActividadesDocumentoSector(t *testing.T) {
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		t.Skip("Saltando prueba de integración: .env no encontrado")
+	}
 	godotenv.Load()
 	siatClient, _ := siat.New(os.Getenv("SIAT_URL"), nil)
 	service := siatClient.Sincronizacion()
@@ -88,6 +97,9 @@ func TestSincronizarListaActividadesDocumentoSector(t *testing.T) {
 }
 
 func TestSincronizarListaLeyendasFactura(t *testing.T) {
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		t.Skip("Saltando prueba de integración: .env no encontrado")
+	}
 	godotenv.Load()
 	siatClient, _ := siat.New(os.Getenv("SIAT_URL"), nil)
 	service := siatClient.Sincronizacion()
@@ -97,6 +109,9 @@ func TestSincronizarListaLeyendasFactura(t *testing.T) {
 }
 
 func TestSincronizarListaMensajesServicios(t *testing.T) {
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		t.Skip("Saltando prueba de integración: .env no encontrado")
+	}
 	godotenv.Load()
 	siatClient, _ := siat.New(os.Getenv("SIAT_URL"), nil)
 	service := siatClient.Sincronizacion()
@@ -106,6 +121,9 @@ func TestSincronizarListaMensajesServicios(t *testing.T) {
 }
 
 func TestSincronizarListaProductosServicios(t *testing.T) {
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		t.Skip("Saltando prueba de integración: .env no encontrado")
+	}
 	godotenv.Load()
 	siatClient, _ := siat.New(os.Getenv("SIAT_URL"), nil)
 	service := siatClient.Sincronizacion()
@@ -115,6 +133,9 @@ func TestSincronizarListaProductosServicios(t *testing.T) {
 }
 
 func TestSincronizarParametricaEventosSignificativos(t *testing.T) {
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		t.Skip("Saltando prueba de integración: .env no encontrado")
+	}
 	godotenv.Load()
 	siatClient, _ := siat.New(os.Getenv("SIAT_URL"), nil)
 	service := siatClient.Sincronizacion()
@@ -124,6 +145,9 @@ func TestSincronizarParametricaEventosSignificativos(t *testing.T) {
 }
 
 func TestSincronizarParametricaMotivoAnulacion(t *testing.T) {
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		t.Skip("Saltando prueba de integración: .env no encontrado")
+	}
 	godotenv.Load()
 	siatClient, _ := siat.New(os.Getenv("SIAT_URL"), nil)
 	service := siatClient.Sincronizacion()
@@ -133,6 +157,9 @@ func TestSincronizarParametricaMotivoAnulacion(t *testing.T) {
 }
 
 func TestSincronizarParametricaPaisOrigen(t *testing.T) {
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		t.Skip("Saltando prueba de integración: .env no encontrado")
+	}
 	godotenv.Load()
 	siatClient, _ := siat.New(os.Getenv("SIAT_URL"), nil)
 	service := siatClient.Sincronizacion()
@@ -142,6 +169,9 @@ func TestSincronizarParametricaPaisOrigen(t *testing.T) {
 }
 
 func TestSincronizarParametricaTipoDocumentoIdentidad(t *testing.T) {
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		t.Skip("Saltando prueba de integración: .env no encontrado")
+	}
 	godotenv.Load()
 	siatClient, _ := siat.New(os.Getenv("SIAT_URL"), nil)
 	service := siatClient.Sincronizacion()
@@ -151,6 +181,9 @@ func TestSincronizarParametricaTipoDocumentoIdentidad(t *testing.T) {
 }
 
 func TestSincronizarParametricaTipoDocumentoSector(t *testing.T) {
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		t.Skip("Saltando prueba de integración: .env no encontrado")
+	}
 	godotenv.Load()
 	siatClient, _ := siat.New(os.Getenv("SIAT_URL"), nil)
 	service := siatClient.Sincronizacion()
@@ -160,6 +193,9 @@ func TestSincronizarParametricaTipoDocumentoSector(t *testing.T) {
 }
 
 func TestSincronizarParametricaTipoEmision(t *testing.T) {
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		t.Skip("Saltando prueba de integración: .env no encontrado")
+	}
 	godotenv.Load()
 	siatClient, _ := siat.New(os.Getenv("SIAT_URL"), nil)
 	service := siatClient.Sincronizacion()
@@ -169,6 +205,9 @@ func TestSincronizarParametricaTipoEmision(t *testing.T) {
 }
 
 func TestSincronizarParametricaTipoHabitacion(t *testing.T) {
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		t.Skip("Saltando prueba de integración: .env no encontrado")
+	}
 	godotenv.Load()
 	siatClient, _ := siat.New(os.Getenv("SIAT_URL"), nil)
 	service := siatClient.Sincronizacion()
@@ -178,6 +217,9 @@ func TestSincronizarParametricaTipoHabitacion(t *testing.T) {
 }
 
 func TestSincronizarParametricaTipoMetodoPago(t *testing.T) {
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		t.Skip("Saltando prueba de integración: .env no encontrado")
+	}
 	godotenv.Load()
 	siatClient, _ := siat.New(os.Getenv("SIAT_URL"), nil)
 	service := siatClient.Sincronizacion()
@@ -187,6 +229,9 @@ func TestSincronizarParametricaTipoMetodoPago(t *testing.T) {
 }
 
 func TestSincronizarParametricaTipoMoneda(t *testing.T) {
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		t.Skip("Saltando prueba de integración: .env no encontrado")
+	}
 	godotenv.Load()
 	siatClient, _ := siat.New(os.Getenv("SIAT_URL"), nil)
 	service := siatClient.Sincronizacion()
@@ -196,6 +241,9 @@ func TestSincronizarParametricaTipoMoneda(t *testing.T) {
 }
 
 func TestSincronizarParametricaTipoPuntoVenta(t *testing.T) {
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		t.Skip("Saltando prueba de integración: .env no encontrado")
+	}
 	godotenv.Load()
 	siatClient, _ := siat.New(os.Getenv("SIAT_URL"), nil)
 	service := siatClient.Sincronizacion()
@@ -205,6 +253,9 @@ func TestSincronizarParametricaTipoPuntoVenta(t *testing.T) {
 }
 
 func TestSincronizarParametricaTiposFactura(t *testing.T) {
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		t.Skip("Saltando prueba de integración: .env no encontrado")
+	}
 	godotenv.Load()
 	siatClient, _ := siat.New(os.Getenv("SIAT_URL"), nil)
 	service := siatClient.Sincronizacion()
@@ -214,10 +265,25 @@ func TestSincronizarParametricaTiposFactura(t *testing.T) {
 }
 
 func TestSincronizarParametricaUnidadMedida(t *testing.T) {
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		t.Skip("Saltando prueba de integración: .env no encontrado")
+	}
 	godotenv.Load()
 	siatClient, _ := siat.New(os.Getenv("SIAT_URL"), nil)
 	service := siatClient.Sincronizacion()
 	sol := getCommonRequest(t)
 	req := buildSincronizacion(models.Sincronizacion().NewSincronizarParametricaUnidadMedidaBuilder(), sol)
 	runSincronizacionTest(t, "SincronizarParametricaUnidadMedida", req, service.SincronizarParametricaUnidadMedida)
+}
+
+func TestSincronizarFechaHora(t *testing.T) {
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		t.Skip("Saltando prueba de integración: .env no encontrado")
+	}
+	godotenv.Load()
+	siatClient, _ := siat.New(os.Getenv("SIAT_URL"), nil)
+	service := siatClient.Sincronizacion()
+	sol := getCommonRequest(t)
+	req := buildSincronizacion(models.Sincronizacion().NewSincronizarFechaHoraBuilder(), sol)
+	runSincronizacionTest(t, "SincronizarFechaHora", req, service.SincronizarFechaHora)
 }

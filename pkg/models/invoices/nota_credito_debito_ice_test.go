@@ -3,12 +3,9 @@ package invoices_test
 import (
 	"context"
 	"encoding/xml"
-	"net/http"
-	"os"
 	"testing"
 	"time"
 
-	"github.com/joho/godotenv"
 	"github.com/ron86i/go-siat"
 	"github.com/ron86i/go-siat/pkg/models"
 	"github.com/ron86i/go-siat/pkg/models/invoices"
@@ -91,67 +88,30 @@ func TestNotaCreditoDebitoIceBuilder(t *testing.T) {
 }
 
 func TestNotaCreditoDebitoIceIntegration_Computarizada(t *testing.T) {
-	godotenv.Load("../../.env")
-	godotenv.Load()
+	tc := setupTestContext(t, siat.ModalidadComputarizada)
 
-	token := os.Getenv("SIAT_TOKEN")
-	url := os.Getenv("SIAT_URL")
-	if token == "" || url == "" {
-		t.Skip("Saltando test de integración: Token o URL no configurados")
-	}
-
-	nit, _ := utils.ParseInt64Safe(os.Getenv("SIAT_NIT"))
-	codAmbiente, _ := utils.ParseIntSafe(os.Getenv("SIAT_CODIGO_AMBIENTE"))
-	config := siat.Config{Token: token}
-
-	client := &http.Client{Transport: &http.Transport{Proxy: http.ProxyFromEnvironment}}
-	siatClient, _ := siat.New(url, client)
-
-	serviceCodigos := siatClient.Codigos()
-	service := siatClient.DocumentoAjuste()
+	service := tc.Client.DocumentoAjuste()
 	// codModalidad := siat.ModalidadComputarizada
 
 	// 1. Obtener CUIS
-	cuisReq := models.Codigos().NewCuisBuilder().
-		WithCodigoAmbiente(codAmbiente).
-		WithCodigoModalidad(siat.ModalidadComputarizada).
-		WithCodigoSistema(os.Getenv("SIAT_CODIGO_SISTEMA")).
-		WithNit(nit).
-		Build()
-	cuisResp, err := serviceCodigos.SolicitudCuis(context.Background(), config, cuisReq)
-	if err != nil {
-		t.Fatalf("error CUIS: %v", err)
-	}
-	cuis := cuisResp.Body.Content.RespuestaCuis.Codigo
+	cuis := tc.GetCuis(t)
 
 	// 2. Obtener CUFD
-	cufdReq := models.Codigos().NewCufdBuilder().
-		WithCodigoAmbiente(codAmbiente).
-		WithCodigoModalidad(siat.ModalidadComputarizada).
-		WithCodigoSistema(os.Getenv("SIAT_CODIGO_SISTEMA")).
-		WithNit(nit).
-		WithCuis(cuis).
-		Build()
-	cufdResp, err := serviceCodigos.SolicitudCufd(context.Background(), config, cufdReq)
-	if err != nil {
-		t.Fatalf("error CUFD: %v", err)
-	}
-	cufd := cufdResp.Body.Content.RespuestaCufd.Codigo
-	cufdControl := cufdResp.Body.Content.RespuestaCufd.CodigoControl
+	cufd, cufdControl := tc.GetCufd(t, cuis)
 
 	fecha := time.Now()
 
 	// 3. Generar CUF
-	cuf, err := utils.GenerarCUF(nit, fecha, 0, siat.ModalidadComputarizada, siat.EmisionOnline, 3, 48, 2, 0, cufdControl)
+	cuf, err := utils.GenerarCUF(tc.Nit, fecha, 0, tc.Modalidad, siat.EmisionOnline, 3, 48, 2, 0, cufdControl)
 	if err != nil {
 		t.Fatalf("error al generar CUF: %v", err)
 	}
 
 	// 4. Construir XML
 	nota := invoices.NewNotaCreditoDebitoIceBuilder().
-		WithModalidad(siat.ModalidadComputarizada).
+		WithModalidad(tc.Modalidad).
 		WithCabecera(invoices.NewNotaCreditoDebitoIceCabeceraBuilder().
-			WithNitEmisor(nit).
+			WithNitEmisor(tc.Nit).
 			WithRazonSocialEmisor("Empresa Test ICE").
 			WithMunicipio("Santa Cruz").
 			WithNumeroNotaCreditoDebito(2).
@@ -214,16 +174,16 @@ func TestNotaCreditoDebitoIceIntegration_Computarizada(t *testing.T) {
 
 	// 6. Solicitud de recepción
 	req := models.DocumentoAjuste().NewRecepcionBuilder().
-		WithCodigoAmbiente(codAmbiente).
-		WithDocumentoSector(48).
+		WithCodigoAmbiente(tc.Ambiente).
+		WithCodigoDocumentoSector(48).
 		WithCodigoEmision(siat.EmisionOnline).
-		WithCodigoModalidad(siat.ModalidadComputarizada).
-		WithCodigoPuntoVenta(0).
-		WithCodigoSistema(os.Getenv("SIAT_CODIGO_SISTEMA")).
-		WithCodigoSucursal(0).
+		WithCodigoModalidad(tc.Modalidad).
+		WithCodigoPuntoVenta(tc.PuntoVenta).
+		WithCodigoSistema(tc.Sistema).
+		WithCodigoSucursal(tc.Sucursal).
 		WithCufd(cufd).
 		WithCuis(cuis).
-		WithNit(nit).
+		WithNit(tc.Nit).
 		WithTipoFacturaDocumento(3).
 		WithArchivo(encoded).
 		WithFechaEnvio(fecha).
@@ -231,7 +191,7 @@ func TestNotaCreditoDebitoIceIntegration_Computarizada(t *testing.T) {
 		Build()
 
 	// 7. Intentar envío
-	resp, err := service.RecepcionDocumentoAjuste(context.Background(), config, req)
+	resp, err := service.RecepcionDocumentoAjuste(context.Background(), tc.Config, req)
 	if err != nil {
 		t.Fatalf("Error en la comunicación con el SIAT: %v", err)
 	}
@@ -240,67 +200,30 @@ func TestNotaCreditoDebitoIceIntegration_Computarizada(t *testing.T) {
 }
 
 func TestNotaCreditoDebitoIceIntegration_Electronica(t *testing.T) {
-	godotenv.Load("../../.env")
-	godotenv.Load()
+	tc := setupTestContext(t, siat.ModalidadElectronica)
 
-	token := os.Getenv("SIAT_TOKEN")
-	url := os.Getenv("SIAT_URL")
-	if token == "" || url == "" {
-		t.Skip("Saltando test de integración: Token o URL no configurados")
-	}
-
-	nit, _ := utils.ParseInt64Safe(os.Getenv("SIAT_NIT"))
-	codAmbiente, _ := utils.ParseIntSafe(os.Getenv("SIAT_CODIGO_AMBIENTE"))
-	config := siat.Config{Token: token}
-
-	client := &http.Client{Transport: &http.Transport{Proxy: http.ProxyFromEnvironment}}
-	siatClient, _ := siat.New(url, client)
-
-	serviceCodigos := siatClient.Codigos()
-	service := siatClient.DocumentoAjuste()
+	service := tc.Client.DocumentoAjuste()
 	// codModalidad := siat.ModalidadElectronica
 
 	// 1. Obtener CUIS
-	cuisReq := models.Codigos().NewCuisBuilder().
-		WithCodigoAmbiente(codAmbiente).
-		WithCodigoModalidad(siat.ModalidadElectronica).
-		WithCodigoSistema(os.Getenv("SIAT_CODIGO_SISTEMA")).
-		WithNit(nit).
-		Build()
-	cuisResp, err := serviceCodigos.SolicitudCuis(context.Background(), config, cuisReq)
-	if err != nil {
-		t.Fatalf("error CUIS: %v", err)
-	}
-	cuis := cuisResp.Body.Content.RespuestaCuis.Codigo
+	cuis := tc.GetCuis(t)
 
 	// 2. Obtener CUFD
-	cufdReq := models.Codigos().NewCufdBuilder().
-		WithCodigoAmbiente(codAmbiente).
-		WithCodigoModalidad(siat.ModalidadElectronica).
-		WithCodigoSistema(os.Getenv("SIAT_CODIGO_SISTEMA")).
-		WithNit(nit).
-		WithCuis(cuis).
-		Build()
-	cufdResp, err := serviceCodigos.SolicitudCufd(context.Background(), config, cufdReq)
-	if err != nil {
-		t.Fatalf("error CUFD: %v", err)
-	}
-	cufd := cufdResp.Body.Content.RespuestaCufd.Codigo
-	cufdControl := cufdResp.Body.Content.RespuestaCufd.CodigoControl
+	cufd, cufdControl := tc.GetCufd(t, cuis)
 
 	fecha := time.Now()
 
 	// 3. Generar CUF
-	cuf, err := utils.GenerarCUF(nit, fecha, 0, siat.ModalidadElectronica, siat.EmisionOnline, 3, 48, 2, 0, cufdControl)
+	cuf, err := utils.GenerarCUF(tc.Nit, fecha, 0, tc.Modalidad, siat.EmisionOnline, 3, 48, 2, 0, cufdControl)
 	if err != nil {
 		t.Fatalf("error al generar CUF: %v", err)
 	}
 
 	// 4. Construir XML
 	nota := invoices.NewNotaCreditoDebitoIceBuilder().
-		WithModalidad(siat.ModalidadElectronica).
+		WithModalidad(tc.Modalidad).
 		WithCabecera(invoices.NewNotaCreditoDebitoIceCabeceraBuilder().
-			WithNitEmisor(nit).
+			WithNitEmisor(tc.Nit).
 			WithRazonSocialEmisor("Empresa Test ICE").
 			WithMunicipio("Santa Cruz").
 			WithNumeroNotaCreditoDebito(2).
@@ -368,16 +291,16 @@ func TestNotaCreditoDebitoIceIntegration_Electronica(t *testing.T) {
 
 	// 6. Solicitud de recepción
 	req := models.DocumentoAjuste().NewRecepcionBuilder().
-		WithCodigoAmbiente(codAmbiente).
-		WithDocumentoSector(48).
+		WithCodigoAmbiente(tc.Ambiente).
+		WithCodigoDocumentoSector(48).
 		WithCodigoEmision(siat.EmisionOnline).
-		WithCodigoModalidad(siat.ModalidadElectronica).
-		WithCodigoPuntoVenta(0).
-		WithCodigoSistema(os.Getenv("SIAT_CODIGO_SISTEMA")).
-		WithCodigoSucursal(0).
+		WithCodigoModalidad(tc.Modalidad).
+		WithCodigoPuntoVenta(tc.PuntoVenta).
+		WithCodigoSistema(tc.Sistema).
+		WithCodigoSucursal(tc.Sucursal).
 		WithCufd(cufd).
 		WithCuis(cuis).
-		WithNit(nit).
+		WithNit(tc.Nit).
 		WithTipoFacturaDocumento(3).
 		WithArchivo(encoded).
 		WithFechaEnvio(fecha).
@@ -385,7 +308,7 @@ func TestNotaCreditoDebitoIceIntegration_Electronica(t *testing.T) {
 		Build()
 
 	// 7. Intentar envío
-	resp, err := service.RecepcionDocumentoAjuste(context.Background(), config, req)
+	resp, err := service.RecepcionDocumentoAjuste(context.Background(), tc.Config, req)
 	if err != nil {
 		t.Fatalf("Error en la comunicación con el SIAT: %v", err)
 	}

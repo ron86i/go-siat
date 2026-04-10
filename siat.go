@@ -66,14 +66,19 @@ func (m Map) ToStruct(v interface{}) error {
 // y proporciona acceso a ellos a través de métodos orientados a objetivos.
 // Los usuarios deben crear una instancia usando New().
 type SiatServices struct {
-	operaciones     ports.SiatOperacionesPort
-	sincronizacion  ports.SiatSincronizacionService
-	codigos         ports.SiatCodigosService
-	compraVenta     ports.SiatCompraVentaService
-	computarizada   ports.SiatComputarizadaService
-	electronica     ports.SiatElectronicaService
-	documentoAjuste ports.SiatDocumentoAjusteService
-	traceID         string // Opcional, para correlacionar solicitudes en sistemas distribuidos
+	operaciones        ports.SiatOperacionesPort
+	sincronizacion     ports.SiatSincronizacionService
+	codigos            ports.SiatCodigosService
+	compraVenta        ports.SiatCompraVentaService
+	computarizada      ports.SiatComputarizadaService
+	electronica        ports.SiatElectronicaService
+	documentoAjuste    ports.SiatDocumentoAjusteService
+	telecomunicaciones ports.SiatTelecomunicacionesService
+	servicioBasico     ports.SiatServicioBasicoService
+	entidadFinanciera  ports.SiatEntidadFinancieraService
+	boletoAereo        ports.SiatBoletoAereoService
+	recepcionCompras   ports.SiatRecepcionComprasService
+	traceID            string // Opcional, para correlacionar solicitudes en sistemas distribuidos
 }
 
 // Operaciones retorna el servicio para la gestión de puntos de venta (PV),
@@ -123,6 +128,36 @@ func (s *SiatServices) Electronica() ports.SiatElectronicaService {
 // Permite enviar, recibir y anular facturas de este tipo.
 func (s *SiatServices) DocumentoAjuste() ports.SiatDocumentoAjusteService {
 	return s.documentoAjuste
+}
+
+// Telecomunicaciones retorna el servicio para el sector de telecomunicaciones.
+// Permite enviar, recibir y anular facturas de este tipo.
+func (s *SiatServices) Telecomunicaciones() ports.SiatTelecomunicacionesService {
+	return s.telecomunicaciones
+}
+
+// ServicioBasico retorna el servicio para el sector para el sector de servicios básicos.
+// Permite enviar, recibir y anular facturas de este tipo.
+func (s *SiatServices) ServicioBasico() ports.SiatServicioBasicoService {
+	return s.servicioBasico
+}
+
+// EntidadFinanciera retorna el servicio para el sector de entidades financieras.
+// Permite enviar, recibir y anular facturas de este tipo.
+func (s *SiatServices) EntidadFinanciera() ports.SiatEntidadFinancieraService {
+	return s.entidadFinanciera
+}
+
+// BoletoAereo retorna el servicio para el sector de boletos aéreos.
+// Permite enviar masivamente, recibir y anular facturas de este tipo.
+func (s *SiatServices) BoletoAereo() ports.SiatBoletoAereoService {
+	return s.boletoAereo
+}
+
+// RecepcionCompras retorna el servicio para la recepción de compras.
+// Permite enviar, consultar y anular registros de compras ante el SIAT.
+func (s *SiatServices) RecepcionCompras() ports.SiatRecepcionComprasService {
+	return s.recepcionCompras
 }
 
 // WithConfig retorna una nueva instancia de ports.Config con el traceID actual.
@@ -215,15 +250,45 @@ func New(baseUrl string, httpClient *http.Client) (*SiatServices, error) {
 		return nil, err
 	}
 
+	telecomunicaciones, err := services.NewSiatTelecomunicacionesService(baseUrl, httpClient)
+	if err != nil {
+		return nil, err
+	}
+
+	servicioBasico, err := services.NewSiatServicioBasicoService(baseUrl, httpClient)
+	if err != nil {
+		return nil, err
+	}
+
+	entidadFinanciera, err := services.NewSiatEntidadFinancieraService(baseUrl, httpClient)
+	if err != nil {
+		return nil, err
+	}
+
+	boletoAereo, err := services.NewSiatBoletoAereoService(baseUrl, httpClient)
+	if err != nil {
+		return nil, err
+	}
+
+	recepcionCompras, err := services.NewSiatRecepcionComprasService(baseUrl, httpClient)
+	if err != nil {
+		return nil, err
+	}
+
 	return &SiatServices{
-		operaciones:     operaciones,
-		sincronizacion:  sincronizacion,
-		codigos:         codigos,
-		compraVenta:     compraVenta,
-		computarizada:   computarizada,
-		electronica:     electronica,
-		documentoAjuste: documentoAjuste,
-		traceID:         "", // Inicialmente vacío
+		operaciones:        operaciones,
+		sincronizacion:     sincronizacion,
+		codigos:            codigos,
+		compraVenta:        compraVenta,
+		computarizada:      computarizada,
+		electronica:        electronica,
+		documentoAjuste:    documentoAjuste,
+		telecomunicaciones: telecomunicaciones,
+		servicioBasico:     servicioBasico,
+		entidadFinanciera:  entidadFinanciera,
+		boletoAereo:        boletoAereo,
+		recepcionCompras:   recepcionCompras,
+		traceID:            "", // Inicialmente vacío
 	}, nil
 }
 

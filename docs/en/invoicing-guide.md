@@ -355,6 +355,10 @@ resp, err := s.DocumentoAjuste().RecepcionDocumentoAjuste(ctx, cfg, req)
 | Hotels | `Hotel` | `hotel.go` | `hotel_test.go` |
 | Hospital & Clinics | `HospitalClinica` | `hospital_clinica.go` | `hospital_clinica_test.go` |
 | Food Security | `SeguridadAlimentaria` | `seguridad_alimentaria.go` | `seguridad_alimentaria_test.go` |
+| Financial Entities | `EntidadFinanciera` | `entidad_financiera.go` | `entidad_financiera_test.go` |
+| Airline Tickets | `BoletoAereo` | `boleto_aereo.go` | `boleto_aereo_test.go` |
+| Telecommunications | `Telecomunicaciones` | `telecomunicaciones.go` | `telecomunicaciones_test.go` |
+| Basic Services | `ServicioBasico` | `servicio_basico.go` | `servicio_basico_test.go` |
 
 ### Export and Free Trade Zone
 
@@ -367,6 +371,8 @@ resp, err := s.DocumentoAjuste().RecepcionDocumentoAjuste(ctx, cfg, req)
 | Free Trade Zone | `ZonaFranca` | `zona_franca.go` | `zona_franca_test.go` |
 | FTZ Rental | `AlquilerZonaFranca` | `alquiler_zona_franca.go` | `alquiler_zona_franca_test.go` |
 | FTZ Hospital | `HospitalClinicaZonaFranca` | `hospital_clinica_zona_franca.go` | `hospital_clinica_zona_franca_test.go` |
+| FTZ Telecommunications| `TelecomunicacionesZf` | `telecomunicaciones_zf.go` | `telecomunicaciones_zf_test.go` |
+| FTZ Basic Services | `ServicioBasicoZf` | `servicio_basico_zf.go` | `servicio_basico_zf_test.go` |
 | Duty Free | `DuttyFree` | `dutty_free.go` | `dutty_free_test.go` |
 
 ### Hydrocarbons and Energy

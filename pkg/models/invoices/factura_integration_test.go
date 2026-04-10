@@ -28,6 +28,9 @@ type TestContext struct {
 
 // setupTestContext inicializa el entorno de pruebas, cargando variables de entorno y configurando el cliente SIAT.
 func setupTestContext(t *testing.T, modalidad int) *TestContext {
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		t.Skip("Saltando prueba de integración: .env no encontrado")
+	}
 	// Intentar cargar .env desde la raíz del proyecto (3 niveles arriba de pkg/models/facturas)
 	_ = godotenv.Load(".env")
 
@@ -106,4 +109,25 @@ func (tc *TestContext) GetCufd(t *testing.T, cuis string) (string, string) {
 		t.Fatalf("error al obtener CUFD: %v", err)
 	}
 	return resp.Body.Content.RespuestaCufd.Codigo, resp.Body.Content.RespuestaCufd.CodigoControl
+}
+
+// GetCuf genera un código CUF utilizando los parámetros del contexto y los específicos del documento.
+func (tc *TestContext) GetCuf(t *testing.T, sector int, emision int, tipoDoc int, numeroFactura int, puntoVenta int, codigoControl string) string {
+	fecha := time.Now()
+	cuf, err := utils.GenerarCUF(
+		tc.Nit,
+		fecha,
+		tc.Sucursal,
+		tc.Modalidad,
+		emision,
+		tipoDoc,
+		sector,
+		numeroFactura,
+		puntoVenta,
+		codigoControl,
+	)
+	if err != nil {
+		t.Fatalf("error al generar CUF: %v", err)
+	}
+	return cuf
 }

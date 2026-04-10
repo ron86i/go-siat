@@ -19,6 +19,9 @@ import (
 )
 
 func TestSiatElectronicaService_ReversionAnulacionFactura(t *testing.T) {
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		t.Skip("Saltando prueba de integración: .env no encontrado")
+	}
 	godotenv.Load(".env")
 
 	codModalidad := siat.ModalidadElectronica
@@ -88,6 +91,9 @@ func TestSiatElectronicaService_ReversionAnulacionFactura(t *testing.T) {
 }
 
 func TestSiatElectronicaService_VerificarComunicacion(t *testing.T) {
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		t.Skip("Saltando prueba de integración: .env no encontrado")
+	}
 	godotenv.Load(".env")
 
 	config := siat.Config{Token: os.Getenv("SIAT_TOKEN")}
@@ -109,6 +115,9 @@ func TestSiatElectronicaService_VerificarComunicacion(t *testing.T) {
 }
 
 func TestSiatElectronicaService_VerificacionEstadoFactura(t *testing.T) {
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		t.Skip("Saltando prueba de integración: .env no encontrado")
+	}
 	godotenv.Load(".env")
 
 	codModalidad := siat.ModalidadElectronica
@@ -176,6 +185,9 @@ func TestSiatElectronicaService_VerificacionEstadoFactura(t *testing.T) {
 }
 
 func TestSiatElectronicaService_RecepcionPaqueteFactura(t *testing.T) {
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		t.Skip("Saltando prueba de integración: .env no encontrado")
+	}
 	godotenv.Load(".env")
 
 	codModalidad := siat.ModalidadElectronica
@@ -290,6 +302,9 @@ func TestSiatElectronicaService_RecepcionPaqueteFactura(t *testing.T) {
 }
 
 func TestSiatElectronicaService_ValidacionRecepcionPaqueteFactura(t *testing.T) {
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		t.Skip("Saltando prueba de integración: .env no encontrado")
+	}
 	godotenv.Load(".env")
 
 	codModalidad := siat.ModalidadElectronica
@@ -349,6 +364,9 @@ func TestSiatElectronicaService_ValidacionRecepcionPaqueteFactura(t *testing.T) 
 }
 
 func TestSiatElectronicaService_RecepcionMasivaFactura(t *testing.T) {
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		t.Skip("Saltando prueba de integración: .env no encontrado")
+	}
 	godotenv.Load(".env")
 
 	codModalidad := siat.ModalidadElectronica
@@ -463,6 +481,9 @@ func TestSiatElectronicaService_RecepcionMasivaFactura(t *testing.T) {
 }
 
 func TestSiatElectronicaService_ValidacionRecepcionMasivaFactura(t *testing.T) {
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		t.Skip("Saltando prueba de integración: .env no encontrado")
+	}
 	godotenv.Load(".env")
 
 	codModalidad := siat.ModalidadElectronica
@@ -522,6 +543,9 @@ func TestSiatElectronicaService_ValidacionRecepcionMasivaFactura(t *testing.T) {
 }
 
 func TestSiatElectronicaService_RecepcionFactura(t *testing.T) {
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		t.Skip("Saltando prueba de integración: .env no encontrado")
+	}
 	godotenv.Load(".env")
 
 	codModalidad := siat.ModalidadElectronica
@@ -654,6 +678,9 @@ func TestSiatElectronicaService_RecepcionFactura(t *testing.T) {
 }
 
 func TestSiatElectronicaService_AnulacionFactura(t *testing.T) {
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		t.Skip("Saltando prueba de integración: .env no encontrado")
+	}
 	godotenv.Load(".env")
 
 	codModalidad := siat.ModalidadElectronica
@@ -711,6 +738,9 @@ func TestSiatElectronicaService_AnulacionFactura(t *testing.T) {
 }
 
 func TestSiatElectronicaService_RecepcionAnexosSuministroEnergia(t *testing.T) {
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		t.Skip("Saltando prueba de integración: .env no encontrado")
+	}
 	godotenv.Load(".env")
 
 	codModalidad := siat.ModalidadElectronica

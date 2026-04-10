@@ -64,6 +64,9 @@ type SiatSincronizacionService interface {
 	// SincronizarParametricaUnidadMedida obtiene las unidades de medida estandarizadas por el SIAT.
 	SincronizarParametricaUnidadMedida(ctx context.Context, config Config, opaqueReq models.SincronizarParametricaUnidadMedida) (*soap.EnvelopeResponse[sincronizacion.SincronizarParametricaUnidadMedidaResponse], error)
 
+	// SincronizarFechaHora obtiene la fecha y hora oficial del servidor del SIAT.
+	SincronizarFechaHora(ctx context.Context, config Config, opaqueReq models.SincronizarFechaHora) (*soap.EnvelopeResponse[sincronizacion.SincronizarFechaHoraResponse], error)
+
 	// VerificarComunicacion realiza una prueba de conectividad con el servicio de sincronización del SIAT.
 	VerificarComunicacion(ctx context.Context, config Config, opaqueReq models.VerificarComunicacionSincronizacion) (*soap.EnvelopeResponse[sincronizacion.VerificarComunicacionResponse], error)
 }
