@@ -19,6 +19,9 @@ import (
 // TestRegistroPuntoVenta válida la creación de un nuevo punto de venta ante el SIAT.
 // Los puntos de venta son necesarios para organizar la facturación por sucursales o terminales.
 func TestRegistroPuntoVenta(t *testing.T) {
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		t.Skip("Saltando prueba de integración: .env no encontrado")
+	}
 	godotenv.Load()
 
 	nit, err := utils.ParseInt64Safe(os.Getenv("SIAT_NIT"))
@@ -76,6 +79,9 @@ func TestRegistroPuntoVenta(t *testing.T) {
 }
 
 func TestRegistroPuntoVentaComisionista(t *testing.T) {
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		t.Skip("Saltando prueba de integración: .env no encontrado")
+	}
 	godotenv.Load()
 
 	nit, err := utils.ParseInt64Safe(os.Getenv("SIAT_NIT"))
@@ -132,6 +138,9 @@ func TestRegistroPuntoVentaComisionista(t *testing.T) {
 
 // TestOperacionesVerificarComunicacion valida la conectividad SOAP con el servicio de Operaciones.
 func TestOperacionesVerificarComunicacion(t *testing.T) {
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		t.Skip("Saltando prueba de integración: .env no encontrado")
+	}
 	godotenv.Load()
 	config := siat.Config{
 		Token: os.Getenv("SIAT_TOKEN"),
@@ -149,6 +158,9 @@ func TestOperacionesVerificarComunicacion(t *testing.T) {
 }
 
 func TestConsultaPuntoVenta(t *testing.T) {
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		t.Skip("Saltando prueba de integración: .env no encontrado")
+	}
 	godotenv.Load()
 	nit, _ := utils.ParseInt64Safe(os.Getenv("SIAT_NIT"))
 	config := siat.Config{
@@ -177,6 +189,9 @@ func TestConsultaPuntoVenta(t *testing.T) {
 }
 
 func TestCierrePuntoVenta(t *testing.T) {
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		t.Skip("Saltando prueba de integración: .env no encontrado")
+	}
 	godotenv.Load()
 	nit, _ := utils.ParseInt64Safe(os.Getenv("SIAT_NIT"))
 	config := siat.Config{
@@ -204,6 +219,9 @@ func TestCierrePuntoVenta(t *testing.T) {
 }
 
 func TestCierreOperacionesSistema(t *testing.T) {
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		t.Skip("Saltando prueba de integración: .env no encontrado")
+	}
 	godotenv.Load()
 	nit, _ := utils.ParseInt64Safe(os.Getenv("SIAT_NIT"))
 	config := siat.Config{
@@ -234,6 +252,9 @@ func TestCierreOperacionesSistema(t *testing.T) {
 // TestRegistroEventosSignificativos reporta sucesos que impiden la facturación en línea (contingencias).
 // Es obligatorio reportar el inicio y fin de estos eventos para justificar la facturación offline.
 func TestRegistroEventosSignificativos(t *testing.T) {
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		t.Skip("Saltando prueba de integración: .env no encontrado")
+	}
 	godotenv.Load()
 	nit, _ := utils.ParseInt64Safe(os.Getenv("SIAT_NIT"))
 
@@ -288,6 +309,9 @@ func TestRegistroEventosSignificativos(t *testing.T) {
 }
 
 func TestConsultaEventosSignificativos(t *testing.T) {
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		t.Skip("Saltando prueba de integración: .env no encontrado")
+	}
 	godotenv.Load()
 	nit, _ := utils.ParseInt64Safe(os.Getenv("SIAT_NIT"))
 	config := siat.Config{

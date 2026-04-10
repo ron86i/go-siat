@@ -21,6 +21,9 @@ import (
 // TestSiatComputarizadaService_ReversionAnulacionFactura valida el flujo de reversión de una
 // anulación de factura previamente realizada.
 func TestSiatComputarizadaService_ReversionAnulacionFactura(t *testing.T) {
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		t.Skip("Saltando prueba de integración: .env no encontrado")
+	}
 	godotenv.Load(".env")
 
 	codModalidad := siat.ModalidadComputarizada
@@ -93,6 +96,9 @@ func TestSiatComputarizadaService_ReversionAnulacionFactura(t *testing.T) {
 // TestSiatComputarizadaService_VerificarComunicacion valida que el servicio responda correctamente
 // a una solicitud de verificación de comunicación con el SIAT.
 func TestSiatComputarizadaService_VerificarComunicacion(t *testing.T) {
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		t.Skip("Saltando prueba de integración: .env no encontrado")
+	}
 	godotenv.Load(".env")
 
 	config := siat.Config{Token: os.Getenv("SIAT_TOKEN")}
@@ -117,6 +123,9 @@ func TestSiatComputarizadaService_VerificarComunicacion(t *testing.T) {
 // TestSiatComputarizadaService_VerificacionEstadoFactura valida la consulta del estado actual
 // de una factura en los servidores del SIAT.
 func TestSiatComputarizadaService_VerificacionEstadoFactura(t *testing.T) {
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		t.Skip("Saltando prueba de integración: .env no encontrado")
+	}
 	godotenv.Load(".env")
 
 	codModalidad := siat.ModalidadComputarizada
@@ -187,6 +196,9 @@ func TestSiatComputarizadaService_VerificacionEstadoFactura(t *testing.T) {
 // TestSiatComputarizadaService_RecepcionPaqueteFactura valida el envío de un paquete de
 // facturas (contingencia) al SIAT.
 func TestSiatComputarizadaService_RecepcionPaqueteFactura(t *testing.T) {
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		t.Skip("Saltando prueba de integración: .env no encontrado")
+	}
 	godotenv.Load(".env")
 
 	codModalidad := siat.ModalidadComputarizada
@@ -328,6 +340,9 @@ func TestSiatComputarizadaService_RecepcionPaqueteFactura(t *testing.T) {
 // de facturas enviado previamente bajo contingencia (Emisión Offline).
 // Se utiliza el Sector 10 (Dutty Free) como ejemplo de sector sin crédito fiscal.
 func TestSiatComputarizadaService_ValidacionRecepcionPaqueteFactura(t *testing.T) {
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		t.Skip("Saltando prueba de integración: .env no encontrado")
+	}
 	godotenv.Load(".env")
 
 	codModalidad := siat.ModalidadComputarizada
@@ -397,6 +412,9 @@ func TestSiatComputarizadaService_ValidacionRecepcionPaqueteFactura(t *testing.T
 // En este test se utiliza el Sector 10 (Dutty Free) y la Modalidad Computarizada (2),
 // empaquetando una factura estructurada real mediante la utilidad CreateTarGz.
 func TestSiatComputarizadaService_RecepcionMasivaFactura(t *testing.T) {
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		t.Skip("Saltando prueba de integración: .env no encontrado")
+	}
 	godotenv.Load(".env")
 
 	codModalidad := siat.ModalidadComputarizada
@@ -541,6 +559,9 @@ func TestSiatComputarizadaService_RecepcionMasivaFactura(t *testing.T) {
 // TestSiatComputarizadaService_ValidacionRecepcionMasivaFactura valida el estado de un envío masivo
 // utilizando el código de recepción obtenido en una solicitud previa.
 func TestSiatComputarizadaService_ValidacionRecepcionMasivaFactura(t *testing.T) {
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		t.Skip("Saltando prueba de integración: .env no encontrado")
+	}
 	godotenv.Load(".env")
 
 	codModalidad := siat.ModalidadComputarizada
@@ -606,6 +627,9 @@ func TestSiatComputarizadaService_ValidacionRecepcionMasivaFactura(t *testing.T)
 }
 
 func TestSiatComputarizadaService_RecepcionFactura(t *testing.T) {
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		t.Skip("Saltando prueba de integración: .env no encontrado")
+	}
 	godotenv.Load(".env")
 
 	codModalidad := siat.ModalidadComputarizada

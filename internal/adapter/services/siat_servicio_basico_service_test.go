@@ -249,6 +249,9 @@ func TestSiatServicioBasicoService_AnulacionFactura(t *testing.T) {
 }
 
 func TestSiatServicioBasicoService_ReversionAnulacionFactura(t *testing.T) {
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		t.Skip("Saltando prueba de integración: .env no encontrado")
+	}
 	godotenv.Load(".env")
 	nit, _ := utils.ParseInt64Safe(os.Getenv("SIAT_NIT"))
 	config := siat.Config{Token: os.Getenv("SIAT_TOKEN")}
@@ -293,6 +296,9 @@ func TestSiatServicioBasicoService_ReversionAnulacionFactura(t *testing.T) {
 }
 
 func TestSiatServicioBasicoService_RecepcionMasivaFactura(t *testing.T) {
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		t.Skip("Saltando prueba de integración: .env no encontrado")
+	}
 	godotenv.Load(".env")
 	nit, _ := utils.ParseInt64Safe(os.Getenv("SIAT_NIT"))
 	config := siat.Config{Token: os.Getenv("SIAT_TOKEN")}
@@ -319,6 +325,9 @@ func TestSiatServicioBasicoService_RecepcionMasivaFactura(t *testing.T) {
 }
 
 func TestSiatServicioBasicoService_ValidacionRecepcionMasivaFactura(t *testing.T) {
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		t.Skip("Saltando prueba de integración: .env no encontrado")
+	}
 	godotenv.Load(".env")
 	nit, _ := utils.ParseInt64Safe(os.Getenv("SIAT_NIT"))
 	config := siat.Config{Token: os.Getenv("SIAT_TOKEN")}
@@ -344,6 +353,9 @@ func TestSiatServicioBasicoService_ValidacionRecepcionMasivaFactura(t *testing.T
 }
 
 func TestSiatServicioBasicoService_RecepcionPaqueteFactura(t *testing.T) {
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		t.Skip("Saltando prueba de integración: .env no encontrado")
+	}
 	godotenv.Load(".env")
 	nit, _ := utils.ParseInt64Safe(os.Getenv("SIAT_NIT"))
 	config := siat.Config{Token: os.Getenv("SIAT_TOKEN")}
@@ -372,6 +384,9 @@ func TestSiatServicioBasicoService_RecepcionPaqueteFactura(t *testing.T) {
 }
 
 func TestSiatServicioBasicoService_ValidacionRecepcionPaqueteFactura(t *testing.T) {
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		t.Skip("Saltando prueba de integración: .env no encontrado")
+	}
 	godotenv.Load(".env")
 	nit, _ := utils.ParseInt64Safe(os.Getenv("SIAT_NIT"))
 	config := siat.Config{Token: os.Getenv("SIAT_TOKEN")}

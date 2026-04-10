@@ -25,6 +25,9 @@ func runDocumentoAjusteTest[ReqType any, RespType any](
 	fn func(context.Context, ports.Config, ReqType) (*RespType, error),
 ) {
 	t.Run(name, func(t *testing.T) {
+		if _, err := os.Stat(".env"); os.IsNotExist(err) {
+			t.Skip("Saltando prueba de integración: .env no encontrado")
+		}
 		godotenv.Load()
 
 		config := siat.Config{
@@ -47,6 +50,9 @@ func runDocumentoAjusteTest[ReqType any, RespType any](
 }
 
 func TestSiatDocumentoAjuste_VerificarComunicacion(t *testing.T) {
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		t.Skip("Saltando prueba de integración: .env no encontrado")
+	}
 	godotenv.Load()
 	ctx := context.Background()
 	config := siat.Config{Token: os.Getenv("SIAT_TOKEN")}
@@ -66,6 +72,9 @@ func TestSiatDocumentoAjuste_VerificarComunicacion(t *testing.T) {
 }
 
 func TestSiatDocumentoAjuste_RecepcionDocumentoAjuste(t *testing.T) {
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		t.Skip("Saltando prueba de integración: .env no encontrado")
+	}
 	godotenv.Load()
 
 	codModalidad := siat.ModalidadComputarizada
@@ -196,6 +205,9 @@ func TestSiatDocumentoAjuste_RecepcionDocumentoAjuste(t *testing.T) {
 }
 
 func TestSiatDocumentoAjuste_AnulacionDocumentoAjuste(t *testing.T) {
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		t.Skip("Saltando prueba de integración: .env no encontrado")
+	}
 	godotenv.Load()
 
 	codModalidad := siat.ModalidadComputarizada
@@ -249,6 +261,9 @@ func TestSiatDocumentoAjuste_AnulacionDocumentoAjuste(t *testing.T) {
 }
 
 func TestSiatDocumentoAjuste_ReversionAnulacionDocumentoAjuste(t *testing.T) {
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		t.Skip("Saltando prueba de integración: .env no encontrado")
+	}
 	godotenv.Load()
 
 	codModalidad := siat.ModalidadComputarizada
@@ -302,6 +317,9 @@ func TestSiatDocumentoAjuste_ReversionAnulacionDocumentoAjuste(t *testing.T) {
 }
 
 func TestSiatDocumentoAjuste_VerificacionEstadoDocumentoAjuste(t *testing.T) {
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		t.Skip("Saltando prueba de integración: .env no encontrado")
+	}
 	godotenv.Load()
 
 	codModalidad := siat.ModalidadComputarizada

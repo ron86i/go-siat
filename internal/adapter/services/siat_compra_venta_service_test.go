@@ -26,6 +26,9 @@ import (
 // Valida que el builder construya correctamente la solicitud con todos los campos obligatorios
 // y que el servicio procese la respuesta del SIAT usando el mapeo XML estandarizado.
 func TestSiatCompraVentaService_RecepcionAnexos(t *testing.T) {
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		t.Skip("Saltando prueba de integración: .env no encontrado")
+	}
 	godotenv.Load(".env")
 
 	codModalidad := siat.ModalidadElectronica
@@ -71,6 +74,9 @@ func TestSiatCompraVentaService_RecepcionAnexos(t *testing.T) {
 // TestSiatCompraVentaService_VerificacionEstadoFactura valida la consulta del estado actual de una factura en el SIAT.
 // Verifica que se retorne la información de recepción y estado (Válida, Anulada, etc.) correctamente.
 func TestSiatCompraVentaService_VerificacionEstadoFactura(t *testing.T) {
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		t.Skip("Saltando prueba de integración: .env no encontrado")
+	}
 	godotenv.Load(".env")
 
 	codModalidad := siat.ModalidadElectronica
@@ -127,6 +133,9 @@ func TestSiatCompraVentaService_VerificacionEstadoFactura(t *testing.T) {
 // TestSiatCompraVentaService_VerificarComunicacion valida la conectividad básica con el
 // Servicio de Facturación Compra Venta del SIAT.
 func TestSiatCompraVentaService_VerificarComunicacion(t *testing.T) {
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		t.Skip("Saltando prueba de integración: .env no encontrado")
+	}
 	godotenv.Load(".env")
 	config := siat.Config{Token: os.Getenv("SIAT_TOKEN")}
 
@@ -145,6 +154,9 @@ func TestSiatCompraVentaService_VerificarComunicacion(t *testing.T) {
 // TestSiatCompraVentaService_RecepcionMasivaFactura prueba el flujo de envío de múltiples facturas
 // bajo la modalidad de emisión masiva. Asegura que el CUF generado sea consistente con el tipo de emisión.
 func TestSiatCompraVentaService_RecepcionMasivaFactura(t *testing.T) {
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		t.Skip("Saltando prueba de integración: .env no encontrado")
+	}
 	godotenv.Load(".env")
 
 	codModalidad := siat.ModalidadElectronica
@@ -280,6 +292,9 @@ func TestSiatCompraVentaService_RecepcionMasivaFactura(t *testing.T) {
 // TestSiatCompraVentaService_ValidacionRecepcionMasivaFactura verifica el estado de procesamiento
 // de un paquete de facturas enviado previamente mediante RecepcionMasivaFactura.
 func TestSiatCompraVentaService_ValidacionRecepcionMasivaFactura(t *testing.T) {
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		t.Skip("Saltando prueba de integración: .env no encontrado")
+	}
 	godotenv.Load(".env")
 
 	codModalidad, _ := utils.ParseIntSafe(os.Getenv("SIAT_CODIGO_MODALIDAD"))
@@ -336,6 +351,9 @@ func TestSiatCompraVentaService_ValidacionRecepcionMasivaFactura(t *testing.T) {
 // Genera 5 facturas en memoria, las firma, crea un archivo TAR.GZ en un buffer (sin archivos físicos)
 // y lo envía al SIAT codificado en Base64 para su validación.
 func TestSiatCompraVentaService_RecepcionPaqueteFactura(t *testing.T) {
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		t.Skip("Saltando prueba de integración: .env no encontrado")
+	}
 	godotenv.Load(".env")
 
 	codModalidad, _ := utils.ParseIntSafe(os.Getenv("SIAT_CODIGO_MODALIDAD"))
@@ -468,7 +486,10 @@ func TestSiatCompraVentaService_RecepcionPaqueteFactura(t *testing.T) {
 
 // TestSiatCompraVentaService_ValidacionRecepcionPaqueteFactura consulta el resultado de la validación
 // de un paquete de facturas (TAR.GZ) enviado al SIAT.
-func TestSiatCompraVentaService_ValidacionRecepcionPaqueteFactura(t *testing.T) {
+func TestSiatCompraVentaService_ValidacionRecequeteFactura(t *testing.T) {
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		t.Skip("Saltando prueba de integración: .env no encontrado")
+	}
 	godotenv.Load(".env")
 
 	codModalidad, _ := utils.ParseIntSafe(os.Getenv("SIAT_CODIGO_MODALIDAD"))
@@ -522,6 +543,9 @@ func TestSiatCompraVentaService_ValidacionRecepcionPaqueteFactura(t *testing.T) 
 }
 
 func TestSiatCompraVentaService_ReversionAnulacionFactura(t *testing.T) {
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		t.Skip("Saltando prueba de integración: .env no encontrado")
+	}
 	godotenv.Load(".env")
 
 	codModalidad, _ := utils.ParseIntSafe(os.Getenv("SIAT_CODIGO_MODALIDAD"))
@@ -587,6 +611,9 @@ func TestSiatCompraVentaService_ReversionAnulacionFactura(t *testing.T) {
 // TestSiatCompraVentaService_RecepcionCompraVenta valida el flujo técnico de emisión de una factura individual.
 // Proceso: Construcción -> Firmado XML -> Compresión Gzip -> Codificación Base64 -> Envío SOAP.
 func TestSiatCompraVentaService_RecepcionCompraVenta(t *testing.T) {
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		t.Skip("Saltando prueba de integración: .env no encontrado")
+	}
 	godotenv.Load(".env")
 
 	codModalidad, _ := utils.ParseIntSafe(os.Getenv("SIAT_CODIGO_MODALIDAD"))
@@ -722,6 +749,9 @@ func TestSiatCompraVentaService_RecepcionCompraVenta(t *testing.T) {
 // TestSiatCompraVentaService_AnulacionFactura prueba el flujo de anulación de una factura
 // proporcionando el motivo de anulación y el CUF correspondiente.
 func TestSiatCompraVentaService_AnulacionFactura(t *testing.T) {
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		t.Skip("Saltando prueba de integración: .env no encontrado")
+	}
 	godotenv.Load(".env")
 
 	codModalidad, _ := utils.ParseIntSafe(os.Getenv("SIAT_CODIGO_MODALIDAD"))

@@ -18,6 +18,9 @@ import (
 )
 
 func TestSiatTelecomunicacionesService_VerificarComunicacion(t *testing.T) {
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		t.Skip("Saltando prueba de integración: .env no encontrado")
+	}
 	godotenv.Load(".env")
 	config := siat.Config{Token: os.Getenv("SIAT_TOKEN")}
 
@@ -34,6 +37,9 @@ func TestSiatTelecomunicacionesService_VerificarComunicacion(t *testing.T) {
 }
 
 func TestSiatTelecomunicacionesService_RecepcionFactura(t *testing.T) {
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		t.Skip("Saltando prueba de integración: .env no encontrado")
+	}
 	godotenv.Load(".env")
 
 	codModalidad := siat.ModalidadElectronica
@@ -155,6 +161,9 @@ func TestSiatTelecomunicacionesService_RecepcionFactura(t *testing.T) {
 }
 
 func TestSiatTelecomunicacionesService_VerificacionEstadoFactura(t *testing.T) {
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		t.Skip("Saltando prueba de integración: .env no encontrado")
+	}
 	godotenv.Load(".env")
 
 	codModalidad := siat.ModalidadElectronica
@@ -206,6 +215,9 @@ func TestSiatTelecomunicacionesService_VerificacionEstadoFactura(t *testing.T) {
 }
 
 func TestSiatTelecomunicacionesService_AnulacionFactura(t *testing.T) {
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		t.Skip("Saltando prueba de integración: .env no encontrado")
+	}
 	godotenv.Load(".env")
 
 	codModalidad := siat.ModalidadElectronica

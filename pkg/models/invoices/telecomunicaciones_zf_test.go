@@ -1,19 +1,17 @@
-package invoices
+package invoices_test
 
 import (
 	"context"
 	"encoding/xml"
 	"log"
-	"net/http"
-	"os"
 	"strings"
 	"testing"
 	"time"
 
-	"github.com/joho/godotenv"
 	"github.com/ron86i/go-siat"
 	"github.com/ron86i/go-siat/internal/core/domain/documents"
 	"github.com/ron86i/go-siat/pkg/models"
+	"github.com/ron86i/go-siat/pkg/models/invoices"
 	"github.com/ron86i/go-siat/pkg/utils"
 )
 
@@ -24,7 +22,7 @@ func TestTelecomunicacionesZFBuilder(t *testing.T) {
 	nitConjunto := int64(123456789)
 	nSerie := "SN-ZF-123"
 
-	cabecera := NewTelecomunicacionesZFCabeceraBuilder().
+	cabecera := invoices.NewTelecomunicacionesZFCabeceraBuilder().
 		WithNitEmisor(1234567).
 		WithRazonSocialEmisor("EMPRESA TELECOM ZF").
 		WithMunicipio("IQUIQUE (EXT)").
@@ -49,7 +47,7 @@ func TestTelecomunicacionesZFBuilder(t *testing.T) {
 		WithUsuario("operador_zf").
 		Build()
 
-	detalle := NewTelecomunicacionesZFDetalleBuilder().
+	detalle := invoices.NewTelecomunicacionesZFDetalleBuilder().
 		WithActividadEconomica("611000").
 		WithCodigoProductoSin(123).
 		WithCodigoProducto("P001").
@@ -62,7 +60,7 @@ func TestTelecomunicacionesZFBuilder(t *testing.T) {
 		Build()
 
 	t.Run("Modalidad Electronica ZF", func(t *testing.T) {
-		factura := NewTelecomunicacionesZFBuilder().
+		factura := invoices.NewTelecomunicacionesZFBuilder().
 			WithModalidad(siat.ModalidadElectronica).
 			WithCabecera(cabecera).
 			AddDetalle(detalle).
@@ -88,54 +86,30 @@ func TestTelecomunicacionesZFBuilder(t *testing.T) {
 }
 
 func TestTelecomunicacionesZFIntegration(t *testing.T) {
-	if _, err := os.Stat(".env"); os.IsNotExist(err) {
-		t.Skip("Saltando prueba de integración: .env no encontrado")
-	}
-	godotenv.Load(".env")
+	tc := setupTestContext(t, siat.ModalidadElectronica)
 
-	codModalidad := siat.ModalidadElectronica
-	nit, _ := utils.ParseInt64Safe(os.Getenv("SIAT_NIT"))
-	codAmbiente := siat.AmbientePruebas
-	config := siat.Config{Token: os.Getenv("SIAT_TOKEN")}
-
-	client := &http.Client{Transport: &http.Transport{Proxy: http.ProxyFromEnvironment}}
-	siatClient, _ := siat.New(os.Getenv("SIAT_URL"), client)
-	serviceCodigos := siatClient.Codigos()
-	serviceTelecom := siatClient.Telecomunicaciones()
+	service := tc.Client.Telecomunicaciones()
 
 	// 1. Obtener CUIS
-	cuisReq := models.Codigos().NewCuisBuilder().
-		WithCodigoAmbiente(codAmbiente).
-		WithCodigoModalidad(codModalidad).
-		WithCodigoSistema(os.Getenv("SIAT_CODIGO_SISTEMA")).
-		WithNit(nit).
-		Build()
-	cuis, _ := serviceCodigos.SolicitudCuis(context.Background(), config, cuisReq)
+	cuis := tc.GetCuis(t)
 
 	// 2. Obtener CUFD
-	cufdReq := models.Codigos().NewCufdBuilder().
-		WithCodigoAmbiente(codAmbiente).
-		WithCodigoModalidad(codModalidad).
-		WithCodigoSistema(os.Getenv("SIAT_CODIGO_SISTEMA")).
-		WithNit(nit).
-		WithCuis(cuis.Body.Content.RespuestaCuis.Codigo).
-		Build()
-	cufd, _ := serviceCodigos.SolicitudCufd(context.Background(), config, cufdReq)
+	cufd, cufdControl := tc.GetCufd(t, cuis)
 
 	fechaEmision := time.Now()
 	// 3. Generar CUF (Sector 49, TipoFactura 2)
-	cuf, _ := utils.GenerarCUF(nit, fechaEmision, 0, codModalidad, 1, 2, 49, 1, 0, cufd.Body.Content.RespuestaCufd.CodigoControl)
+	cuf := tc.GetCuf(t, 49, siat.EmisionOnline, 2, 1, 0, cufdControl)
 
 	// 4. Construir Factura ZF
 	nombre := "JUAN PEREZ (ZF)"
-	cabecera := NewTelecomunicacionesZFCabeceraBuilder().
-		WithNitEmisor(nit).
+	cabecera := invoices.NewTelecomunicacionesZFCabeceraBuilder().
+		WithNitEmisor(tc.Nit).
 		WithRazonSocialEmisor("EMPRESA TELECOM ZF").
 		WithMunicipio("La Paz").
 		WithNumeroFactura(1).
 		WithCuf(cuf).
-		WithCufd(cufd.Body.Content.RespuestaCufd.Codigo).
-		WithCodigoSucursal(0).
+		WithCufd(cufd).
+		WithCodigoSucursal(tc.Sucursal).
 		WithDireccion("Av. Principal 123").
 		WithFechaEmision(fechaEmision).
 		WithNombreRazonSocial(&nombre).
@@ -151,7 +125,7 @@ func TestTelecomunicacionesZFIntegration(t *testing.T) {
 		WithUsuario("operador_zf").
 		Build()
 
-	detalle := NewTelecomunicacionesZFDetalleBuilder().
+	detalle := invoices.NewTelecomunicacionesZFDetalleBuilder().
 		WithActividadEconomica("611000").
 		WithCodigoProductoSin(123).
 		WithCodigoProducto("P001").
@@ -162,8 +136,8 @@ func TestTelecomunicacionesZFIntegration(t *testing.T) {
 		WithSubTotal(200).
 		Build()
 
-	factura := NewTelecomunicacionesZFBuilder().
-		WithModalidad(siat.ModalidadElectronica).
+	factura := invoices.NewTelecomunicacionesZFBuilder().
+		WithModalidad(tc.Modalidad).
 		WithCabecera(cabecera).
 		AddDetalle(detalle).
 		Build()
@@ -176,25 +150,25 @@ func TestTelecomunicacionesZFIntegration(t *testing.T) {
 	}
 	hashString, encodedArchivo, _ := utils.CompressAndHash(signedXML)
 
-	// 6. Recepción
+	// 6. Solicitud de recepción
 	req := models.Telecomunicaciones().NewRecepcionFacturaBuilder().
-		WithCodigoAmbiente(codAmbiente).
+		WithCodigoAmbiente(tc.Ambiente).
 		WithCodigoDocumentoSector(49).
-		WithCodigoEmision(1).
-		WithCodigoModalidad(codModalidad).
-		WithCodigoPuntoVenta(0).
-		WithCodigoSistema(os.Getenv("SIAT_CODIGO_SISTEMA")).
-		WithCodigoSucursal(0).
-		WithCufd(cufd.Body.Content.RespuestaCufd.Codigo).
-		WithCuis(cuis.Body.Content.RespuestaCuis.Codigo).
-		WithNit(nit).
+		WithCodigoEmision(siat.EmisionOnline).
+		WithCodigoModalidad(tc.Modalidad).
+		WithCodigoPuntoVenta(tc.PuntoVenta).
+		WithCodigoSistema(tc.Sistema).
+		WithCodigoSucursal(tc.Sucursal).
+		WithCufd(cufd).
+		WithCuis(cuis).
+		WithNit(tc.Nit).
 		WithTipoFacturaDocumento(2). // 2 para ZF
 		WithArchivo(encodedArchivo).
 		WithFechaEnvio(fechaEmision).
 		WithHashArchivo(hashString).
 		Build()
 
-	resp, err := serviceTelecom.RecepcionFactura(context.Background(), config, req)
+	resp, err := service.RecepcionFactura(context.Background(), tc.Config, req)
 
 	if err == nil && resp != nil {
 		log.Printf("Respuesta Recepcion ZF: %+v", resp.Body.Content)

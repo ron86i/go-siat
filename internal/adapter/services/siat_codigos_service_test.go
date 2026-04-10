@@ -21,6 +21,9 @@ import (
 // sobre la revocación de un certificado digital.
 // Requisitos: El certificado enviado debe ser el registrado previamente en el portal de Impuestos.
 func TestNotificaCertificadoRevocado(t *testing.T) {
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		t.Skip("Saltando prueba de integración: .env no encontrado")
+	}
 	// Cargar configuración de integración desde el entorno (.env)
 	godotenv.Load()
 
@@ -82,6 +85,9 @@ MIIEejCCA2KgA...alF2Tw0jIVieaeefsL78Yv8fA==
 // contra el servicio real del SIAT, asegurando que la configuración cargada sea válida
 // y que la respuesta del servidor se procese correctamente sin predecir mensajes fijos.
 func TestVerificarNit(t *testing.T) {
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		t.Skip("Saltando prueba de integración: .env no encontrado")
+	}
 	// Cargar configuración de integración desde el entorno (.env)
 	godotenv.Load()
 
@@ -144,6 +150,9 @@ func TestVerificarNit(t *testing.T) {
 // El CUIS es fundamental para identificar un punto de venta y su sistema asociado ante el SIAT.
 // Se recomienda renovar el CUIS periódicamente según la vigencia devuelta por el servidor.
 func TestSolicitudCuis(t *testing.T) {
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		t.Skip("Saltando prueba de integración: .env no encontrado")
+	}
 	godotenv.Load()
 	codModalidad, err := utils.ParseIntSafe(os.Getenv("SIAT_CODIGO_MODALIDAD"))
 	if err != nil {
@@ -192,6 +201,9 @@ func TestSolicitudCuis(t *testing.T) {
 // El CUFD debe solicitarse cada 24 horas o al inicio de operaciones del día.
 // Requiere un CUIS vigente para ser procesado correctamente por el SIAT.
 func TestSolicitudCufd(t *testing.T) {
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		t.Skip("Saltando prueba de integración: .env no encontrado")
+	}
 	// Cargar entorno de configuración para tests de integración
 	godotenv.Load()
 
@@ -251,6 +263,9 @@ func TestSolicitudCufd(t *testing.T) {
 // TestSolicitudCufdMasivo verifica la obtención masiva de códigos CUFD para múltiples
 // puntos de venta o sucursales en una sola operación.
 func TestSolicitudCufdMasivo(t *testing.T) {
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		t.Skip("Saltando prueba de integración: .env no encontrado")
+	}
 	// Cargar configuración de integración real
 	godotenv.Load()
 
@@ -307,6 +322,9 @@ func TestSolicitudCufdMasivo(t *testing.T) {
 // TestSolicitudCuisMasivo verifica la obtención masiva de códigos CUIS para múltiples
 // puntos de venta en una única transacción, asegurando la eficiencia en configuraciones extensas.
 func TestSolicitudCuisMasivo(t *testing.T) {
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		t.Skip("Saltando prueba de integración: .env no encontrado")
+	}
 	// Cargar configuración real del entorno para pruebas de integración
 	godotenv.Load()
 
@@ -364,6 +382,9 @@ func TestSolicitudCuisMasivo(t *testing.T) {
 // de verificación de comunicación. El servicio debe registrar la petición y retornar un código
 // que confirme la recepción exitosa, asegurando que el canal SOAP esté operativo.
 func TestVerificarComunicacion(t *testing.T) {
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		t.Skip("Saltando prueba de integración: .env no encontrado")
+	}
 	// Cargar configuración desde .env
 	godotenv.Load()
 

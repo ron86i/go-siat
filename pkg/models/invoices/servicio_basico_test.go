@@ -1,17 +1,16 @@
-package invoices
+package invoices_test
 
 import (
 	"context"
 	"encoding/xml"
 	"log"
-	"os"
 	"testing"
 	"time"
 
-	"github.com/joho/godotenv"
 	"github.com/ron86i/go-siat"
 	"github.com/ron86i/go-siat/internal/core/domain/documents"
 	"github.com/ron86i/go-siat/pkg/models"
+	"github.com/ron86i/go-siat/pkg/models/invoices"
 	"github.com/ron86i/go-siat/pkg/utils"
 	"github.com/stretchr/testify/assert"
 )
@@ -25,7 +24,7 @@ func TestServicioBasicoBuilder(t *testing.T) {
 	ciudad := "LA PAZ"
 	zona := "CENTRO"
 
-	cabecera := NewServicioBasicoCabeceraBuilder().
+	cabecera := invoices.NewServicioBasicoCabeceraBuilder().
 		WithNitEmisor(1234567).
 		WithRazonSocialEmisor("EMPRESA ELECTRICA").
 		WithMunicipio("LA PAZ").
@@ -55,7 +54,7 @@ func TestServicioBasicoBuilder(t *testing.T) {
 		WithUsuario("operador1").
 		Build()
 
-	detalle := NewServicioBasicoDetalleBuilder().
+	detalle := invoices.NewServicioBasicoDetalleBuilder().
 		WithActividadEconomica("351000").
 		WithCodigoProductoSin(123).
 		WithCodigoProducto("P001").
@@ -67,7 +66,7 @@ func TestServicioBasicoBuilder(t *testing.T) {
 		Build()
 
 	t.Run("Modalidad Electronica", func(t *testing.T) {
-		factura := NewServicioBasicoBuilder().
+		factura := invoices.NewServicioBasicoBuilder().
 			WithModalidad(siat.ModalidadElectronica).
 			WithCabecera(cabecera).
 			AddDetalle(detalle).
@@ -85,75 +84,22 @@ func TestServicioBasicoBuilder(t *testing.T) {
 }
 
 func TestServicioBasicoIntegration(t *testing.T) {
-	if _, err := os.Stat(".env"); os.IsNotExist(err) {
-		t.Skip("Saltando prueba de integración: .env no encontrado")
-	}
-	godotenv.Load(".env")
+	tc := setupTestContext(t, siat.ModalidadComputarizada)
 
-	codModalidad := siat.ModalidadElectronica
-	nit, _ := utils.ParseInt64Safe(os.Getenv("SIAT_NIT"))
-	codAmbiente := siat.AmbientePruebas
-	config := siat.Config{Token: os.Getenv("SIAT_TOKEN")}
-
-	siatClient, _ := siat.New(os.Getenv("SIAT_URL"), nil)
-	serviceCodigos := siatClient.Codigos()
-	serviceBasico := siatClient.ServicioBasico()
+	service := tc.Client.ServicioBasico()
 
 	// 1. Obtener CUIS
-	cuisReq := models.Codigos().NewCuisBuilder().
-		WithCodigoAmbiente(codAmbiente).
-		WithCodigoModalidad(codModalidad).
-		WithCodigoSistema(os.Getenv("SIAT_CODIGO_SISTEMA")).
-		WithNit(nit).
-		Build()
-	cuis, _ := serviceCodigos.SolicitudCuis(context.Background(), config, cuisReq)
+	cuis := tc.GetCuis(t)
 
 	// 2. Obtener CUFD
-	cufdReq := models.Codigos().NewCufdBuilder().
-		WithCodigoAmbiente(codAmbiente).
-		WithCodigoModalidad(codModalidad).
-		WithCodigoSistema(os.Getenv("SIAT_CODIGO_SISTEMA")).
-		WithNit(nit).
-		WithCuis(cuis.Body.Content.RespuestaCuis.Codigo).
-		Build()
-	cufd, _ := serviceCodigos.SolicitudCufd(context.Background(), config, cufdReq)
-
-	fechaEmision := time.Now()
-	// 3. Generar CUF
-	cuf, _ := utils.GenerarCUF(nit, fechaEmision, 0, codModalidad, 1, 1, 13, 1, 0, cufd.Body.Content.RespuestaCufd.CodigoControl)
+	cufd, cufdControl := tc.GetCufd(t, cuis)
 
 	// 4. Construir Factura
 	nombre := "JUAN PEREZ"
 	mes := "ABRIL"
 	gestion := 2024
-	cabecera := NewServicioBasicoCabeceraBuilder().
-		WithNitEmisor(nit).
-		WithRazonSocialEmisor("EMPRESA ELECTRICA S.A.").
-		WithMunicipio("La Paz").
-		WithNumeroFactura(1).
-		WithCuf(cuf).
-		WithCufd(cufd.Body.Content.RespuestaCufd.Codigo).
-		WithCodigoSucursal(0).
-		WithDireccion("Av. Principal 123").
-		WithFechaEmision(fechaEmision).
-		WithNombreRazonSocial(&nombre).
-		WithCodigoTipoDocumentoIdentidad(1).
-		WithNumeroDocumento("1234567").
-		WithCodigoCliente("CLI-001").
-		WithCodigoMetodoPago(1).
-		WithMontoTotal(100).
-		WithMontoTotalSujetoIva(100).
-		WithCodigoMoneda(1).
-		WithTipoCambio(1).
-		WithMontoTotalMoneda(100).
-		WithLeyenda("Ley 453...").
-		WithUsuario("operador").
-		WithMes(&mes).
-		WithGestion(&gestion).
-		WithNumeroMedidor("123456").
-		Build()
 
-	detalle := NewServicioBasicoDetalleBuilder().
+	detalle := invoices.NewServicioBasicoDetalleBuilder().
 		WithActividadEconomica("351000").
 		WithCodigoProductoSin(123).
 		WithCodigoProducto("P001").
@@ -164,9 +110,35 @@ func TestServicioBasicoIntegration(t *testing.T) {
 		WithSubTotal(100).
 		Build()
 
-	factura := NewServicioBasicoBuilder().
-		WithModalidad(siat.ModalidadElectronica).
-		WithCabecera(cabecera).
+	// 4. Construir XML
+	factura := invoices.NewServicioBasicoBuilder().
+		WithModalidad(tc.Modalidad).
+		WithCabecera(invoices.NewServicioBasicoCabeceraBuilder().
+			WithNitEmisor(tc.Nit).
+			WithRazonSocialEmisor("EMPRESA ELECTRICA S.A.").
+			WithMunicipio("La Paz").
+			WithNumeroFactura(1).
+			WithCuf(tc.GetCuf(t, 13, 1, 1, 1, 0, cufdControl)).
+			WithCufd(cufd).
+			WithCodigoSucursal(tc.Sucursal).
+			WithDireccion("Av. Principal 123").
+			WithFechaEmision(time.Now()).
+			WithNombreRazonSocial(&nombre).
+			WithCodigoTipoDocumentoIdentidad(1).
+			WithNumeroDocumento("1234567").
+			WithCodigoCliente("CLI-001").
+			WithCodigoMetodoPago(1).
+			WithMontoTotal(100).
+			WithMontoTotalSujetoIva(100).
+			WithCodigoMoneda(1).
+			WithTipoCambio(1).
+			WithMontoTotalMoneda(100).
+			WithLeyenda("Ley 453...").
+			WithUsuario("operador").
+			WithMes(&mes).
+			WithGestion(&gestion).
+			WithNumeroMedidor("123456").
+			Build()).
 		AddDetalle(detalle).
 		Build()
 
@@ -178,25 +150,26 @@ func TestServicioBasicoIntegration(t *testing.T) {
 	}
 	hashString, encodedArchivo, _ := utils.CompressAndHash(signedXML)
 
-	// 6. Recepción
+	// 6. Solicitud de recepción
 	req := models.ServicioBasico().NewRecepcionFacturaBuilder().
-		WithCodigoAmbiente(codAmbiente).
+		WithCodigoAmbiente(tc.Ambiente).
 		WithCodigoDocumentoSector(13).
-		WithCodigoEmision(1).
-		WithCodigoModalidad(codModalidad).
-		WithCodigoPuntoVenta(0).
-		WithCodigoSistema(os.Getenv("SIAT_CODIGO_SISTEMA")).
-		WithCodigoSucursal(0).
-		WithCufd(cufd.Body.Content.RespuestaCufd.Codigo).
-		WithCuis(cuis.Body.Content.RespuestaCuis.Codigo).
-		WithNit(nit).
+		WithCodigoEmision(siat.EmisionOnline).
+		WithCodigoModalidad(tc.Modalidad).
+		WithCodigoPuntoVenta(tc.PuntoVenta).
+		WithCodigoSistema(tc.Sistema).
+		WithCodigoSucursal(tc.Sucursal).
+		WithCufd(cufd).
+		WithCuis(cuis).
+		WithNit(tc.Nit).
 		WithTipoFacturaDocumento(1).
 		WithArchivo(encodedArchivo).
-		WithFechaEnvio(fechaEmision).
+		WithFechaEnvio(time.Now()).
 		WithHashArchivo(hashString).
 		Build()
 
-	resp, err := serviceBasico.RecepcionFactura(context.Background(), config, req)
+	// 7. Intentar envío
+	resp, err := service.RecepcionFactura(context.Background(), tc.Config, req)
 
 	if err == nil && resp != nil {
 		log.Printf("Respuesta Recepcion Servicio Basico: %+v", resp.Body.Content)
