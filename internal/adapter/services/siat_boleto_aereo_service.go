@@ -21,37 +21,31 @@ type SiatBoletoAereoService struct {
 }
 
 // AnulacionFactura envía una solicitud al SIAT para anular un boleto aéreo previamente emitido y aceptada.
-// Implementa [ports.SiatBoletoAereoService].
 func (s *SiatBoletoAereoService) AnulacionFactura(ctx context.Context, config ports.Config, opaqueReq models.AnulacionFacturaBoletoAereo) (*soap.EnvelopeResponse[facturacion.AnulacionFacturaResponse], error) {
 	return performSoapRequest[facturacion.AnulacionFactura, facturacion.AnulacionFacturaResponse](ctx, s.httpClient, s.url, config, opaqueReq)
 }
 
 // RecepcionMasivaFactura permite el envío de un paquete de boletos aéreos para procesamiento masivo.
-// Implementa [ports.SiatBoletoAereoService].
 func (s *SiatBoletoAereoService) RecepcionMasivaFactura(ctx context.Context, config ports.Config, opaqueReq models.RecepcionMasivaFacturaBoletoAereo) (*soap.EnvelopeResponse[facturacion.RecepcionMasivaFacturaResponse], error) {
 	return performSoapRequest[facturacion.RecepcionMasivaFactura, facturacion.RecepcionMasivaFacturaResponse](ctx, s.httpClient, s.url, config, opaqueReq)
 }
 
 // ReversionAnulacionFactura revierte la anulación de un boleto aéreo previamente enviada al SIAT.
-// Implementa [ports.SiatBoletoAereoService].
 func (s *SiatBoletoAereoService) ReversionAnulacionFactura(ctx context.Context, config ports.Config, opaqueReq models.ReversionAnulacionFacturaBoletoAereo) (*soap.EnvelopeResponse[facturacion.ReversionAnulacionFacturaResponse], error) {
 	return performSoapRequest[facturacion.ReversionAnulacionFactura, facturacion.ReversionAnulacionFacturaResponse](ctx, s.httpClient, s.url, config, opaqueReq)
 }
 
 // ValidacionRecepcionMasivaFactura verifica el estado del procesamiento de un paquete enviado masivamente.
-// Implementa [ports.SiatBoletoAereoService].
 func (s *SiatBoletoAereoService) ValidacionRecepcionMasivaFactura(ctx context.Context, config ports.Config, opaqueReq models.ValidacionRecepcionMasivaFacturaBoletoAereo) (*soap.EnvelopeResponse[facturacion.ValidacionRecepcionMasivaFacturaResponse], error) {
 	return performSoapRequest[facturacion.ValidacionRecepcionMasivaFactura, facturacion.ValidacionRecepcionMasivaFacturaResponse](ctx, s.httpClient, s.url, config, opaqueReq)
 }
 
 // VerificacionEstadoFactura consulta el estado actual de un boleto aéreo específico.
-// Implementa [ports.SiatBoletoAereoService].
 func (s *SiatBoletoAereoService) VerificacionEstadoFactura(ctx context.Context, config ports.Config, opaqueReq models.VerificacionEstadoFacturaBoletoAereo) (*soap.EnvelopeResponse[facturacion.VerificacionEstadoFacturaResponse], error) {
 	return performSoapRequest[facturacion.VerificacionEstadoFactura, facturacion.VerificacionEstadoFacturaResponse](ctx, s.httpClient, s.url, config, opaqueReq)
 }
 
 // VerificarComunicacion realiza una prueba de conectividad con el servicio de comunicaciones del SIAT.
-// Implementa [ports.SiatBoletoAereoService].
 func (s *SiatBoletoAereoService) VerificarComunicacion(ctx context.Context, config ports.Config, opaqueReq models.VerificarComunicacionBoletoAereo) (*soap.EnvelopeResponse[facturacion.VerificarComunicacionResponse], error) {
 	return performSoapRequest[facturacion.VerificarComunicacion, facturacion.VerificarComunicacionResponse](ctx, s.httpClient, s.url, config, opaqueReq)
 }
