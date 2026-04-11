@@ -2,7 +2,7 @@
 
 [← Back to Index](README.md)
 
-> Complete reference for all 12 SIAT services exposed by the `go-siat` SDK. Each method includes its signature, builder, and response navigation.
+> Complete reference for all 17 SIAT services exposed by the `go-siat` SDK. Each method includes its signature, builder, and response navigation.
 
 ---
 
@@ -84,7 +84,7 @@ Manages SIAT billing codes (CUIS, CUFD), NIT validation, and certificate communi
 
 **Access**: `s.Codigos()`
 
-### `SolicitudCuis` — Request CUIS
+### `SolicitudCuis` - Request CUIS
 
 Obtains the System Identification Unique Code, required to operate with SIAT.
 
@@ -111,7 +111,7 @@ resp, err := s.Codigos().SolicitudCuis(ctx, cfg, req)
 | `WithCodigoSistema` | `string` | SIAT system code |
 | `WithNit` | `int64` | Taxpayer NIT |
 
-### `SolicitudCuisMasivo` — Bulk CUIS Request
+### `SolicitudCuisMasivo` - Bulk CUIS Request
 
 Request multiple CUIS codes in a single operation.
 
@@ -123,7 +123,7 @@ req := models.Codigos().NewCuisMasivoBuilder().
 resp, err := s.Codigos().SolicitudCuisMasivo(ctx, cfg, req)
 ```
 
-### `SolicitudCufd` — Request CUFD
+### `SolicitudCufd` - Request CUFD
 
 Obtains the Daily Invoicing Unique Code. Required daily for invoice emission.
 
@@ -144,7 +144,7 @@ resp, err := s.Codigos().SolicitudCufd(ctx, cfg, req)
 // Navigate: resp.Body.Content.RespuestaCufd.FechaVigCufd
 ```
 
-### `SolicitudCufdMasivo` — Bulk CUFD Request
+### `SolicitudCufdMasivo` - Bulk CUFD Request
 
 ```go
 req := models.Codigos().NewCufdMasivoBuilder().
@@ -154,7 +154,7 @@ req := models.Codigos().NewCufdMasivoBuilder().
 resp, err := s.Codigos().SolicitudCufdMasivo(ctx, cfg, req)
 ```
 
-### `VerificarNit` — Validate NIT
+### `VerificarNit` - Validate NIT
 
 Checks if a tax identification number is active and valid.
 
@@ -167,7 +167,7 @@ resp, err := s.Codigos().VerificarNit(ctx, cfg, req)
 // Navigate: resp.Body.Content.RespuestaVerificarNit.Transaccion
 ```
 
-### `VerificarComunicacion` — Connectivity Test
+### `VerificarComunicacion` - Connectivity Test
 
 Tests connectivity to the Codigos service.
 
@@ -176,7 +176,7 @@ req := models.Codigos().NewVerificarComunicacionCodigosBuilder().Build()
 resp, err := s.Codigos().VerificarComunicacion(ctx, cfg, req)
 ```
 
-### `NotificaCertificadoRevocado` — Certificate Revocation
+### `NotificaCertificadoRevocado` - Certificate Revocation
 
 Notifies SIAT that a digital certificate has been revoked.
 
@@ -246,7 +246,7 @@ Manages point of sale (POS) registration, significant events, and system closing
 
 **Access**: `s.Operaciones()`
 
-### `RegistroPuntoVenta` — Register POS
+### `RegistroPuntoVenta` - Register POS
 
 ```go
 req := models.Operaciones().NewRegistroPuntoVentaBuilder().
@@ -256,7 +256,7 @@ req := models.Operaciones().NewRegistroPuntoVentaBuilder().
 resp, err := s.Operaciones().RegistroPuntoVenta(ctx, cfg, req)
 ```
 
-### `ConsultaPuntoVenta` — Query POS
+### `ConsultaPuntoVenta` - Query POS
 
 ```go
 req := models.Operaciones().NewConsultaPuntoVentaBuilder().Build()
@@ -282,11 +282,11 @@ resp, err := s.Operaciones().ConsultaPuntoVenta(ctx, cfg, req)
 
 ## CompraVenta Service
 
-Handles standard sales invoicing (Sector 1) — the most common sector for general commerce.
+Handles standard sales invoicing - the most common sector for general commerce.
 
 **Access**: `s.CompraVenta()`
 
-### `RecepcionFactura` — Send Invoice
+### `RecepcionFactura` - Send Invoice
 
 ```go
 req := models.CompraVenta().NewRecepcionFacturaBuilder().

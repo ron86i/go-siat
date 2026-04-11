@@ -2,7 +2,7 @@
 
 [← Volver al Índice](README.md)
 
-> Guía completa para construir, firmar y enviar facturas a través del sistema SIAT. Cubre el ciclo de vida completo de la factura, los 35 sectores reglamentarios, firmas digitales y procesamiento masivo.
+> Guía completa para construir, firmar y enviar facturas a través del sistema SIAT. Cubre el ciclo de vida completo de la factura, los 48 sectores reglamentarios, firmas digitales y procesamiento masivo.
 
 ---
 
@@ -286,90 +286,90 @@ Los documentos de ajuste (Notas de Crédito/Débito, Notas de Conciliación) man
 
 ## Referencia de Sectores Soportados
 
-`go-siat` proporciona modelos de dominio, builders y tests de integración para los **35 sectores** reglamentarios:
+`go-siat` proporciona modelos de dominio, builders y tests de integración para los **48 sectores** reglamentarios:
 
 ### Estándar y Servicios
 
-| Sector | Prefijo Builder | Archivo |
-|:-------|:---------------|:--------|
-| Compra-Venta (Sector 1) | `CompraVenta` | `compra_venta.go` |
-| Compra-Venta — Bonificaciones | `CompraVentaBonificaciones` | `compra_venta_bonificaciones.go` |
-| Compra-Venta — Tasas | `CompraVentaTasas` | `compra_venta_tasas.go` |
-| Alquiler de Bienes Inmuebles | `AlquilerBienInmueble` | `alquiler_bien_inmueble.go` |
-| Seguros | `Seguros` | `seguros.go` |
-| Suministro de Energía | `SuministroEnergia` | `suministro_energia.go` |
-| Turismo y Hospedaje | `TurismoHospedaje` | `turismo_hospedaje.go` |
-| Hoteles | `Hotel` | `hotel.go` |
-| Hospitales y Clínicas | `HospitalClinica` | `hospital_clinica.go` |
-| Seguridad Alimentaria | `SeguridadAlimentaria` | `seguridad_alimentaria.go` |
-| Entidades Financieras | `EntidadFinanciera` | `entidad_financiera.go` |
-| Boletos Aéreos | `BoletoAereo` | `boleto_aereo.go` |
-| Telecomunicaciones | `Telecomunicaciones` | `telecomunicaciones.go` |
-| Servicios Básicos | `ServicioBasico` | `servicio_basico.go` |
+| Sector | Prefijo Builder | Archivo | Test |
+|:-------|:---------------|:--------|:-----|
+| Compra-Venta | `CompraVenta` | `compra_venta.go` | `compra_venta_test.go` |
+| Compra-Venta Bonificaciones | `CompraVentaBonificaciones` | `compra_venta_bonificaciones.go` | `compra_venta_bonificaciones_test.go` |
+| Compra-Venta Tasas | `CompraVentaTasas` | `compra_venta_tasas.go` | `compra_venta_tasas_test.go` |
+| Alquiler de Bienes Inmuebles | `AlquilerBienInmueble` | `alquiler_bien_inmueble.go` | `alquiler_bien_inmueble_test.go` |
+| Seguros | `Seguros` | `seguros.go` | `seguros_test.go` |
+| Suministro de Energía | `SuministroEnergia` | `suministro_energia.go` | `suministro_energia_test.go` |
+| Turismo y Hospedaje | `TurismoHospedaje` | `turismo_hospedaje.go` | `turismo_hospedaje_test.go` |
+| Hoteles | `Hotel` | `hotel.go` | `hotel_test.go` |
+| Hospitales y Clínicas | `HospitalClinica` | `hospital_clinica.go` | `hospital_clinica_test.go` |
+| Seguridad Alimentaria | `SeguridadAlimentaria` | `seguridad_alimentaria.go` | `seguridad_alimentaria_test.go` |
+| Entidades Financieras | `EntidadFinanciera` | `entidad_financiera.go` | `entidad_financiera_test.go` |
+| Boletos Aéreos | `BoletoAereo` | `boleto_aereo.go` | `boleto_aereo_test.go` |
+| Telecomunicaciones | `Telecomunicaciones` | `telecomunicaciones.go` | `telecomunicaciones_test.go` |
+| Servicios Básicos | `ServicioBasico` | `servicio_basico.go` | `servicio_basico_test.go` |
 
 ### Exportación y Zona Franca
 
-| Sector | Prefijo Builder | Archivo |
-|:-------|:---------------|:--------|
-| Exportación Comercial | `ComercialExportacion` | `comercial_exportacion.go` |
-| Exportación de Servicios | `ComercialExportacionServicio` | `comercial_exportacion_servicio.go` |
-| Exportación Punto de Venta | `ComercialExportacionPuntoVenta` | `comercial_exportacion_punto_venta.go` |
-| Libre Consignación | `LibreConsignacion` | `libre_consignacion.go` |
-| Zona Franca | `ZonaFranca` | `zona_franca.go` |
-| Alquiler Zona Franca | `AlquilerZonaFranca` | `alquiler_zona_franca.go` |
-| Hospital Zona Franca | `HospitalClinicaZonaFranca` | `hospital_clinica_zona_franca.go` |
-| Telecomunicaciones Zona Franca | `TelecomunicacionesZf` | `telecomunicaciones_zf.go` |
-| Servicios Básicos Zona Franca | `ServicioBasicoZf` | `servicio_basico_zf.go` |
-| Duty Free | `DuttyFree` | `dutty_free.go` |
+| Sector | Prefijo Builder | Archivo | Test |
+|:-------|:---------------|:--------|:-----|
+| Exportación Comercial | `ComercialExportacion` | `comercial_exportacion.go` | `comercial_exportacion_test.go` |
+| Exportación de Servicios | `ComercialExportacionServicio` | `comercial_exportacion_servicio.go` | `comercial_exportacion_servicio_test.go` |
+| Exportación Punto de Venta | `ComercialExportacionPuntoVenta` | `comercial_exportacion_punto_venta.go` | `comercial_exportacion_punto_venta_test.go` |
+| Libre Consignación | `LibreConsignacion` | `libre_consignacion.go` | `libre_consignacion_test.go` |
+| Zona Franca | `ZonaFranca` | `zona_franca.go` | `zona_franca_test.go` |
+| Alquiler Zona Franca | `AlquilerZonaFranca` | `alquiler_zona_franca.go` | `alquiler_zona_franca_test.go` |
+| Hospital Zona Franca | `HospitalClinicaZonaFranca` | `hospital_clinica_zona_franca.go` | `hospital_clinica_zona_franca_test.go` |
+| Telecomunicaciones Zona Franca | `TelecomunicacionesZf` | `telecomunicaciones_zf.go` | `telecomunicaciones_zf_test.go` |
+| Servicios Básicos Zona Franca | `ServicioBasicoZf` | `servicio_basico_zf.go` | `servicio_basico_zf_test.go` |
+| Duty Free | `DuttyFree` | `dutty_free.go` | `dutty_free_test.go` |
 
 ### Hidrocarburos y Energía
 
-| Sector | Prefijo Builder | Archivo |
-|:-------|:---------------|:--------|
-| Hidrocarburos | `ComercializacionHidrocarburos` | `comercializacion_hidrocarburos.go` |
-| Exportación Hidrocarburos | `ComercialExportacionHidrocarburos` | `comercial_exportacion_hidrocarburos.go` |
-| Lubricantes (con IEHD) | `LubricantesIehd` | `lubricantes_iehd.go` |
-| Importación Lubricantes | `ImportacionComercializacionLubricantes` | `importacion_comercializacion_lubricantes.go` |
-| Engarrafadoras | `Engarrafadoras` | `engarrafadoras.go` |
-| GN/GLP | `ComercializacionGnGlp` | `comercializacion_gn_glp.go` |
-| GNV | `ComercializacionGnv` | `comercializacion_gnv.go` |
-| Combustible Sin Subvención | `VentaCombustibleSinSubvencion` | `venta_combustible_sin_subvencion.go` |
-| Biodiesel | `Biodiesel` | `biodiesel.go` |
+| Sector | Prefijo Builder | Archivo | Test |
+|:-------|:---------------|:--------|:-----|
+| Hidrocarburos | `ComercializacionHidrocarburos` | `comercializacion_hidrocarburos.go` | `comercializacion_hidrocarburos_test.go` |
+| Exportación Hidrocarburos | `ComercialExportacionHidrocarburos` | `comercial_exportacion_hidrocarburos.go` | `comercial_exportacion_hidrocarburos_test.go` |
+| Lubricantes IEHD | `LubricantesIehd` | `lubricantes_iehd.go` | `lubricantes_iehd_test.go` |
+| Importación Lubricantes | `ImportacionComercializacionLubricantes` | `importacion_comercializacion_lubricantes.go` | `importacion_comercializacion_lubricantes_test.go` |
+| Engarrafadoras | `Engarrafadoras` | `engarrafadoras.go` | `engarrafadoras_test.go` |
+| GN/GLP | `ComercializacionGnGlp` | `comercializacion_gn_glp.go` | `comercializacion_gn_glp_test.go` |
+| GNV | `ComercializacionGnv` | `comercializacion_gnv.go` | `comercializacion_gnv_test.go` |
+| Combustible Sin Subvención | `VentaCombustibleSinSubvencion` | `venta_combustible_sin_subvencion.go` | `venta_combustible_sin_subvencion_test.go` |
+| Biodiesel | `Biodiesel` | `biodiesel.go` | `biodiesel_test.go` |
 
 ### Minería y Metales
 
-| Sector | Prefijo Builder | Archivo |
-|:-------|:---------------|:--------|
-| Venta de Minerales | `VentaMineral` | `venta_mineral.go` |
-| Exportación Minera | `ComercialExportacionMinera` | `comercial_exportacion_minera.go` |
-| Venta al BCB | `VentaMineralBcb` | `venta_mineral_bcb.go` |
+| Sector | Prefijo Builder | Archivo | Test |
+|:-------|:---------------|:--------|:-----|
+| Venta de Minerales | `VentaMineral` | `venta_mineral.go` | `venta_mineral_test.go` |
+| Exportación Minera | `ComercialExportacionMinera` | `comercial_exportacion_minera.go` | `comercial_exportacion_minera_test.go` |
+| Venta al BCB | `VentaMineralBcb` | `venta_mineral_bcb.go` | `venta_mineral_bcb_test.go` |
 
 ### Educación
 
-| Sector | Prefijo Builder | Archivo |
-|:-------|:---------------|:--------|
-| Sector Educativo | `SectorEducativo` | `sector_educativo.go` |
-| Educativo Zona Franca | `SectorEducativoZonaFranca` | `sector_educativo_zona_franca.go` |
+| Sector | Prefijo Builder | Archivo | Test |
+|:-------|:---------------|:--------|:-----|
+| Sector Educativo | `SectorEducativo` | `sector_educativo.go` | `sector_educativo_test.go` |
+| Educativo Zona Franca | `SectorEducativoZonaFranca` | `sector_educativo_zona_franca.go` | `sector_educativo_zona_franca_test.go` |
 
 ### Documentos de Ajuste
 
-| Sector | Prefijo Builder | Archivo |
-|:-------|:---------------|:--------|
-| Nota Crédito/Débito | `NotaCreditoDebito` | `nota_credito_debito.go` |
-| Nota Crédito/Débito ICE | `NotaCreditoDebitoIce` | `nota_credito_debito_ice.go` |
-| Nota Fiscal Crédito/Débito | `NotaFiscalCreditoDebito` | `nota_fiscal_credito_debito.go` |
-| Nota de Conciliación | `NotaConciliacion` | `nota_conciliacion.go` |
+| Sector | Prefijo Builder | Archivo | Test |
+|:-------|:---------------|:--------|:-----|
+| Nota Crédito/Débito | `NotaCreditoDebito` | `nota_credito_debito.go` | `nota_credito_debito_test.go` |
+| Nota Crédito/Débito ICE | `NotaCreditoDebitoIce` | `nota_credito_debito_ice.go` | `nota_credito_debito_ice_test.go` |
+| Nota Fiscal Crédito/Débito | `NotaFiscalCreditoDebito` | `nota_fiscal_credito_debito.go` | `nota_fiscal_credito_debito_test.go` |
+| Nota de Conciliación | `NotaConciliacion` | `nota_conciliacion.go` | `nota_conciliacion_test.go` |
 
 ### Otros Sectores Especiales
 
-| Sector | Prefijo Builder | Archivo |
-|:-------|:---------------|:--------|
-| Juegos de Azar | `JuegoAzar` | `juego_azar.go` |
-| Tasa Cero | `TasaCero` | `tasa_cero.go` |
-| Productos ICE | `AlcanzadaIce` | `alcanzada_ice.go` |
-| Prevalorada | `Prevalorada` | `prevalorada.go` |
-| Prevalorada (Sin Crédito Fiscal) | `PrevaloradaSinDerechoCreditoFiscal` | `prevalorada_sin_derecho_credito_fiscal.go` |
-| Moneda Extranjera | `MonedaExtranjera` | `moneda_extranjera.go` |
+| Sector | Prefijo Builder | Archivo | Test |
+|:-------|:---------------|:--------|:-----|
+| Juegos de Azar | `JuegoAzar` | `juego_azar.go` | `juego_azar_test.go` |
+| Tasa Cero | `TasaCero` | `tasa_cero.go` | `tasa_cero_test.go` |
+| Productos ICE | `AlcanzadaIce` | `alcanzada_ice.go` | `alcanzada_ice_test.go` |
+| Prevalorada | `Prevalorada` | `prevalorada.go` | `prevalorada_test.go` |
+| Prevalorada Sin Crédito Fiscal | `PrevaloradaSinDerechoCreditoFiscal` | `prevalorada_sin_derecho_credito_fiscal.go` | `prevalorada_sin_derecho_credito_fiscal_test.go` |
+| Moneda Extranjera | `MonedaExtranjera` | `moneda_extranjera.go` | `moneda_extranjera_test.go` |
 
 > [!TIP]
 > Todos los archivos de sectores están ubicados en `pkg/models/invoices/`. Cada archivo de test demuestra integración real con el servidor piloto del SIAT y sirve como documentación viviente.

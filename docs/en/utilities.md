@@ -22,7 +22,7 @@
 
 The SDK provides multiple ways to digitally sign invoice XML documents. All methods use **RSA-SHA256** with **Enveloped Signature** (C14N 1.0 with Comments), as mandated by the SIAT.
 
-### `SignXML` — Sign from PEM Files
+### `SignXML` - Sign from PEM Files
 
 Reads certificate and key from the filesystem.
 
@@ -42,7 +42,7 @@ func SignXML(xmlBytes []byte, keyPath, certPath string) ([]byte, error)
 signedXML, err := utils.SignXML(xmlData, "key.pem", "cert.crt")
 ```
 
-### `SignXMLBytes` — Sign from PEM Bytes
+### `SignXMLBytes` - Sign from PEM Bytes
 
 Receives certificate and key directly as byte slices. Ideal for loading from databases or secret vaults.
 
@@ -56,7 +56,7 @@ certBytes, _ := os.ReadFile("cert.crt")
 signedXML, err := utils.SignXMLBytes(xmlData, keyBytes, certBytes)
 ```
 
-### `SignWithP12` — Sign from P12/PFX File
+### `SignWithP12` - Sign from P12/PFX File
 
 Uses a PKCS#12 container file (combines both key and certificate).
 
@@ -68,7 +68,7 @@ func SignWithP12(xmlBytes []byte, p12Path, password string) ([]byte, error)
 signedXML, err := utils.SignWithP12(xmlData, "cert.p12", "my_password")
 ```
 
-### `SignWithP12Bytes` — Sign from P12 Bytes
+### `SignWithP12Bytes` - Sign from P12 Bytes
 
 Receives the P12 data directly in memory. Best for when certificates are stored as BLOBs in databases or fetched from a vault.
 
@@ -81,7 +81,7 @@ p12Data, _ := fetchFromVault("siat-cert")
 signedXML, err := utils.SignWithP12Bytes(xmlData, p12Data, "my_password")
 ```
 
-### `VerifyP12Expiry` — Check Certificate Validity
+### `VerifyP12Expiry` - Check Certificate Validity
 
 Validates that the certificate inside a P12 file hasn't expired.
 
@@ -97,7 +97,7 @@ if err := utils.VerifyP12Expiry(p12Data, "password"); err != nil {
 }
 ```
 
-### `VerifyCertificateValidity` — Check x509 Certificate
+### `VerifyCertificateValidity` - Check x509 Certificate
 
 Validates an already-parsed x509 certificate.
 
@@ -177,7 +177,7 @@ cuf, err := utils.GenerarCUF(
 
 ## Compression and Encoding
 
-### `Gzip` — Compress Data
+### `Gzip` - Compress Data
 
 ```go
 func Gzip(data []byte) ([]byte, error)
@@ -189,7 +189,7 @@ Standard Gzip compression.
 compressed, err := utils.Gzip(xmlBytes)
 ```
 
-### `CompressAndHash` — Compress + SHA256 + Base64
+### `CompressAndHash` - Compress + SHA256 + Base64
 
 The all-in-one function for preparing invoice data for transmission. This combines the three steps SIAT requires:
 
@@ -209,7 +209,7 @@ hash, archivoBase64, err := utils.CompressAndHash(signedXML)
 // archivoBase64 → used in WithArchivo()
 ```
 
-### `CreateTarGz` — Create TAR.GZ Archive
+### `CreateTarGz` - Create TAR.GZ Archive
 
 Creates a TAR.GZ archive from a map of filenames to contents. Useful for packaging multiple invoices.
 

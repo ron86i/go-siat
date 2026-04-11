@@ -29,8 +29,8 @@ Bienvenido a la documentación técnica de **go-siat**. Esta guía está organiz
 |:--|:----------|:------------|
 | 1 | [**Arquitectura**](arquitectura.md) | Diseño hexagonal, capas, patrones de diseño y flujo de datos interno. |
 | 2 | [**Inicio Rápido**](inicio-rapido.md) | Instalación, prerrequisitos, configuración de ambiente y tu primera llamada. |
-| 3 | [**Referencia de API**](referencia-api.md) | Referencia completa de los 12 servicios SIAT y 67+ métodos. |
-| 4 | [**Guía de Facturación**](guia-facturacion.md) | Ciclo de vida de facturas, 35 sectores, firmas digitales y procesamiento masivo. |
+| 3 | [**Referencia de API**](referencia-api.md) | Referencia completa de los 17 servicios SIAT y 100+ métodos. |
+| 4 | [**Guía de Facturación**](guia-facturacion.md) | Ciclo de vida de facturas, 48 sectores, firmas digitales y procesamiento masivo. |
 | 5 | [**Manejo de Errores**](manejo-errores.md) | Tipos de error, 150+ códigos SIAT, estrategias de reintento y verificación. |
 | 6 | [**Utilidades**](utilidades.md) | Generación de CUF, firma XML, compresión, hash y helpers de parseo. |
 | 7 | [**Configuración**](configuracion.md) | Configuración de cliente HTTP, middleware, trazabilidad distribuida y constantes. |
@@ -69,5 +69,5 @@ Bienvenido a la documentación técnica de **go-siat**. Esta guía está organiz
 ---
 
 <p align="center">
-  <sub>Copyright © 2026 Ronaldo Rua — Licenciado bajo MIT</sub>
+  <sub>Copyright © 2026 Ronaldo Rua - Licenciado bajo MIT</sub>
 </p>

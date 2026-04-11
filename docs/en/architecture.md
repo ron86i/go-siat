@@ -99,7 +99,7 @@ This layer contains the **Builder pattern** implementations that users interact 
 
 | File | Responsibility |
 |:-----|:---------------|
-| `common.go` | `RequestWrapper[T]` — generic opaque wrapper for all request types |
+| `common.go` | `RequestWrapper[T]` - generic opaque wrapper for all request types |
 | `codigos.go` | Builders for CUIS, CUFD, NIT verification, certificate revocation |
 | `sincronizacion.go` | Builders for all 17 synchronization operations |
 | `operaciones.go` | Builders for POS registration, significant events, closings |
@@ -110,9 +110,9 @@ This layer contains the **Builder pattern** implementations that users interact 
 
 **Design decision**: Requests use `RequestWrapper[T]` which is a public struct with a **private `request` field**. This makes it impossible for users to access or modify the internal SOAP types directly, enforcing type safety through the Builder pattern.
 
-### 3. Public Models — Invoices (`pkg/models/invoices/`)
+### 3. Public Models - Invoices (`pkg/models/invoices/`)
 
-Contains **35 sector-specific invoice builders** with their domain models:
+Contains **48 sector-specific invoice builders** with their domain models:
 
 - Each sector has a Go file with `NewXxxCabeceraBuilder()`, `NewXxxDetalleBuilder()`, and `NewXxxBuilder()`.
 - Each sector has a corresponding `_test.go` file with integration tests.
@@ -137,7 +137,7 @@ Ports define the **contracts** (interfaces) that adapters must implement:
 | `SiatCodigosService` | 7 | CUIS/CUFD codes, NIT validation, certificate revocation |
 | `SiatSincronizacionService` | 17 | Master catalog synchronization |
 | `SiatOperacionesPort` | 8 | POS management, significant events |
-| `SiatCompraVentaService` | 10 | Sales invoicing (Sector 1) |
+| `SiatCompraVentaService` | 10 | Sales invoicing |
 | `SiatElectronicaService` | 10 | Electronic invoicing (with digital signature) |
 | `SiatComputarizadaService` | 10 | Computerized invoicing (without digital signature) |
 | `SiatDocumentoAjusteService` | 5 | Adjustment documents (credit/debit notes) |
@@ -295,7 +295,7 @@ go-siat/
 │   │   ├── computarizada.go        # Computerized builders
 │   │   ├── electronica.go          # Electronic builders
 │   │   ├── documento_ajuste.go     # Adjustment document builders
-│   │   └── invoices/               # 35 sector-specific invoice builders + tests
+│   │   └── invoices/               # 48 sector-specific invoice builders + tests
 │   │
 │   └── utils/                       # Utility functions
 │       ├── signXML.go              # XML digital signing
@@ -318,7 +318,7 @@ go-siat/
 │       ├── domain/                  # Pure data structures
 │       │   ├── datatype/           # SOAP envelopes, custom types
 │       │   ├── siat/               # SIAT response types by service
-│       │   └── documents/          # XML domain models (35 sectors)
+│       │   └── documents/          # XML domain models (48 sectors)
 │       │
 │       ├── errors/                  # SiatError type
 │       └── middleware/              # HTTPMiddleware interface + chaining
