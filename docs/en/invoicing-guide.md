@@ -2,7 +2,7 @@
 
 [← Back to Index](README.md)
 
-> Comprehensive guide to building, signing, and sending invoices through the SIAT system. Covers the complete invoice lifecycle, all 35 regulatory sectors, digital signatures, and batch processing.
+> Comprehensive guide to building, signing, and sending invoices through the SIAT system. Covers the complete invoice lifecycle, all 48 regulatory sectors, digital signatures, and batch processing.
 
 ---
 
@@ -339,15 +339,15 @@ resp, err := s.DocumentoAjuste().RecepcionDocumentoAjuste(ctx, cfg, req)
 
 ## Supported Sectors Reference
 
-`go-siat` provides complete domain models, builders, and integration tests for all **35 regulatory sectors**:
+`go-siat` provides complete domain models, builders, and integration tests for all **48 regulatory sectors**:
 
 ### Standard and Services
 
 | Sector | Builder Prefix | File | Test |
 |:-------|:---------------|:-----|:-----|
-| Sales (Sector 1) | `CompraVenta` | `compra_venta.go` | `compra_venta_test.go` |
-| Sales — Bonuses | `CompraVentaBonificaciones` | `compra_venta_bonificaciones.go` | `compra_venta_bonificaciones_test.go` |
-| Sales — Fees | `CompraVentaTasas` | `compra_venta_tasas.go` | `compra_venta_tasas_test.go` |
+| Sales | `CompraVenta` | `compra_venta.go` | `compra_venta_test.go` |
+| Sales Bonuses | `CompraVentaBonificaciones` | `compra_venta_bonificaciones.go` | `compra_venta_bonificaciones_test.go` |
+| Sales Fees | `CompraVentaTasas` | `compra_venta_tasas.go` | `compra_venta_tasas_test.go` |
 | Real Estate Rental | `AlquilerBienInmueble` | `alquiler_bien_inmueble.go` | `alquiler_bien_inmueble_test.go` |
 | Insurance | `Seguros` | `seguros.go` | `seguros_test.go` |
 | Energy Supply | `SuministroEnergia` | `suministro_energia.go` | `suministro_energia_test.go` |
@@ -381,7 +381,7 @@ resp, err := s.DocumentoAjuste().RecepcionDocumentoAjuste(ctx, cfg, req)
 |:-------|:---------------|:-----|:-----|
 | Hydrocarbons | `ComercializacionHidrocarburos` | `comercializacion_hidrocarburos.go` | `comercializacion_hidrocarburos_test.go` |
 | Export Hydrocarbons | `ComercialExportacionHidrocarburos` | `comercial_exportacion_hidrocarburos.go` | `comercial_exportacion_hidrocarburos_test.go` |
-| Lubricants (with IEHD) | `LubricantesIehd` | `lubricantes_iehd.go` | `lubricantes_iehd_test.go` |
+| Lubricants IEHD | `LubricantesIehd` | `lubricantes_iehd.go` | `lubricantes_iehd_test.go` |
 | Lubricants Import | `ImportacionComercializacionLubricantes` | `importacion_comercializacion_lubricantes.go` | `importacion_comercializacion_lubricantes_test.go` |
 | Bottling Plants | `Engarrafadoras` | `engarrafadoras.go` | `engarrafadoras_test.go` |
 | GN/GLP | `ComercializacionGnGlp` | `comercializacion_gn_glp.go` | `comercializacion_gn_glp_test.go` |
@@ -421,7 +421,7 @@ resp, err := s.DocumentoAjuste().RecepcionDocumentoAjuste(ctx, cfg, req)
 | Zero Tax | `TasaCero` | `tasa_cero.go` | `tasa_cero_test.go` |
 | ICE Products | `AlcanzadaIce` | `alcanzada_ice.go` | `alcanzada_ice_test.go` |
 | Prevalued | `Prevalorada` | `prevalorada.go` | `prevalorada_test.go` |
-| Prevalued (No Tax Credit) | `PrevaloradaSinDerechoCreditoFiscal` | `prevalorada_sin_derecho_credito_fiscal.go` | `prevalorada_sin_derecho_credito_fiscal_test.go` |
+| Prevalued No Tax Credit | `PrevaloradaSinDerechoCreditoFiscal` | `prevalorada_sin_derecho_credito_fiscal.go` | `prevalorada_sin_derecho_credito_fiscal_test.go` |
 | Foreign Currency | `MonedaExtranjera` | `moneda_extranjera.go` | `moneda_extranjera_test.go` |
 
 > [!TIP]

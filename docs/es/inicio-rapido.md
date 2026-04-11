@@ -22,7 +22,7 @@
 | Requisito | Detalles |
 |:----------|:---------|
 | **Go** | Versión 1.25 o superior |
-| **Credenciales SIAT** | Token API, Código de Sistema, NIT — obtenidos de [Impuestos Nacionales](https://siat.impuestos.gob.bo/) |
+| **Credenciales SIAT** | Token API, Código de Sistema, NIT - obtenidos de [Impuestos Nacionales](https://siat.impuestos.gob.bo/) |
 | **Certificado Digital** | Archivo `.p12`/`.pfx` + contraseña (requerido solo para modalidad **Electrónica**) |
 | **Archivos PEM** | `key.pem` + `cert.crt` (alternativa al P12 para modalidad Electrónica) |
 

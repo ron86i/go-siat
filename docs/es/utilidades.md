@@ -22,7 +22,7 @@
 
 El SDK proporciona múltiples formas de firmar digitalmente documentos XML de facturas. Todos los métodos usan **RSA-SHA256** con **Firma Envolvente** (C14N 1.0 con Comentarios), según lo exigido por el SIAT.
 
-### `SignXML` — Firmar desde Archivos PEM
+### `SignXML` - Firmar desde Archivos PEM
 
 Lee certificado y clave del sistema de archivos.
 
@@ -40,7 +40,7 @@ func SignXML(xmlBytes []byte, keyPath, certPath string) ([]byte, error)
 signedXML, err := utils.SignXML(xmlData, "key.pem", "cert.crt")
 ```
 
-### `SignXMLBytes` — Firmar desde Bytes PEM
+### `SignXMLBytes` - Firmar desde Bytes PEM
 
 Recibe certificado y clave directamente como slices de bytes. Ideal para cargar desde bases de datos o vaults de secretos.
 
@@ -48,7 +48,7 @@ Recibe certificado y clave directamente como slices de bytes. Ideal para cargar 
 func SignXMLBytes(xmlBytes, keyBytes, certBytes []byte) ([]byte, error)
 ```
 
-### `SignWithP12` — Firmar desde Archivo P12/PFX
+### `SignWithP12` - Firmar desde Archivo P12/PFX
 
 Usa un contenedor PKCS#12 (combina clave y certificado).
 
@@ -60,7 +60,7 @@ func SignWithP12(xmlBytes []byte, p12Path, password string) ([]byte, error)
 signedXML, err := utils.SignWithP12(xmlData, "cert.p12", "mi_contraseña")
 ```
 
-### `SignWithP12Bytes` — Firmar desde Bytes P12
+### `SignWithP12Bytes` - Firmar desde Bytes P12
 
 Recibe los datos P12 directamente en memoria. Ideal cuando los certificados se almacenan como BLOBs en bases de datos o se obtienen de un vault.
 
@@ -68,7 +68,7 @@ Recibe los datos P12 directamente en memoria. Ideal cuando los certificados se a
 func SignWithP12Bytes(xmlBytes, p12Data []byte, password string) ([]byte, error)
 ```
 
-### `VerifyP12Expiry` — Verificar Validez del Certificado
+### `VerifyP12Expiry` - Verificar Validez del Certificado
 
 Valida que el certificado dentro de un archivo P12 no haya expirado.
 
@@ -84,7 +84,7 @@ if err := utils.VerifyP12Expiry(p12Data, "contraseña"); err != nil {
 }
 ```
 
-### `VerifyCertificateValidity` — Verificar Certificado x509
+### `VerifyCertificateValidity` - Verificar Certificado x509
 
 Valida un certificado x509 ya parseado.
 
@@ -162,7 +162,7 @@ cuf, err := utils.GenerarCUF(
 
 ## Compresión y Codificación
 
-### `Gzip` — Comprimir Datos
+### `Gzip` - Comprimir Datos
 
 ```go
 func Gzip(data []byte) ([]byte, error)
@@ -170,7 +170,7 @@ func Gzip(data []byte) ([]byte, error)
 
 Compresión Gzip estándar.
 
-### `CompressAndHash` — Comprimir + SHA256 + Base64
+### `CompressAndHash` - Comprimir + SHA256 + Base64
 
 La función todo-en-uno para preparar datos de factura para transmisión. Combina los tres pasos que requiere el SIAT:
 
@@ -190,7 +190,7 @@ hash, archivoBase64, err := utils.CompressAndHash(signedXML)
 // archivoBase64 → se usa en WithArchivo()
 ```
 
-### `CreateTarGz` — Crear Archivo TAR.GZ
+### `CreateTarGz` - Crear Archivo TAR.GZ
 
 Crea un archivo TAR.GZ desde un mapa de nombres de archivo a contenidos.
 

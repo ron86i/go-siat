@@ -2,7 +2,7 @@
 
 [← Volver al Índice](README.md)
 
-> Referencia completa de los 12 servicios SIAT expuestos por el SDK `go-siat`. Cada método incluye su firma, builder y navegación de respuesta.
+> Referencia completa de los 17 servicios SIAT expuestos por el SDK `go-siat`. Cada método incluye su firma, builder y navegación de respuesta.
 
 ---
 
@@ -78,7 +78,7 @@ Gestiona los códigos de facturación SIAT (CUIS, CUFD), validación de NIT y co
 
 **Acceso**: `s.Codigos()`
 
-### `SolicitudCuis` — Solicitar CUIS
+### `SolicitudCuis` - Solicitar CUIS
 
 Obtiene el Código Único de Inicio de Sistemas, requerido para operar con el SIAT.
 
@@ -105,11 +105,11 @@ resp, err := s.Codigos().SolicitudCuis(ctx, cfg, req)
 | `WithCodigoSistema` | `string` | Código de sistema SIAT |
 | `WithNit` | `int64` | NIT del contribuyente |
 
-### `SolicitudCuisMasivo` — Solicitud Masiva de CUIS
+### `SolicitudCuisMasivo` - Solicitud Masiva de CUIS
 
 Solicita múltiples códigos CUIS en una sola operación.
 
-### `SolicitudCufd` — Solicitar CUFD
+### `SolicitudCufd` - Solicitar CUFD
 
 Obtiene el Código Único de Facturación Diaria. Requerido diariamente para emitir facturas.
 
@@ -130,9 +130,9 @@ resp, err := s.Codigos().SolicitudCufd(ctx, cfg, req)
 // Navegar: resp.Body.Content.RespuestaCufd.FechaVigCufd
 ```
 
-### `SolicitudCufdMasivo` — Solicitud Masiva de CUFD
+### `SolicitudCufdMasivo` - Solicitud Masiva de CUFD
 
-### `VerificarNit` — Validar NIT
+### `VerificarNit` - Validar NIT
 
 Verifica si un Número de Identificación Tributaria está activo y habilitado.
 
@@ -144,9 +144,9 @@ req := models.Codigos().NewVerificarNitBuilder().
 resp, err := s.Codigos().VerificarNit(ctx, cfg, req)
 ```
 
-### `VerificarComunicacion` — Prueba de Conectividad
+### `VerificarComunicacion` - Prueba de Conectividad
 
-### `NotificaCertificadoRevocado` — Revocación de Certificado
+### `NotificaCertificadoRevocado` - Revocación de Certificado
 
 **Tests de integración**: [`siat_codigos_service_test.go`](../../internal/adapter/services/siat_codigos_service_test.go)
 
@@ -223,7 +223,7 @@ Gestiona el registro de puntos de venta (PV), eventos significativos y cierres d
 
 ## Servicio de Compra-Venta
 
-Maneja la facturación estándar de compra-venta (Sector 1) — el sector más común para comercios generales.
+Maneja la facturación estándar de compra-venta - el sector más común para comercios generales.
 
 **Acceso**: `s.CompraVenta()`
 

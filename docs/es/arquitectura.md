@@ -99,7 +99,7 @@ Esta capa contiene las implementaciones del **patrón Builder** con las que los 
 
 | Archivo | Responsabilidad |
 |:--------|:----------------|
-| `common.go` | `RequestWrapper[T]` — envoltorio genérico opaco para todos los tipos de solicitud |
+| `common.go` | `RequestWrapper[T]` - envoltorio genérico opaco para todos los tipos de solicitud |
 | `codigos.go` | Builders para CUIS, CUFD, verificación de NIT, revocación de certificado |
 | `sincronizacion.go` | Builders para las 17 operaciones de sincronización |
 | `operaciones.go` | Builders para registro de PV, eventos significativos, cierres |
@@ -110,9 +110,9 @@ Esta capa contiene las implementaciones del **patrón Builder** con las que los 
 
 **Decisión de diseño**: Las solicitudes usan `RequestWrapper[T]` que es un struct público con un **campo privado `request`**. Esto hace imposible que los usuarios accedan o modifiquen los tipos SOAP internos directamente, reforzando la seguridad de tipos a través del patrón Builder.
 
-### 3. Modelos Públicos — Facturas (`pkg/models/invoices/`)
+### 3. Modelos Públicos - Facturas (`pkg/models/invoices/`)
 
-Contiene **35 builders específicos por sector** con sus modelos de dominio:
+Contiene **48 builders específicos por sector** con sus modelos de dominio:
 
 - Cada sector tiene un archivo Go con `NewXxxCabeceraBuilder()`, `NewXxxDetalleBuilder()` y `NewXxxBuilder()`.
 - Cada sector tiene un archivo `_test.go` correspondiente con tests de integración.
@@ -137,7 +137,7 @@ Los puertos definen los **contratos** (interfaces) que los adaptadores deben imp
 | `SiatCodigosService` | 7 | Códigos CUIS/CUFD, validación de NIT, revocación de certificado |
 | `SiatSincronizacionService` | 17 | Sincronización de catálogos maestros |
 | `SiatOperacionesPort` | 8 | Gestión de puntos de venta, eventos significativos |
-| `SiatCompraVentaService` | 10 | Facturación de compra-venta (Sector 1) |
+| `SiatCompraVentaService` | 10 | Facturación de compra-venta |
 | `SiatElectronicaService` | 10 | Facturación electrónica (con firma digital) |
 | `SiatComputarizadaService` | 10 | Facturación computarizada (sin firma digital) |
 | `SiatDocumentoAjusteService` | 5 | Documentos de ajuste (notas crédito/débito) |
@@ -167,7 +167,7 @@ La capa más profunda con las estructuras de datos puras:
 | `siat/compra_venta/` | Tipos de respuesta específicos de compra-venta |
 | `siat/documento_ajuste/` | Tipos de respuesta de documentos de ajuste |
 | `siat/common/` | Interfaz `Result`, struct `MensajeServicio` |
-| `documents/` | Modelos de dominio XML para los 35+ sectores de facturación |
+| `documents/` | Modelos de dominio XML para los 48+ sectores de facturación |
 
 ---
 
@@ -214,7 +214,7 @@ func performSoapRequest[TReq any, TResp any](
 ) (*soap.EnvelopeResponse[TResp], error)
 ```
 
-Esto elimina la duplicación de código a través de los 67+ métodos de servicio.
+Esto elimina la duplicación de código a través de los 100+ métodos de servicio.
 
 ### 4. Navegación de Respuesta con Seguridad de Tipos
 
@@ -290,7 +290,7 @@ go-siat/
 │   │   ├── computarizada.go        # Builders de Computarizada
 │   │   ├── electronica.go          # Builders de Electrónica
 │   │   ├── documento_ajuste.go     # Builders de Documentos de Ajuste
-│   │   └── invoices/               # 35 builders de facturas por sector + tests
+│   │   └── invoices/               # 48 builders de facturas por sector + tests
 │   │
 │   └── utils/                       # Funciones utilitarias
 │       ├── signXML.go              # Firma digital XML

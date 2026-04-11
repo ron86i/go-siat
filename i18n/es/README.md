@@ -44,7 +44,7 @@ Integrarse con los servicios web SOAP del SIAT para la facturación electrónica
 - ✍️ **Firma Digital (XMLDSig) Integrada**: Utilidades para firmar facturas automáticamente con su certificado digital.
 - 🚀 **Alto Rendimiento**: Cero dependencias innecesarias, aprovechando la velocidad nativa de Go para la manipulación y compresión de bytes.
 - 🧩 **Modular**: Múltiples servicios (`Codigos`, `Sincronizacion`, `Operaciones`, `CompraVenta`, `Electronica`, `Computarizada`) claramente separados.
-- 🏢 **Multi-Sector**: Soporte nativo y verificado para **35 sectores** distintos (Compra y Venta, Hoteles, Minería, Hospitales, Hidrocarburos, etc.).
+- 🏢 **Multi-Sector**: Soporte nativo y verificado para **48 sectores** distintos (Compra y Venta, Hoteles, Minería, Hospitales, Hidrocarburos, etc.).
 
 ---
 
@@ -62,7 +62,7 @@ El SDK cubre los servicios críticos del ecosistema SIAT:
 | **Electrónica en Línea** | Soporte completo para facturación con firma digital. |
 | **Computarizada en Línea** | Soporte para modalidades sin firma digital. |
 | **Sectores Especializados** | Soporte para servicios de Telecomunicaciones, Servicios Básicos, Entidades Financieras y Boletos Aéreos. |
-| **Sectores Especiales** | Soporte verificado para los **35 sectores** reglamentarios del SIAT. |
+| **Sectores Especiales** | Soporte verificado para los **48 sectores** reglamentarios del SIAT. |
 
 ---
 
