@@ -5,17 +5,17 @@
 
 version: 2
 updates:
-  # Check for Go dependency updates every day
+  # Daily updates for Go dependencies (Go 1.25)
   - package-ecosystem: "gomod"
     directory: "/"
     schedule:
       interval: "daily"
     labels:
       - "dependencies"
-      - "go"
+      - "go-1.25"
     open-pull-requests-limit: 10
 
-  # Check for GitHub Actions updates every day
+  # Daily updates for GitHub Actions
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
