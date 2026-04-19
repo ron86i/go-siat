@@ -13,6 +13,7 @@
   <a href="https://go.dev/"><img src="https://img.shields.io/github/go-mod/go-version/ron86i/go-siat?style=flat" alt="Go Version"></a>
   <a href="../../LICENSE"><img src="https://img.shields.io/github/license/ron86i/go-siat?style=flat" alt="Licencia"></a>
   <a href="https://github.com/ron86i/go-siat/releases"><img src="https://img.shields.io/github/v/release/ron86i/go-siat?style=flat&label=release" alt="Última Versión"></a>
+  <a href="https://deepwiki.com/ron86i/go-siat"><img src="https://deepwiki.com/badge.svg" alt="Ask DeepWiki"></a>
 </p>
 
 <p align="center">
@@ -25,15 +26,15 @@
 
 Bienvenido a la documentación técnica de **go-siat**. Esta guía está organizada para ayudarte a ir de cero a producción con el sistema de facturación electrónica de Bolivia.
 
-| # | Documento | Descripción |
-|:--|:----------|:------------|
-| 1 | [**Arquitectura**](arquitectura.md) | Diseño hexagonal, capas, patrones de diseño y flujo de datos interno. |
-| 2 | [**Inicio Rápido**](inicio-rapido.md) | Instalación, prerrequisitos, configuración de ambiente y tu primera llamada. |
-| 3 | [**Referencia de API**](referencia-api.md) | Referencia completa de los 17 servicios SIAT y 100+ métodos. |
-| 4 | [**Guía de Facturación**](guia-facturacion.md) | Ciclo de vida de facturas, 48 sectores, firmas digitales y procesamiento masivo. |
-| 5 | [**Manejo de Errores**](manejo-errores.md) | Tipos de error, 150+ códigos SIAT, estrategias de reintento y verificación. |
-| 6 | [**Utilidades**](utilidades.md) | Generación de CUF, firma XML, compresión, hash y helpers de parseo. |
-| 7 | [**Configuración**](configuracion.md) | Configuración de cliente HTTP, middleware, trazabilidad distribuida y constantes. |
+| #   | Documento                                      | Descripción                                                                       |
+| :-- | :--------------------------------------------- | :-------------------------------------------------------------------------------- |
+| 1   | [**Arquitectura**](arquitectura.md)            | Diseño hexagonal, capas, patrones de diseño y flujo de datos interno.             |
+| 2   | [**Inicio Rápido**](inicio-rapido.md)          | Instalación, prerrequisitos, configuración de ambiente y tu primera llamada.      |
+| 3   | [**Referencia de API**](referencia-api.md)     | Referencia completa de los 17 servicios SIAT y 100+ métodos.                      |
+| 4   | [**Guía de Facturación**](guia-facturacion.md) | Ciclo de vida de facturas, 48 sectores, firmas digitales y procesamiento masivo.  |
+| 5   | [**Manejo de Errores**](manejo-errores.md)     | Tipos de error, 150+ códigos SIAT, estrategias de reintento y verificación.       |
+| 6   | [**Utilidades**](utilidades.md)                | Generación de CUF, firma XML, compresión, hash y helpers de parseo.               |
+| 7   | [**Configuración**](configuracion.md)          | Configuración de cliente HTTP, middleware, trazabilidad distribuida y constantes. |
 
 ---
 
@@ -41,30 +42,30 @@ Bienvenido a la documentación técnica de **go-siat**. Esta guía está organiz
 
 ### "Quiero..."
 
-| Objetivo | Empezar Aquí |
-|:---------|:-------------|
-| Instalar y hacer mi primera llamada | [Inicio Rápido](inicio-rapido.md) |
-| Entender la arquitectura del proyecto | [Arquitectura](arquitectura.md) |
-| Enviar una factura electrónica | [Guía de Facturación](guia-facturacion.md) |
-| Saber qué sectores están soportados | [Guía de Facturación → Sectores](guia-facturacion.md#referencia-de-sectores-soportados) |
-| Manejar errores del SIAT en producción | [Manejo de Errores](manejo-errores.md) |
-| Firmar facturas con mi certificado digital | [Utilidades → Firma XML](utilidades.md#firma-digital-xml) |
-| Personalizar timeouts HTTP o agregar logging | [Configuración](configuracion.md) |
-| Encontrar la firma de un método específico | [Referencia de API](referencia-api.md) |
+| Objetivo                                     | Empezar Aquí                                                                            |
+| :------------------------------------------- | :-------------------------------------------------------------------------------------- |
+| Instalar y hacer mi primera llamada          | [Inicio Rápido](inicio-rapido.md)                                                       |
+| Entender la arquitectura del proyecto        | [Arquitectura](arquitectura.md)                                                         |
+| Enviar una factura electrónica               | [Guía de Facturación](guia-facturacion.md)                                              |
+| Saber qué sectores están soportados          | [Guía de Facturación → Sectores](guia-facturacion.md#referencia-de-sectores-soportados) |
+| Manejar errores del SIAT en producción       | [Manejo de Errores](manejo-errores.md)                                                  |
+| Firmar facturas con mi certificado digital   | [Utilidades → Firma XML](utilidades.md#firma-digital-xml)                               |
+| Personalizar timeouts HTTP o agregar logging | [Configuración](configuracion.md)                                                       |
+| Encontrar la firma de un método específico   | [Referencia de API](referencia-api.md)                                                  |
 
 ---
 
 ## 🔗 Recursos Adicionales
 
-| Recurso | Ubicación |
-|:--------|:----------|
-| README Principal | [`README.md`](../../README.md) |
-| Guía de Contribución | [`CONTRIBUTING.md`](../../.github/CONTRIBUTING.md) |
-| Soporte y Consultoría | [`SUPPORT.md`](../../.github/SUPPORT.md) |
-| Código de Conducta | [`CODE_OF_CONDUCT.md`](../../.github/CODE_OF_CONDUCT.md) |
-| Tests de Integración | [`internal/adapter/services/*_test.go`](../../internal/adapter/services/) |
-| Tests de Facturas por Sector | [`pkg/models/invoices/*_test.go`](../../pkg/models/invoices/) |
-| Licencia (MIT) | [`LICENSE`](../../LICENSE) |
+| Recurso                      | Ubicación                                                                 |
+| :--------------------------- | :------------------------------------------------------------------------ |
+| README Principal             | [`README.md`](../../README.md)                                            |
+| Guía de Contribución         | [`CONTRIBUTING.md`](../../.github/CONTRIBUTING.md)                        |
+| Soporte y Consultoría        | [`SUPPORT.md`](../../.github/SUPPORT.md)                                  |
+| Código de Conducta           | [`CODE_OF_CONDUCT.md`](../../.github/CODE_OF_CONDUCT.md)                  |
+| Tests de Integración         | [`internal/adapter/services/*_test.go`](../../internal/adapter/services/) |
+| Tests de Facturas por Sector | [`pkg/models/invoices/*_test.go`](../../pkg/models/invoices/)             |
+| Licencia (MIT)               | [`LICENSE`](../../LICENSE)                                                |
 
 ---
 

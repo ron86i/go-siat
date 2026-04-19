@@ -10,9 +10,9 @@
   <a href="https://go.dev/"><img src="https://img.shields.io/github/go-mod/go-version/ron86i/go-siat?style=flat" alt="Go Version"></a>
   <a href="LICENSE"><img src="https://img.shields.io/github/license/ron86i/go-siat?style=flat" alt="License"></a>
   <a href="https://github.com/ron86i/go-siat/releases"><img src="https://img.shields.io/github/v/release/ron86i/go-siat?style=flat&label=release" alt="Latest Release"></a>
+  <a href="https://deepwiki.com/ron86i/go-siat"><img src="https://deepwiki.com/badge.svg" alt="Ask DeepWiki"></a>
   <a href="i18n/es/README.md"><img src="https://img.shields.io/badge/lang-español-blue?style=flat" alt="Spanish Version"></a>
 </p>
-
 
 <p align="center">
   <em><b>go-siat</b> is a professional SDK developed in Go, designed to simplify integration with <b>SIAT (Integrated Tax Administration System)</b> SOAP web services.</em>
@@ -52,17 +52,17 @@ Integrating with SIAT's SOAP web services for electronic invoicing in Bolivia is
 
 The SDK covers the critical services of the SIAT ecosystem:
 
-| Services | Key Functionalities |
-| :--- | :--- |
-| **Codes** | CUIS/CUFD Request (Individual and Massive), NIT Validation, Communication. |
-| **Synchronization** | Catalogs for activities, parametric, products, services, and sector documents. |
-| **Operations** | POS Registration/Closing, Significant Event Management. |
-| **Sales** | Specific service for sales, bonuses, and fees. |
-| **Adjustment Documents** | Management of Credit/Debit notes, Conciliation, and Reversions. |
-| **Online Electronic** | Full support for invoicing with digital signature. |
-| **Online Computerized** | Support for modalities without digital signature. |
-| **Specialized Sectors** | Services for Telecommunications, Basic Services, Financial Entities, and Airline Tickets. |
-| **Special Sectors** | Verified support for the **48 regulatory sectors** of SIAT. |
+| Services                 | Key Functionalities                                                                       |
+| :----------------------- | :---------------------------------------------------------------------------------------- |
+| **Codes**                | CUIS/CUFD Request (Individual and Massive), NIT Validation, Communication.                |
+| **Synchronization**      | Catalogs for activities, parametric, products, services, and sector documents.            |
+| **Operations**           | POS Registration/Closing, Significant Event Management.                                   |
+| **Sales**                | Specific service for sales, bonuses, and fees.                                            |
+| **Adjustment Documents** | Management of Credit/Debit notes, Conciliation, and Reversions.                           |
+| **Online Electronic**    | Full support for invoicing with digital signature.                                        |
+| **Online Computerized**  | Support for modalities without digital signature.                                         |
+| **Specialized Sectors**  | Services for Telecommunications, Basic Services, Financial Entities, and Airline Tickets. |
+| **Special Sectors**      | Verified support for the **48 regulatory sectors** of SIAT.                               |
 
 ---
 
@@ -121,21 +121,21 @@ func main() {
 
 The **Integration Tests** serve as living technical documentation for the SDK:
 
-| Category | Test File |
-| :--- | :--- |
-| **Codes** | [`siat_codigos_service_test.go`](internal/adapter/services/siat_codigos_service_test.go) |
-| **Synchronization** | [`siat_sincronizacion_service_test.go`](internal/adapter/services/siat_sincronizacion_service_test.go) |
-| **Operations** | [`siat_operaciones_service_test.go`](internal/adapter/services/siat_operaciones_service_test.go) |
-| **Sales** | [`siat_compra_venta_service_test.go`](internal/adapter/services/siat_compra_venta_service_test.go) |
-| **Electronic** | [`siat_electronica_service_test.go`](internal/adapter/services/siat_electronica_service_test.go) |
-| **Computerized** | [`siat_computarizada_service_test.go`](internal/adapter/services/siat_computarizada_service_test.go) |
-| **Adjustment Documents** | [`siat_documento_ajuste_service_test.go`](internal/adapter/services/siat_documento_ajuste_service_test.go) |
-| **Telecommunications** | [`siat_telecomunicaciones_service_test.go`](internal/adapter/services/siat_telecomunicaciones_service_test.go) |
-| **Basic Services** | [`siat_servicio_basico_service_test.go`](internal/adapter/services/siat_servicio_basico_service_test.go) |
-| **Financial Entities** | [`siat_entidad_financiera_service_test.go`](internal/adapter/services/siat_entidad_financiera_service_test.go) |
-| **Airline Tickets** | [`siat_boleto_aereo_service_test.go`](internal/adapter/services/siat_boleto_aereo_service_test.go) |
-| **Invoicing (Sectors)** | [`pkg/models/invoices/`](pkg/models/invoices/) |
-| **End-to-End** | [`siat_test.go`](siat_test.go) |
+| Category                 | Test File                                                                                                      |
+| :----------------------- | :------------------------------------------------------------------------------------------------------------- |
+| **Codes**                | [`siat_codigos_service_test.go`](internal/adapter/services/siat_codigos_service_test.go)                       |
+| **Synchronization**      | [`siat_sincronizacion_service_test.go`](internal/adapter/services/siat_sincronizacion_service_test.go)         |
+| **Operations**           | [`siat_operaciones_service_test.go`](internal/adapter/services/siat_operaciones_service_test.go)               |
+| **Sales**                | [`siat_compra_venta_service_test.go`](internal/adapter/services/siat_compra_venta_service_test.go)             |
+| **Electronic**           | [`siat_electronica_service_test.go`](internal/adapter/services/siat_electronica_service_test.go)               |
+| **Computerized**         | [`siat_computarizada_service_test.go`](internal/adapter/services/siat_computarizada_service_test.go)           |
+| **Adjustment Documents** | [`siat_documento_ajuste_service_test.go`](internal/adapter/services/siat_documento_ajuste_service_test.go)     |
+| **Telecommunications**   | [`siat_telecomunicaciones_service_test.go`](internal/adapter/services/siat_telecomunicaciones_service_test.go) |
+| **Basic Services**       | [`siat_servicio_basico_service_test.go`](internal/adapter/services/siat_servicio_basico_service_test.go)       |
+| **Financial Entities**   | [`siat_entidad_financiera_service_test.go`](internal/adapter/services/siat_entidad_financiera_service_test.go) |
+| **Airline Tickets**      | [`siat_boleto_aereo_service_test.go`](internal/adapter/services/siat_boleto_aereo_service_test.go)             |
+| **Invoicing (Sectors)**  | [`pkg/models/invoices/`](pkg/models/invoices/)                                                                 |
+| **End-to-End**           | [`siat_test.go`](siat_test.go)                                                                                 |
 
 ---
 
