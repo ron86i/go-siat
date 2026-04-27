@@ -2,7 +2,7 @@
 
 [← Volver al Índice](README.md)
 
-> Referencia completa de los 17 servicios SIAT expuestos por el SDK `go-siat`. Cada método incluye su firma, builder y navegación de respuesta.
+> Referencia completa de los 12 servicios SIAT expuestos por el SDK `go-siat`. Cada método incluye su firma, builder y navegación de respuesta.
 
 ---
 

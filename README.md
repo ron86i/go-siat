@@ -44,7 +44,7 @@ Integrating with SIAT's SOAP web services for electronic invoicing in Bolivia is
 - ✍️ **Integrated Digital Signature (XMLDSig)**: Utilities to automatically sign invoices with your digital certificate.
 - 🚀 **High Performance**: Zero unnecessary dependencies, leveraging Go's native speed for byte manipulation and compression.
 - 🧩 **Modular**: Multiple services (`Codes`, `Synchronization`, `Operations`, `Sales`, `Electronic`, `Computerized`) clearly separated.
-- 🏢 **Multi-Sector**: Native and verified support for **35 different sectors** (Sales, Hotels, Mining, Hospitals, Hydrocarbons, etc.).
+- 🏢 **Multi-Sector**: Native and verified support for **48 different sectors** (Sales, Hotels, Mining, Hospitals, Hydrocarbons, etc.).
 
 ---
 
