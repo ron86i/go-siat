@@ -98,7 +98,7 @@ import (
 )
 
 func main() {
-    // 1. Initialize the SDL client
+    // 1. Initialize the SDK client
     s, err := siat.New("https://pilotosiatservicios.impuestos.gob.bo/v2", nil)
     if err != nil {
         panic(err)

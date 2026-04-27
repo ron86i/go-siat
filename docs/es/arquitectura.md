@@ -38,6 +38,11 @@ graph TB
         B --> G["s.Electronica()"]
         B --> H["s.Computarizada()"]
         B --> I["s.DocumentoAjuste()"]
+        B --> J["s.Telecomunicaciones()"]
+        B --> K["s.ServicioBasico()"]
+        B --> L["s.EntidadFinanciera()"]
+        B --> M["s.BoletoAereo()"]
+        B --> N["s.RecepcionCompras()"]
     end
 
     subgraph "Puertos (internal/core/ports)"
@@ -48,6 +53,11 @@ graph TB
         G --> P5["SiatElectronicaService"]
         H --> P6["SiatComputarizadaService"]
         I --> P7["SiatDocumentoAjusteService"]
+        J --> P8["SiatTelecomunicacionesService"]
+        K --> P9["SiatServicioBasicoService"]
+        L --> P10["SiatEntidadFinancieraService"]
+        M --> P11["SiatBoletoAereoService"]
+        N --> P12["SiatRecepcionComprasService"]
     end
 
     subgraph "Adaptadores (internal/adapter/services)"
@@ -58,10 +68,15 @@ graph TB
         P5 --> S5["siat_electronica_service.go"]
         P6 --> S6["siat_computarizada_service.go"]
         P7 --> S7["siat_documento_ajuste_service.go"]
+        S8["siat_telecomunicaciones_service.go"]
+        S9["siat_servicio_basico_service.go"]
+        S10["siat_entidad_financiera_service.go"]
+        S11["siat_boleto_aereo_service.go"]
+        S12["siat_recepcion_compras_service.go"]
     end
 
     subgraph "Dominio (internal/core/domain)"
-        S1 --> DOM["Tipos SOAP / Respuestas SIAT / Documentos"]
+        DOM["Tipos SOAP / Respuestas SIAT / Documentos"]
     end
 
     S1 --> SOAP["Servidor SOAP del SIAT"]
@@ -71,6 +86,11 @@ graph TB
     S5 --> SOAP
     S6 --> SOAP
     S7 --> SOAP
+    S8 --> SOAP
+    S9 --> SOAP
+    S10 --> SOAP
+    S11 --> SOAP
+    S12 --> SOAP
 ```
 
 ---
@@ -99,7 +119,7 @@ Esta capa contiene las implementaciones del **patrón Builder** con las que los 
 
 | Archivo | Responsabilidad |
 |:--------|:----------------|
-| `common.go` | `RequestWrapper[T]` - envoltorio genérico opaco para todos los tipos de solicitud |
+| `common.go` | `RequestWrapper[T]` — envoltorio genérico opaco para todos los tipos de solicitud |
 | `codigos.go` | Builders para CUIS, CUFD, verificación de NIT, revocación de certificado |
 | `sincronizacion.go` | Builders para las 17 operaciones de sincronización |
 | `operaciones.go` | Builders para registro de PV, eventos significativos, cierres |
@@ -107,6 +127,11 @@ Esta capa contiene las implementaciones del **patrón Builder** con las que los 
 | `computarizada.go` | Builders para operaciones de facturación computarizada |
 | `electronica.go` | Builders para operaciones de facturación electrónica |
 | `documento_ajuste.go` | Builders para operaciones de documentos de ajuste |
+| `telecomunicaciones.go` | Builders para operaciones del sector telecomunicaciones |
+| `servicio_basico.go` | Builders para operaciones del sector de servicios básicos |
+| `entidad_financiera.go` | Builders para operaciones de entidades financieras |
+| `boleto_aereo.go` | Builders para operaciones de boletos aéreos |
+| `recepcion_compras.go` | Builders para operaciones de recepción de compras |
 
 **Decisión de diseño**: Las solicitudes usan `RequestWrapper[T]` que es un struct público con un **campo privado `request`**. Esto hace imposible que los usuarios accedan o modifiquen los tipos SOAP internos directamente, reforzando la seguridad de tipos a través del patrón Builder.
 
@@ -132,15 +157,20 @@ Contiene **48 builders específicos por sector** con sus modelos de dominio:
 
 Los puertos definen los **contratos** (interfaces) que los adaptadores deben implementar:
 
-| Puerto | Métodos | Propósito |
-|:-------|:--------|:----------|
-| `SiatCodigosService` | 7 | Códigos CUIS/CUFD, validación de NIT, revocación de certificado |
-| `SiatSincronizacionService` | 17 | Sincronización de catálogos maestros |
-| `SiatOperacionesPort` | 8 | Gestión de puntos de venta, eventos significativos |
-| `SiatCompraVentaService` | 10 | Facturación de compra-venta |
-| `SiatElectronicaService` | 10 | Facturación electrónica (con firma digital) |
-| `SiatComputarizadaService` | 10 | Facturación computarizada (sin firma digital) |
-| `SiatDocumentoAjusteService` | 5 | Documentos de ajuste (notas crédito/débito) |
+| Puerto | Propósito |
+|:-------|:----------|
+| `SiatCodigosService` | Códigos CUIS/CUFD, validación de NIT, revocación de certificado |
+| `SiatSincronizacionService` | Sincronización de catálogos maestros (17 operaciones) |
+| `SiatOperacionesPort` | Gestión de puntos de venta, eventos significativos, cierres |
+| `SiatCompraVentaService` | Facturación estándar de compra-venta (Sector 1) |
+| `SiatElectronicaService` | Facturación electrónica (con firma digital) |
+| `SiatComputarizadaService` | Facturación computarizada (sin firma digital) |
+| `SiatDocumentoAjusteService` | Documentos de ajuste (notas crédito/débito) |
+| `SiatTelecomunicacionesService` | Facturación del sector telecomunicaciones |
+| `SiatServicioBasicoService` | Facturación del sector de servicios básicos |
+| `SiatEntidadFinancieraService` | Facturación del sector de entidades financieras |
+| `SiatBoletoAereoService` | Facturación del sector de boletos aéreos |
+| `SiatRecepcionComprasService` | Servicio de recepción de compras |
 
 ### 6. Capa de Adaptadores (`internal/adapter/services/`)
 
@@ -214,7 +244,7 @@ func performSoapRequest[TReq any, TResp any](
 ) (*soap.EnvelopeResponse[TResp], error)
 ```
 
-Esto elimina la duplicación de código a través de los 100+ métodos de servicio.
+Esto elimina la duplicación de código a través de los 80+ métodos de servicio.
 
 ### 4. Navegación de Respuesta con Seguridad de Tipos
 
@@ -304,7 +334,6 @@ go-siat/
 │   └── core/
 │       ├── ports/                   # Contratos de interfaz
 │       ├── domain/                  # Estructuras de datos puras
-│       ├── errors/                  # Tipo SiatError
 │       └── middleware/              # Interfaz HTTPMiddleware + encadenamiento
 │
 ├── docs/                            # Documentación

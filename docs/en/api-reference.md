@@ -2,7 +2,7 @@
 
 [← Back to Index](README.md)
 
-> Complete reference for all 17 SIAT services exposed by the `go-siat` SDK. Each method includes its signature, builder, and response navigation.
+> Complete reference for all 12 SIAT services exposed by the `go-siat` SDK. Each method includes its signature, builder, and response navigation.
 
 ---
 

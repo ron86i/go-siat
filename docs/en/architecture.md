@@ -2,7 +2,7 @@
 
 [← Back to Index](README.md)
 
-> This document provides a deep dive into the internal architecture of `go-siat`. Understanding these patterns is essential for contributors and helpful for advanced users who want to know how the SDK works under the hood.
+> Deep dive into the internal architecture of `go-siat`. Essential for contributors and helpful for advanced users who want to understand how the SDK works under the hood.
 
 ---
 
@@ -38,6 +38,11 @@ graph TB
         B --> G["s.Electronica()"]
         B --> H["s.Computarizada()"]
         B --> I["s.DocumentoAjuste()"]
+        B --> J["s.Telecomunicaciones()"]
+        B --> K["s.ServicioBasico()"]
+        B --> L["s.EntidadFinanciera()"]
+        B --> M["s.BoletoAereo()"]
+        B --> N["s.RecepcionCompras()"]
     end
 
     subgraph "Ports (internal/core/ports)"
@@ -48,6 +53,11 @@ graph TB
         G --> P5["SiatElectronicaService"]
         H --> P6["SiatComputarizadaService"]
         I --> P7["SiatDocumentoAjusteService"]
+        J --> P8["SiatTelecomunicacionesService"]
+        K --> P9["SiatServicioBasicoService"]
+        L --> P10["SiatEntidadFinancieraService"]
+        M --> P11["SiatBoletoAereoService"]
+        N --> P12["SiatRecepcionComprasService"]
     end
 
     subgraph "Adapters (internal/adapter/services)"
@@ -58,10 +68,15 @@ graph TB
         P5 --> S5["siat_electronica_service.go"]
         P6 --> S6["siat_computarizada_service.go"]
         P7 --> S7["siat_documento_ajuste_service.go"]
+        S8["siat_telecomunicaciones_service.go"]
+        S9["siat_servicio_basico_service.go"]
+        S10["siat_entidad_financiera_service.go"]
+        S11["siat_boleto_aereo_service.go"]
+        S12["siat_recepcion_compras_service.go"]
     end
 
     subgraph "Domain (internal/core/domain)"
-        S1 --> DOM["SOAP Types / SIAT Responses / Documents"]
+        DOM["SOAP Types / SIAT Responses / Documents"]
     end
 
     S1 --> SOAP["SIAT SOAP Server"]
@@ -71,6 +86,11 @@ graph TB
     S5 --> SOAP
     S6 --> SOAP
     S7 --> SOAP
+    S8 --> SOAP
+    S9 --> SOAP
+    S10 --> SOAP
+    S11 --> SOAP
+    S12 --> SOAP
 ```
 
 ---
@@ -84,7 +104,7 @@ The root package `siat` is the **entry point** for all users. It exposes:
 | File | Responsibility |
 |:-----|:---------------|
 | `siat.go` | `SiatServices` struct, `New()` constructor, `Verify()` response validator, `Map` utility type |
-| `config.go` | `Config` type alias (Token, UserAgent, TraceId) |
+| `config.go` | `Config` type alias (`Token`, `UserAgent`, `TraceId`) |
 | `errors.go` | `SiatError` type alias + error factory functions |
 | `constants.go` | Environment, modality, and emission type constants |
 | `http_config.go` | `HTTPConfig` type alias + `DefaultHTTPConfig()` + `NewHTTPClient()` |
@@ -99,7 +119,7 @@ This layer contains the **Builder pattern** implementations that users interact 
 
 | File | Responsibility |
 |:-----|:---------------|
-| `common.go` | `RequestWrapper[T]` - generic opaque wrapper for all request types |
+| `common.go` | `RequestWrapper[T]` — generic opaque wrapper for all request types |
 | `codigos.go` | Builders for CUIS, CUFD, NIT verification, certificate revocation |
 | `sincronizacion.go` | Builders for all 17 synchronization operations |
 | `operaciones.go` | Builders for POS registration, significant events, closings |
@@ -107,6 +127,11 @@ This layer contains the **Builder pattern** implementations that users interact 
 | `computarizada.go` | Builders for computerized invoice operations |
 | `electronica.go` | Builders for electronic invoice operations |
 | `documento_ajuste.go` | Builders for adjustment document operations |
+| `telecomunicaciones.go` | Builders for telecom sector operations |
+| `servicio_basico.go` | Builders for basic services sector operations |
+| `entidad_financiera.go` | Builders for financial entity operations |
+| `boleto_aereo.go` | Builders for airline ticket operations |
+| `recepcion_compras.go` | Builders for purchase reception operations |
 
 **Design decision**: Requests use `RequestWrapper[T]` which is a public struct with a **private `request` field**. This makes it impossible for users to access or modify the internal SOAP types directly, enforcing type safety through the Builder pattern.
 
@@ -132,15 +157,20 @@ Contains **48 sector-specific invoice builders** with their domain models:
 
 Ports define the **contracts** (interfaces) that adapters must implement:
 
-| Port | Methods | Purpose |
-|:-----|:--------|:--------|
-| `SiatCodigosService` | 7 | CUIS/CUFD codes, NIT validation, certificate revocation |
-| `SiatSincronizacionService` | 17 | Master catalog synchronization |
-| `SiatOperacionesPort` | 8 | POS management, significant events |
-| `SiatCompraVentaService` | 10 | Sales invoicing |
-| `SiatElectronicaService` | 10 | Electronic invoicing (with digital signature) |
-| `SiatComputarizadaService` | 10 | Computerized invoicing (without digital signature) |
-| `SiatDocumentoAjusteService` | 5 | Adjustment documents (credit/debit notes) |
+| Port | Purpose |
+|:-----|:--------|
+| `SiatCodigosService` | CUIS/CUFD codes, NIT validation, certificate revocation |
+| `SiatSincronizacionService` | Master catalog synchronization (17 operations) |
+| `SiatOperacionesPort` | POS management, significant events, system closings |
+| `SiatCompraVentaService` | Standard sales invoicing (Sector 1) |
+| `SiatElectronicaService` | Electronic invoicing (with digital signature) |
+| `SiatComputarizadaService` | Computerized invoicing (without digital signature) |
+| `SiatDocumentoAjusteService` | Adjustment documents (credit/debit notes) |
+| `SiatTelecomunicacionesService` | Telecommunications sector invoicing |
+| `SiatServicioBasicoService` | Basic services sector invoicing |
+| `SiatEntidadFinancieraService` | Financial entity sector invoicing |
+| `SiatBoletoAereoService` | Airline ticket sector invoicing |
+| `SiatRecepcionComprasService` | Purchase reception service |
 
 The `Config` struct also lives here, containing `Token`, `UserAgent`, and `TraceId`.
 
@@ -169,7 +199,7 @@ The deepest layer containing the pure data structures:
 | `siat/compra_venta/` | Sales-specific response types |
 | `siat/documento_ajuste/` | Adjustment document response types |
 | `siat/common/` | `Result` interface, `MensajeServicio` struct |
-| `documents/` | XML domain models for all 35+ invoice sectors |
+| `documents/` | XML domain models for all 48 invoice sectors |
 
 ---
 
@@ -217,7 +247,7 @@ func performSoapRequest[TReq any, TResp any](
 ) (*soap.EnvelopeResponse[TResp], error)
 ```
 
-This eliminates code duplication across all 67+ service methods.
+This eliminates code duplication across all 80+ service methods.
 
 ### 4. Type-Safe Response Navigation
 
@@ -308,19 +338,18 @@ go-siat/
 │   ├── adapter/services/            # Concrete service implementations
 │   │   ├── index_service.go        # Shared SOAP infrastructure
 │   │   ├── http_config.go          # HTTP client factory
-│   │   └── siat_*_service.go       # 7 service implementations + tests
+│   │   └── siat_*_service.go       # 12 service implementations + tests
 │   │
 │   └── core/
 │       ├── ports/                   # Interface contracts
 │       │   ├── config.go           # Config struct
-│       │   └── siat_*_port.go      # 7 service port interfaces
+│       │   └── siat_*_port.go      # 12 service port interfaces
 │       │
 │       ├── domain/                  # Pure data structures
 │       │   ├── datatype/           # SOAP envelopes, custom types
 │       │   ├── siat/               # SIAT response types by service
 │       │   └── documents/          # XML domain models (48 sectors)
 │       │
-│       ├── errors/                  # SiatError type
 │       └── middleware/              # HTTPMiddleware interface + chaining
 │
 ├── docs/                            # Documentation
