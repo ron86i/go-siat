@@ -269,6 +269,8 @@ func TestRegistroEventosSignificativos(t *testing.T) {
 		WithCodigoAmbiente(codAmbiente).
 		WithCodigoModalidad(codModalidad).
 		WithCodigoSistema(os.Getenv("SIAT_CODIGO_SISTEMA")).
+		WithCodigoSucursal(0).
+		WithCodigoPuntoVenta(1).
 		WithNit(nit).
 		Build()
 
@@ -278,25 +280,33 @@ func TestRegistroEventosSignificativos(t *testing.T) {
 		WithCodigoAmbiente(codAmbiente).
 		WithCodigoModalidad(codModalidad).
 		WithCodigoSistema(os.Getenv("SIAT_CODIGO_SISTEMA")).
+		WithCodigoSucursal(0).
+		WithCodigoPuntoVenta(1).
 		WithNit(nit).
 		WithCuis(cuis.Body.Content.RespuestaCuis.Codigo).
 		Build()
 
 	cufd, _ := serviceCodigos.SolicitudCufd(context.Background(), config, cufdReq)
+	codigoCufd := cufd.Body.Content.RespuestaCufd.Codigo
+	codigoCufdEvento := "FBQT5CwqE4TERBI5RjlGOEM3MDc=QjlsMmVLY0VhVUMzcxQUFCRDA1Q0"
 	now := time.Now()
+	fechaInicio := now.Add(-2 * time.Minute)
+	fechaFin := now
+
 	req := models.Operaciones().NewRegistroEventoSignificativoBuilder().
-		WithCodigoAmbiente(2).
+		WithCodigoAmbiente(codAmbiente).
 		WithCodigoMotivoEvento(4).
 		WithCodigoSistema(os.Getenv("SIAT_CODIGO_SISTEMA")).
 		WithCodigoSucursal(0).
+		WithCodigoPuntoVenta(1).
 		WithCuis(cuis.Body.Content.RespuestaCuis.Codigo).
-		WithCufdEvento("FBQT5CwqE4TERBI5RjlGOEM3MDc=QkFQMVZVTERhV...").
-		WithCufd(cufd.Body.Content.RespuestaCufd.Codigo).
-		WithDescripcion("Prueba de evento significativo").
-		WithFechaHoraInicioEvento(now.Add(-1 * time.Minute)).
-		WithFechaHoraFinEvento(now).
+		WithCufdEvento(codigoCufdEvento).
+		WithCufd(codigoCufd).
+		WithDescripcion("Prueba de evento significativo - Corte de Internet").
+		WithFechaHoraInicioEvento(fechaInicio).
+		WithFechaHoraFinEvento(fechaFin).
 		WithNit(nit).
-		WithCodigoPuntoVenta(0).
+		WithCodigoPuntoVenta(1).
 		Build()
 
 	resp, err := service.RegistroEventosSignificativos(context.Background(), config, req)

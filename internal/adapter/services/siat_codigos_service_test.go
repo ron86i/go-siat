@@ -233,7 +233,7 @@ func TestSolicitudCufd(t *testing.T) {
 		WithCodigoSistema(os.Getenv("SIAT_CODIGO_SISTEMA")).
 		WithNit(nit).
 		WithCodigoSucursal(0).
-		WithCodigoPuntoVenta(0).
+		WithCodigoPuntoVenta(1).
 		Build()
 
 	respCuis, err := service.SolicitudCuis(context.Background(), config, req)
@@ -245,7 +245,7 @@ func TestSolicitudCufd(t *testing.T) {
 		WithCodigoSistema(os.Getenv("SIAT_CODIGO_SISTEMA")).
 		WithNit(nit).
 		WithCodigoSucursal(0).
-		WithCodigoPuntoVenta(0).
+		WithCodigoPuntoVenta(1).
 		WithCuis(respCuis.Body.Content.RespuestaCuis.Codigo). // Requiere un CUIS vigente para el NIT configurado
 		Build()
 
