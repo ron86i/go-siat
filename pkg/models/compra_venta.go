@@ -238,6 +238,7 @@ func (b *ventaAnexoCompraVentaBuilder) WithTipoCodigo(tipoCodigo string) *ventaA
 func (b *ventaAnexoCompraVentaBuilder) Build() VentaAnexoCompraVenta {
 	return VentaAnexoCompraVenta{RequestWrapper[compra_venta.VentaAnexo]{request: b.anexo}}
 }
+
 // WithCodigoDocumentoSector establece el código del documento sector.
 func (b *recepcionAnexosBuilder) WithCodigoDocumentoSector(codigoDocumentoSector int) *recepcionAnexosBuilder {
 	b.request.SolicitudRecepcionAnexos.CodigoDocumentoSector = codigoDocumentoSector
@@ -361,8 +362,8 @@ func (b *recepcionPaqueteFacturaBuilder) WithHashArchivo(hashArchivo string) *re
 }
 
 // WithCafc establece el CAFC si aplica.
-func (b *recepcionPaqueteFacturaBuilder) WithCafc(cafc string) *recepcionPaqueteFacturaBuilder {
-	b.request.SolicitudServicioRecepcionPaquete.Cafc = cafc
+func (b *recepcionPaqueteFacturaBuilder) WithCafc(cafc *string) *recepcionPaqueteFacturaBuilder {
+	b.request.SolicitudServicioRecepcionPaquete.Cafc = datatype.Nilable[string]{Value: cafc}
 	return b
 }
 

@@ -606,8 +606,8 @@ func (b *recepcionPaqueteFacturaComputarizadaBuilder) WithHashArchivo(hashArchiv
 }
 
 // WithCafc establece el CAFC si aplica.
-func (b *recepcionPaqueteFacturaComputarizadaBuilder) WithCafc(cafc string) *recepcionPaqueteFacturaComputarizadaBuilder {
-	b.request.SolicitudServicioRecepcionPaquete.Cafc = cafc
+func (b *recepcionPaqueteFacturaComputarizadaBuilder) WithCafc(cafc *string) *recepcionPaqueteFacturaComputarizadaBuilder {
+	b.request.SolicitudServicioRecepcionPaquete.Cafc = datatype.Nilable[string]{Value: cafc}
 	return b
 }
 
