@@ -3,14 +3,16 @@ package invoices_test
 import (
 	"context"
 	"encoding/xml"
+	"fmt"
+	"log"
 	"testing"
 	"time"
 
 	"github.com/ron86i/go-siat"
+	"github.com/ron86i/go-siat/internal/core/domain/datatype/soap"
 	"github.com/ron86i/go-siat/pkg/models"
 	"github.com/ron86i/go-siat/pkg/models/invoices"
 	"github.com/ron86i/go-siat/pkg/utils"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestPrevalorada_Computarizada(t *testing.T) {
@@ -18,10 +20,40 @@ func TestPrevalorada_Computarizada(t *testing.T) {
 	cuis := tc.GetCuis(t)
 	cufd, cufdControl := tc.GetCufd(t, cuis)
 
-	fechaEmision := time.Now()
-	cuf, _ := utils.GenerarCUF(tc.Nit, fechaEmision, 0, tc.Modalidad, 1, 1, 23, 1, 0, cufdControl)
+	emitirPrevaloradaIndividual(t, tc, cuis, cufd, cufdControl, 1)
+}
 
-	codigoPuntoVenta := 0
+func TestPrevalorada_Electronica(t *testing.T) {
+	tc := setupTestContext(t, siat.ModalidadElectronica)
+	tc.PuntoVenta = 0
+	tc.Sucursal = 0
+	cuis := tc.GetCuis(t)
+	cufd, cufdControl := tc.GetCufd(t, cuis)
+
+	emitirPrevaloradaIndividual(t, tc, cuis, cufd, cufdControl, 1)
+}
+
+func TestPrevalorada_ElectronicaAll(t *testing.T) {
+	tc := setupTestContext(t, siat.ModalidadElectronica)
+	tc.PuntoVenta = 0
+	tc.Sucursal = 0
+	cuis := tc.GetCuis(t)
+	cufd, cufdControl := tc.GetCufd(t, cuis)
+	for i := 1; i <= 125; i++ {
+		t.Run(fmt.Sprintf("Factura_%d", i), func(t *testing.T) {
+			emitirPrevaloradaIndividual(t, tc, cuis, cufd, cufdControl, i)
+		})
+	}
+}
+
+func emitirPrevaloradaIndividual(t *testing.T, tc *TestContext, cuis, cufd, cufdControl string, nroFactura int) {
+	fechaEmision := time.Now()
+	// Sector 23: Prevalorada
+	cuf, err := utils.GenerarCUF(tc.Nit, fechaEmision, tc.Sucursal, tc.Modalidad, 1, 1, 23, nroFactura, tc.PuntoVenta, cufdControl)
+	if err != nil {
+		t.Fatalf("error al generar CUF: %v", err)
+	}
+
 	cantidad := 1.0
 	precioUnitario := 10.0
 	montoDescuento := 0.0
@@ -32,12 +64,12 @@ func TestPrevalorada_Computarizada(t *testing.T) {
 		WithNitEmisor(tc.Nit).
 		WithRazonSocialEmisor("TELEFONICA S.A.").
 		WithMunicipio("LA PAZ").
-		WithNumeroFactura(1).
+		WithNumeroFactura(int64(nroFactura)).
 		WithCuf(cuf).
 		WithCufd(cufd).
 		WithCodigoSucursal(0).
 		WithDireccion("AV. BALLIVIAN").
-		WithCodigoPuntoVenta(&codigoPuntoVenta).
+		WithCodigoPuntoVenta(&tc.PuntoVenta).
 		WithFechaEmision(fechaEmision).
 		WithCodigoMetodoPago(1).
 		WithMontoTotal(montoTotal).
@@ -50,10 +82,10 @@ func TestPrevalorada_Computarizada(t *testing.T) {
 		Build()
 
 	detalle := invoices.NewPrevaloradaDetalleBuilder().
-		WithActividadEconomica("611000").
-		WithCodigoProductoSin(12345).
-		WithCodigoProducto("CARD-01").
-		WithDescripcion("TARJETA PREPAGO 10").
+		WithActividadEconomica("477300").
+		WithCodigoProductoSin(99100).
+		WithCodigoProducto("abc").
+		WithDescripcion("PRODUCTO").
 		WithCantidad(cantidad).
 		WithUnidadMedida(1).
 		WithPrecioUnitario(precioUnitario).
@@ -68,32 +100,144 @@ func TestPrevalorada_Computarizada(t *testing.T) {
 		Build()
 
 	xmlData, _ := xml.Marshal(factura)
-	hashString, encodedArchivo, err := utils.CompressAndHash(xmlData)
+	var finalXML []byte
+	var signErr error
+
+	if tc.Modalidad == siat.ModalidadElectronica {
+		finalXML, signErr = utils.SignXML(xmlData, "key.pem", "cert.crt")
+		if signErr != nil {
+			t.Fatalf("error firmando XML: %v", signErr)
+		}
+	} else {
+		finalXML = xmlData
+	}
+
+	hashString, encodedArchivo, err := utils.CompressAndHash(finalXML)
 	if err != nil {
 		t.Fatalf("error preparando archivo: %v", err)
 	}
 
-	req := models.Computarizada().NewRecepcionFacturaBuilder().
-		WithCodigoAmbiente(tc.Ambiente).
-		WithCodigoModalidad(tc.Modalidad).
-		WithCodigoSistema(tc.Sistema).
-		WithNit(tc.Nit).
-		WithCodigoSucursal(0).
-		WithCodigoDocumentoSector(23).
-		WithCodigoEmision(1).
-		WithCodigoPuntoVenta(0).
-		WithCufd(cufd).
-		WithCuis(cuis).
-		WithTipoFacturaDocumento(1).
-		WithArchivo(encodedArchivo).
-		WithFechaEnvio(fechaEmision).
-		WithHashArchivo(hashString).
-		Build()
+	if tc.Modalidad == siat.ModalidadElectronica {
+		req := models.Electronica().NewRecepcionFacturaBuilder().
+			WithCodigoAmbiente(tc.Ambiente).
+			WithCodigoModalidad(tc.Modalidad).
+			WithCodigoSistema(tc.Sistema).
+			WithNit(tc.Nit).
+			WithCodigoSucursal(tc.Sucursal).
+			WithCodigoDocumentoSector(23).
+			WithCodigoEmision(1).
+			WithCodigoPuntoVenta(tc.PuntoVenta).
+			WithCufd(cufd).
+			WithCuis(cuis).
+			WithTipoFacturaDocumento(1).
+			WithArchivo(encodedArchivo).
+			WithFechaEnvio(fechaEmision).
+			WithHashArchivo(hashString).
+			Build()
+		// 1. EMITIR PREVALORADA ELECTRONICA
+		resp, err := tc.Client.Electronica().RecepcionFactura(context.Background(), tc.Config, req)
+		procesarRespuestaSIAT(t, nroFactura, resp, err)
 
-	resp, err := tc.Client.Computarizada().RecepcionFactura(context.Background(), tc.Config, req)
-	if err != nil {
-		t.Fatalf("error en solicitud: %v", err)
+		// Pequeño delay para que el SIAT procese el estado
+		time.Sleep(50 * time.Millisecond)
+
+		// 2. ANULAR FACTURA
+		reqAnulacion := models.Electronica().NewAnulacionFacturaBuilder().
+			WithCodigoAmbiente(tc.Ambiente).
+			WithCodigoDocumentoSector(23).
+			WithCodigoEmision(siat.EmisionOnline).
+			WithTipoFacturaDocumento(1).
+			WithCodigoModalidad(tc.Modalidad).
+			WithCodigoPuntoVenta(tc.PuntoVenta).
+			WithCodigoSistema(tc.Sistema).
+			WithCodigoSucursal(tc.Sucursal).
+			WithNit(tc.Nit). // NIT es requerido en anulación
+			WithCufd(cufd).
+			WithCuis(cuis).
+			WithCuf(cuf).
+			WithCodigoMotivo(1). // 1: Factura mal emitida
+			Build()
+
+		respAnulacion, err := tc.Client.Electronica().AnulacionFactura(context.Background(), tc.Config, reqAnulacion)
+		if err != nil {
+			t.Fatalf("error en anulación Factura %d: %v", nroFactura, err)
+		}
+
+		if !respAnulacion.Body.Content.RespuestaServicioFacturacion.Transaccion {
+			mensajes := ""
+			for _, m := range respAnulacion.Body.Content.RespuestaServicioFacturacion.MensajesList {
+				mensajes += fmt.Sprintf("[%d: %s] ", m.Codigo, m.Descripcion)
+			}
+			t.Errorf("Anulación Factura %d falló: %s", nroFactura, mensajes)
+			return // No podemos revertir si no se anuló
+		}
+		log.Printf("Factura %d ANULADA correctamente", nroFactura)
+
+		// Otro delay para la reversión
+		time.Sleep(50 * time.Millisecond)
+
+		// 3. REVERTIR ANULACIÓN
+		reqReversion := models.Electronica().NewReversionAnulacionFacturaBuilder().
+			WithCodigoAmbiente(tc.Ambiente).
+			WithCodigoPuntoVenta(tc.PuntoVenta).
+			WithCodigoSistema(tc.Sistema).
+			WithCodigoSucursal(tc.Sucursal).
+			WithNit(tc.Nit).
+			WithCodigoDocumentoSector(23).
+			WithTipoFacturaDocumento(1).
+			WithCodigoEmision(1).
+			WithCodigoModalidad(tc.Modalidad).
+			WithCuf(cuf).
+			WithCufd(cufd).
+			WithCuis(cuis).
+			Build()
+
+		respReversion, err := tc.Client.Electronica().ReversionAnulacionFactura(context.Background(), tc.Config, reqReversion)
+		if err != nil {
+			t.Fatalf("error en reversión Factura %d: %v", nroFactura, err)
+		}
+
+		if !respReversion.Body.Content.RespuestaServicioFacturacion.Transaccion {
+			mensajes := ""
+			for _, m := range respReversion.Body.Content.RespuestaServicioFacturacion.MensajesList {
+				mensajes += fmt.Sprintf("[%d: %s] ", m.Codigo, m.Descripcion)
+			}
+			t.Errorf("Reversión Factura %d falló: %s", nroFactura, mensajes)
+			return
+		}
+		log.Printf("Factura %d REVERTIDA (vuelve a ser válida)", nroFactura)
+	} else {
+		req := models.Computarizada().NewRecepcionFacturaBuilder().
+			WithCodigoAmbiente(tc.Ambiente).
+			WithCodigoModalidad(tc.Modalidad).
+			WithCodigoSistema(tc.Sistema).
+			WithNit(tc.Nit).
+			WithCodigoSucursal(tc.Sucursal).
+			WithCodigoDocumentoSector(23).
+			WithCodigoEmision(1).
+			WithCodigoPuntoVenta(tc.PuntoVenta).
+			WithCufd(cufd).
+			WithCuis(cuis).
+			WithTipoFacturaDocumento(1).
+			WithArchivo(encodedArchivo).
+			WithFechaEnvio(fechaEmision).
+			WithHashArchivo(hashString).
+			Build()
+
+		resp, err := tc.Client.Computarizada().RecepcionFactura(context.Background(), tc.Config, req)
+		procesarRespuestaSIAT(t, nroFactura, resp, err)
 	}
-	assert.Nil(t, resp.Body.Fault)
-	t.Logf("Respuesta SIAT: %+v", resp.Body.Content)
+}
+
+func procesarRespuestaSIAT[T any](t *testing.T, nro int, resp *soap.EnvelopeResponse[T], err error) {
+	if err != nil {
+		t.Fatalf("Factura %d - error de red/SOAP: %v", nro, err)
+	}
+
+	if resp.Body.Fault != nil {
+		t.Errorf("Factura %d - Fault SIAT: %s", nro, resp.Body.Fault.String())
+		return
+	}
+
+	log.Printf("Factura %d - Respuesta: %+v", nro, resp.Body.Content)
 }

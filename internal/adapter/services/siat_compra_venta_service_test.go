@@ -17,6 +17,9 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/ron86i/go-siat"
 
+	"github.com/ron86i/go-siat/internal/core/domain/datatype/soap"
+	"github.com/ron86i/go-siat/internal/core/domain/siat/codigos"
+	"github.com/ron86i/go-siat/internal/core/ports"
 	"github.com/ron86i/go-siat/pkg/models"
 	"github.com/ron86i/go-siat/pkg/models/invoices"
 	"github.com/ron86i/go-siat/pkg/utils"
@@ -548,21 +551,22 @@ func TestSiatCompraVentaService_ReversionAnulacionFactura(t *testing.T) {
 	}
 	godotenv.Load(".env")
 
+	siatClient := getSiatClient(t)
+	serviceCodigos := siatClient.Codigos()
+	serviceCompraVenta := siatClient.CompraVenta()
+
 	codModalidad, _ := utils.ParseIntSafe(os.Getenv("SIAT_CODIGO_MODALIDAD"))
 	nit, _ := utils.ParseInt64Safe(os.Getenv("SIAT_NIT"))
 	codAmbiente, _ := utils.ParseIntSafe(os.Getenv("SIAT_CODIGO_AMBIENTE"))
 	config := siat.Config{Token: os.Getenv("SIAT_TOKEN")}
-
-	client := &http.Client{Transport: &http.Transport{Proxy: http.ProxyFromEnvironment}}
-	siatClient, _ := siat.New(os.Getenv("SIAT_URL"), client)
-	serviceCodigos := siatClient.Codigos()
-	serviceCompraVenta := siatClient.CompraVenta()
 
 	cuisReq := models.Codigos().NewCuisBuilder().
 		WithCodigoAmbiente(codAmbiente).
 		WithCodigoModalidad(codModalidad).
 		WithCodigoSistema(os.Getenv("SIAT_CODIGO_SISTEMA")).
 		WithNit(nit).
+		WithCodigoSucursal(0).
+		WithCodigoPuntoVenta(0).
 		Build()
 
 	cuis, err := serviceCodigos.SolicitudCuis(context.Background(), config, cuisReq)
@@ -575,6 +579,8 @@ func TestSiatCompraVentaService_ReversionAnulacionFactura(t *testing.T) {
 		WithCodigoModalidad(codModalidad).
 		WithCodigoSistema(os.Getenv("SIAT_CODIGO_SISTEMA")).
 		WithNit(nit).
+		WithCodigoSucursal(0).
+		WithCodigoPuntoVenta(0).
 		WithCuis(cuis.Body.Content.RespuestaCuis.Codigo).
 		Build()
 
@@ -610,29 +616,33 @@ func TestSiatCompraVentaService_ReversionAnulacionFactura(t *testing.T) {
 
 // TestSiatCompraVentaService_RecepcionCompraVenta valida el flujo técnico de emisión de una factura individual.
 // Proceso: Construcción -> Firmado XML -> Compresión Gzip -> Codificación Base64 -> Envío SOAP.
-func TestSiatCompraVentaService_RecepcionCompraVenta(t *testing.T) {
+// TestSiatCompraVentaService_RecepcionCompraVentaAll emite 50 facturas secuencialmente para validar carga.
+func TestSiatCompraVentaService_RecepcionCompraVentaAll(t *testing.T) {
 	if _, err := os.Stat(".env"); os.IsNotExist(err) {
 		t.Skip("Saltando prueba de integración: .env no encontrado")
 	}
 	godotenv.Load(".env")
 
+	siatClient := getSiatClient(t)
+	serviceCodigos := siatClient.Codigos()
+	serviceCompraVenta := siatClient.CompraVenta()
+
 	codModalidad, _ := utils.ParseIntSafe(os.Getenv("SIAT_CODIGO_MODALIDAD"))
 	nit, _ := utils.ParseInt64Safe(os.Getenv("SIAT_NIT"))
 	codAmbiente, _ := utils.ParseIntSafe(os.Getenv("SIAT_CODIGO_AMBIENTE"))
 	config := siat.Config{Token: os.Getenv("SIAT_TOKEN")}
-
-	client := &http.Client{Transport: &http.Transport{Proxy: http.ProxyFromEnvironment}}
-	siatClient, _ := siat.New(os.Getenv("SIAT_URL"), client)
-	serviceCodigos := siatClient.Codigos()
-
+	codPuntoVenta := 0
+	// 1. Obtener credenciales una sola vez para el pool
 	cuisReq := models.Codigos().NewCuisBuilder().
 		WithCodigoAmbiente(codAmbiente).
 		WithCodigoModalidad(codModalidad).
 		WithCodigoSistema(os.Getenv("SIAT_CODIGO_SISTEMA")).
 		WithNit(nit).
+		WithCodigoSucursal(0).
+		WithCodigoPuntoVenta(codPuntoVenta).
 		Build()
 
-	cuis, err := serviceCodigos.SolicitudCuis(context.Background(), config, cuisReq)
+	respCuis, err := serviceCodigos.SolicitudCuis(context.Background(), config, cuisReq)
 	if err != nil {
 		t.Fatalf("error CUIS: %v", err)
 	}
@@ -642,36 +652,58 @@ func TestSiatCompraVentaService_RecepcionCompraVenta(t *testing.T) {
 		WithCodigoModalidad(codModalidad).
 		WithCodigoSistema(os.Getenv("SIAT_CODIGO_SISTEMA")).
 		WithNit(nit).
-		WithCuis(cuis.Body.Content.RespuestaCuis.Codigo).
+		WithCodigoSucursal(0).
+		WithCodigoPuntoVenta(codPuntoVenta).
+		WithCuis(respCuis.Body.Content.RespuestaCuis.Codigo).
 		Build()
 
-	cufd, err := serviceCodigos.SolicitudCufd(context.Background(), config, cufdReq)
+	respCufd, err := serviceCodigos.SolicitudCufd(context.Background(), config, cufdReq)
 	if err != nil {
 		t.Fatalf("error CUFD: %v", err)
 	}
 
-	serviceCompraVenta := siatClient.CompraVenta()
+	// 2. Emitir 90 facturas con numeración incremental
+	for i := 1; i <= 125; i++ {
+		t.Run(fmt.Sprintf("Factura_%d", i), func(t *testing.T) {
+			emitirFacturaIndividual(t, serviceCompraVenta, respCuis, respCufd, codPuntoVenta, i) // Pasamos 1 como punto de venta
+		})
+	}
+}
+
+func TestSiatCompraVentaService_RecepcionCompraVenta(t *testing.T) {
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		t.Skip("Saltando prueba de integración: .env no encontrado")
+	}
+	godotenv.Load(".env")
+
+	// Reutilizamos la lógica interna con factura nro 1
+	TestSiatCompraVentaService_RecepcionCompraVentaAll(t)
+}
+
+func emitirFacturaIndividual(t *testing.T, service ports.SiatCompraVentaService, cuis *soap.EnvelopeResponse[codigos.CuisResponse], cufd *soap.EnvelopeResponse[codigos.CufdResponse], puntoVenta int, nroFactura int) {
+	nit, _ := utils.ParseInt64Safe(os.Getenv("SIAT_NIT"))
+	codModalidad, _ := utils.ParseIntSafe(os.Getenv("SIAT_CODIGO_MODALIDAD"))
+	codAmbiente, _ := utils.ParseIntSafe(os.Getenv("SIAT_CODIGO_AMBIENTE"))
+	config := siat.Config{Token: os.Getenv("SIAT_TOKEN")}
 
 	fechaEmision := time.Now()
-	// 1. Generar CUF
-	cuf, err := utils.GenerarCUF(nit, fechaEmision, 0, codModalidad, 1, 1, 1, 1, 0, cufd.Body.Content.RespuestaCufd.CodigoControl)
+	// Generar CUF único para este número de factura
+	cuf, err := utils.GenerarCUF(nit, fechaEmision, 0, codModalidad, 1, 1, 1, nroFactura, puntoVenta, cufd.Body.Content.RespuestaCufd.CodigoControl)
 	if err != nil {
 		t.Fatalf("error al generar CUF: %v", err)
 	}
 
 	nombreRazonSocial := "JUAN PEREZ"
-	codigoPuntoVenta := 0
-	// Crear objeto de factura usando el nuevo paquete facturas
 	cabecera := invoices.NewCompraVentaCabeceraBuilder().
 		WithNitEmisor(nit).
 		WithRazonSocialEmisor("Ronaldo Rua").
 		WithMunicipio("Tarija").
-		WithNumeroFactura(1).
+		WithNumeroFactura(int64(nroFactura)).
 		WithCuf(cuf).
 		WithCufd(cufd.Body.Content.RespuestaCufd.Codigo).
 		WithCodigoSucursal(0).
 		WithDireccion("ESQUINA AVENIDA LA PAZ").
-		WithCodigoPuntoVenta(&codigoPuntoVenta).
+		WithCodigoPuntoVenta(&puntoVenta).
 		WithFechaEmision(fechaEmision).
 		WithNombreRazonSocial(&nombreRazonSocial).
 		WithCodigoTipoDocumentoIdentidad(1).
@@ -705,14 +737,12 @@ func TestSiatCompraVentaService_RecepcionCompraVenta(t *testing.T) {
 		AddDetalle(detalle).
 		Build()
 
-	// 2. Serializar y Firmar
 	xmlData, _ := xml.Marshal(factura)
 	signedXML, err := utils.SignXML(xmlData, "key.pem", "cert.crt")
 	if err != nil {
 		t.Fatalf("error firmando XML: %v", err)
 	}
 
-	// 3, 4, 5. Preparar archivo (Gzip + Hash SHA256 + Base64)
 	hashString, encodedArchivo, err := utils.CompressAndHash(signedXML)
 	if err != nil {
 		t.Fatalf("error preparando archivo: %v", err)
@@ -726,7 +756,7 @@ func TestSiatCompraVentaService_RecepcionCompraVenta(t *testing.T) {
 		WithCodigoSucursal(0).
 		WithCodigoDocumentoSector(1).
 		WithCodigoEmision(1).
-		WithCodigoPuntoVenta(0).
+		WithCodigoPuntoVenta(puntoVenta).
 		WithCufd(cufd.Body.Content.RespuestaCufd.Codigo).
 		WithCuis(cuis.Body.Content.RespuestaCuis.Codigo).
 		WithTipoFacturaDocumento(1).
@@ -735,13 +765,90 @@ func TestSiatCompraVentaService_RecepcionCompraVenta(t *testing.T) {
 		WithHashArchivo(hashString).
 		Build()
 
-	resp, err := serviceCompraVenta.RecepcionFactura(context.Background(), config, req)
+	// 1. EMITIR FACTURA
+	resp, err := service.RecepcionFactura(context.Background(), config, req)
 	if err != nil {
-		t.Fatalf("error en solicitud: %v", err)
+		t.Fatalf("error en emisión Factura %d: %v", nroFactura, err)
 	}
 
-	assert.NotNil(t, resp)
-	log.Printf("Respuesta SIAT: %+v", resp.Body.Content)
+	if !resp.Body.Content.RespuestaServicioFacturacion.Transaccion {
+		mensajes := ""
+		for _, m := range resp.Body.Content.RespuestaServicioFacturacion.MensajesList {
+			mensajes += fmt.Sprintf("[%d: %s] ", m.Codigo, m.Descripcion)
+		}
+		t.Errorf("Emisión Factura %d falló: %s", nroFactura, mensajes)
+		return // No podemos anular si no se emitió
+	}
+	log.Printf("Factura %d EMITIDA - Recepción: %s", nroFactura, resp.Body.Content.RespuestaServicioFacturacion.CodigoRecepcion)
+
+	// Pequeño delay para que el SIAT procese el estado
+	time.Sleep(2 * time.Second)
+
+	// 2. ANULAR FACTURA
+	reqAnulacion := models.CompraVenta().NewAnulacionFacturaBuilder().
+		WithCodigoAmbiente(codAmbiente).
+		WithCodigoDocumentoSector(1).
+		WithCodigoEmision(1).
+		WithTipoFacturaDocumento(1).
+		WithCodigoModalidad(codModalidad).
+		WithCodigoPuntoVenta(puntoVenta).
+		WithCodigoSistema(os.Getenv("SIAT_CODIGO_SISTEMA")).
+		WithCodigoSucursal(0).
+		WithNit(nit). // NIT es requerido en anulación
+		WithCufd(cufd.Body.Content.RespuestaCufd.Codigo).
+		WithCuis(cuis.Body.Content.RespuestaCuis.Codigo).
+		WithCuf(cuf).
+		WithCodigoMotivo(1). // 1: Factura mal emitida
+		Build()
+
+	respAnulacion, err := service.AnulacionFactura(context.Background(), config, reqAnulacion)
+	if err != nil {
+		t.Fatalf("error en anulación Factura %d: %v", nroFactura, err)
+	}
+
+	if !respAnulacion.Body.Content.RespuestaServicioFacturacion.Transaccion {
+		mensajes := ""
+		for _, m := range respAnulacion.Body.Content.RespuestaServicioFacturacion.MensajesList {
+			mensajes += fmt.Sprintf("[%d: %s] ", m.Codigo, m.Descripcion)
+		}
+		t.Errorf("Anulación Factura %d falló: %s", nroFactura, mensajes)
+		return // No podemos revertir si no se anuló
+	}
+	log.Printf("Factura %d ANULADA correctamente", nroFactura)
+
+	// Otro delay para la reversión
+	time.Sleep(2 * time.Second)
+
+	// 3. REVERTIR ANULACIÓN
+	reqReversion := models.CompraVenta().NewReversionAnulacionFacturaBuilder().
+		WithCodigoAmbiente(codAmbiente).
+		WithCodigoPuntoVenta(puntoVenta).
+		WithCodigoSistema(os.Getenv("SIAT_CODIGO_SISTEMA")).
+		WithCodigoSucursal(0).
+		WithNit(nit).
+		WithCodigoDocumentoSector(1).
+		WithTipoFacturaDocumento(1).
+		WithCodigoEmision(1).
+		WithCodigoModalidad(codModalidad).
+		WithCuf(cuf).
+		WithCufd(cufd.Body.Content.RespuestaCufd.Codigo).
+		WithCuis(cuis.Body.Content.RespuestaCuis.Codigo).
+		Build()
+
+	respReversion, err := service.ReversionAnulacionFactura(context.Background(), config, reqReversion)
+	if err != nil {
+		t.Fatalf("error en reversión Factura %d: %v", nroFactura, err)
+	}
+
+	if !respReversion.Body.Content.RespuestaServicioFacturacion.Transaccion {
+		mensajes := ""
+		for _, m := range respReversion.Body.Content.RespuestaServicioFacturacion.MensajesList {
+			mensajes += fmt.Sprintf("[%d: %s] ", m.Codigo, m.Descripcion)
+		}
+		t.Errorf("Reversión Factura %d falló: %s", nroFactura, mensajes)
+		return
+	}
+	log.Printf("Factura %d REVERTIDA (vuelve a ser válida)", nroFactura)
 }
 
 // TestSiatCompraVentaService_AnulacionFactura valida el proceso de anulación de una factura emitida.

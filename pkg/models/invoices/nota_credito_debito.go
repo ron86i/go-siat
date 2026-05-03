@@ -29,9 +29,9 @@ type NotaDetalleCreditoDebito struct {
 func NewNotaCreditoDebitoBuilder() *notaCreditoDebitoBuilder {
 	return &notaCreditoDebitoBuilder{
 		nota: &documents.NotaCreditoDebito{
-			XMLName:           xml.Name{Local: "notaElectronicaCreditoDebitoDescuento"},
+			XMLName:           xml.Name{Local: "notaFiscalElectronicaCreditoDebito"},
 			XmlnsXsi:          "http://www.w3.org/2001/XMLSchema-instance",
-			XsiSchemaLocation: "notaElectronicaCreditoDebitoDescuento.xsd",
+			XsiSchemaLocation: "notaFiscalElectronicaCreditoDebito.xsd",
 		},
 	}
 }
@@ -40,7 +40,7 @@ func NewNotaCreditoDebitoBuilder() *notaCreditoDebitoBuilder {
 func NewNotaCreditoDebitoCabeceraBuilder() *notaCreditoDebitoCabeceraBuilder {
 	return &notaCreditoDebitoCabeceraBuilder{
 		cabecera: &documents.CabeceraNotaCreditoDebito{
-			CodigoDocumentoSector: 47, // Sector 47
+			CodigoDocumentoSector: 24, // Sector 24
 		},
 	}
 }
@@ -73,11 +73,11 @@ func (b *notaCreditoDebitoBuilder) AddDetalle(req NotaDetalleCreditoDebito) *not
 func (b *notaCreditoDebitoBuilder) WithModalidad(tipo int) *notaCreditoDebitoBuilder {
 	switch tipo {
 	case siat.ModalidadElectronica:
-		b.nota.XMLName = xml.Name{Local: "notaElectronicaCreditoDebitoDescuento"}
-		b.nota.XsiSchemaLocation = "notaElectronicaCreditoDebitoDescuento.xsd"
+		b.nota.XMLName = xml.Name{Local: "notaFiscalElectronicaCreditoDebito"}
+		b.nota.XsiSchemaLocation = "notaFiscalElectronicaCreditoDebito.xsd"
 	case siat.ModalidadComputarizada:
-		b.nota.XMLName = xml.Name{Local: "notaComputarizadaCreditoDebitoDescuento"}
-		b.nota.XsiSchemaLocation = "notaComputarizadaCreditoDebitoDescuento.xsd"
+		b.nota.XMLName = xml.Name{Local: "notaFiscalComputarizadaCreditoDebito"}
+		b.nota.XsiSchemaLocation = "notaFiscalComputarizadaCreditoDebito.xsd"
 	}
 	return b
 }
@@ -210,16 +210,6 @@ func (b *notaCreditoDebitoCabeceraBuilder) WithMontoTotalOriginal(v float64) *no
 	return b
 }
 
-func (b *notaCreditoDebitoCabeceraBuilder) WithDescuentoAdicional(v *float64) *notaCreditoDebitoCabeceraBuilder {
-	if v == nil {
-		b.cabecera.DescuentoAdicional = datatype.Nilable[float64]{Value: nil}
-	} else {
-		val := datatype.Float64Round(*v, 2)
-		b.cabecera.DescuentoAdicional = datatype.Nilable[float64]{Value: &val}
-	}
-	return b
-}
-
 func (b *notaCreditoDebitoCabeceraBuilder) WithMontoTotalDevuelto(v float64) *notaCreditoDebitoCabeceraBuilder {
 	b.cabecera.MontoTotalDevuelto = datatype.Float64Round(v, 2)
 	return b
@@ -266,11 +256,6 @@ func (b *notaCreditoDebitoCabeceraBuilder) Build() NotaCreditoDebitoCabecera {
 
 type notaDetalleCreditoDebitoBuilder struct {
 	detalle *documents.DetalleNotaCreditoDebito
-}
-
-func (b *notaDetalleCreditoDebitoBuilder) WithNroItem(v int) *notaDetalleCreditoDebitoBuilder {
-	b.detalle.NroItem = v
-	return b
 }
 
 func (b *notaDetalleCreditoDebitoBuilder) WithActividadEconomica(v string) *notaDetalleCreditoDebitoBuilder {

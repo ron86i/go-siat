@@ -3,6 +3,8 @@ package invoices_test
 import (
 	"context"
 	"encoding/xml"
+	"fmt"
+	"log"
 	"testing"
 	"time"
 
@@ -40,7 +42,6 @@ func TestNotaCreditoDebitoBuilder(t *testing.T) {
 		Build()
 
 	detalle1 := invoices.NewNotaDetalleCreditoDebitoBuilder().
-		WithNroItem(1).
 		WithActividadEconomica("Venta").
 		WithCodigoProductoSin(123).
 		WithCodigoProducto("P001").
@@ -53,7 +54,6 @@ func TestNotaCreditoDebitoBuilder(t *testing.T) {
 		Build()
 
 	detalle2 := invoices.NewNotaDetalleCreditoDebitoBuilder().
-		WithNroItem(2).
 		WithActividadEconomica("Venta").
 		WithCodigoProductoSin(123).
 		WithCodigoProducto("P002").
@@ -126,7 +126,6 @@ func TestNotaCreditoDebitoIntegration_Computarizada(t *testing.T) {
 			WithUsuario("admin").
 			Build()).
 		AddDetalle(invoices.NewNotaDetalleCreditoDebitoBuilder().
-			WithNroItem(1).
 			WithActividadEconomica("477300").
 			WithCodigoProductoSin(622539).
 			WithCodigoProducto("P001").
@@ -138,7 +137,6 @@ func TestNotaCreditoDebitoIntegration_Computarizada(t *testing.T) {
 			WithCodigoDetalleTransaccion(1).
 			Build()).
 		AddDetalle(invoices.NewNotaDetalleCreditoDebitoBuilder().
-			WithNroItem(2).
 			WithActividadEconomica("477300").
 			WithCodigoProductoSin(622539).
 			WithCodigoProducto("P002").
@@ -189,37 +187,50 @@ func TestNotaCreditoDebitoIntegration_Computarizada(t *testing.T) {
 	t.Logf("Respuesta SIAT: %+v", resp.Body.Content.RespuestaRecepcionFactura)
 }
 
-func TestNotaCreditoDebitoIntegration_Electronica(t *testing.T) {
+func TestNotaCreditoDebito_Electronica(t *testing.T) {
 	tc := setupTestContext(t, siat.ModalidadElectronica)
-
-	service := tc.Client.DocumentoAjuste()
-	// codModalidad := siat.ModalidadElectronica
-
-	// 1. Obtener CUIS
+	tc.PuntoVenta = 0
+	tc.Sucursal = 0
 	cuis := tc.GetCuis(t)
-
-	// 2. Obtener CUFD
 	cufd, cufdControl := tc.GetCufd(t, cuis)
 
-	fecha := time.Now()
+	emitirNotaIndividual(t, tc, cuis, cufd, cufdControl, 1)
+}
 
-	// 3. Generar CUF real para Nota (Sector 47) Tipo Documento (3)
-	cuf, err := utils.GenerarCUF(tc.Nit, fecha, 0, tc.Modalidad, siat.EmisionOnline, 3, 47, 1, 0, cufdControl)
+func TestNotaCreditoDebito_ElectronicaAll(t *testing.T) {
+	tc := setupTestContext(t, siat.ModalidadElectronica)
+	tc.PuntoVenta = 1
+	tc.Sucursal = 0
+	cuis := tc.GetCuis(t)
+	cufd, cufdControl := tc.GetCufd(t, cuis)
+
+	for i := 1; i <= 125; i++ {
+		t.Run(fmt.Sprintf("Nota_%d", i), func(t *testing.T) {
+			emitirNotaIndividual(t, tc, cuis, cufd, cufdControl, i)
+			time.Sleep(50 * time.Millisecond)
+		})
+	}
+}
+
+func emitirNotaIndividual(t *testing.T, tc *TestContext, cuis, cufd, cufdControl string, nroNota int) {
+	fecha := time.Now()
+	// Sector 24: Nota Crédito Débito, Tipo Doc 3
+	cuf, err := utils.GenerarCUF(tc.Nit, fecha, tc.Sucursal, tc.Modalidad, siat.EmisionOnline, 3, 24, nroNota, tc.PuntoVenta, cufdControl)
 	if err != nil {
 		t.Fatalf("error al generar CUF: %v", err)
 	}
 
-	// 4. Construir XML
 	nota := invoices.NewNotaCreditoDebitoBuilder().
 		WithModalidad(tc.Modalidad).
 		WithCabecera(invoices.NewNotaCreditoDebitoCabeceraBuilder().
 			WithNitEmisor(tc.Nit).
 			WithRazonSocialEmisor("Empresa Test").
 			WithMunicipio("La Paz").
-			WithNumeroNotaCreditoDebito(1).
+			WithNumeroNotaCreditoDebito(int64(nroNota)).
 			WithCuf(cuf).
 			WithCufd(cufd).
-			WithCodigoSucursal(0).
+			WithCodigoSucursal(tc.Sucursal).
+			WithCodigoPuntoVenta(&tc.PuntoVenta).
 			WithDireccion("Av. Principal 123").
 			WithFechaEmision(fecha).
 			WithNombreRazonSocial(ptr("Cliente Test")).
@@ -236,7 +247,6 @@ func TestNotaCreditoDebitoIntegration_Electronica(t *testing.T) {
 			WithUsuario("admin").
 			Build()).
 		AddDetalle(invoices.NewNotaDetalleCreditoDebitoBuilder().
-			WithNroItem(1).
 			WithActividadEconomica("477300").
 			WithCodigoProductoSin(622539).
 			WithCodigoProducto("P001").
@@ -248,7 +258,6 @@ func TestNotaCreditoDebitoIntegration_Electronica(t *testing.T) {
 			WithCodigoDetalleTransaccion(1).
 			Build()).
 		AddDetalle(invoices.NewNotaDetalleCreditoDebitoBuilder().
-			WithNroItem(2).
 			WithActividadEconomica("477300").
 			WithCodigoProductoSin(622539).
 			WithCodigoProducto("P002").
@@ -271,13 +280,199 @@ func TestNotaCreditoDebitoIntegration_Electronica(t *testing.T) {
 		t.Fatalf("error al firmar: %v", err)
 	}
 
-	// 5. Preparar el envío
 	hash, encoded, err := utils.CompressAndHash(xmlBytes)
 	if err != nil {
 		t.Fatalf("error compress: %v", err)
 	}
 
-	// 6. Crear solicitud de recepción
+	req := models.DocumentoAjuste().NewRecepcionBuilder().
+		WithCodigoAmbiente(tc.Ambiente).
+		WithCodigoDocumentoSector(24).
+		WithCodigoEmision(siat.EmisionOnline).
+		WithCodigoModalidad(tc.Modalidad).
+		WithCodigoPuntoVenta(tc.PuntoVenta).
+		WithCodigoSistema(tc.Sistema).
+		WithCodigoSucursal(tc.Sucursal).
+		WithCufd(cufd).
+		WithCuis(cuis).
+		WithNit(tc.Nit).
+		WithTipoFacturaDocumento(3).
+		WithArchivo(encoded).
+		WithFechaEnvio(fecha).
+		WithHashArchivo(hash).
+		Build()
+	// 1. EMITIR NOTA DE CREDITO DEBITO
+	resp, err := tc.Client.DocumentoAjuste().RecepcionDocumentoAjuste(context.Background(), tc.Config, req)
+	if err != nil {
+		t.Fatalf("Nota %d - Error de red: %v", nroNota, err)
+	}
+
+	if resp.Body.Fault != nil {
+		t.Errorf("Nota %d - Fault SIAT: %s", nroNota, resp.Body.Fault.String())
+	} else {
+		if resp.Body.Content.RespuestaRecepcionFactura.Transaccion {
+			log.Printf("Nota %d - EXITOSA: %s", nroNota, resp.Body.Content.RespuestaRecepcionFactura.CodigoRecepcion)
+		} else {
+			mensajes := ""
+			for _, m := range resp.Body.Content.RespuestaRecepcionFactura.MensajesList {
+				mensajes += fmt.Sprintf("[%d: %s] ", m.Codigo, m.Descripcion)
+			}
+			t.Errorf("Nota %d - RECHAZADA: %s", nroNota, mensajes)
+		}
+	}
+	// Pequeño delay para que el SIAT procese el estado
+	time.Sleep(50 * time.Millisecond)
+
+	// 2. ANULAR FACTURA
+	reqAnulacion := models.DocumentoAjuste().NewAnulacionBuilder().
+		WithCodigoAmbiente(tc.Ambiente).
+		WithCodigoDocumentoSector(24).
+		WithCodigoEmision(siat.EmisionOnline).
+		WithTipoFacturaDocumento(3).
+		WithCodigoModalidad(tc.Modalidad).
+		WithCodigoPuntoVenta(tc.PuntoVenta).
+		WithCodigoSistema(tc.Sistema).
+		WithCodigoSucursal(tc.Sucursal).
+		WithNit(tc.Nit). // NIT es requerido en anulación
+		WithCufd(cufd).
+		WithCuis(cuis).
+		WithCuf(cuf).
+		WithCodigoMotivo(2). // 2: NOTA DE CREDITO-DEBITO MAL EMITIDA
+		Build()
+
+	respAnulacion, err := tc.Client.DocumentoAjuste().AnulacionDocumentoAjuste(context.Background(), tc.Config, reqAnulacion)
+	if err != nil {
+		t.Fatalf("error en anulación nota %d: %v", nroNota, err)
+	}
+
+	if !respAnulacion.Body.Content.RespuestaServicioFacturacion.Transaccion {
+		mensajes := ""
+		for _, m := range respAnulacion.Body.Content.RespuestaServicioFacturacion.MensajesList {
+			mensajes += fmt.Sprintf("[%d: %s] ", m.Codigo, m.Descripcion)
+		}
+		t.Errorf("Anulación Nota Credito debito %d falló: %s", nroNota, mensajes)
+		return // No podemos revertir si no se anuló
+	}
+	log.Printf("Nota Credito debito %d ANULADA correctamente", nroNota)
+
+	// Otro delay para la reversión
+	time.Sleep(50 * time.Millisecond)
+
+	// 3. REVERTIR ANULACIÓN
+	reqReversion := models.DocumentoAjuste().NewReversionAnulacionBuilder().
+		WithCodigoAmbiente(tc.Ambiente).
+		WithCodigoPuntoVenta(tc.PuntoVenta).
+		WithCodigoSistema(tc.Sistema).
+		WithCodigoSucursal(tc.Sucursal).
+		WithNit(tc.Nit).
+		WithCodigoDocumentoSector(24).
+		WithTipoFacturaDocumento(3).
+		WithCodigoEmision(1).
+		WithCodigoModalidad(tc.Modalidad).
+		WithCuf(cuf).
+		WithCufd(cufd).
+		WithCuis(cuis).
+		Build()
+
+	respReversion, err := tc.Client.DocumentoAjuste().ReversionAnulacionDocumentoAjuste(context.Background(), tc.Config, reqReversion)
+	if err != nil {
+		t.Fatalf("error en reversión Nota Credito debito %d: %v", nroNota, err)
+	}
+
+	if !respReversion.Body.Content.RespuestaServicioFacturacion.Transaccion {
+		mensajes := ""
+		for _, m := range respReversion.Body.Content.RespuestaServicioFacturacion.MensajesList {
+			mensajes += fmt.Sprintf("[%d: %s] ", m.Codigo, m.Descripcion)
+		}
+		t.Errorf("Reversión Nota Credito debito %d falló: %s", nroNota, mensajes)
+		return
+	}
+	log.Printf("Nota Credito debito %d REVERTIDA (vuelve a ser válida)", nroNota)
+}
+
+func TestNotaCreditoDebito_ComputarizadaAll(t *testing.T) {
+	tc := setupTestContext(t, siat.ModalidadComputarizada)
+	tc.PuntoVenta = 0
+	tc.Sucursal = 0
+	cuis := tc.GetCuis(t)
+	cufd, cufdControl := tc.GetCufd(t, cuis)
+
+	for i := 1; i <= 125; i++ {
+		t.Run(fmt.Sprintf("NotaComp_%d", i), func(t *testing.T) {
+			emitirNotaComputarizadaIndividual(t, tc, cuis, cufd, cufdControl, i)
+		})
+	}
+}
+
+func emitirNotaComputarizadaIndividual(t *testing.T, tc *TestContext, cuis, cufd, cufdControl string, nroNota int) {
+	fecha := time.Now()
+	// Sector 47: Nota Crédito Débito Computarizada
+	cuf, err := utils.GenerarCUF(tc.Nit, fecha, tc.Sucursal, tc.Modalidad, siat.EmisionOnline, 3, 47, nroNota, tc.PuntoVenta, cufdControl)
+	if err != nil {
+		t.Fatalf("error al generar CUF: %v", err)
+	}
+
+	nota := invoices.NewNotaCreditoDebitoBuilder().
+		WithModalidad(tc.Modalidad).
+		WithCabecera(invoices.NewNotaCreditoDebitoCabeceraBuilder().
+			WithNitEmisor(tc.Nit).
+			WithRazonSocialEmisor("Empresa Test").
+			WithMunicipio("La Paz").
+			WithNumeroNotaCreditoDebito(int64(nroNota)).
+			WithCuf(cuf).
+			WithCufd(cufd).
+			WithCodigoSucursal(tc.Sucursal).
+			WithCodigoPuntoVenta(&tc.PuntoVenta).
+			WithDireccion("Av. Principal 123").
+			WithFechaEmision(fecha).
+			WithNombreRazonSocial(ptr("Cliente Test")).
+			WithCodigoTipoDocumentoIdentidad(1).
+			WithNumeroDocumento("5544332").
+			WithCodigoCliente("CLI-001").
+			WithNumeroFactura(100).
+			WithNumeroAutorizacionCuf("DUMMY_AUT_CUF").
+			WithFechaEmisionFactura(fecha.Add(-24 * time.Hour)).
+			WithMontoTotalOriginal(1000.00).
+			WithMontoTotalDevuelto(500.00).
+			WithMontoEfectivoCreditoDebito(65.00).
+			WithLeyenda("Ley Nro 453").
+			WithUsuario("admin").
+			Build()).
+		AddDetalle(invoices.NewNotaDetalleCreditoDebitoBuilder().
+			WithActividadEconomica("477300").
+			WithCodigoProductoSin(622539).
+			WithCodigoProducto("P001").
+			WithDescripcion("Producto A").
+			WithCantidad(10).
+			WithUnidadMedida(1).
+			WithPrecioUnitario(100).
+			WithSubTotal(1000).
+			WithCodigoDetalleTransaccion(1).
+			Build()).
+		AddDetalle(invoices.NewNotaDetalleCreditoDebitoBuilder().
+			WithActividadEconomica("477300").
+			WithCodigoProductoSin(622539).
+			WithCodigoProducto("P002").
+			WithDescripcion("Producto B devuelto").
+			WithCantidad(5).
+			WithUnidadMedida(1).
+			WithPrecioUnitario(100).
+			WithSubTotal(500).
+			WithCodigoDetalleTransaccion(2).
+			Build()).
+		Build()
+
+	xmlBytes, err := xml.Marshal(nota)
+	if err != nil {
+		t.Fatalf("error marshal: %v", err)
+	}
+
+	// NO se firma para computarizada
+	hash, encoded, err := utils.CompressAndHash(xmlBytes)
+	if err != nil {
+		t.Fatalf("error compress: %v", err)
+	}
+
 	req := models.DocumentoAjuste().NewRecepcionBuilder().
 		WithCodigoAmbiente(tc.Ambiente).
 		WithCodigoDocumentoSector(47).
@@ -294,12 +489,92 @@ func TestNotaCreditoDebitoIntegration_Electronica(t *testing.T) {
 		WithFechaEnvio(fecha).
 		WithHashArchivo(hash).
 		Build()
-
-	// 7. Intentar envío
-	resp, err := service.RecepcionDocumentoAjuste(context.Background(), tc.Config, req)
+	// 1. EMITIR NOTA DE CREDITO DEBITO COMPUTARIZADA
+	resp, err := tc.Client.DocumentoAjuste().RecepcionDocumentoAjuste(context.Background(), tc.Config, req)
 	if err != nil {
-		t.Fatalf("Error en la comunicación con el SIAT: %v", err)
+		t.Fatalf("Nota %d - Error de red: %v", nroNota, err)
 	}
 
-	t.Logf("Respuesta SIAT: %+v", resp.Body.Content.RespuestaRecepcionFactura)
+	if resp.Body.Fault != nil {
+		t.Errorf("Nota %d - Fault SIAT: %s", nroNota, resp.Body.Fault.String())
+	} else {
+		if resp.Body.Content.RespuestaRecepcionFactura.Transaccion {
+			log.Printf("Nota Comp %d - EXITOSA: %s", nroNota, resp.Body.Content.RespuestaRecepcionFactura.CodigoRecepcion)
+		} else {
+			mensajes := ""
+			for _, m := range resp.Body.Content.RespuestaRecepcionFactura.MensajesList {
+				mensajes += fmt.Sprintf("[%d: %s] ", m.Codigo, m.Descripcion)
+			}
+			t.Errorf("Nota Comp %d - RECHAZADA: %s", nroNota, mensajes)
+		}
+	}
+
+	// Pequeño delay para que el SIAT procese el estado
+	time.Sleep(50 * time.Millisecond)
+
+	// 2. ANULAR FACTURA
+	reqAnulacion := models.DocumentoAjuste().NewAnulacionBuilder().
+		WithCodigoAmbiente(tc.Ambiente).
+		WithCodigoDocumentoSector(23).
+		WithCodigoEmision(siat.EmisionOnline).
+		WithTipoFacturaDocumento(1).
+		WithCodigoModalidad(tc.Modalidad).
+		WithCodigoPuntoVenta(tc.PuntoVenta).
+		WithCodigoSistema(tc.Sistema).
+		WithCodigoSucursal(tc.Sucursal).
+		WithNit(tc.Nit). // NIT es requerido en anulación
+		WithCufd(cufd).
+		WithCuis(cuis).
+		WithCuf(cuf).
+		WithCodigoMotivo(1). // 1: Factura mal emitida
+		Build()
+
+	respAnulacion, err := tc.Client.DocumentoAjuste().AnulacionDocumentoAjuste(context.Background(), tc.Config, reqAnulacion)
+	if err != nil {
+		t.Fatalf("error en anulación nota credito debito %d: %v", nroNota, err)
+	}
+
+	if !respAnulacion.Body.Content.RespuestaServicioFacturacion.Transaccion {
+		mensajes := ""
+		for _, m := range respAnulacion.Body.Content.RespuestaServicioFacturacion.MensajesList {
+			mensajes += fmt.Sprintf("[%d: %s] ", m.Codigo, m.Descripcion)
+		}
+		t.Errorf("Anulación Nota Credito debito %d falló: %s", nroNota, mensajes)
+		return // No podemos revertir si no se anuló
+	}
+	log.Printf("Nota Credito debito %d ANULADA correctamente", nroNota)
+
+	// Otro delay para la reversión
+	time.Sleep(50 * time.Millisecond)
+
+	// 3. REVERTIR ANULACIÓN
+	reqReversion := models.DocumentoAjuste().NewReversionAnulacionBuilder().
+		WithCodigoAmbiente(tc.Ambiente).
+		WithCodigoPuntoVenta(tc.PuntoVenta).
+		WithCodigoSistema(tc.Sistema).
+		WithCodigoSucursal(tc.Sucursal).
+		WithNit(tc.Nit).
+		WithCodigoDocumentoSector(23).
+		WithTipoFacturaDocumento(1).
+		WithCodigoEmision(1).
+		WithCodigoModalidad(tc.Modalidad).
+		WithCuf(cuf).
+		WithCufd(cufd).
+		WithCuis(cuis).
+		Build()
+
+	respReversion, err := tc.Client.DocumentoAjuste().ReversionAnulacionDocumentoAjuste(context.Background(), tc.Config, reqReversion)
+	if err != nil {
+		t.Fatalf("error en reversión Nota Credito debito %d: %v", nroNota, err)
+	}
+
+	if !respReversion.Body.Content.RespuestaServicioFacturacion.Transaccion {
+		mensajes := ""
+		for _, m := range respReversion.Body.Content.RespuestaServicioFacturacion.MensajesList {
+			mensajes += fmt.Sprintf("[%d: %s] ", m.Codigo, m.Descripcion)
+		}
+		t.Errorf("Reversión Nota Credito debito %d falló: %s", nroNota, mensajes)
+		return
+	}
+	log.Printf("Nota Credito debito %d REVERTIDA (vuelve a ser válida)", nroNota)
 }

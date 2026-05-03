@@ -6,7 +6,7 @@ import (
 	"github.com/ron86i/go-siat/internal/core/domain/datatype"
 )
 
-// NotaCreditoDebito representa la estructura completa de una nota de crédito, débito y descuento (Sector 47).
+// NotaCreditoDebito representa la estructura completa de una nota de crédito, débito y descuento (Sector 24).
 type NotaCreditoDebito struct {
 	XMLName           xml.Name                   `json:"-"`
 	XmlnsXsi          string                     `xml:"xmlns:xsi,attr" json:"-"`
@@ -37,7 +37,6 @@ type CabeceraNotaCreditoDebito struct {
 	NumeroAutorizacionCuf        string                    `xml:"numeroAutorizacionCuf" json:"numeroAutorizacionCuf"`
 	FechaEmisionFactura          datatype.TimeSiat         `xml:"fechaEmisionFactura" json:"fechaEmisionFactura"`
 	MontoTotalOriginal           float64                   `xml:"montoTotalOriginal" json:"montoTotalOriginal"`
-	DescuentoAdicional           datatype.Nilable[float64] `xml:"descuentoAdicional" json:"descuentoAdicional"`
 	MontoTotalDevuelto           float64                   `xml:"montoTotalDevuelto" json:"montoTotalDevuelto"`
 	MontoDescuentoCreditoDebito  datatype.Nilable[float64] `xml:"montoDescuentoCreditoDebito" json:"montoDescuentoCreditoDebito"`
 	MontoEfectivoCreditoDebito   float64                   `xml:"montoEfectivoCreditoDebito" json:"montoEfectivoCreditoDebito"`
@@ -49,7 +48,6 @@ type CabeceraNotaCreditoDebito struct {
 
 // DetalleNotaCreditoDebito representa un ítem individual de la nota.
 type DetalleNotaCreditoDebito struct {
-	NroItem                  int                       `xml:"nroItem" json:"nroItem"`
 	ActividadEconomica       string                    `xml:"actividadEconomica" json:"actividadEconomica"`
 	CodigoProductoSin        int64                     `xml:"codigoProductoSin" json:"codigoProductoSin"`
 	CodigoProducto           string                    `xml:"codigoProducto" json:"codigoProducto"`
