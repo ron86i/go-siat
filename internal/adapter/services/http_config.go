@@ -52,16 +52,16 @@ type HTTPConfig struct {
 // Es el reemplazo recomendado para hardcoded timeouts de 15 segundos.
 func DefaultHTTPConfig() HTTPConfig {
 	return HTTPConfig{
-		Timeout:             45 * time.Second,
+		Timeout:             60 * time.Second,
 		MaxIdleConns:        100,
-		MaxConnsPerHost:     10,
-		MaxIdleConnsPerHost: 5,
-		TLSMinVersion:       tls.VersionTLS12,
+		MaxConnsPerHost:     100,              // Aumentado para soportar el pool de conexiones en tests concurrentes
+		MaxIdleConnsPerHost: 50,               // Permitir mantener más conexiones abiertas para reutilización
+		TLSMinVersion:       tls.VersionTLS12, // TLS 1.2 es el estándar más compatible para SIAT
 		DisableKeepAlives:   false,
 		IdleConnTimeout:     90 * time.Second,
-		DialTimeout:         10 * time.Second,
-		DialKeepAlive:       30 * time.Second,
-		TLSHandshakeTimeout: 10 * time.Second,
+		DialTimeout:         60 * time.Second, // Aumentado para dar margen en el handshake inicial
+		DialKeepAlive:       60 * time.Second,
+		TLSHandshakeTimeout: 60 * time.Second,
 	}
 }
 

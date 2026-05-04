@@ -2,6 +2,7 @@ package services_test
 
 import (
 	"context"
+	"fmt"
 
 	"log"
 	"os"
@@ -9,6 +10,7 @@ import (
 	"time"
 
 	"github.com/joho/godotenv"
+	"github.com/ron86i/go-siat/internal/core/ports"
 	"github.com/ron86i/go-siat/pkg/models"
 	"github.com/ron86i/go-siat/pkg/utils"
 
@@ -21,11 +23,6 @@ import (
 // sobre la revocación de un certificado digital.
 // Requisitos: El certificado enviado debe ser el registrado previamente en el portal de Impuestos.
 func TestNotificaCertificadoRevocado(t *testing.T) {
-	if _, err := os.Stat(".env"); os.IsNotExist(err) {
-		t.Skip("Saltando prueba de integración: .env no encontrado")
-	}
-	// Cargar configuración de integración desde el entorno (.env)
-	godotenv.Load()
 
 	// Parsear el NIT (Int64)
 	nit, err := utils.ParseInt64Safe(os.Getenv("SIAT_NIT"))
@@ -85,12 +82,6 @@ MIIEejCCA2KgA...alF2Tw0jIVieaeefsL78Yv8fA==
 // contra el servicio real del SIAT, asegurando que la configuración cargada sea válida
 // y que la respuesta del servidor se procese correctamente sin predecir mensajes fijos.
 func TestVerificarNit(t *testing.T) {
-	if _, err := os.Stat(".env"); os.IsNotExist(err) {
-		t.Skip("Saltando prueba de integración: .env no encontrado")
-	}
-	// Cargar configuración de integración desde el entorno (.env)
-	godotenv.Load()
-
 	codModalidad, err := utils.ParseIntSafe(os.Getenv("SIAT_CODIGO_MODALIDAD"))
 	if err != nil {
 		t.Fatalf("la variable SIAT_CODIGO_MODALIDAD debe ser un número válido: %v", err)
@@ -180,7 +171,7 @@ func TestSolicitudCuis(t *testing.T) {
 		WithCodigoSistema(os.Getenv("SIAT_CODIGO_SISTEMA")).
 		WithNit(nit).
 		WithCodigoSucursal(0).
-		WithCodigoPuntoVenta(0).
+		WithCodigoPuntoVenta(1).
 		Build()
 
 	resp, err := service.SolicitudCuis(context.Background(), config, req)
@@ -197,66 +188,71 @@ func TestSolicitudCuis(t *testing.T) {
 	}
 }
 
-// TestSolicitudCufd valida la obtención del Código Único de Facturación Diaria (CUFD).
-// El CUFD debe solicitarse cada 24 horas o al inicio de operaciones del día.
-// Requiere un CUIS vigente para ser procesado correctamente por el SIAT.
+// TestSolicitudCufdAll ejecuta 100 veces la solicitud de CUFD para validar estabilidad.
+func TestSolicitudCufdAll(t *testing.T) {
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		t.Skip("Saltando prueba de integración: .env no encontrado")
+	}
+	godotenv.Load()
+
+	siatClient := getSiatClient(t)
+	service := siatClient.Codigos()
+
+	for i := 0; i < 100; i++ {
+		t.Run(fmt.Sprintf("Iteracion_%d", i), func(t *testing.T) {
+			solicitudCufd(t, service)
+		})
+	}
+}
+
 func TestSolicitudCufd(t *testing.T) {
 	if _, err := os.Stat(".env"); os.IsNotExist(err) {
 		t.Skip("Saltando prueba de integración: .env no encontrado")
 	}
-	// Cargar entorno de configuración para tests de integración
 	godotenv.Load()
+	solicitudCufd(t, getSiatClient(t).Codigos())
+}
 
-	codModalidad, err := utils.ParseIntSafe(os.Getenv("SIAT_CODIGO_MODALIDAD"))
-	if err != nil {
-		t.Fatalf("la variable SIAT_CODIGO_MODALIDAD debe ser un número válido: %v", err)
-	}
+func solicitudCufd(t *testing.T, service ports.SiatCodigosService) {
+	codModalidad, _ := utils.ParseIntSafe(os.Getenv("SIAT_CODIGO_MODALIDAD"))
+	nit, _ := utils.ParseInt64Safe(os.Getenv("SIAT_NIT"))
+	codAmbiente, _ := utils.ParseIntSafe(os.Getenv("SIAT_CODIGO_AMBIENTE"))
 
-	// Parsear el NIT (Int64)
-	nit, err := utils.ParseInt64Safe(os.Getenv("SIAT_NIT"))
-	if err != nil {
-		t.Fatalf("la variable SIAT_NIT debe ser un número válido: %v", err)
-	}
-	codAmbiente, err := utils.ParseIntSafe(os.Getenv("SIAT_CODIGO_AMBIENTE"))
-	if err != nil {
-		t.Fatalf("la variable SIAT_CODIGO_AMBIENTE debe ser un número válido: %v", err)
-	}
 	config := siat.Config{
 		Token: os.Getenv("SIAT_TOKEN"),
 	}
-	siatClient, _ := siat.New(os.Getenv("SIAT_URL"), nil)
-	service := siatClient.Codigos()
-
-	req := models.Codigos().NewCuisBuilder().
+	codigoPuntoVenta := 1
+	// 1. Obtener CUIS primero
+	reqCuis := models.Codigos().NewCuisBuilder().
 		WithCodigoAmbiente(codAmbiente).
 		WithCodigoModalidad(codModalidad).
 		WithCodigoSistema(os.Getenv("SIAT_CODIGO_SISTEMA")).
 		WithNit(nit).
 		WithCodigoSucursal(0).
-		WithCodigoPuntoVenta(1).
+		WithCodigoPuntoVenta(codigoPuntoVenta). // Usando tu ajuste manual a 0
 		Build()
 
-	respCuis, err := service.SolicitudCuis(context.Background(), config, req)
+	respCuis, err := service.SolicitudCuis(context.Background(), config, reqCuis)
+	if err != nil {
+		t.Fatalf("Error obteniendo CUIS: %v", err)
+	}
 
-	// Preparar la estructura de solicitud de CUFD con los datos de prueba
+	// 2. Solicitar CUFD
 	reqCufd := models.Codigos().NewCufdBuilder().
 		WithCodigoAmbiente(codAmbiente).
 		WithCodigoModalidad(codModalidad).
 		WithCodigoSistema(os.Getenv("SIAT_CODIGO_SISTEMA")).
 		WithNit(nit).
 		WithCodigoSucursal(0).
-		WithCodigoPuntoVenta(1).
-		WithCuis(respCuis.Body.Content.RespuestaCuis.Codigo). // Requiere un CUIS vigente para el NIT configurado
+		WithCodigoPuntoVenta(codigoPuntoVenta).
+		WithCuis(respCuis.Body.Content.RespuestaCuis.Codigo).
 		Build()
 
-	// Ejecutar la llamada al servicio de códigos del SIAT
 	resp, err := service.SolicitudCufd(context.Background(), config, reqCufd)
 
-	// Validar la recepción de la respuesta y registrar el estado de la transacción
 	if assert.NoError(t, err) && assert.NotNil(t, resp) {
 		res := resp.Body.Content.RespuestaCufd
-
-		log.Println("Respuesta de cufd:", res)
+		log.Printf("Respuesta de cufd: %+v", res)
 	}
 }
 

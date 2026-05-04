@@ -813,7 +813,7 @@ func (b *recepcionFacturaElectronicaBuilder) WithCodigoAmbiente(codigoAmbiente i
 
 // WithCodigoDocumentoSector configura el código del documento sector (ej. 1 para Compra Venta, 10 para Dutty Free).
 func (b *recepcionFacturaElectronicaBuilder) WithCodigoDocumentoSector(codigoDocumentoSector int) *recepcionFacturaElectronicaBuilder {
-	b.request.SolicitudServicioRecepcionFactura.SolicitudRecepcion.CodigoDocumentoSector = codigoDocumentoSector
+	b.request.SolicitudServicioRecepcionFactura.CodigoDocumentoSector = codigoDocumentoSector
 	return b
 }
 
