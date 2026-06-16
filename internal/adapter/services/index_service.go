@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/ron86i/go-siat/internal/core/domain/datatype/soap"
+	siatErrors "github.com/ron86i/go-siat/internal/core/errors"
 	"github.com/ron86i/go-siat/internal/core/ports"
 	"github.com/ron86i/go-siat/pkg/models"
 )
@@ -136,7 +137,7 @@ func performSoapRequest[TReq any, TResp any](ctx context.Context, httpClient *ht
 
 	resp, err := httpClient.Do(httpReq)
 	if err != nil {
-		return nil, err
+		return nil, siatErrors.NewNetworkError("fallo en solicitud HTTP al SIAT", err)
 	}
 	return parseSoapResponse[TResp](resp)
 }
