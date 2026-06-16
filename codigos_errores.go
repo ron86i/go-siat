@@ -77,6 +77,7 @@ const (
 	CodeCuisVigenteNoPuedeSolicitarOtro              = 970
 	CodeArchivoExcedeTamano                          = 971
 	CodeCantidadFacturasExcedeNormativa              = 972
+	CodeCuisNoSeEncuentraVigente                     = 973
 	CodeRangoFechasEventoInvalido                    = 974
 	CodeSistemaNoAutorizadoOObservado                = 975
 	CodeCodigoEventoIncorrecto                       = 976
@@ -416,12 +417,15 @@ func IsRetryableCode(code int) bool {
 // IsValidationCode retorna true si el código indica un error de validación de datos
 // (ej: NIT inexistente, formato XSD inválido).
 func IsValidationCode(code int) bool {
-	return code >= 919 && code <= 940 || code >= 1000 && code <= 1061
+	if code >= 1000 && code <= 1061 {
+		return true
+	}
+	return (code >= 910 && code <= 966) || (code >= 968 && code <= 985) || (code >= 996 && code <= 998)
 }
 
 // IsWarningCode retorna true si el código es informativo o una advertencia que no impide el proceso.
 func IsWarningCode(code int) bool {
-	return code >= 2000 && code <= 3008
+	return (code >= 2000 && code <= 2019) || code == CodeWarnCuisExpira
 }
 
 // IsConfigCode retorna true si el código indica un error de configuración del sistema o credenciales.
