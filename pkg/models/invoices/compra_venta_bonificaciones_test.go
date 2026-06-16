@@ -126,7 +126,7 @@ func TestCompraVentaBonificaciones_ElectronicaAll(t *testing.T) {
 func emitirCompraVentaBonificacionesElectronicaIndividual(t *testing.T, tc *TestContext, cuis, cufd, cufdControl string, nroFactura int) {
 	fechaEmision := time.Now()
 	// Sector 35: Compra Venta Bonificaciones
-	cuf, err := utils.GenerarCUF(tc.Nit, fechaEmision, tc.Sucursal, tc.Modalidad, siat.EmisionOnline, 1, 35, nroFactura, tc.PuntoVenta, cufdControl)
+	cuf, err := utils.GenerarCUF(tc.Nit, fechaEmision, tc.Sucursal, tc.Modalidad, siat.EmisionOnline, 1, 35, int64(nroFactura), tc.PuntoVenta, cufdControl)
 	if err != nil {
 		t.Fatalf("error al generar CUF: %v", err)
 	}

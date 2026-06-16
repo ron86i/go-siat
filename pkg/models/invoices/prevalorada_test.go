@@ -49,7 +49,7 @@ func TestPrevalorada_ElectronicaAll(t *testing.T) {
 func emitirPrevaloradaIndividual(t *testing.T, tc *TestContext, cuis, cufd, cufdControl string, nroFactura int) {
 	fechaEmision := time.Now()
 	// Sector 23: Prevalorada
-	cuf, err := utils.GenerarCUF(tc.Nit, fechaEmision, tc.Sucursal, tc.Modalidad, 1, 1, 23, nroFactura, tc.PuntoVenta, cufdControl)
+	cuf, err := utils.GenerarCUF(tc.Nit, fechaEmision, tc.Sucursal, tc.Modalidad, 1, 1, 23, int64(nroFactura), tc.PuntoVenta, cufdControl)
 	if err != nil {
 		t.Fatalf("error al generar CUF: %v", err)
 	}

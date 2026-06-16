@@ -29,7 +29,7 @@ func TestGenerarCUF(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			cuf, err := GenerarCUF(nit, fecha, tt.sucursal, tt.modalidad, tt.emision, tt.factura, tt.sector, tt.num, tt.pv, tt.control)
+			cuf, err := GenerarCUF(nit, fecha, tt.sucursal, tt.modalidad, tt.emision, tt.factura, tt.sector, int64(tt.num), tt.pv, tt.control)
 			assert.NoError(t, err)
 			assert.NotEmpty(t, cuf)
 			assert.Contains(t, cuf, tt.control)

@@ -25,7 +25,7 @@ import (
 // Returns:
 //
 //	(string, error): CUF completo y error si ocurre.
-func GenerarCUF(nit int64, fechaHora time.Time, sucursal, modalidad, tipoEmision, tipoFactura, tipoDocumentoSector, numeroFactura, puntoVenta int, codigoControl string) (string, error) {
+func GenerarCUF(nit int64, fechaHora time.Time, sucursal, modalidad, tipoEmision, tipoFactura, tipoDocumentoSector int, numeroFactura int64, puntoVenta int, codigoControl string) (string, error) {
 
 	// 1. Format fields to fixed length
 	nitStr := fmt.Sprintf("%013d", nit)                                // 13

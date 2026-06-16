@@ -44,7 +44,7 @@ func emitirSegurosIndividual(t *testing.T, tc *TestContext, cuis, cufd, cufdCont
 	nombreRazonSocial := "JUAN PEREZ"
 
 	// Sector 34: Seguros
-	cuf, err := utils.GenerarCUF(tc.Nit, fechaEmision, tc.Sucursal, tc.Modalidad, 1, 1, 34, nroFactura, tc.PuntoVenta, cufdControl)
+	cuf, err := utils.GenerarCUF(tc.Nit, fechaEmision, tc.Sucursal, tc.Modalidad, 1, 1, 34, int64(nroFactura), tc.PuntoVenta, cufdControl)
 	if err != nil {
 		t.Fatalf("error al generar CUF: %v", err)
 	}

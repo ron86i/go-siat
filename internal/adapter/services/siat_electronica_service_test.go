@@ -223,7 +223,7 @@ func TestSiatElectronicaService_RecepcionPaqueteFactura(t *testing.T) {
 
 	// 2. Construir Factura (Ejemplo para Paquete)
 	fechaEmision := time.Now()
-	numeroFactura := 1
+	var numeroFactura int64 = 1
 
 	cuf, _ := utils.GenerarCUF(nit, fechaEmision, 0, codModalidad, siat.EmisionOffline, 2, 10, numeroFactura, 0, cufdControl)
 
@@ -233,7 +233,7 @@ func TestSiatElectronicaService_RecepcionPaqueteFactura(t *testing.T) {
 			WithNitEmisor(nit).
 			WithRazonSocialEmisor("Empresa Test").
 			WithMunicipio("La Paz").
-			WithNumeroFactura(int64(numeroFactura)).
+			WithNumeroFactura(numeroFactura).
 			WithCuf(cuf).
 			WithCufd(cufd).
 			WithCodigoSucursal(0).
@@ -402,7 +402,7 @@ func TestSiatElectronicaService_RecepcionMasivaFactura(t *testing.T) {
 
 	// 2. Construir Factura (Ejemplo para Masiva)
 	fechaEmision := time.Now()
-	numeroFactura := 1
+	var numeroFactura int64 = 1
 
 	cuf, _ := utils.GenerarCUF(nit, fechaEmision, 0, codModalidad, siat.EmisionMasiva, 2, 10, numeroFactura, 0, cufdControl)
 
@@ -412,7 +412,7 @@ func TestSiatElectronicaService_RecepcionMasivaFactura(t *testing.T) {
 			WithNitEmisor(nit).
 			WithRazonSocialEmisor("Empresa Test").
 			WithMunicipio("La Paz").
-			WithNumeroFactura(int64(numeroFactura)).
+			WithNumeroFactura(numeroFactura).
 			WithCuf(cuf).
 			WithCufd(cufd).
 			WithCodigoSucursal(0).
