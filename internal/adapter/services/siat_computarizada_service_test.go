@@ -246,7 +246,7 @@ func TestSiatComputarizadaService_RecepcionPaqueteFactura(t *testing.T) {
 		siat.EmisionOffline, // Tipo Emisión (Offline para Paquete)
 		2,                   // Tipo Factura (Sin Crédito Fiscal)
 		10,                  // Sector (Dutty Free)
-		int(numeroFactura),  // Número Factura
+		numeroFactura,       // Número Factura
 		0,                   // Punto Venta
 		cufdOriginal,        // CUFD (Código Control)
 	)
@@ -468,7 +468,7 @@ func TestSiatComputarizadaService_RecepcionMasivaFactura(t *testing.T) {
 		siat.EmisionMasiva, // Tipo Emisión (Masiva)
 		2,                  // Tipo Factura (Sin Crédito Fiscal)
 		10,                 // Sector (Dutty Free)
-		int(numeroFactura), // Número Factura
+		numeroFactura,      // Número Factura
 		0,                  // Punto Venta
 		cufdOriginal,       // CUFD (Código Control)
 	)

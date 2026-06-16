@@ -184,6 +184,12 @@ func (b *recepcionAnexosBuilder) WithCuis(cuis string) *recepcionAnexosBuilder {
 	return b
 }
 
+// WithCufd establece el Código Único de Facturación Diaria.
+func (b *recepcionAnexosBuilder) WithCufd(cufd string) *recepcionAnexosBuilder {
+	b.request.SolicitudRecepcionAnexos.Cufd = cufd
+	return b
+}
+
 // WithNit establece el NIT del emisor.
 func (b *recepcionAnexosBuilder) WithNit(nit int64) *recepcionAnexosBuilder {
 	b.request.SolicitudRecepcionAnexos.Nit = nit

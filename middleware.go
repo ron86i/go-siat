@@ -70,10 +70,14 @@ func NewWithMiddleware(baseUrl string, httpClient *http.Client, middlewares ...H
 	}
 
 	// Aplicar middlewares si los hay
-	if len(middlewares) > 0 && httpClient.Transport != nil {
+	if len(middlewares) > 0 {
+		base := httpClient.Transport
+		if base == nil {
+			base = http.DefaultTransport
+		}
 		chainedMW := middleware.ChainMiddlewares(middlewares...)
 		if chainedMW != nil {
-			httpClient.Transport = chainedMW.WrapTransport(httpClient.Transport)
+			httpClient.Transport = chainedMW.WrapTransport(base)
 		}
 	}
 

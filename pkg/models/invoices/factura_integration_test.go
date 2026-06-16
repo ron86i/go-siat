@@ -112,7 +112,7 @@ func (tc *TestContext) GetCufd(t *testing.T, cuis string) (string, string) {
 }
 
 // GetCuf genera un código CUF utilizando los parámetros del contexto y los específicos del documento.
-func (tc *TestContext) GetCuf(t *testing.T, sector int, emision int, tipoDoc int, numeroFactura int, puntoVenta int, codigoControl string) string {
+func (tc *TestContext) GetCuf(t *testing.T, sector int, emision int, tipoDoc int, numeroFactura int64, puntoVenta int, codigoControl string) string {
 	fecha := time.Now()
 	cuf, err := utils.GenerarCUF(
 		tc.Nit,

@@ -205,7 +205,7 @@ func TestSiatCompraVentaService_RecepcionMasivaFactura(t *testing.T) {
 	for i := 1; i <= 5; i++ {
 		nombreRazonSocial := "JUAN PEREZ"
 		// Para masiva debe ser emisión Masiva (3)
-		cuf, _ := utils.GenerarCUF(nit, fechaEmision, 0, codModalidad, siat.EmisionMasiva, 1, 1, i, 0, cufd.Body.Content.RespuestaCufd.CodigoControl)
+		cuf, _ := utils.GenerarCUF(nit, fechaEmision, 0, codModalidad, siat.EmisionMasiva, 1, 1, int64(i), 0, cufd.Body.Content.RespuestaCufd.CodigoControl)
 		log.Printf("CUF #%d: %s", i, cuf)
 		cabecera := invoices.NewCompraVentaCabeceraBuilder().
 			WithNitEmisor(nit).
@@ -392,9 +392,12 @@ func TestSiatCompraVentaService_RecepcionPaqueteFactura(t *testing.T) {
 	// 	Build()
 
 	// cufd, _ := serviceCodigos.SolicitudCufd(context.Background(), config, cufdReq)
-	codigoEvento := int64(9670864)
-	cufdEvento := "FBQT5CwqE4TERBI5RjlGOEM3MDc=QjlsMmVLY0VhVUMzcxQUFCRDA1Q0"
-	cufdControlEvento := "0046A97840CAF74"
+	codigoEvento, _ := utils.ParseInt64Safe(os.Getenv("SIAT_EVENTO_CODIGO"))
+	if codigoEvento == 0 {
+		t.Skip("Saltando prueba porque requiere SIAT_EVENTO_CODIGO, SIAT_EVENTO_CUFD, SIAT_EVENTO_CUFD_CONTROL en .env")
+	}
+	cufdEvento := os.Getenv("SIAT_EVENTO_CUFD")
+	cufdControlEvento := os.Getenv("SIAT_EVENTO_CUFD_CONTROL")
 
 	// 3. Construir Paquete de 500 Facturas
 	// La fecha de emisión debe estar DENTRO del rango de contingencia del evento
@@ -404,7 +407,7 @@ func TestSiatCompraVentaService_RecepcionPaqueteFactura(t *testing.T) {
 	now := time.Now()
 	for i := 1; i <= 500; i++ {
 		// Generar CUF con el CodigoControl del CUFD del evento
-		cuf, _ := utils.GenerarCUF(nit, fechaEmision, 0, codModalidad, siat.EmisionOffline, 1, 1, i, 1, cufdControlEvento)
+		cuf, _ := utils.GenerarCUF(nit, fechaEmision, 0, codModalidad, siat.EmisionOffline, 1, 1, int64(i), 1, cufdControlEvento)
 
 		factura := invoices.NewCompraVentaBuilder().
 			WithModalidad(codModalidad).
@@ -676,8 +679,46 @@ func TestSiatCompraVentaService_RecepcionCompraVenta(t *testing.T) {
 	}
 	godotenv.Load(".env")
 
-	// Reutilizamos la lógica interna con factura nro 1
-	TestSiatCompraVentaService_RecepcionCompraVentaAll(t)
+	siatClient := getSiatClient(t)
+	serviceCodigos := siatClient.Codigos()
+	serviceCompraVenta := siatClient.CompraVenta()
+
+	codModalidad, _ := utils.ParseIntSafe(os.Getenv("SIAT_CODIGO_MODALIDAD"))
+	nit, _ := utils.ParseInt64Safe(os.Getenv("SIAT_NIT"))
+	codAmbiente, _ := utils.ParseIntSafe(os.Getenv("SIAT_CODIGO_AMBIENTE"))
+	config := siat.Config{Token: os.Getenv("SIAT_TOKEN")}
+	codPuntoVenta := 0
+
+	cuisReq := models.Codigos().NewCuisBuilder().
+		WithCodigoAmbiente(codAmbiente).
+		WithCodigoModalidad(codModalidad).
+		WithCodigoSistema(os.Getenv("SIAT_CODIGO_SISTEMA")).
+		WithNit(nit).
+		WithCodigoSucursal(0).
+		WithCodigoPuntoVenta(codPuntoVenta).
+		Build()
+
+	respCuis, err := serviceCodigos.SolicitudCuis(context.Background(), config, cuisReq)
+	if err != nil {
+		t.Fatalf("error CUIS: %v", err)
+	}
+
+	cufdReq := models.Codigos().NewCufdBuilder().
+		WithCodigoAmbiente(codAmbiente).
+		WithCodigoModalidad(codModalidad).
+		WithCodigoSistema(os.Getenv("SIAT_CODIGO_SISTEMA")).
+		WithNit(nit).
+		WithCodigoSucursal(0).
+		WithCodigoPuntoVenta(codPuntoVenta).
+		WithCuis(respCuis.Body.Content.RespuestaCuis.Codigo).
+		Build()
+
+	respCufd, err := serviceCodigos.SolicitudCufd(context.Background(), config, cufdReq)
+	if err != nil {
+		t.Fatalf("error CUFD: %v", err)
+	}
+
+	emitirFacturaIndividual(t, serviceCompraVenta, respCuis, respCufd, codPuntoVenta, 1)
 }
 
 func emitirFacturaIndividual(t *testing.T, service ports.SiatCompraVentaService, cuis *soap.EnvelopeResponse[codigos.CuisResponse], cufd *soap.EnvelopeResponse[codigos.CufdResponse], puntoVenta int, nroFactura int) {
@@ -688,7 +729,7 @@ func emitirFacturaIndividual(t *testing.T, service ports.SiatCompraVentaService,
 
 	fechaEmision := time.Now()
 	// Generar CUF único para este número de factura
-	cuf, err := utils.GenerarCUF(nit, fechaEmision, 0, codModalidad, 1, 1, 1, nroFactura, puntoVenta, cufd.Body.Content.RespuestaCufd.CodigoControl)
+	cuf, err := utils.GenerarCUF(nit, fechaEmision, 0, codModalidad, 1, 1, 1, int64(nroFactura), puntoVenta, cufd.Body.Content.RespuestaCufd.CodigoControl)
 	if err != nil {
 		t.Fatalf("error al generar CUF: %v", err)
 	}

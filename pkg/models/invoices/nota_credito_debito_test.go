@@ -215,7 +215,7 @@ func TestNotaCreditoDebito_ElectronicaAll(t *testing.T) {
 func emitirNotaIndividual(t *testing.T, tc *TestContext, cuis, cufd, cufdControl string, nroNota int) {
 	fecha := time.Now()
 	// Sector 24: Nota Crédito Débito, Tipo Doc 3
-	cuf, err := utils.GenerarCUF(tc.Nit, fecha, tc.Sucursal, tc.Modalidad, siat.EmisionOnline, 3, 24, nroNota, tc.PuntoVenta, cufdControl)
+	cuf, err := utils.GenerarCUF(tc.Nit, fecha, tc.Sucursal, tc.Modalidad, siat.EmisionOnline, 3, 24, int64(nroNota), tc.PuntoVenta, cufdControl)
 	if err != nil {
 		t.Fatalf("error al generar CUF: %v", err)
 	}
@@ -407,7 +407,7 @@ func TestNotaCreditoDebito_ComputarizadaAll(t *testing.T) {
 func emitirNotaComputarizadaIndividual(t *testing.T, tc *TestContext, cuis, cufd, cufdControl string, nroNota int) {
 	fecha := time.Now()
 	// Sector 47: Nota Crédito Débito Computarizada
-	cuf, err := utils.GenerarCUF(tc.Nit, fecha, tc.Sucursal, tc.Modalidad, siat.EmisionOnline, 3, 47, nroNota, tc.PuntoVenta, cufdControl)
+	cuf, err := utils.GenerarCUF(tc.Nit, fecha, tc.Sucursal, tc.Modalidad, siat.EmisionOnline, 3, 47, int64(nroNota), tc.PuntoVenta, cufdControl)
 	if err != nil {
 		t.Fatalf("error al generar CUF: %v", err)
 	}

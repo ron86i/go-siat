@@ -6,3 +6,11 @@
 *.pem
 *.p12
 *.zip
+
+# Coverage files (added by CoverLens)
+coverage.out
+
+# AI Agents & RAG Documentation
+AGENT.md
+.cursorrules
+.cursor/
