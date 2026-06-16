@@ -54,14 +54,14 @@ func DefaultHTTPConfig() HTTPConfig {
 	return HTTPConfig{
 		Timeout:             45 * time.Second,
 		MaxIdleConns:        100,
-		MaxConnsPerHost:     10,               // Recomendado para producción
-		MaxIdleConnsPerHost: 5,                // Recomendado para producción
-		TLSMinVersion:       tls.VersionTLS12, // TLS 1.2 es el estándar más compatible para SIAT
+		MaxConnsPerHost:     0,               
+		MaxIdleConnsPerHost: 5,                
+		TLSMinVersion:       tls.VersionTLS12, 
 		DisableKeepAlives:   false,
 		IdleConnTimeout:     90 * time.Second,
-		DialTimeout:         10 * time.Second, // Timeout razonable para crear la conexión
-		DialKeepAlive:       30 * time.Second, // Frecuencia de probes TCP estándar
-		TLSHandshakeTimeout: 10 * time.Second, // Tiempo razonable para negociar TLS
+		DialTimeout:         10 * time.Second,
+		DialKeepAlive:       30 * time.Second,
+		TLSHandshakeTimeout: 10 * time.Second,
 	}
 }
 
