@@ -14,9 +14,15 @@ updates:
       - "dependencies"
       - "go-1.25"
     open-pull-requests-limit: 10
+    # Config for release automation
+    commit-message:
+      prefix: "fix"
+      include: "scope"
 
   # Daily updates for GitHub Actions
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "daily"
+    commit-message:
+      prefix: "chore"
