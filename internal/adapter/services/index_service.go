@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"reflect"
 	"strings"
 
 	"github.com/ron86i/go-siat/internal/core/domain/datatype/soap"
@@ -96,22 +97,83 @@ func getInternalRequest[T any](req any) *T {
 	return models.UnwrapInternalRequest[T](req)
 }
 
+// injectFields recorre recursivamente el struct para rellenar los campos comunes del contribuyente.
+func injectFields(v reflect.Value, config ports.Config) {
+	if v.Kind() == reflect.Ptr {
+		if v.IsNil() {
+			return
+		}
+		v = v.Elem()
+	}
+	if v.Kind() != reflect.Struct {
+		return
+	}
+
+	for i := 0; i < v.NumField(); i++ {
+		fv := v.Field(i)
+		ft := v.Type().Field(i)
+
+		// Si es un struct anidado, procesarlo de forma recursiva
+		if fv.Kind() == reflect.Struct {
+			if fv.CanAddr() {
+				injectFields(fv.Addr(), config)
+			} else {
+				injectFields(fv, config)
+			}
+			continue
+		}
+
+		if fv.CanSet() {
+			switch ft.Name {
+			case "Nit", "NIT":
+				// Solo inyecta si el campo no fue seteado explícitamente en el request.
+				if fv.Kind() == reflect.Int64 && fv.Int() == 0 {
+					fv.SetInt(config.Nit)
+				}
+			case "CodigoSistema":
+				// Solo inyecta si el campo no fue seteado explícitamente en el request.
+				if fv.Kind() == reflect.String && fv.String() == "" {
+					fv.SetString(config.CodigoSistema)
+				}
+			case "CodigoAmbiente":
+				// Solo inyecta si el campo no fue seteado explícitamente en el request.
+				switch fv.Kind() {
+				case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+					if fv.Int() == 0 {
+						fv.SetInt(int64(config.CodigoAmbiente))
+					}
+				}
+			}
+		}
+	}
+}
+
+// injectCredenciales inyecta las credenciales del contribuyente en el request.
+func injectCredenciales(req any, config ports.Config) {
+	v := reflect.ValueOf(req)
+	injectFields(v, config)
+}
+
 /*
 performSoapRequest es una función genérica que encapsula el flujo completo de una solicitud SOAP al SIAT:
 
 1. Obtiene la solicitud interna desde la interfaz opaca.
 
-2. Construye el cuerpo XML (Envelope SOAP).
+2. Inyecta automáticamente los parámetros globales de la sesión (NIT, Sistema, Ambiente, Modalidad).
 
-3. Crea la solicitud HTTP POST con el contexto y headers necesarios (incluyendo el token de API).
+3. Construye el cuerpo XML (Envelope SOAP).
 
-4. Ejecuta la solicitud a través del cliente HTTP.
+4. Crea la solicitud HTTP POST con el contexto y headers necesarios (incluyendo el token de API).
 
-5. Procesa y decodifica la respuesta SOAP.
+5. Ejecuta la solicitud a través del cliente HTTP.
+
+6. Procesa y decodifica la respuesta SOAP.
 */
 func performSoapRequest[TReq any, TResp any](ctx context.Context, httpClient *http.Client, url string, config ports.Config, opaqueReq any) (*soap.EnvelopeResponse[TResp], error) {
 
 	req := getInternalRequest[TReq](opaqueReq)
+	injectCredenciales(req, config)
+
 	xmlBody, err := buildRequest(req)
 	if err != nil {
 		return nil, err

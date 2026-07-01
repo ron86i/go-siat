@@ -41,18 +41,82 @@ func TestMap_ToStruct(t *testing.T) {
 }
 
 func TestNew(t *testing.T) {
-	t.Run("Valid BaseUrl", func(t *testing.T) {
-		services, err := siat.New("https://pilotosiatservicios.impuestos.gob.bo/v2", nil)
+	t.Run("Valid Config", func(t *testing.T) {
+		cfg := siat.Config{
+			Token:          "test",
+			Nit:            123456789,
+			CodigoSistema:  "test",
+			CodigoAmbiente: siat.AmbientePruebas,
+			BaseURL:        "https://pilotosiatservicios.impuestos.gob.bo/v2",
+		}
+		services, err := siat.New(cfg)
 		assert.NoError(t, err)
 		assert.NotNil(t, services)
-
 	})
-	models.Codigos().NewCuisBuilder().Build()
 
-	t.Run("Empty BaseUrl", func(t *testing.T) {
-		services, err := siat.New("", nil)
+	models.NewCuisBuilder().Build()
+
+	t.Run("Invalid Config - Empty BaseUrl", func(t *testing.T) {
+		cfg := siat.Config{
+			Token:          "test",
+			Nit:            123456789,
+			CodigoSistema:  "test",
+			CodigoAmbiente: siat.AmbientePruebas,
+			BaseURL:        "",
+		}
+		services, err := siat.New(cfg)
 		assert.Error(t, err)
 		assert.Nil(t, services)
-		assert.Equal(t, "baseUrl is empty", err.Error())
+		assert.Equal(t, "BaseURL es obligatorio", err.Error())
 	})
+}
+
+func TestConfig_SignXML(t *testing.T) {
+	t.Run("No credentials configured", func(t *testing.T) {
+		cfg := siat.Config{}
+		xmlBytes := []byte("<root></root>")
+		_, err := cfg.SignXML(xmlBytes)
+		assert.Error(t, err)
+		assert.Contains(t, err.Error(), "no se configuraron credenciales válidas")
+	})
+
+	t.Run("P12 file not found", func(t *testing.T) {
+		cfg := siat.Config{
+			CredentialSign: siat.NewP12Credential("nonexistent.p12", "password"),
+		}
+		xmlBytes := []byte("<root></root>")
+		_, err := cfg.SignXML(xmlBytes)
+		assert.Error(t, err)
+		assert.Contains(t, err.Error(), "error al leer archivo P12")
+	})
+}
+
+func TestCredencialFirma_Types(t *testing.T) {
+	t.Run("Generic constructors setting types", func(t *testing.T) {
+		cfPemBytes := siat.NewPEMCredential([]byte("cert"), []byte("key"))
+		assert.Equal(t, "PEM", cfPemBytes.GetType())
+
+		cfP12Bytes := siat.NewP12Credential([]byte("p12"), "password")
+		assert.Equal(t, "P12", cfP12Bytes.GetType())
+	})
+}
+
+func TestSiatError_Mensajes(t *testing.T) {
+	err := siat.NewSiatError(1000, "Error de prueba")
+	err.Mensajes = []siat.MensajeServicio{
+		{Codigo: 1000, Descripcion: "Descripción 1"},
+		{Codigo: 2005, Descripcion: "Advertencia 1"}, // Un warning
+		{Codigo: 3008, Descripcion: "Advertencia 2"}, // CodeWarnCuisExpira (warning)
+	}
+
+	assert.Equal(t, 1000, err.SiatCode)
+	assert.Len(t, err.Mensajes, 3)
+	assert.True(t, err.HasCode(1000))
+	assert.True(t, err.HasCode(2005))
+	assert.False(t, err.HasCode(9999))
+
+	warnings := err.GetWarnings()
+	assert.Len(t, warnings, 2)
+	assert.Equal(t, 2005, warnings[0].Codigo)
+	assert.Equal(t, 3008, warnings[1].Codigo)
 }
