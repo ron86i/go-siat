@@ -95,11 +95,18 @@ import (
 )
 
 func main() {
-    // 1. Inicializar cliente
-    s, _ := siat.New("YOUR_SIAT_URL", nil)
+    // 1. Inicializar configuración del cliente
+    config := siat.Config{
+        Token:          "YOUR_SIAT_TOKEN",
+        Nit:            123456789,
+        CodigoSistema:  "YOUR_SYSTEM_CODE",
+        CodigoAmbiente: 2, // Pruebas
+        BaseURL:        "YOUR_SIAT_URL",
+    }
+    s, _ := siat.New(config)
 
     // 2. Preparar solicitud usando builders
-    req := models.Codigos().NewVerificarNitBuilder().
+    req := models.NewVerificarNitBuilder().
         WithNit(123456789).
         Build()
 
@@ -126,13 +133,8 @@ Los **Tests de Integración** actúan como la documentación técnica viviente d
 | **Códigos**                | [`siat_codigos_service_test.go`](../../internal/adapter/services/siat_codigos_service_test.go)                       |
 | **Sincronización**         | [`siat_sincronizacion_service_test.go`](../../internal/adapter/services/siat_sincronizacion_service_test.go)         |
 | **Operaciones**            | [`siat_operaciones_service_test.go`](../../internal/adapter/services/siat_operaciones_service_test.go)               |
-| **Compra-Venta**           | [`siat_compra_venta_service_test.go`](../../internal/adapter/services/siat_compra_venta_service_test.go)             |
-| **Electrónica**            | [`siat_electronica_service_test.go`](../../internal/adapter/services/siat_electronica_service_test.go)               |
-| **Computarizada**          | [`siat_computarizada_service_test.go`](../../internal/adapter/services/siat_computarizada_service_test.go)           |
+| **Facturación (Unificada)**| [`siat_facturacion_service_test.go`](../../internal/adapter/services/siat_facturacion_service_test.go)               |
 | **Documentos de Ajuste**   | [`siat_documento_ajuste_service_test.go`](../../internal/adapter/services/siat_documento_ajuste_service_test.go)     |
-| **Telecomunicaciones**     | [`siat_telecomunicaciones_service_test.go`](../../internal/adapter/services/siat_telecomunicaciones_service_test.go) |
-| **Servicios Básicos**      | [`siat_servicio_basico_service_test.go`](../../internal/adapter/services/siat_servicio_basico_service_test.go)       |
-| **Entidades Financieras**  | [`siat_entidad_financiera_service_test.go`](../../internal/adapter/services/siat_entidad_financiera_service_test.go) |
 | **Boletos Aéreos**         | [`siat_boleto_aereo_service_test.go`](../../internal/adapter/services/siat_boleto_aereo_service_test.go)             |
 | **Facturación (Sectores)** | [`pkg/models/invoices/`](../../pkg/models/invoices/)                                                                 |
 | **Flujos Completos**       | [`siat_test.go`](../../siat_test.go)                                                                                 |
