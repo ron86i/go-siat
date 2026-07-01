@@ -1,6 +1,7 @@
 .idea
 .vscode
 .claude
+.agents
 *.env
 *.crt
 *.pem
