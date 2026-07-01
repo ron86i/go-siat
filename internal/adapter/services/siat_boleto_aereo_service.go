@@ -3,13 +3,15 @@ package services
 import (
 	"context"
 	"fmt"
-	"net/http"
 	"strings"
 	"time"
+
+	"net/http"
 
 	"github.com/ron86i/go-siat/internal/core/domain/datatype/soap"
 	"github.com/ron86i/go-siat/internal/core/domain/siat/facturacion"
 	"github.com/ron86i/go-siat/internal/core/ports"
+
 	"github.com/ron86i/go-siat/pkg/models"
 )
 
@@ -18,39 +20,37 @@ import (
 type SiatBoletoAereoService struct {
 	url        string
 	httpClient *http.Client
+	config     ports.Config
 }
 
-// AnulacionFactura envía una solicitud al SIAT para anular un boleto aéreo previamente emitido y aceptada.
-func (s *SiatBoletoAereoService) AnulacionFactura(ctx context.Context, config ports.Config, opaqueReq models.AnulacionFacturaBoletoAereo) (*soap.EnvelopeResponse[facturacion.AnulacionFacturaResponse], error) {
-	return performSoapRequest[facturacion.AnulacionFactura, facturacion.AnulacionFacturaResponse](ctx, s.httpClient, s.url, config, opaqueReq)
+// AnulacionFactura anula una factura electrónicado.
+func (s *SiatBoletoAereoService) AnulacionFactura(ctx context.Context, req models.AnulacionFactura) (*soap.EnvelopeResponse[facturacion.AnulacionFacturaResponse], error) {
+	return performSoapRequest[facturacion.AnulacionFactura, facturacion.AnulacionFacturaResponse](ctx, s.httpClient, s.url, s.config, req)
 }
 
-// RecepcionMasivaFactura permite el envío de un paquete de boletos aéreos para procesamiento masivo.
-func (s *SiatBoletoAereoService) RecepcionMasivaFactura(ctx context.Context, config ports.Config, opaqueReq models.RecepcionMasivaFacturaBoletoAereo) (*soap.EnvelopeResponse[facturacion.RecepcionMasivaFacturaResponse], error) {
-	return performSoapRequest[facturacion.RecepcionMasivaFactura, facturacion.RecepcionMasivaFacturaResponse](ctx, s.httpClient, s.url, config, opaqueReq)
+// RecepcionMasivaFactura recepciona un conjunto de facturas electrónicas de forma masiva.
+func (s *SiatBoletoAereoService) RecepcionMasivaFactura(ctx context.Context, req models.RecepcionMasivaFactura) (*soap.EnvelopeResponse[facturacion.RecepcionMasivaFacturaResponse], error) {
+	return performSoapRequest[facturacion.RecepcionMasivaFactura, facturacion.RecepcionMasivaFacturaResponse](ctx, s.httpClient, s.url, s.config, req)
 }
 
-// ReversionAnulacionFactura revierte la anulación de un boleto aéreo previamente enviada al SIAT.
-func (s *SiatBoletoAereoService) ReversionAnulacionFactura(ctx context.Context, config ports.Config, opaqueReq models.ReversionAnulacionFacturaBoletoAereo) (*soap.EnvelopeResponse[facturacion.ReversionAnulacionFacturaResponse], error) {
-	return performSoapRequest[facturacion.ReversionAnulacionFactura, facturacion.ReversionAnulacionFacturaResponse](ctx, s.httpClient, s.url, config, opaqueReq)
+func (s *SiatBoletoAereoService) ReversionAnulacionFactura(ctx context.Context, req models.ReversionAnulacionFactura) (*soap.EnvelopeResponse[facturacion.ReversionAnulacionFacturaResponse], error) {
+	return performSoapRequest[facturacion.ReversionAnulacionFactura, facturacion.ReversionAnulacionFacturaResponse](ctx, s.httpClient, s.url, s.config, req)
 }
 
-// ValidacionRecepcionMasivaFactura verifica el estado del procesamiento de un paquete enviado masivamente.
-func (s *SiatBoletoAereoService) ValidacionRecepcionMasivaFactura(ctx context.Context, config ports.Config, opaqueReq models.ValidacionRecepcionMasivaFacturaBoletoAereo) (*soap.EnvelopeResponse[facturacion.ValidacionRecepcionMasivaFacturaResponse], error) {
-	return performSoapRequest[facturacion.ValidacionRecepcionMasivaFactura, facturacion.ValidacionRecepcionMasivaFacturaResponse](ctx, s.httpClient, s.url, config, opaqueReq)
+func (s *SiatBoletoAereoService) ValidacionRecepcionMasivaFactura(ctx context.Context, req models.ValidacionRecepcionMasivaFactura) (*soap.EnvelopeResponse[facturacion.ValidacionRecepcionMasivaFacturaResponse], error) {
+	return performSoapRequest[facturacion.ValidacionRecepcionMasivaFactura, facturacion.ValidacionRecepcionMasivaFacturaResponse](ctx, s.httpClient, s.url, s.config, req)
 }
 
-// VerificacionEstadoFactura consulta el estado actual de un boleto aéreo específico.
-func (s *SiatBoletoAereoService) VerificacionEstadoFactura(ctx context.Context, config ports.Config, opaqueReq models.VerificacionEstadoFacturaBoletoAereo) (*soap.EnvelopeResponse[facturacion.VerificacionEstadoFacturaResponse], error) {
-	return performSoapRequest[facturacion.VerificacionEstadoFactura, facturacion.VerificacionEstadoFacturaResponse](ctx, s.httpClient, s.url, config, opaqueReq)
+func (s *SiatBoletoAereoService) VerificacionEstadoFactura(ctx context.Context, req models.VerificacionEstadoFactura) (*soap.EnvelopeResponse[facturacion.VerificacionEstadoFacturaResponse], error) {
+	return performSoapRequest[facturacion.VerificacionEstadoFactura, facturacion.VerificacionEstadoFacturaResponse](ctx, s.httpClient, s.url, s.config, req)
 }
 
-// VerificarComunicacion realiza una prueba de conectividad con el servicio de comunicaciones del SIAT.
-func (s *SiatBoletoAereoService) VerificarComunicacion(ctx context.Context, config ports.Config, opaqueReq models.VerificarComunicacionBoletoAereo) (*soap.EnvelopeResponse[facturacion.VerificarComunicacionResponse], error) {
-	return performSoapRequest[facturacion.VerificarComunicacion, facturacion.VerificarComunicacionResponse](ctx, s.httpClient, s.url, config, opaqueReq)
+func (s *SiatBoletoAereoService) VerificarComunicacion(ctx context.Context, req models.VerificarComunicacionFacturacion) (*soap.EnvelopeResponse[facturacion.VerificarComunicacionResponse], error) {
+	return performSoapRequest[facturacion.VerificarComunicacion, facturacion.VerificarComunicacionResponse](ctx, s.httpClient, s.url, s.config, req)
 }
 
-func NewSiatBoletoAereoService(baseUrl string, httpClient *http.Client) (*SiatBoletoAereoService, error) {
+// NewSiatBoletoAereoService crea una nueva instancia de SiatBoletoAereoService.
+func NewSiatBoletoAereoService(baseUrl string, httpClient *http.Client, config ports.Config) (*SiatBoletoAereoService, error) {
 	baseUrl = strings.TrimSpace(baseUrl)
 	if baseUrl == "" {
 		return nil, fmt.Errorf("baseUrl is empty")
@@ -65,6 +65,7 @@ func NewSiatBoletoAereoService(baseUrl string, httpClient *http.Client) (*SiatBo
 	return &SiatBoletoAereoService{
 		url:        fullURL(baseUrl, SiatBoletoAereo),
 		httpClient: httpClient,
+		config:     config,
 	}, nil
 }
 

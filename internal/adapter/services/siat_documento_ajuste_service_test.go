@@ -4,116 +4,91 @@ import (
 	"context"
 	"encoding/xml"
 	"log"
-	"net/http"
 	"os"
 	"testing"
 	"time"
 
 	"github.com/joho/godotenv"
 	"github.com/ron86i/go-siat"
-	"github.com/ron86i/go-siat/internal/core/ports"
 	"github.com/ron86i/go-siat/pkg/models"
 	"github.com/ron86i/go-siat/pkg/models/invoices"
 	"github.com/ron86i/go-siat/pkg/utils"
 	"github.com/stretchr/testify/assert"
 )
 
-func runDocumentoAjusteTest[ReqType any, RespType any](
-	t *testing.T,
-	name string,
-	req ReqType,
-	fn func(context.Context, ports.Config, ReqType) (*RespType, error),
-) {
-	t.Run(name, func(t *testing.T) {
-		if _, err := os.Stat(".env"); os.IsNotExist(err) {
-			t.Skip("Saltando prueba de integración: .env no encontrado")
-		}
-		godotenv.Load()
+func getDocumentoAjusteSetup(t *testing.T) (*siat.SiatServices, string, string, string, int64, int) {
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		t.Skip("Saltando prueba de integración: .env no encontrado")
+	}
+	godotenv.Load(".env")
 
-		config := siat.Config{
-			Token: os.Getenv("SIAT_TOKEN"),
-		}
+	nit, _ := utils.ParseInt64Safe(os.Getenv("SIAT_NIT"))
+	codAmbiente := siat.AmbientePruebas
+	codModalidad := siat.ModalidadElectronica // Asumiendo modalidad por defecto
 
-		_, err := siat.New(os.Getenv("SIAT_URL"), nil)
-		if err != nil {
-			t.Fatalf("No se pudo inicializar el cliente SIAT: %v", err)
-		}
+	cfg := siat.Config{
+		Token:          os.Getenv("SIAT_TOKEN"),
+		Nit:            nit,
+		CodigoSistema:  os.Getenv("SIAT_CODIGO_SISTEMA"),
+		CodigoAmbiente: codAmbiente,
+		BaseURL:        os.Getenv("SIAT_URL"),
+		HTTPClient:     siat.NewHTTPClient(siat.DefaultHTTPConfig()),
+	}
 
-		resp, err := fn(context.Background(), config, req)
-		if err != nil {
-			t.Fatalf("Error en %s: %v", name, err)
-		}
+	siatClient, err := siat.New(cfg)
+	if err != nil {
+		t.Fatalf("error creating client: %v", err)
+	}
 
-		assert.NotNil(t, resp)
-		log.Printf("Resultado de %s: %+v", name, resp)
-	})
+	serviceCodigos := siatClient.Codigos()
+
+	cuisReq := models.NewCuisBuilder().
+		WithCodigoModalidad(codModalidad).
+		WithCodigoPuntoVenta(0).
+		WithCodigoSucursal(0).
+		Build()
+	cuisResp, err := serviceCodigos.SolicitudCuis(context.Background(), cuisReq)
+	if err != nil {
+		t.Fatalf("error solicitando CUIS: %v", err)
+	}
+	cuis := cuisResp.Body.Content.RespuestaCuis.Codigo
+
+	cufdReq := models.NewCufdBuilder().
+		WithCodigoModalidad(codModalidad).
+		WithCodigoPuntoVenta(0).
+		WithCodigoSucursal(0).
+		WithCuis(cuis).
+		Build()
+	cufdResp, err := serviceCodigos.SolicitudCufd(context.Background(), cufdReq)
+	if err != nil {
+		t.Fatalf("error solicitando CUFD: %v", err)
+	}
+	cufd := cufdResp.Body.Content.RespuestaCufd.Codigo
+	cufdControl := cufdResp.Body.Content.RespuestaCufd.CodigoControl
+
+	return siatClient, cuis, cufd, cufdControl, nit, codModalidad
 }
 
 func TestSiatDocumentoAjuste_VerificarComunicacion(t *testing.T) {
-	if _, err := os.Stat(".env"); os.IsNotExist(err) {
-		t.Skip("Saltando prueba de integración: .env no encontrado")
-	}
-	godotenv.Load()
-	ctx := context.Background()
-	config := siat.Config{Token: os.Getenv("SIAT_TOKEN")}
-
-	siatClient, _ := siat.New(os.Getenv("SIAT_URL"), nil)
+	siatClient, _, _, _, _, _ := getDocumentoAjusteSetup(t)
 	service := siatClient.DocumentoAjuste()
 
-	req := models.DocumentoAjuste().NewVerificarComunicacionBuilder().Build()
+	req := models.NewVerificarComunicacionDocumentoAjusteBuilder().Build()
+	resp, err := service.VerificarComunicacion(context.Background(), req)
 
-	resp, err := service.VerificarComunicacion(ctx, config, req)
-	if err != nil {
-		t.Fatalf("error: %v", err)
+	if assert.NoError(t, err) && assert.NotNil(t, resp) {
+		assert.True(t, resp.Body.Content.Return.Transaccion)
+		log.Printf("Respuesta Comunicacion: %+v", resp.Body.Content)
 	}
-
-	assert.NotNil(t, resp)
-	log.Printf("Respuesta comunicación: %+v", resp)
 }
 
 func TestSiatDocumentoAjuste_RecepcionDocumentoAjuste(t *testing.T) {
-	if _, err := os.Stat(".env"); os.IsNotExist(err) {
-		t.Skip("Saltando prueba de integración: .env no encontrado")
-	}
-	godotenv.Load()
-
-	codModalidad := siat.ModalidadComputarizada
-	nit, _ := utils.ParseInt64Safe(os.Getenv("SIAT_NIT"))
-	codAmbiente, _ := utils.ParseIntSafe(os.Getenv("SIAT_CODIGO_AMBIENTE"))
-	config := siat.Config{Token: os.Getenv("SIAT_TOKEN")}
-
-	client := &http.Client{Transport: &http.Transport{Proxy: http.ProxyFromEnvironment}}
-	siatClient, _ := siat.New(os.Getenv("SIAT_URL"), client)
-	serviceCodigos := siatClient.Codigos()
-
-	cuisReq := models.Codigos().NewCuisBuilder().
-		WithCodigoAmbiente(codAmbiente).
-		WithCodigoModalidad(codModalidad).
-		WithCodigoSistema(os.Getenv("SIAT_CODIGO_SISTEMA")).
-		WithNit(nit).
-		Build()
-
-	cuis, err := serviceCodigos.SolicitudCuis(context.Background(), config, cuisReq)
-	if err != nil {
-		t.Fatalf("error CUIS: %v", err)
-	}
-
-	cufdReq := models.Codigos().NewCufdBuilder().
-		WithCodigoAmbiente(codAmbiente).
-		WithCodigoModalidad(codModalidad).
-		WithCodigoSistema(os.Getenv("SIAT_CODIGO_SISTEMA")).
-		WithNit(nit).
-		WithCuis(cuis.Body.Content.RespuestaCuis.Codigo).
-		Build()
-
-	cufd, err := serviceCodigos.SolicitudCufd(context.Background(), config, cufdReq)
-	if err != nil {
-		t.Fatalf("error CUFD: %v", err)
-	}
+	siatClient, cuis, cufd, cufdControl, nit, codModalidad := getDocumentoAjusteSetup(t)
+	service := siatClient.DocumentoAjuste()
 
 	fechaEmision := time.Now()
-	// 1. Generar CUF para Nota Conciliacion (Sector 29)
-	cuf, err := utils.GenerarCUF(nit, fechaEmision, 0, codModalidad, siat.EmisionOnline, 3, 29, 1, 0, cufd.Body.Content.RespuestaCufd.CodigoControl)
+	// Generar CUF para Nota Conciliacion (Sector 29)
+	cuf, err := utils.GenerarCUF(nit, fechaEmision, 0, codModalidad, siat.EmisionOnline, 3, 29, 1, 0, cufdControl)
 	if err != nil {
 		t.Fatalf("error al generar CUF: %v", err)
 	}
@@ -127,7 +102,7 @@ func TestSiatDocumentoAjuste_RecepcionDocumentoAjuste(t *testing.T) {
 		WithMunicipio("Tarija").
 		WithNumeroNotaConciliacion(1).
 		WithCuf(cuf).
-		WithCufd(cufd.Body.Content.RespuestaCufd.Codigo).
+		WithCufd(cufd).
 		WithCodigoSucursal(0).
 		WithDireccion("ESQUINA AVENIDA LA PAZ").
 		WithCodigoPuntoVenta(&codigoPuntoVenta).
@@ -182,193 +157,95 @@ func TestSiatDocumentoAjuste_RecepcionDocumentoAjuste(t *testing.T) {
 		t.Fatalf("error preparando archivo: %v", err)
 	}
 
-	req := models.DocumentoAjuste().NewRecepcionBuilder().
-		WithCodigoAmbiente(codAmbiente).
-		WithCodigoPuntoVenta(0).
-		WithCodigoSistema(os.Getenv("SIAT_CODIGO_SISTEMA")).
-		WithCodigoSucursal(0).
-		WithCuis(cuis.Body.Content.RespuestaCuis.Codigo).
-		WithCufd(cufd.Body.Content.RespuestaCufd.Codigo).
-		WithNit(nit).
+	req := models.NewRecepcionDocumentoAjusteBuilder().
 		WithCodigoDocumentoSector(29).
 		WithCodigoEmision(siat.EmisionOnline).
-		WithCodigoModalidad(codModalidad).
+		WithCodigoPuntoVenta(0).
+		WithCodigoSucursal(0).
+		WithCufd(cufd).
+		WithCuis(cuis).
 		WithTipoFacturaDocumento(3).
 		WithArchivo(encodedArchivo).
 		WithHashArchivo(hashString).
 		WithFechaEnvio(fechaEmision).
 		Build()
 
-	serviceDocumentoAjuste := siatClient.DocumentoAjuste()
+	resp, err := service.RecepcionDocumentoAjuste(context.Background(), req)
 
-	runDocumentoAjusteTest(t, "RecepcionDocumentoAjuste", req, serviceDocumentoAjuste.RecepcionDocumentoAjuste)
+	if assert.NoError(t, err) && assert.NotNil(t, resp) {
+		log.Printf("Respuesta Recepcion: %+v", resp.Body.Content)
+	}
 }
 
 func TestSiatDocumentoAjuste_AnulacionDocumentoAjuste(t *testing.T) {
-	if _, err := os.Stat(".env"); os.IsNotExist(err) {
-		t.Skip("Saltando prueba de integración: .env no encontrado")
-	}
-	godotenv.Load()
-
-	codModalidad := siat.ModalidadComputarizada
-	nit, _ := utils.ParseInt64Safe(os.Getenv("SIAT_NIT"))
-	codAmbiente, _ := utils.ParseIntSafe(os.Getenv("SIAT_CODIGO_AMBIENTE"))
-	config := siat.Config{Token: os.Getenv("SIAT_TOKEN")}
-
-	client := &http.Client{Transport: &http.Transport{Proxy: http.ProxyFromEnvironment}}
-	siatClient, _ := siat.New(os.Getenv("SIAT_URL"), client)
-	serviceCodigos := siatClient.Codigos()
-
-	cuisReq := models.Codigos().NewCuisBuilder().
-		WithCodigoAmbiente(codAmbiente).
-		WithCodigoModalidad(codModalidad).
-		WithCodigoSistema(os.Getenv("SIAT_CODIGO_SISTEMA")).
-		WithNit(nit).
-		Build()
-	cuisResp, _ := serviceCodigos.SolicitudCuis(context.Background(), config, cuisReq)
-	cuis := cuisResp.Body.Content.RespuestaCuis.Codigo
-
-	cufdReq := models.Codigos().NewCufdBuilder().
-		WithCodigoAmbiente(codAmbiente).
-		WithCodigoModalidad(codModalidad).
-		WithCodigoSistema(os.Getenv("SIAT_CODIGO_SISTEMA")).
-		WithNit(nit).
-		WithCuis(cuis).
-		Build()
-	cufdResp, _ := serviceCodigos.SolicitudCufd(context.Background(), config, cufdReq)
-	cufd := cufdResp.Body.Content.RespuestaCufd.Codigo
+	siatClient, cuis, cufd, _, _, _ := getDocumentoAjusteSetup(t)
+	service := siatClient.DocumentoAjuste()
 
 	cuf := "CUF_FROM_INVOICE"
 
-	req := models.DocumentoAjuste().NewAnulacionBuilder().
-		WithCodigoAmbiente(codAmbiente).
-		WithCodigoPuntoVenta(0).
-		WithCodigoSistema(os.Getenv("SIAT_CODIGO_SISTEMA")).
-		WithCodigoSucursal(0).
-		WithCuis(cuis).
-		WithCufd(cufd).
-		WithNit(nit).
+	req := models.NewAnulacionDocumentoAjusteBuilder().
 		WithCodigoDocumentoSector(29).
 		WithCodigoEmision(siat.EmisionOnline).
-		WithCodigoModalidad(codModalidad).
+		WithCodigoPuntoVenta(0).
+		WithCodigoSucursal(0).
+		WithCufd(cufd).
+		WithCuis(cuis).
 		WithTipoFacturaDocumento(3).
 		WithCuf(cuf).
 		WithCodigoMotivo(1).
 		Build()
 
-	serviceDocumentoAjuste := siatClient.DocumentoAjuste()
-	runDocumentoAjusteTest(t, "AnulacionDocumentoAjuste", req, serviceDocumentoAjuste.AnulacionDocumentoAjuste)
+	resp, err := service.AnulacionDocumentoAjuste(context.Background(), req)
+
+	if assert.NoError(t, err) && assert.NotNil(t, resp) {
+		log.Printf("Respuesta Anulacion: %+v", resp.Body.Content)
+	}
 }
 
 func TestSiatDocumentoAjuste_ReversionAnulacionDocumentoAjuste(t *testing.T) {
-	if _, err := os.Stat(".env"); os.IsNotExist(err) {
-		t.Skip("Saltando prueba de integración: .env no encontrado")
-	}
-	godotenv.Load()
+	siatClient, cuis, cufd, _, _, _ := getDocumentoAjusteSetup(t)
+	service := siatClient.DocumentoAjuste()
 
-	codModalidad := siat.ModalidadComputarizada
-	nit, _ := utils.ParseInt64Safe(os.Getenv("SIAT_NIT"))
-	codAmbiente, _ := utils.ParseIntSafe(os.Getenv("SIAT_CODIGO_AMBIENTE"))
-	config := siat.Config{Token: os.Getenv("SIAT_TOKEN")}
-
-	client := &http.Client{Transport: &http.Transport{Proxy: http.ProxyFromEnvironment}}
-	siatClient, _ := siat.New(os.Getenv("SIAT_URL"), client)
-	serviceCodigos := siatClient.Codigos()
-
-	cuisReq := models.Codigos().NewCuisBuilder().
-		WithCodigoAmbiente(codAmbiente).
-		WithCodigoModalidad(codModalidad).
-		WithCodigoSistema(os.Getenv("SIAT_CODIGO_SISTEMA")).
-		WithNit(nit).
-		Build()
-	cuisResp, _ := serviceCodigos.SolicitudCuis(context.Background(), config, cuisReq)
-	cuis := cuisResp.Body.Content.RespuestaCuis.Codigo
-
-	cufdReq := models.Codigos().NewCufdBuilder().
-		WithCodigoAmbiente(codAmbiente).
-		WithCodigoModalidad(codModalidad).
-		WithCodigoSistema(os.Getenv("SIAT_CODIGO_SISTEMA")).
-		WithNit(nit).
-		WithCuis(cuis).
-		Build()
-	cufdResp, _ := serviceCodigos.SolicitudCufd(context.Background(), config, cufdReq)
-	cufd := cufdResp.Body.Content.RespuestaCufd.Codigo
-	// Generar CUF para Nota Conciliacion (Sector 29)
 	cuf := "CUF_FROM_INVOICE"
 
-	req := models.DocumentoAjuste().NewReversionAnulacionBuilder().
-		WithCodigoAmbiente(codAmbiente).
-		WithCodigoPuntoVenta(0).
-		WithCodigoSistema(os.Getenv("SIAT_CODIGO_SISTEMA")).
-		WithCodigoSucursal(0).
-		WithCuis(cuis).
-		WithCufd(cufd).
-		WithNit(nit).
+	req := models.NewReversionAnulacionDocumentoAjusteBuilder().
 		WithCodigoDocumentoSector(29).
 		WithCodigoEmision(siat.EmisionOnline).
-		WithCodigoModalidad(codModalidad).
+		WithCodigoPuntoVenta(0).
+		WithCodigoSucursal(0).
+		WithCufd(cufd).
+		WithCuis(cuis).
 		WithTipoFacturaDocumento(3).
 		WithCuf(cuf).
 		Build()
 
-	serviceDocumentoAjuste := siatClient.DocumentoAjuste()
+	resp, err := service.ReversionAnulacionDocumentoAjuste(context.Background(), req)
 
-	runDocumentoAjusteTest(t, "ReversionAnulacionDocumentoAjuste", req, serviceDocumentoAjuste.ReversionAnulacionDocumentoAjuste)
+	if assert.NoError(t, err) && assert.NotNil(t, resp) {
+		log.Printf("Respuesta Reversion Anulacion: %+v", resp.Body.Content)
+	}
 }
 
 func TestSiatDocumentoAjuste_VerificacionEstadoDocumentoAjuste(t *testing.T) {
-	if _, err := os.Stat(".env"); os.IsNotExist(err) {
-		t.Skip("Saltando prueba de integración: .env no encontrado")
-	}
-	godotenv.Load()
+	siatClient, cuis, cufd, _, _, _ := getDocumentoAjusteSetup(t)
+	service := siatClient.DocumentoAjuste()
 
-	codModalidad := siat.ModalidadComputarizada
-	nit, _ := utils.ParseInt64Safe(os.Getenv("SIAT_NIT"))
-	codAmbiente, _ := utils.ParseIntSafe(os.Getenv("SIAT_CODIGO_AMBIENTE"))
-	config := siat.Config{Token: os.Getenv("SIAT_TOKEN")}
-
-	client := &http.Client{Transport: &http.Transport{Proxy: http.ProxyFromEnvironment}}
-	siatClient, _ := siat.New(os.Getenv("SIAT_URL"), client)
-	serviceCodigos := siatClient.Codigos()
-
-	cuisReq := models.Codigos().NewCuisBuilder().
-		WithCodigoAmbiente(codAmbiente).
-		WithCodigoModalidad(codModalidad).
-		WithCodigoSistema(os.Getenv("SIAT_CODIGO_SISTEMA")).
-		WithNit(nit).
-		Build()
-	cuisResp, _ := serviceCodigos.SolicitudCuis(context.Background(), config, cuisReq)
-	cuis := cuisResp.Body.Content.RespuestaCuis.Codigo
-
-	cufdReq := models.Codigos().NewCufdBuilder().
-		WithCodigoAmbiente(codAmbiente).
-		WithCodigoModalidad(codModalidad).
-		WithCodigoSistema(os.Getenv("SIAT_CODIGO_SISTEMA")).
-		WithNit(nit).
-		WithCuis(cuis).
-		Build()
-	cufdResp, _ := serviceCodigos.SolicitudCufd(context.Background(), config, cufdReq)
-	cufd := cufdResp.Body.Content.RespuestaCufd.Codigo
-
-	// Generar CUF para Nota Conciliacion (Sector 29)
 	cuf := "CUF_FROM_INVOICE"
 
-	req := models.DocumentoAjuste().NewVerificacionEstadoBuilder().
-		WithCodigoAmbiente(codAmbiente).
-		WithCodigoPuntoVenta(0).
-		WithCodigoSistema(os.Getenv("SIAT_CODIGO_SISTEMA")).
-		WithCodigoSucursal(0).
-		WithCuis(cuis).
-		WithCufd(cufd).
-		WithNit(nit).
+	req := models.NewVerificacionEstadoDocumentoAjusteBuilder().
 		WithCodigoDocumentoSector(29).
 		WithCodigoEmision(siat.EmisionOnline).
-		WithCodigoModalidad(codModalidad).
+		WithCodigoPuntoVenta(0).
+		WithCodigoSucursal(0).
+		WithCufd(cufd).
+		WithCuis(cuis).
 		WithTipoFacturaDocumento(3).
 		WithCuf(cuf).
 		Build()
 
-	serviceDocumentoAjuste := siatClient.DocumentoAjuste()
+	resp, err := service.VerificacionEstadoDocumentoAjuste(context.Background(), req)
 
-	runDocumentoAjusteTest(t, "VerificacionEstadoDocumentoAjuste", req, serviceDocumentoAjuste.VerificacionEstadoDocumentoAjuste)
+	if assert.NoError(t, err) && assert.NotNil(t, resp) {
+		log.Printf("Respuesta Verificacion Estado: %+v", resp.Body.Content)
+	}
 }

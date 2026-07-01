@@ -7,7 +7,6 @@ import (
 	"encoding/xml"
 	"fmt"
 	"log"
-	"net/http"
 	"os"
 	"testing"
 	"time"
@@ -21,32 +20,79 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func getBoletoAereoSetup(t *testing.T) (*siat.SiatServices, string, string, string, int64, int) {
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		t.Skip("Saltando prueba de integración: .env no encontrado")
+	}
+	godotenv.Load(".env")
+
+	nit, _ := utils.ParseInt64Safe(os.Getenv("SIAT_NIT"))
+	codAmbiente := siat.AmbientePruebas
+	codModalidad := siat.ModalidadElectronica
+
+	cfg := siat.Config{
+		Token:          os.Getenv("SIAT_TOKEN"),
+		Nit:            nit,
+		CodigoSistema:  os.Getenv("SIAT_CODIGO_SISTEMA"),
+		CodigoAmbiente: codAmbiente,
+		BaseURL:        os.Getenv("SIAT_URL"),
+		HTTPClient:     siat.NewHTTPClient(siat.DefaultHTTPConfig()),
+	}
+
+	siatClient, err := siat.New(cfg)
+	if err != nil {
+		t.Fatalf("error creating client: %v", err)
+	}
+
+	serviceCodigos := siatClient.Codigos()
+
+	cuisReq := models.NewCuisBuilder().
+		WithCodigoModalidad(codModalidad).
+		WithCodigoPuntoVenta(0).
+		WithCodigoSucursal(0).
+		Build()
+	cuisResp, err := serviceCodigos.SolicitudCuis(context.Background(), cuisReq)
+	if err != nil {
+		t.Fatalf("error solicitando CUIS: %v", err)
+	}
+	cuis := cuisResp.Body.Content.RespuestaCuis.Codigo
+
+	cufdReq := models.NewCufdBuilder().
+		WithCodigoModalidad(codModalidad).
+		WithCodigoPuntoVenta(0).
+		WithCodigoSucursal(0).
+		WithCuis(cuis).
+		Build()
+	cufdResp, err := serviceCodigos.SolicitudCufd(context.Background(), cufdReq)
+	if err != nil {
+		t.Fatalf("error solicitando CUFD: %v", err)
+	}
+	cufd := cufdResp.Body.Content.RespuestaCufd.Codigo
+	cufdControl := cufdResp.Body.Content.RespuestaCufd.CodigoControl
+
+	return siatClient, cuis, cufd, cufdControl, nit, codModalidad
+}
+
 func TestSiatBoletoAereoService_NewSiatBoletoAereoService(t *testing.T) {
 	t.Run("Success", func(t *testing.T) {
-		service, err := services.NewSiatBoletoAereoService("https://example.com", nil)
+		service, err := services.NewSiatBoletoAereoService("https://example.com", nil, siat.Config{})
 		assert.NoError(t, err)
 		assert.NotNil(t, service)
 	})
 
 	t.Run("Empty URL", func(t *testing.T) {
-		service, err := services.NewSiatBoletoAereoService("", nil)
+		service, err := services.NewSiatBoletoAereoService("", nil, siat.Config{})
 		assert.Error(t, err)
 		assert.Nil(t, service)
 	})
 }
 
 func TestSiatBoletoAereoService_VerificarComunicacion(t *testing.T) {
-	if _, err := os.Stat(".env"); os.IsNotExist(err) {
-		t.Skip("Saltando prueba de integración: .env no encontrado")
-	}
-	godotenv.Load(".env")
-	config := siat.Config{Token: os.Getenv("SIAT_TOKEN")}
-
-	siatClient, _ := siat.New(os.Getenv("SIAT_URL"), nil)
+	siatClient, _, _, _, _, _ := getBoletoAereoSetup(t)
 	service := siatClient.BoletoAereo()
 
-	req := models.BoletoAereo().NewVerificarComunicacionBuilder().Build()
-	resp, err := service.VerificarComunicacion(context.Background(), config, req)
+	req := models.NewVerificarComunicacionFacturacion()
+	resp, err := service.VerificarComunicacion(context.Background(), req)
 
 	if assert.NoError(t, err) && assert.NotNil(t, resp) {
 		assert.True(t, resp.Body.Content.Return.Transaccion)
@@ -55,61 +101,23 @@ func TestSiatBoletoAereoService_VerificarComunicacion(t *testing.T) {
 }
 
 func TestSiatBoletoAereoService_RecepcionMasivaFactura(t *testing.T) {
-	if _, err := os.Stat(".env"); os.IsNotExist(err) {
-		t.Skip("Saltando prueba de integración: .env no encontrado")
-	}
-	godotenv.Load(".env")
-
-	codModalidad := siat.ModalidadElectronica
-	nit, _ := utils.ParseInt64Safe(os.Getenv("SIAT_NIT"))
-	codAmbiente := siat.AmbientePruebas
-	config := siat.Config{Token: os.Getenv("SIAT_TOKEN")}
-
-	client := &http.Client{Transport: &http.Transport{Proxy: http.ProxyFromEnvironment}}
-	siatClient, _ := siat.New(os.Getenv("SIAT_URL"), client)
-	serviceCodigos := siatClient.Codigos()
+	siatClient, cuis, cufd, cufdControl, nit, codModalidad := getBoletoAereoSetup(t)
 	serviceBoleto := siatClient.BoletoAereo()
 
-	// 1. Obtener CUIS
-	cuisReq := models.Codigos().NewCuisBuilder().
-		WithCodigoAmbiente(codAmbiente).
-		WithCodigoModalidad(codModalidad).
-		WithCodigoSistema(os.Getenv("SIAT_CODIGO_SISTEMA")).
-		WithNit(nit).
-		Build()
-	cuis, err := serviceCodigos.SolicitudCuis(context.Background(), config, cuisReq)
-	if err != nil {
-		t.Fatalf("error CUIS: %v", err)
-	}
-
-	// 2. Obtener CUFD
-	cufdReq := models.Codigos().NewCufdBuilder().
-		WithCodigoAmbiente(codAmbiente).
-		WithCodigoModalidad(codModalidad).
-		WithCodigoSistema(os.Getenv("SIAT_CODIGO_SISTEMA")).
-		WithNit(nit).
-		WithCuis(cuis.Body.Content.RespuestaCuis.Codigo).
-		Build()
-	cufd, err := serviceCodigos.SolicitudCufd(context.Background(), config, cufdReq)
-	if err != nil {
-		t.Fatalf("error CUFD: %v", err)
-	}
-
 	fechaEmision := time.Now()
-	// 3. Generar CUF (Sector 30)
-	cuf, err := utils.GenerarCUF(nit, fechaEmision, 0, codModalidad, 3, 4, 30, 1, 0, cufd.Body.Content.RespuestaCufd.CodigoControl)
+	// Generar CUF (Sector 30)
+	cuf, err := utils.GenerarCUF(nit, fechaEmision, 0, codModalidad, 3, 4, 30, 1, 0, cufdControl)
 	if err != nil {
 		t.Fatalf("error al generar CUF: %v", err)
 	}
 
-	// 4. Construir Factura Boleto Aereo (Sector 30)
 	nombre := "JUAN PEREZ"
 	cabecera := invoices.NewBoletoAereoCabeceraBuilder().
 		WithNitEmisor(nit).
 		WithRazonSocialEmisor("AEROLINEAS TEST S.A.").
 		WithNumeroFactura(1).
 		WithCuf(cuf).
-		WithCufd(cufd.Body.Content.RespuestaCufd.Codigo).
+		WithCufd(cufd).
 		WithCodigoSucursal(0).
 		WithDireccion("Aropuerto Internacional El Alto").
 		WithFechaEmision(fechaEmision).
@@ -136,7 +144,6 @@ func TestSiatBoletoAereoService_RecepcionMasivaFactura(t *testing.T) {
 		WithCabecera(cabecera).
 		Build()
 
-	// 5. Serializar, Firmar, empaquetar en TAR.GZ y Hashear
 	xmlData, _ := xml.Marshal(factura)
 	signedXML, _ := utils.SignXML(xmlData, "key.pem", "cert.crt")
 
@@ -150,18 +157,14 @@ func TestSiatBoletoAereoService_RecepcionMasivaFactura(t *testing.T) {
 	hashString := fmt.Sprintf("%x", hashSum)
 	encodedArchivo := base64.StdEncoding.EncodeToString(tarGz)
 
-	// 6. Preparar solicitud de recepción masiva
-	req := models.BoletoAereo().NewRecepcionMasivaFacturaBuilder().
-		WithCodigoAmbiente(codAmbiente).
+	req := models.NewRecepcionMasivaFacturaBuilder().
 		WithCodigoDocumentoSector(30).
 		WithCodigoEmision(3).
 		WithCodigoModalidad(codModalidad).
 		WithCodigoPuntoVenta(0).
-		WithCodigoSistema(os.Getenv("SIAT_CODIGO_SISTEMA")).
 		WithCodigoSucursal(0).
-		WithCufd(cufd.Body.Content.RespuestaCufd.Codigo).
-		WithCuis(cuis.Body.Content.RespuestaCuis.Codigo).
-		WithNit(nit).
+		WithCufd(cufd).
+		WithCuis(cuis).
 		WithTipoFacturaDocumento(4).
 		WithArchivo(encodedArchivo).
 		WithFechaEnvio(fechaEmision).
@@ -169,7 +172,7 @@ func TestSiatBoletoAereoService_RecepcionMasivaFactura(t *testing.T) {
 		WithCantidadFacturas(1).
 		Build()
 
-	resp, err := serviceBoleto.RecepcionMasivaFactura(context.Background(), config, req)
+	resp, err := serviceBoleto.RecepcionMasivaFactura(context.Background(), req)
 
 	if assert.NoError(t, err) && assert.NotNil(t, resp) {
 		log.Printf("Respuesta Recepcion Masiva Boleto Aereo: %+v", resp.Body.Content)
@@ -177,53 +180,22 @@ func TestSiatBoletoAereoService_RecepcionMasivaFactura(t *testing.T) {
 }
 
 func TestSiatBoletoAereoService_ValidacionRecepcionMasivaFactura(t *testing.T) {
-	if _, err := os.Stat(".env"); os.IsNotExist(err) {
-		t.Skip("Saltando prueba de integración: .env no encontrado")
-	}
-	godotenv.Load(".env")
-
-	codModalidad := siat.ModalidadElectronica
-	nit, _ := utils.ParseInt64Safe(os.Getenv("SIAT_NIT"))
-	codAmbiente := siat.AmbientePruebas
-	config := siat.Config{Token: os.Getenv("SIAT_TOKEN")}
-
-	siatClient, _ := siat.New(os.Getenv("SIAT_URL"), nil)
-	serviceCodigos := siatClient.Codigos()
+	siatClient, cuis, cufd, _, _, codModalidad := getBoletoAereoSetup(t)
 	serviceBoleto := siatClient.BoletoAereo()
 
-	cuisReq := models.Codigos().NewCuisBuilder().
-		WithCodigoAmbiente(codAmbiente).
-		WithCodigoModalidad(codModalidad).
-		WithCodigoSistema(os.Getenv("SIAT_CODIGO_SISTEMA")).
-		WithNit(nit).
-		Build()
-	cuis, _ := serviceCodigos.SolicitudCuis(context.Background(), config, cuisReq)
-
-	cufdReq := models.Codigos().NewCufdBuilder().
-		WithCodigoAmbiente(codAmbiente).
-		WithCodigoModalidad(codModalidad).
-		WithCodigoSistema(os.Getenv("SIAT_CODIGO_SISTEMA")).
-		WithNit(nit).
-		WithCuis(cuis.Body.Content.RespuestaCuis.Codigo).
-		Build()
-	cufd, _ := serviceCodigos.SolicitudCufd(context.Background(), config, cufdReq)
-
-	req := models.BoletoAereo().NewValidacionRecepcionMasivaFacturaBuilder().
-		WithCodigoAmbiente(codAmbiente).
+	req := models.NewValidacionRecepcionMasivaFacturaBuilder().
 		WithCodigoDocumentoSector(30).
 		WithCodigoEmision(3).
 		WithCodigoModalidad(codModalidad).
 		WithCodigoPuntoVenta(0).
-		WithCodigoSistema(os.Getenv("SIAT_CODIGO_SISTEMA")).
 		WithCodigoSucursal(0).
-		WithCufd(cufd.Body.Content.RespuestaCufd.Codigo).
-		WithCuis(cuis.Body.Content.RespuestaCuis.Codigo).
-		WithNit(nit).
+		WithCufd(cufd).
+		WithCuis(cuis).
 		WithTipoFacturaDocumento(4).
 		WithCodigoRecepcion("aaa617de-350b-11f1-bc7c-b31977654538").
 		Build()
 
-	resp, err := serviceBoleto.ValidacionRecepcionMasivaFactura(context.Background(), config, req)
+	resp, err := serviceBoleto.ValidacionRecepcionMasivaFactura(context.Background(), req)
 
 	if assert.NoError(t, err) && assert.NotNil(t, resp) {
 		log.Printf("Respuesta Validación Masiva Boleto Aereo: %+v", resp.Body.Content)
@@ -231,53 +203,22 @@ func TestSiatBoletoAereoService_ValidacionRecepcionMasivaFactura(t *testing.T) {
 }
 
 func TestSiatBoletoAereoService_VerificacionEstadoFactura(t *testing.T) {
-	if _, err := os.Stat(".env"); os.IsNotExist(err) {
-		t.Skip("Saltando prueba de integración: .env no encontrado")
-	}
-	godotenv.Load(".env")
-
-	codModalidad := siat.ModalidadElectronica
-	nit, _ := utils.ParseInt64Safe(os.Getenv("SIAT_NIT"))
-	codAmbiente := siat.AmbientePruebas
-	config := siat.Config{Token: os.Getenv("SIAT_TOKEN")}
-
-	siatClient, _ := siat.New(os.Getenv("SIAT_URL"), nil)
-	serviceCodigos := siatClient.Codigos()
+	siatClient, cuis, cufd, _, _, codModalidad := getBoletoAereoSetup(t)
 	serviceBoleto := siatClient.BoletoAereo()
 
-	cuisReq := models.Codigos().NewCuisBuilder().
-		WithCodigoAmbiente(codAmbiente).
-		WithCodigoModalidad(codModalidad).
-		WithCodigoSistema(os.Getenv("SIAT_CODIGO_SISTEMA")).
-		WithNit(nit).
-		Build()
-	cuis, _ := serviceCodigos.SolicitudCuis(context.Background(), config, cuisReq)
-
-	cufdReq := models.Codigos().NewCufdBuilder().
-		WithCodigoAmbiente(codAmbiente).
-		WithCodigoModalidad(codModalidad).
-		WithCodigoSistema(os.Getenv("SIAT_CODIGO_SISTEMA")).
-		WithNit(nit).
-		WithCuis(cuis.Body.Content.RespuestaCuis.Codigo).
-		Build()
-	cufd, _ := serviceCodigos.SolicitudCufd(context.Background(), config, cufdReq)
-
-	req := models.BoletoAereo().NewVerificacionEstadoFacturaBuilder().
-		WithCodigoAmbiente(codAmbiente).
+	req := models.NewVerificacionEstadoFacturaBuilder().
 		WithCodigoDocumentoSector(30).
 		WithCodigoEmision(1).
 		WithCodigoModalidad(codModalidad).
 		WithCodigoPuntoVenta(0).
-		WithCodigoSistema(os.Getenv("SIAT_CODIGO_SISTEMA")).
 		WithCodigoSucursal(0).
-		WithCufd(cufd.Body.Content.RespuestaCufd.Codigo).
-		WithCuis(cuis.Body.Content.RespuestaCuis.Codigo).
-		WithNit(nit).
+		WithCufd(cufd).
+		WithCuis(cuis).
 		WithTipoFacturaDocumento(4).
 		WithCuf("ABC123FAKE").
 		Build()
 
-	resp, err := serviceBoleto.VerificacionEstadoFactura(context.Background(), config, req)
+	resp, err := serviceBoleto.VerificacionEstadoFactura(context.Background(), req)
 
 	if assert.NoError(t, err) && assert.NotNil(t, resp) {
 		log.Printf("Respuesta Verificacion Estado Boleto Aereo: %+v", resp.Body.Content)
@@ -285,54 +226,23 @@ func TestSiatBoletoAereoService_VerificacionEstadoFactura(t *testing.T) {
 }
 
 func TestSiatBoletoAereoService_AnulacionFactura(t *testing.T) {
-	if _, err := os.Stat(".env"); os.IsNotExist(err) {
-		t.Skip("Saltando prueba de integración: .env no encontrado")
-	}
-	godotenv.Load(".env")
-
-	codModalidad := siat.ModalidadElectronica
-	nit, _ := utils.ParseInt64Safe(os.Getenv("SIAT_NIT"))
-	codAmbiente := siat.AmbientePruebas
-	config := siat.Config{Token: os.Getenv("SIAT_TOKEN")}
-
-	siatClient, _ := siat.New(os.Getenv("SIAT_URL"), nil)
-	serviceCodigos := siatClient.Codigos()
+	siatClient, cuis, cufd, _, _, codModalidad := getBoletoAereoSetup(t)
 	serviceBoleto := siatClient.BoletoAereo()
 
-	cuisReq := models.Codigos().NewCuisBuilder().
-		WithCodigoAmbiente(codAmbiente).
-		WithCodigoModalidad(codModalidad).
-		WithCodigoSistema(os.Getenv("SIAT_CODIGO_SISTEMA")).
-		WithNit(nit).
-		Build()
-	cuis, _ := serviceCodigos.SolicitudCuis(context.Background(), config, cuisReq)
-
-	cufdReq := models.Codigos().NewCufdBuilder().
-		WithCodigoAmbiente(codAmbiente).
-		WithCodigoModalidad(codModalidad).
-		WithCodigoSistema(os.Getenv("SIAT_CODIGO_SISTEMA")).
-		WithNit(nit).
-		WithCuis(cuis.Body.Content.RespuestaCuis.Codigo).
-		Build()
-	cufd, _ := serviceCodigos.SolicitudCufd(context.Background(), config, cufdReq)
-
-	req := models.BoletoAereo().NewAnulacionFacturaBuilder().
-		WithCodigoAmbiente(codAmbiente).
+	req := models.NewAnulacionFacturaBuilder().
 		WithCodigoDocumentoSector(30).
 		WithCodigoEmision(1).
 		WithCodigoModalidad(codModalidad).
 		WithCodigoPuntoVenta(0).
-		WithCodigoSistema(os.Getenv("SIAT_CODIGO_SISTEMA")).
 		WithCodigoSucursal(0).
-		WithCufd(cufd.Body.Content.RespuestaCufd.Codigo).
-		WithCuis(cuis.Body.Content.RespuestaCuis.Codigo).
-		WithNit(nit).
+		WithCufd(cufd).
+		WithCuis(cuis).
 		WithTipoFacturaDocumento(4).
 		WithCuf("ABC123FAKE").
 		WithCodigoMotivo(1).
 		Build()
 
-	resp, err := serviceBoleto.AnulacionFactura(context.Background(), config, req)
+	resp, err := serviceBoleto.AnulacionFactura(context.Background(), req)
 
 	if assert.NoError(t, err) && assert.NotNil(t, resp) {
 		log.Printf("Respuesta Anulación Boleto Aereo: %+v", resp.Body.Content)
@@ -340,53 +250,22 @@ func TestSiatBoletoAereoService_AnulacionFactura(t *testing.T) {
 }
 
 func TestSiatBoletoAereoService_ReversionAnulacionFactura(t *testing.T) {
-	if _, err := os.Stat(".env"); os.IsNotExist(err) {
-		t.Skip("Saltando prueba de integración: .env no encontrado")
-	}
-	godotenv.Load(".env")
-
-	codModalidad := siat.ModalidadElectronica
-	nit, _ := utils.ParseInt64Safe(os.Getenv("SIAT_NIT"))
-	codAmbiente := siat.AmbientePruebas
-	config := siat.Config{Token: os.Getenv("SIAT_TOKEN")}
-
-	siatClient, _ := siat.New(os.Getenv("SIAT_URL"), nil)
-	serviceCodigos := siatClient.Codigos()
+	siatClient, cuis, cufd, _, _, codModalidad := getBoletoAereoSetup(t)
 	serviceBoleto := siatClient.BoletoAereo()
 
-	cuisReq := models.Codigos().NewCuisBuilder().
-		WithCodigoAmbiente(codAmbiente).
-		WithCodigoModalidad(codModalidad).
-		WithCodigoSistema(os.Getenv("SIAT_CODIGO_SISTEMA")).
-		WithNit(nit).
-		Build()
-	cuis, _ := serviceCodigos.SolicitudCuis(context.Background(), config, cuisReq)
-
-	cufdReq := models.Codigos().NewCufdBuilder().
-		WithCodigoAmbiente(codAmbiente).
-		WithCodigoModalidad(codModalidad).
-		WithCodigoSistema(os.Getenv("SIAT_CODIGO_SISTEMA")).
-		WithNit(nit).
-		WithCuis(cuis.Body.Content.RespuestaCuis.Codigo).
-		Build()
-	cufd, _ := serviceCodigos.SolicitudCufd(context.Background(), config, cufdReq)
-
-	req := models.BoletoAereo().NewReversionAnulacionFacturaBuilder().
-		WithCodigoAmbiente(codAmbiente).
+	req := models.NewReversionAnulacionFacturaBuilder().
 		WithCodigoDocumentoSector(30).
 		WithCodigoEmision(1).
 		WithCodigoModalidad(codModalidad).
 		WithCodigoPuntoVenta(0).
-		WithCodigoSistema(os.Getenv("SIAT_CODIGO_SISTEMA")).
 		WithCodigoSucursal(0).
-		WithCufd(cufd.Body.Content.RespuestaCufd.Codigo).
-		WithCuis(cuis.Body.Content.RespuestaCuis.Codigo).
-		WithNit(nit).
+		WithCufd(cufd).
+		WithCuis(cuis).
 		WithTipoFacturaDocumento(4).
 		WithCuf("ABC123FAKE").
 		Build()
 
-	resp, err := serviceBoleto.ReversionAnulacionFactura(context.Background(), config, req)
+	resp, err := serviceBoleto.ReversionAnulacionFactura(context.Background(), req)
 
 	if assert.NoError(t, err) && assert.NotNil(t, resp) {
 		log.Printf("Respuesta Reversión Anulación Boleto Aereo: %+v", resp.Body.Content)
