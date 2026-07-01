@@ -110,7 +110,7 @@ func main() {
     }
 
     // 3. Build the request using the Builder pattern
-    req := models.Codigos().NewVerificarNitBuilder().
+    req := models.NewVerificarNitBuilder().
         WithNit(123456789).
         Build()
 
@@ -170,7 +170,7 @@ graph LR
 ### Step 1: Obtain CUIS (System Identification Code)
 
 ```go
-cuisReq := models.Codigos().NewCuisBuilder().
+cuisReq := models.NewCuisBuilder().
     WithCodigoAmbiente(siat.AmbientePruebas).
     WithCodigoModalidad(siat.ModalidadElectronica).
     WithCodigoPuntoVenta(0).
@@ -186,7 +186,7 @@ cuis := cuisResp.Body.Content.RespuestaCuis.Codigo
 ### Step 2: Obtain CUFD (Daily Invoicing Code)
 
 ```go
-cufdReq := models.Codigos().NewCufdBuilder().
+cufdReq := models.NewCufdBuilder().
     WithCodigoAmbiente(siat.AmbientePruebas).
     WithCodigoModalidad(siat.ModalidadElectronica).
     WithCodigoPuntoVenta(0).
@@ -276,7 +276,7 @@ hash, archivoBase64, err := utils.CompressAndHash(signedXML)
 ### Step 6: Send to SIAT
 
 ```go
-recepcionReq := models.Electronica().NewRecepcionFacturaBuilder().
+recepcionReq := models.NewRecepcionFacturaBuilder().
     WithCodigoAmbiente(siat.AmbientePruebas).
     WithNit(nit).
     WithCufd(cufd).

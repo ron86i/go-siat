@@ -208,7 +208,7 @@ La capa más profunda con las estructuras de datos puras:
 Cada solicitud al SIAT se construye a través de un Builder. Esto asegura que los campos obligatorios estén establecidos y proporciona una API fluida:
 
 ```go
-req := models.Codigos().NewCuisBuilder().
+req := models.NewCuisBuilder().
     WithCodigoAmbiente(siat.AmbientePruebas).
     WithCodigoModalidad(siat.ModalidadElectronica).
     WithCodigoPuntoVenta(0).

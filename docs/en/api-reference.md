@@ -89,7 +89,7 @@ Manages SIAT billing codes (CUIS, CUFD), NIT validation, and certificate communi
 Obtains the System Identification Unique Code, required to operate with SIAT.
 
 ```go
-req := models.Codigos().NewCuisBuilder().
+req := models.NewCuisBuilder().
     WithCodigoAmbiente(2).
     WithCodigoModalidad(1).
     WithCodigoPuntoVenta(0).
@@ -116,7 +116,7 @@ resp, err := s.Codigos().SolicitudCuis(ctx, cfg, req)
 Request multiple CUIS codes in a single operation.
 
 ```go
-req := models.Codigos().NewCuisMasivoBuilder().
+req := models.NewCuisMasivoBuilder().
     // ... same builders as CUIS
     Build()
 
@@ -128,7 +128,7 @@ resp, err := s.Codigos().SolicitudCuisMasivo(ctx, cfg, req)
 Obtains the Daily Invoicing Unique Code. Required daily for invoice emission.
 
 ```go
-req := models.Codigos().NewCufdBuilder().
+req := models.NewCufdBuilder().
     WithCodigoAmbiente(2).
     WithCodigoModalidad(1).
     WithCodigoPuntoVenta(0).
@@ -147,7 +147,7 @@ resp, err := s.Codigos().SolicitudCufd(ctx, cfg, req)
 ### `SolicitudCufdMasivo` - Bulk CUFD Request
 
 ```go
-req := models.Codigos().NewCufdMasivoBuilder().
+req := models.NewCufdMasivoBuilder().
     // ... same builders + WithCuis()
     Build()
 
@@ -159,7 +159,7 @@ resp, err := s.Codigos().SolicitudCufdMasivo(ctx, cfg, req)
 Checks if a tax identification number is active and valid.
 
 ```go
-req := models.Codigos().NewVerificarNitBuilder().
+req := models.NewVerificarNitBuilder().
     WithNit(123456789).
     Build()
 
@@ -172,7 +172,7 @@ resp, err := s.Codigos().VerificarNit(ctx, cfg, req)
 Tests connectivity to the Codigos service.
 
 ```go
-req := models.Codigos().NewVerificarComunicacionCodigosBuilder().Build()
+req := models.NewVerificarComunicacionCodigosBuilder().Build()
 resp, err := s.Codigos().VerificarComunicacion(ctx, cfg, req)
 ```
 
@@ -181,7 +181,7 @@ resp, err := s.Codigos().VerificarComunicacion(ctx, cfg, req)
 Notifies SIAT that a digital certificate has been revoked.
 
 ```go
-req := models.Codigos().NewNotificaCertificadoRevocadoBuilder().
+req := models.NewNotificaCertificadoRevocadoBuilder().
     // ... builder methods
     Build()
 
@@ -203,7 +203,7 @@ Synchronizes master catalogs: economic activities, parametric tables, products, 
 All synchronization methods share a similar builder pattern:
 
 ```go
-req := models.Sincronizacion().NewSincronizarActividadesBuilder().
+req := models.NewSincronizarActividadesBuilder().
     WithNit(nit).
     WithCodigoAmbiente(2).
     WithCodigoSucursal(0).
@@ -249,7 +249,7 @@ Manages point of sale (POS) registration, significant events, and system closing
 ### `RegistroPuntoVenta` - Register POS
 
 ```go
-req := models.Operaciones().NewRegistroPuntoVentaBuilder().
+req := models.NewRegistroPuntoVentaBuilder().
     // ... builder methods
     Build()
 
@@ -259,7 +259,7 @@ resp, err := s.Operaciones().RegistroPuntoVenta(ctx, cfg, req)
 ### `ConsultaPuntoVenta` - Query POS
 
 ```go
-req := models.Operaciones().NewConsultaPuntoVentaBuilder().Build()
+req := models.NewConsultaPuntoVentaBuilder().Build()
 resp, err := s.Operaciones().ConsultaPuntoVenta(ctx, cfg, req)
 ```
 
@@ -289,7 +289,7 @@ Handles standard sales invoicing - the most common sector for general commerce.
 ### `RecepcionFactura` - Send Invoice
 
 ```go
-req := models.CompraVenta().NewRecepcionFacturaBuilder().
+req := models.NewRecepcionFacturaBuilder().
     WithCodigoAmbiente(2).
     WithNit(nit).
     WithCufd(cufd).
@@ -318,7 +318,7 @@ resp, err := s.CompraVenta().RecepcionFactura(ctx, cfg, req)
 | `RecepcionAnexos` | Send annexes (attachments) |
 | `VerificarComunicacion` | Connectivity test |
 
-**Integration tests**: [`siat_compra_venta_service_test.go`](../../internal/adapter/services/siat_compra_venta_service_test.go)
+**Integration tests**: [`siat_facturacion_service_test.go`](../../internal/adapter/services/siat_facturacion_service_test.go)
 
 ---
 
@@ -346,7 +346,7 @@ Handles electronic invoicing (with digital signature) for all sectors.
 All methods use builders from `models.Electronica()`:
 
 ```go
-req := models.Electronica().NewRecepcionFacturaBuilder().
+req := models.NewRecepcionFacturaBuilder().
     WithCodigoAmbiente(2).
     WithNit(nit).
     WithCufd(cufd).
@@ -360,7 +360,7 @@ req := models.Electronica().NewRecepcionFacturaBuilder().
 resp, err := s.Electronica().RecepcionFactura(ctx, cfg, req)
 ```
 
-**Integration tests**: [`siat_electronica_service_test.go`](../../internal/adapter/services/siat_electronica_service_test.go)
+**Integration tests**: [`siat_facturacion_service_test.go`](../../internal/adapter/services/siat_facturacion_service_test.go)
 
 ---
 
@@ -388,14 +388,14 @@ Handles computerized invoicing without digital signature, based on fiscal cash r
 Builders from `models.Computarizada()`:
 
 ```go
-req := models.Computarizada().NewRecepcionFacturaBuilder().
+req := models.NewRecepcionFacturaBuilder().
     // ... same pattern as Electronica
     Build()
 
 resp, err := s.Computarizada().RecepcionFactura(ctx, cfg, req)
 ```
 
-**Integration tests**: [`siat_computarizada_service_test.go`](../../internal/adapter/services/siat_computarizada_service_test.go)
+**Integration tests**: [`siat_facturacion_service_test.go`](../../internal/adapter/services/siat_facturacion_service_test.go)
 
 ---
 

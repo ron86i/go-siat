@@ -172,7 +172,7 @@ signedXML, _ := utils.SignXML(xmlData, "key.pem", "cert.crt")
 hash, archivoBase64, _ := utils.CompressAndHash(signedXML)
 
 // 2. Construir solicitud de envío
-req := models.Electronica().NewRecepcionFacturaBuilder().
+req := models.NewRecepcionFacturaBuilder().
     WithCodigoAmbiente(siat.AmbientePruebas).
     WithNit(nit).
     WithCufd(cufd).
@@ -200,7 +200,7 @@ estado := resp.Body.Content.RespuestaServicioFacturacion.CodigoEstado
 Para escenarios de contingencia u offline, empaqueta múltiples facturas y envía como lote:
 
 ```go
-req := models.Electronica().NewRecepcionPaqueteFacturaBuilder().
+req := models.NewRecepcionPaqueteFacturaBuilder().
     // ... campos de autenticación
     WithArchivo(paqueteBase64).
     WithCantidadFacturas(150).
@@ -215,7 +215,7 @@ resp, err := s.Electronica().RecepcionPaqueteFactura(ctx, cfg, req)
 Para escenarios de alto volumen:
 
 ```go
-req := models.Electronica().NewRecepcionMasivaFacturaBuilder().
+req := models.NewRecepcionMasivaFacturaBuilder().
     // ... mismo patrón, para volúmenes mayores
     Build()
 
@@ -235,7 +235,7 @@ resp, err := s.Electronica().RecepcionMasivaFactura(ctx, cfg, req)
 ### Anular una Factura
 
 ```go
-req := models.Electronica().NewAnulacionFacturaBuilder().
+req := models.NewAnulacionFacturaBuilder().
     WithCodigoAmbiente(siat.AmbientePruebas).
     WithNit(nit).
     WithCuis(cuis).
@@ -255,7 +255,7 @@ resp, err := s.Electronica().AnulacionFactura(ctx, cfg, req)
 Si una factura fue anulada por error, puedes revertir **una sola vez**:
 
 ```go
-req := models.Electronica().NewReversionAnulacionFacturaBuilder().
+req := models.NewReversionAnulacionFacturaBuilder().
     // ... mismos campos de autenticación + CUF
     Build()
 

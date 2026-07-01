@@ -83,7 +83,7 @@ Gestiona los códigos de facturación SIAT (CUIS, CUFD), validación de NIT y co
 Obtiene el Código Único de Inicio de Sistemas, requerido para operar con el SIAT.
 
 ```go
-req := models.Codigos().NewCuisBuilder().
+req := models.NewCuisBuilder().
     WithCodigoAmbiente(2).
     WithCodigoModalidad(1).
     WithCodigoPuntoVenta(0).
@@ -114,7 +114,7 @@ Solicita múltiples códigos CUIS en una sola operación.
 Obtiene el Código Único de Facturación Diaria. Requerido diariamente para emitir facturas.
 
 ```go
-req := models.Codigos().NewCufdBuilder().
+req := models.NewCufdBuilder().
     WithCodigoAmbiente(2).
     WithCodigoModalidad(1).
     WithCodigoPuntoVenta(0).
@@ -137,7 +137,7 @@ resp, err := s.Codigos().SolicitudCufd(ctx, cfg, req)
 Verifica si un Número de Identificación Tributaria está activo y habilitado.
 
 ```go
-req := models.Codigos().NewVerificarNitBuilder().
+req := models.NewVerificarNitBuilder().
     WithNit(123456789).
     Build()
 
@@ -163,7 +163,7 @@ Sincroniza catálogos maestros: actividades económicas, tablas paramétricas, p
 Todos los métodos de sincronización comparten un patrón de builder similar:
 
 ```go
-req := models.Sincronizacion().NewSincronizarActividadesBuilder().
+req := models.NewSincronizarActividadesBuilder().
     WithNit(nit).
     WithCodigoAmbiente(2).
     WithCodigoSucursal(0).
@@ -240,7 +240,7 @@ Maneja la facturación estándar de compra-venta - el sector más común para co
 | `RecepcionAnexos` | Enviar anexos (adjuntos) |
 | `VerificarComunicacion` | Prueba de conectividad |
 
-**Tests de integración**: [`siat_compra_venta_service_test.go`](../../internal/adapter/services/siat_compra_venta_service_test.go)
+**Tests de integración**: [`siat_facturacion_service_test.go`](../../internal/adapter/services/siat_facturacion_service_test.go)
 
 ---
 
@@ -264,7 +264,7 @@ Maneja facturación electrónica (con firma digital) para todos los sectores.
 | `VerificarComunicacion` | Prueba de conectividad |
 
 ```go
-req := models.Electronica().NewRecepcionFacturaBuilder().
+req := models.NewRecepcionFacturaBuilder().
     WithCodigoAmbiente(2).
     WithNit(nit).
     WithCufd(cufd).
@@ -278,7 +278,7 @@ req := models.Electronica().NewRecepcionFacturaBuilder().
 resp, err := s.Electronica().RecepcionFactura(ctx, cfg, req)
 ```
 
-**Tests de integración**: [`siat_electronica_service_test.go`](../../internal/adapter/services/siat_electronica_service_test.go)
+**Tests de integración**: [`siat_facturacion_service_test.go`](../../internal/adapter/services/siat_facturacion_service_test.go)
 
 ---
 
@@ -301,7 +301,7 @@ Maneja facturación computarizada sin firma digital, basada en registradoras fis
 | `RecepcionAnexosSuministroEnergia` | Anexos de suministro de energía |
 | `VerificarComunicacion` | Prueba de conectividad |
 
-**Tests de integración**: [`siat_computarizada_service_test.go`](../../internal/adapter/services/siat_computarizada_service_test.go)
+**Tests de integración**: [`siat_facturacion_service_test.go`](../../internal/adapter/services/siat_facturacion_service_test.go)
 
 ---
 

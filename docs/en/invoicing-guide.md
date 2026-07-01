@@ -172,7 +172,7 @@ signedXML, _ := utils.SignXML(xmlData, "key.pem", "cert.crt")
 hash, archivoBase64, _ := utils.CompressAndHash(signedXML)
 
 // 2. Build send request
-req := models.Electronica().NewRecepcionFacturaBuilder().
+req := models.NewRecepcionFacturaBuilder().
     WithCodigoAmbiente(siat.AmbientePruebas).
     WithNit(nit).
     WithCufd(cufd).
@@ -206,7 +206,7 @@ estado := resp.Body.Content.RespuestaServicioFacturacion.CodigoEstado
 For contingency or offline scenarios, pack multiple invoices and send as a batch:
 
 ```go
-req := models.Electronica().NewRecepcionPaqueteFacturaBuilder().
+req := models.NewRecepcionPaqueteFacturaBuilder().
     WithCodigoAmbiente(siat.AmbientePruebas).
     // ... same auth fields
     WithArchivo(paqueteBase64).
@@ -219,7 +219,7 @@ req := models.Electronica().NewRecepcionPaqueteFacturaBuilder().
 resp, err := s.Electronica().RecepcionPaqueteFactura(ctx, cfg, req)
 
 // Later, validate the batch was processed
-validReq := models.Electronica().NewValidacionRecepcionPaqueteFacturaBuilder().
+validReq := models.NewValidacionRecepcionPaqueteFacturaBuilder().
     // ... auth fields + codigoRecepcion from previous response
     Build()
 
@@ -231,7 +231,7 @@ validResp, err := s.Electronica().ValidacionRecepcionPaqueteFactura(ctx, cfg, va
 For high-volume scenarios:
 
 ```go
-req := models.Electronica().NewRecepcionMasivaFacturaBuilder().
+req := models.NewRecepcionMasivaFacturaBuilder().
     // ... same pattern, but for larger volumes
     Build()
 
@@ -251,7 +251,7 @@ resp, err := s.Electronica().RecepcionMasivaFactura(ctx, cfg, req)
 ### Annulling an Invoice
 
 ```go
-req := models.Electronica().NewAnulacionFacturaBuilder().
+req := models.NewAnulacionFacturaBuilder().
     WithCodigoAmbiente(siat.AmbientePruebas).
     WithNit(nit).
     WithCuis(cuis).
@@ -277,7 +277,7 @@ resp, err := s.Electronica().AnulacionFactura(ctx, cfg, req)
 If an invoice was annulled by mistake, you can reverse it **once**:
 
 ```go
-req := models.Electronica().NewReversionAnulacionFacturaBuilder().
+req := models.NewReversionAnulacionFacturaBuilder().
     // ... same auth fields + CUF
     Build()
 

@@ -255,7 +255,7 @@ const (
 ### Usando las Constantes
 
 ```go
-req := models.Codigos().NewCuisBuilder().
+req := models.NewCuisBuilder().
     WithCodigoAmbiente(siat.AmbientePruebas).
     WithCodigoModalidad(siat.ModalidadElectronica).
     Build()

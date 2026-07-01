@@ -210,7 +210,7 @@ The deepest layer containing the pure data structures:
 Every request to the SIAT is constructed through a Builder. This ensures mandatory fields are set and provides a fluent API:
 
 ```go
-req := models.Codigos().NewCuisBuilder().
+req := models.NewCuisBuilder().
     WithCodigoAmbiente(siat.AmbientePruebas).
     WithCodigoModalidad(siat.ModalidadElectronica).
     WithCodigoPuntoVenta(0).
