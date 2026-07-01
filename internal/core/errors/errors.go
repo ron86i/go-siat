@@ -1,6 +1,10 @@
 package errors
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/ron86i/go-siat/internal/core/domain/siat/common"
+)
 
 // SiatError es el tipo de error que retorna el SDK.
 // Permite al usuario distinguir entre diferentes tipos de errores y tomar decisiones.
@@ -25,6 +29,9 @@ type SiatError struct {
 
 	// Details contiene información adicional para debugging
 	Details map[string]interface{}
+
+	// Mensajes contiene la lista detallada de mensajes devueltos por el servidor SIAT
+	Mensajes []common.MensajeServicio
 
 	// WrappedErr es el error subyacente (si existe)
 	WrappedErr error
@@ -104,4 +111,31 @@ func IsNetworkError(err error) bool {
 		return se.IsNetworkError
 	}
 	return false
+}
+
+// HasCode retorna true si alguno de los mensajes en la lista coincide con ese código.
+func (e *SiatError) HasCode(code int) bool {
+	if e == nil {
+		return false
+	}
+	for _, m := range e.Mensajes {
+		if m.Codigo == code {
+			return true
+		}
+	}
+	return false
+}
+
+// GetWarnings filtra y retorna solo los mensajes que son advertencias (warnings).
+func (e *SiatError) GetWarnings() []common.MensajeServicio {
+	if e == nil {
+		return nil
+	}
+	var warnings []common.MensajeServicio
+	for _, m := range e.Mensajes {
+		if (m.Codigo >= 2000 && m.Codigo <= 2019) || m.Codigo == 3008 {
+			warnings = append(warnings, m)
+		}
+	}
+	return warnings
 }
