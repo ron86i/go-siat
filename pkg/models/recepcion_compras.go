@@ -3,8 +3,8 @@ package models
 import (
 	"time"
 
-	"github.com/ron86i/go-siat/internal/core/domain/datatype"
-	"github.com/ron86i/go-siat/internal/core/domain/siat/facturacion"
+	"github.com/ron86i/go-siat/v2/internal/core/domain/datatype"
+	"github.com/ron86i/go-siat/v2/internal/core/domain/siat/facturacion"
 )
 
 // RecepcionPaqueteCompras representa la solicitud opaca para el envío de paquetes de facturas de compras al SIAT.

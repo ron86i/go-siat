@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/ron86i/go-siat/pkg/utils"
+	"github.com/ron86i/go-siat/v2/pkg/utils"
 )
 
 // CredentialSign representa las credenciales de firma digital de manera tipada y estructurada.

@@ -1,7 +1,7 @@
 package models
 
 import (
-	"github.com/ron86i/go-siat/internal/core/domain/siat/compra_venta"
+	"github.com/ron86i/go-siat/v2/internal/core/domain/siat/compra_venta"
 )
 
 // --- Interfaces opacas para restringir el acceso a los atributos ---

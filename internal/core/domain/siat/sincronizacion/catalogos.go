@@ -3,7 +3,7 @@ package sincronizacion
 import (
 	"encoding/xml"
 
-	"github.com/ron86i/go-siat/internal/core/domain/datatype"
+	"github.com/ron86i/go-siat/v2/internal/core/domain/datatype"
 )
 
 // SolicitudSincronizacion representa los parámetros comunes requeridos para las solicitudes de sincronización al SIAT.

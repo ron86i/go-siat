@@ -7,9 +7,9 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/ron86i/go-siat/internal/core/domain/datatype"
-	"github.com/ron86i/go-siat/internal/core/domain/siat/facturacion"
-	"github.com/ron86i/go-siat/pkg/utils"
+	"github.com/ron86i/go-siat/v2/internal/core/domain/datatype"
+	"github.com/ron86i/go-siat/v2/internal/core/domain/siat/facturacion"
+	"github.com/ron86i/go-siat/v2/pkg/utils"
 )
 
 // XMLSigner define la interfaz para realizar la firma de documentos XML

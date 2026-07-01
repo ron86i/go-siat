@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/ron86i/go-siat/internal/core/ports"
+	"github.com/ron86i/go-siat/v2/internal/core/ports"
 )
 
 // Config agrupa la identidad global del contribuyente y la configuración de conexión.

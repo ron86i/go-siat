@@ -3,7 +3,7 @@ package models
 import (
 	"time"
 
-	"github.com/ron86i/go-siat/internal/core/domain/siat/codigos"
+	"github.com/ron86i/go-siat/v2/internal/core/domain/siat/codigos"
 )
 
 // --- Interfaces opacas para la gestión de Códigos ---

@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/ron86i/go-siat/internal/adapter/services"
-	"github.com/ron86i/go-siat/internal/core/domain/siat/common"
-	"github.com/ron86i/go-siat/internal/core/ports"
+	"github.com/ron86i/go-siat/v2/internal/adapter/services"
+	"github.com/ron86i/go-siat/v2/internal/core/domain/siat/common"
+	"github.com/ron86i/go-siat/v2/internal/core/ports"
 )
 
 // SiatServices es el punto de entrada principal del SDK.

@@ -4,7 +4,7 @@ import (
 	"encoding/xml"
 	"time"
 
-	"github.com/ron86i/go-siat/internal/core/domain/siat/common"
+	"github.com/ron86i/go-siat/v2/internal/core/domain/siat/common"
 )
 
 // Cuis representa el sobre SOAP para la solicitud de un Código Único de Inicio de Sistemas.

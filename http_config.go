@@ -3,7 +3,7 @@ package siat
 import (
 	"net/http"
 
-	"github.com/ron86i/go-siat/internal/adapter/services"
+	"github.com/ron86i/go-siat/v2/internal/adapter/services"
 )
 
 // HTTPConfig es la configuración pública para personalizar el cliente HTTP del SDK.

@@ -3,9 +3,9 @@ package ports
 import (
 	"context"
 
-	"github.com/ron86i/go-siat/internal/core/domain/datatype/soap"
-	"github.com/ron86i/go-siat/internal/core/domain/siat/facturacion"
-	"github.com/ron86i/go-siat/pkg/models"
+	"github.com/ron86i/go-siat/v2/internal/core/domain/datatype/soap"
+	"github.com/ron86i/go-siat/v2/internal/core/domain/siat/facturacion"
+	"github.com/ron86i/go-siat/v2/pkg/models"
 )
 
 // SiatBoletoAereoService define el puerto para el servicio de Facturación de Boletos Aéreos del SIAT.

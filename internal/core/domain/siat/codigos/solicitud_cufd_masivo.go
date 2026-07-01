@@ -4,7 +4,7 @@ import (
 	"encoding/xml"
 	"time"
 
-	"github.com/ron86i/go-siat/internal/core/domain/datatype"
+	"github.com/ron86i/go-siat/v2/internal/core/domain/datatype"
 )
 
 // CufdMasivo define el sobre SOAP para la solicitud masiva de múltiples códigos CUFD.

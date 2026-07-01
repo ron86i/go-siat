@@ -71,7 +71,7 @@ El SDK cubre los servicios críticos del ecosistema SIAT:
 ### Instalación
 
 ```bash
-go get github.com/ron86i/go-siat
+go get github.com/ron86i/go-siat/v2
 ```
 
 ### Requisitos
@@ -90,8 +90,8 @@ package main
 import (
     "context"
     "fmt"
-    "github.com/ron86i/go-siat"
-    "github.com/ron86i/go-siat/pkg/models"
+    "github.com/ron86i/go-siat/v2"
+    "github.com/ron86i/go-siat/v2/pkg/models"
 )
 
 func main() {

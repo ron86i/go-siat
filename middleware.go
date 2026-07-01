@@ -3,7 +3,7 @@ package siat
 import (
 	"net/http"
 
-	"github.com/ron86i/go-siat/internal/core/middleware"
+	"github.com/ron86i/go-siat/v2/internal/core/middleware"
 )
 
 // HTTPMiddleware es la interfaz pública que permite agregar comportamiento HTTP personalizado.

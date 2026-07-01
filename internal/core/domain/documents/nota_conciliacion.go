@@ -3,7 +3,7 @@ package documents
 import (
 	"encoding/xml"
 
-	"github.com/ron86i/go-siat/internal/core/domain/datatype"
+	"github.com/ron86i/go-siat/v2/internal/core/domain/datatype"
 )
 
 // NotaConciliacion representa la estructura completa de una nota electrónica de conciliación (Sector 29).

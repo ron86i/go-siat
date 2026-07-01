@@ -3,7 +3,7 @@ package models
 import (
 	"time"
 
-	"github.com/ron86i/go-siat/internal/core/domain/siat/operaciones"
+	"github.com/ron86i/go-siat/v2/internal/core/domain/siat/operaciones"
 )
 
 // --- Interfaces opacas para las solicitudes de Operaciones ---

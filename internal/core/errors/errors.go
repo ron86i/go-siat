@@ -3,7 +3,7 @@ package errors
 import (
 	"fmt"
 
-	"github.com/ron86i/go-siat/internal/core/domain/siat/common"
+	"github.com/ron86i/go-siat/v2/internal/core/domain/siat/common"
 )
 
 // SiatError es el tipo de error que retorna el SDK.

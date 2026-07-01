@@ -1,4 +1,4 @@
-module github.com/ron86i/go-siat
+module github.com/ron86i/go-siat/v2
 
 go 1.25.0
 

@@ -10,10 +10,10 @@ import (
 	"time"
 
 	"github.com/joho/godotenv"
-	"github.com/ron86i/go-siat"
-	"github.com/ron86i/go-siat/internal/core/ports"
-	"github.com/ron86i/go-siat/pkg/models"
-	"github.com/ron86i/go-siat/pkg/utils"
+	"github.com/ron86i/go-siat/v2"
+	"github.com/ron86i/go-siat/v2/internal/core/ports"
+	"github.com/ron86i/go-siat/v2/pkg/models"
+	"github.com/ron86i/go-siat/v2/pkg/utils"
 	"github.com/stretchr/testify/assert"
 )
 

@@ -34,7 +34,7 @@
 ## Instalación
 
 ```bash
-go get github.com/ron86i/go-siat
+go get github.com/ron86i/go-siat/v2
 ```
 
 Esto instala el SDK y sus dependencias mínimas:
@@ -93,8 +93,8 @@ import (
     "fmt"
     "time"
 
-    "github.com/ron86i/go-siat"
-    "github.com/ron86i/go-siat/pkg/models"
+    "github.com/ron86i/go-siat/v2"
+    "github.com/ron86i/go-siat/v2/pkg/models"
 )
 
 func main() {
@@ -204,7 +204,7 @@ cufdControl := cufdResp.Body.Content.RespuestaCufd.CodigoControl
 ### Paso 3: Generar CUF (Código Único de Factura)
 
 ```go
-import "github.com/ron86i/go-siat/pkg/utils"
+import "github.com/ron86i/go-siat/v2/pkg/utils"
 
 fechaEmision := time.Now()
 cuf, err := utils.GenerarCUF(
@@ -224,7 +224,7 @@ cuf, err := utils.GenerarCUF(
 ### Paso 4: Construir la Factura
 
 ```go
-import "github.com/ron86i/go-siat/pkg/models/invoices"
+import "github.com/ron86i/go-siat/v2/pkg/models/invoices"
 
 nombre := "NOMBRE DEL CLIENTE"
 cabecera := invoices.NewCompraVentaCabeceraBuilder().

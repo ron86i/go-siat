@@ -6,11 +6,11 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/ron86i/go-siat"
-	"github.com/ron86i/go-siat/pkg/models"
+	"github.com/ron86i/go-siat/v2"
+	"github.com/ron86i/go-siat/v2/pkg/models"
 
-	"github.com/ron86i/go-siat/internal/core/domain/datatype"
-	"github.com/ron86i/go-siat/internal/core/domain/documents"
+	"github.com/ron86i/go-siat/v2/internal/core/domain/datatype"
+	"github.com/ron86i/go-siat/v2/internal/core/domain/documents"
 )
 
 // ComercialExportacionMinera representa la estructura completa de una factura de Comercial Exportación Minera lista para ser procesada.

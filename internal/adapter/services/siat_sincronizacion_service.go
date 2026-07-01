@@ -8,11 +8,11 @@ import (
 
 	"net/http"
 
-	"github.com/ron86i/go-siat/internal/core/domain/datatype/soap"
-	"github.com/ron86i/go-siat/internal/core/domain/siat/sincronizacion"
-	"github.com/ron86i/go-siat/internal/core/ports"
+	"github.com/ron86i/go-siat/v2/internal/core/domain/datatype/soap"
+	"github.com/ron86i/go-siat/v2/internal/core/domain/siat/sincronizacion"
+	"github.com/ron86i/go-siat/v2/internal/core/ports"
 
-	"github.com/ron86i/go-siat/pkg/models"
+	"github.com/ron86i/go-siat/v2/pkg/models"
 )
 
 type SiatSincronizacionService struct {

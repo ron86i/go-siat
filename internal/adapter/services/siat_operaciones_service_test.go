@@ -7,8 +7,8 @@ import (
 	"testing"
 
 	"github.com/joho/godotenv"
-	"github.com/ron86i/go-siat"
-	"github.com/ron86i/go-siat/pkg/models"
+	"github.com/ron86i/go-siat/v2"
+	"github.com/ron86i/go-siat/v2/pkg/models"
 	"github.com/stretchr/testify/assert"
 )
 

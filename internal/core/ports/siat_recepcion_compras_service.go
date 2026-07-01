@@ -3,9 +3,9 @@ package ports
 import (
 	"context"
 
-	"github.com/ron86i/go-siat/internal/core/domain/datatype/soap"
-	"github.com/ron86i/go-siat/internal/core/domain/siat/facturacion"
-	"github.com/ron86i/go-siat/pkg/models"
+	"github.com/ron86i/go-siat/v2/internal/core/domain/datatype/soap"
+	"github.com/ron86i/go-siat/v2/internal/core/domain/siat/facturacion"
+	"github.com/ron86i/go-siat/v2/pkg/models"
 )
 
 // SiatRecepcionComprasService define el puerto para el servicio de Recepción de Compras del SIAT.

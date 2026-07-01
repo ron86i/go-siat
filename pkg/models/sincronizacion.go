@@ -1,7 +1,7 @@
 package models
 
 import (
-	"github.com/ron86i/go-siat/internal/core/domain/siat/sincronizacion"
+	"github.com/ron86i/go-siat/v2/internal/core/domain/siat/sincronizacion"
 )
 
 // --- Interfaces opacas para las solicitudes de Sincronización ---

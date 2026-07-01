@@ -10,10 +10,10 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/ron86i/go-siat/internal/core/domain/datatype/soap"
-	siatErrors "github.com/ron86i/go-siat/internal/core/errors"
-	"github.com/ron86i/go-siat/internal/core/ports"
-	"github.com/ron86i/go-siat/pkg/models"
+	"github.com/ron86i/go-siat/v2/internal/core/domain/datatype/soap"
+	siatErrors "github.com/ron86i/go-siat/v2/internal/core/errors"
+	"github.com/ron86i/go-siat/v2/internal/core/ports"
+	"github.com/ron86i/go-siat/v2/pkg/models"
 )
 
 // SiatService define los diferentes servicios disponibles en el SIAT.

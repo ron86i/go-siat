@@ -4,10 +4,10 @@ import (
 	"encoding/xml"
 	"time"
 
-	"github.com/ron86i/go-siat"
-	"github.com/ron86i/go-siat/internal/core/domain/datatype"
-	"github.com/ron86i/go-siat/internal/core/domain/documents"
-	"github.com/ron86i/go-siat/pkg/models"
+	"github.com/ron86i/go-siat/v2"
+	"github.com/ron86i/go-siat/v2/internal/core/domain/datatype"
+	"github.com/ron86i/go-siat/v2/internal/core/domain/documents"
+	"github.com/ron86i/go-siat/v2/pkg/models"
 )
 
 // NotaConciliacion representa la estructura completa de una nota de conciliación lista para ser procesada.

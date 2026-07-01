@@ -3,7 +3,7 @@ package documents
 import (
 	"encoding/xml"
 
-	"github.com/ron86i/go-siat/internal/core/domain/datatype"
+	"github.com/ron86i/go-siat/v2/internal/core/domain/datatype"
 )
 
 // FacturaCompraVentaBonificaciones representa la factura de compra-venta con bonificaciones (sector 35).
