@@ -2,7 +2,6 @@ package invoices_test
 
 import (
 	"context"
-	"encoding/xml"
 	"testing"
 	"time"
 
@@ -67,15 +66,8 @@ func TestCompraVentaTasas_Electronica(t *testing.T) {
 		AddDetalle(detalle).
 		Build()
 
-	xmlData, _ := xml.Marshal(factura)
-	signedXML, _ := utils.SignXML(xmlData, "key.pem", "cert.crt")
-	hashString, encodedArchivo, _ := utils.CompressAndHash(signedXML)
-
-	req := models.CompraVenta().NewRecepcionFacturaBuilder().
-		WithCodigoAmbiente(tc.Ambiente).
+	builderReq := models.NewRecepcionFacturaBuilder().
 		WithCodigoModalidad(tc.Modalidad).
-		WithCodigoSistema(tc.Sistema).
-		WithNit(tc.Nit).
 		WithCodigoSucursal(0).
 		WithCodigoDocumentoSector(41).
 		WithCodigoEmision(1).
@@ -83,12 +75,15 @@ func TestCompraVentaTasas_Electronica(t *testing.T) {
 		WithCufd(cufd).
 		WithCuis(cuis).
 		WithTipoFacturaDocumento(1).
-		WithArchivo(encodedArchivo).
-		WithFechaEnvio(fechaEmision).
-		WithHashArchivo(hashString).
-		Build()
+		WithFechaEnvio(fechaEmision)
 
-	resp, err := tc.Client.CompraVenta().RecepcionFactura(context.Background(), tc.Config, req)
+	err := builderReq.WithFactura(factura, tc.Client.Config())
+	if err != nil {
+		t.Fatalf("error preparando factura con el constructor: %v", err)
+	}
+	req := builderReq.Build()
+
+	resp, err := tc.Client.CompraVenta().RecepcionFactura(context.Background(), req)
 	if err != nil {
 		t.Fatalf("error en solicitud: %v", err)
 	}

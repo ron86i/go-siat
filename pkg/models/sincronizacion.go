@@ -4,8 +4,6 @@ import (
 	"github.com/ron86i/go-siat/internal/core/domain/siat/sincronizacion"
 )
 
-// --- Wrappers ---
-
 // --- Interfaces opacas para las solicitudes de Sincronización ---
 
 type SincronizarActividades struct {
@@ -66,24 +64,15 @@ type VerificarComunicacionSincronizacion struct {
 	RequestWrapper[sincronizacion.VerificarComunicacion]
 }
 
-// --- Namespace ---
+// --- Constructors a nivel de paquete ---
 
-type sincronizacionNamespace struct{}
-
-func Sincronizacion() sincronizacionNamespace {
-	return sincronizacionNamespace{}
-}
-
-// --- Constructors ---
-
-func (sincronizacionNamespace) NewVerificarComunicacionBuilder() *verificarComunicacionSincronizacionBuilder {
+func NewVerificarComunicacionSincronizacionBuilder() *verificarComunicacionSincronizacionBuilder {
 	return &verificarComunicacionSincronizacionBuilder{
 		request: &sincronizacion.VerificarComunicacion{},
 	}
 }
 
-// NewSincronizarActividadesBuilder inicia la construcción de una solicitud para sincronizar actividades económicas.
-func (sincronizacionNamespace) NewSincronizarActividadesBuilder() SincronizacionBuilder[sincronizacion.SincronizarActividades, SincronizarActividades] {
+func NewSincronizarActividadesBuilder() SincronizacionBuilder[sincronizacion.SincronizarActividades, SincronizarActividades] {
 	req := &sincronizacion.SincronizarActividades{}
 	return &sincronizacionBuilder[sincronizacion.SincronizarActividades, SincronizarActividades]{
 		request: req,
@@ -94,8 +83,7 @@ func (sincronizacionNamespace) NewSincronizarActividadesBuilder() Sincronizacion
 	}
 }
 
-// NewSincronizarListaActividadesDocumentoSectorBuilder inicia la construcción para la relación actividad-sector.
-func (sincronizacionNamespace) NewSincronizarListaActividadesDocumentoSectorBuilder() SincronizacionBuilder[sincronizacion.SincronizarListaActividadesDocumentoSector, SincronizarListaActividadesDocumentoSector] {
+func NewSincronizarListaActividadesDocumentoSectorBuilder() SincronizacionBuilder[sincronizacion.SincronizarListaActividadesDocumentoSector, SincronizarListaActividadesDocumentoSector] {
 	req := &sincronizacion.SincronizarListaActividadesDocumentoSector{}
 	return &sincronizacionBuilder[sincronizacion.SincronizarListaActividadesDocumentoSector, SincronizarListaActividadesDocumentoSector]{
 		request: req,
@@ -106,8 +94,7 @@ func (sincronizacionNamespace) NewSincronizarListaActividadesDocumentoSectorBuil
 	}
 }
 
-// NewSincronizarListaLeyendasFacturaBuilder inicia la construcción para obtener leyendas de invoices.
-func (sincronizacionNamespace) NewSincronizarListaLeyendasFacturaBuilder() SincronizacionBuilder[sincronizacion.SincronizarListaLeyendasFactura, SincronizarListaLeyendasFactura] {
+func NewSincronizarListaLeyendasFacturaBuilder() SincronizacionBuilder[sincronizacion.SincronizarListaLeyendasFactura, SincronizarListaLeyendasFactura] {
 	req := &sincronizacion.SincronizarListaLeyendasFactura{}
 	return &sincronizacionBuilder[sincronizacion.SincronizarListaLeyendasFactura, SincronizarListaLeyendasFactura]{
 		request: req,
@@ -118,8 +105,7 @@ func (sincronizacionNamespace) NewSincronizarListaLeyendasFacturaBuilder() Sincr
 	}
 }
 
-// NewSincronizarListaMensajesServiciosBuilder inicia la construcción para obtener mensajes del servicio.
-func (sincronizacionNamespace) NewSincronizarListaMensajesServiciosBuilder() SincronizacionBuilder[sincronizacion.SincronizarListaMensajesServicios, SincronizarListaMensajesServicios] {
+func NewSincronizarListaMensajesServiciosBuilder() SincronizacionBuilder[sincronizacion.SincronizarListaMensajesServicios, SincronizarListaMensajesServicios] {
 	req := &sincronizacion.SincronizarListaMensajesServicios{}
 	return &sincronizacionBuilder[sincronizacion.SincronizarListaMensajesServicios, SincronizarListaMensajesServicios]{
 		request: req,
@@ -130,8 +116,7 @@ func (sincronizacionNamespace) NewSincronizarListaMensajesServiciosBuilder() Sin
 	}
 }
 
-// NewSincronizarFechaHoraBuilder inicia la construcción para obtener la fecha y hora oficial del servidor del SIAT.
-func (sincronizacionNamespace) NewSincronizarFechaHoraBuilder() SincronizacionBuilder[sincronizacion.SincronizarFechaHora, SincronizarFechaHora] {
+func NewSincronizarFechaHoraBuilder() SincronizacionBuilder[sincronizacion.SincronizarFechaHora, SincronizarFechaHora] {
 	req := &sincronizacion.SincronizarFechaHora{}
 	return &sincronizacionBuilder[sincronizacion.SincronizarFechaHora, SincronizarFechaHora]{
 		request: req,
@@ -142,8 +127,7 @@ func (sincronizacionNamespace) NewSincronizarFechaHoraBuilder() SincronizacionBu
 	}
 }
 
-// NewSincronizarListaProductosServiciosBuilder inicia la construcción para sincronizar productos y servicios.
-func (sincronizacionNamespace) NewSincronizarListaProductosServiciosBuilder() SincronizacionBuilder[sincronizacion.SincronizarListaProductosServicios, SincronizarListaProductosServicios] {
+func NewSincronizarListaProductosServiciosBuilder() SincronizacionBuilder[sincronizacion.SincronizarListaProductosServicios, SincronizarListaProductosServicios] {
 	req := &sincronizacion.SincronizarListaProductosServicios{}
 	return &sincronizacionBuilder[sincronizacion.SincronizarListaProductosServicios, SincronizarListaProductosServicios]{
 		request: req,
@@ -154,8 +138,7 @@ func (sincronizacionNamespace) NewSincronizarListaProductosServiciosBuilder() Si
 	}
 }
 
-// NewSincronizarParametricaEventosSignificativosBuilder inicia la construcción para el catálogo de eventos significativos.
-func (sincronizacionNamespace) NewSincronizarParametricaEventosSignificativosBuilder() SincronizacionBuilder[sincronizacion.SincronizarParametricaEventosSignificativos, SincronizarParametricaEventosSignificativos] {
+func NewSincronizarParametricaEventosSignificativosBuilder() SincronizacionBuilder[sincronizacion.SincronizarParametricaEventosSignificativos, SincronizarParametricaEventosSignificativos] {
 	req := &sincronizacion.SincronizarParametricaEventosSignificativos{}
 	return &sincronizacionBuilder[sincronizacion.SincronizarParametricaEventosSignificativos, SincronizarParametricaEventosSignificativos]{
 		request: req,
@@ -166,8 +149,7 @@ func (sincronizacionNamespace) NewSincronizarParametricaEventosSignificativosBui
 	}
 }
 
-// NewSincronizarParametricaMotivoAnulacionBuilder inicia la construcción para motivos de anulación.
-func (sincronizacionNamespace) NewSincronizarParametricaMotivoAnulacionBuilder() SincronizacionBuilder[sincronizacion.SincronizarParametricaMotivoAnulacion, SincronizarParametricaMotivoAnulacion] {
+func NewSincronizarParametricaMotivoAnulacionBuilder() SincronizacionBuilder[sincronizacion.SincronizarParametricaMotivoAnulacion, SincronizarParametricaMotivoAnulacion] {
 	req := &sincronizacion.SincronizarParametricaMotivoAnulacion{}
 	return &sincronizacionBuilder[sincronizacion.SincronizarParametricaMotivoAnulacion, SincronizarParametricaMotivoAnulacion]{
 		request: req,
@@ -178,8 +160,7 @@ func (sincronizacionNamespace) NewSincronizarParametricaMotivoAnulacionBuilder()
 	}
 }
 
-// NewSincronizarParametricaPaisOrigenBuilder inicia la construcción para el catálogo de países.
-func (sincronizacionNamespace) NewSincronizarParametricaPaisOrigenBuilder() SincronizacionBuilder[sincronizacion.SincronizarParametricaPaisOrigen, SincronizarParametricaPaisOrigen] {
+func NewSincronizarParametricaPaisOrigenBuilder() SincronizacionBuilder[sincronizacion.SincronizarParametricaPaisOrigen, SincronizarParametricaPaisOrigen] {
 	req := &sincronizacion.SincronizarParametricaPaisOrigen{}
 	return &sincronizacionBuilder[sincronizacion.SincronizarParametricaPaisOrigen, SincronizarParametricaPaisOrigen]{
 		request: req,
@@ -190,8 +171,7 @@ func (sincronizacionNamespace) NewSincronizarParametricaPaisOrigenBuilder() Sinc
 	}
 }
 
-// NewSincronizarParametricaTipoDocumentoIdentidadBuilder inicia la construcción para tipos de documento de identidad.
-func (sincronizacionNamespace) NewSincronizarParametricaTipoDocumentoIdentidadBuilder() SincronizacionBuilder[sincronizacion.SincronizarParametricaTipoDocumentoIdentidad, SincronizarParametricaTipoDocumentoIdentidad] {
+func NewSincronizarParametricaTipoDocumentoIdentidadBuilder() SincronizacionBuilder[sincronizacion.SincronizarParametricaTipoDocumentoIdentidad, SincronizarParametricaTipoDocumentoIdentidad] {
 	req := &sincronizacion.SincronizarParametricaTipoDocumentoIdentidad{}
 	return &sincronizacionBuilder[sincronizacion.SincronizarParametricaTipoDocumentoIdentidad, SincronizarParametricaTipoDocumentoIdentidad]{
 		request: req,
@@ -202,8 +182,7 @@ func (sincronizacionNamespace) NewSincronizarParametricaTipoDocumentoIdentidadBu
 	}
 }
 
-// NewSincronizarParametricaTipoDocumentoSectorBuilder inicia la construcción para tipos de documento sector.
-func (sincronizacionNamespace) NewSincronizarParametricaTipoDocumentoSectorBuilder() SincronizacionBuilder[sincronizacion.SincronizarParametricaTipoDocumentoSector, SincronizarParametricaTipoDocumentoSector] {
+func NewSincronizarParametricaTipoDocumentoSectorBuilder() SincronizacionBuilder[sincronizacion.SincronizarParametricaTipoDocumentoSector, SincronizarParametricaTipoDocumentoSector] {
 	req := &sincronizacion.SincronizarParametricaTipoDocumentoSector{}
 	return &sincronizacionBuilder[sincronizacion.SincronizarParametricaTipoDocumentoSector, SincronizarParametricaTipoDocumentoSector]{
 		request: req,
@@ -214,8 +193,7 @@ func (sincronizacionNamespace) NewSincronizarParametricaTipoDocumentoSectorBuild
 	}
 }
 
-// NewSincronizarParametricaTipoEmisionBuilder inicia la construcción para tipos de emisión.
-func (sincronizacionNamespace) NewSincronizarParametricaTipoEmisionBuilder() SincronizacionBuilder[sincronizacion.SincronizarParametricaTipoEmision, SincronizarParametricaTipoEmision] {
+func NewSincronizarParametricaTipoEmisionBuilder() SincronizacionBuilder[sincronizacion.SincronizarParametricaTipoEmision, SincronizarParametricaTipoEmision] {
 	req := &sincronizacion.SincronizarParametricaTipoEmision{}
 	return &sincronizacionBuilder[sincronizacion.SincronizarParametricaTipoEmision, SincronizarParametricaTipoEmision]{
 		request: req,
@@ -226,8 +204,7 @@ func (sincronizacionNamespace) NewSincronizarParametricaTipoEmisionBuilder() Sin
 	}
 }
 
-// NewSincronizarParametricaTipoHabitacionBuilder inicia la construcción para tipos de habitación.
-func (sincronizacionNamespace) NewSincronizarParametricaTipoHabitacionBuilder() SincronizacionBuilder[sincronizacion.SincronizarParametricaTipoHabitacion, SincronizarParametricaTipoHabitacion] {
+func NewSincronizarParametricaTipoHabitacionBuilder() SincronizacionBuilder[sincronizacion.SincronizarParametricaTipoHabitacion, SincronizarParametricaTipoHabitacion] {
 	req := &sincronizacion.SincronizarParametricaTipoHabitacion{}
 	return &sincronizacionBuilder[sincronizacion.SincronizarParametricaTipoHabitacion, SincronizarParametricaTipoHabitacion]{
 		request: req,
@@ -238,8 +215,7 @@ func (sincronizacionNamespace) NewSincronizarParametricaTipoHabitacionBuilder() 
 	}
 }
 
-// NewSincronizarParametricaTipoMetodoPagoBuilder inicia la construcción para métodos de pago.
-func (sincronizacionNamespace) NewSincronizarParametricaTipoMetodoPagoBuilder() SincronizacionBuilder[sincronizacion.SincronizarParametricaTipoMetodoPago, SincronizarParametricaTipoMetodoPago] {
+func NewSincronizarParametricaTipoMetodoPagoBuilder() SincronizacionBuilder[sincronizacion.SincronizarParametricaTipoMetodoPago, SincronizarParametricaTipoMetodoPago] {
 	req := &sincronizacion.SincronizarParametricaTipoMetodoPago{}
 	return &sincronizacionBuilder[sincronizacion.SincronizarParametricaTipoMetodoPago, SincronizarParametricaTipoMetodoPago]{
 		request: req,
@@ -250,8 +226,7 @@ func (sincronizacionNamespace) NewSincronizarParametricaTipoMetodoPagoBuilder() 
 	}
 }
 
-// NewSincronizarParametricaTipoMonedaBuilder inicia la construcción para tipos de moneda.
-func (sincronizacionNamespace) NewSincronizarParametricaTipoMonedaBuilder() SincronizacionBuilder[sincronizacion.SincronizarParametricaTipoMoneda, SincronizarParametricaTipoMoneda] {
+func NewSincronizarParametricaTipoMonedaBuilder() SincronizacionBuilder[sincronizacion.SincronizarParametricaTipoMoneda, SincronizarParametricaTipoMoneda] {
 	req := &sincronizacion.SincronizarParametricaTipoMoneda{}
 	return &sincronizacionBuilder[sincronizacion.SincronizarParametricaTipoMoneda, SincronizarParametricaTipoMoneda]{
 		request: req,
@@ -262,8 +237,7 @@ func (sincronizacionNamespace) NewSincronizarParametricaTipoMonedaBuilder() Sinc
 	}
 }
 
-// NewSincronizarParametricaTipoPuntoVentaBuilder inicia la construcción para tipos de punto de venta.
-func (sincronizacionNamespace) NewSincronizarParametricaTipoPuntoVentaBuilder() SincronizacionBuilder[sincronizacion.SincronizarParametricaTipoPuntoVenta, SincronizarParametricaTipoPuntoVenta] {
+func NewSincronizarParametricaTipoPuntoVentaBuilder() SincronizacionBuilder[sincronizacion.SincronizarParametricaTipoPuntoVenta, SincronizarParametricaTipoPuntoVenta] {
 	req := &sincronizacion.SincronizarParametricaTipoPuntoVenta{}
 	return &sincronizacionBuilder[sincronizacion.SincronizarParametricaTipoPuntoVenta, SincronizarParametricaTipoPuntoVenta]{
 		request: req,
@@ -274,8 +248,7 @@ func (sincronizacionNamespace) NewSincronizarParametricaTipoPuntoVentaBuilder() 
 	}
 }
 
-// NewSincronizarParametricaTiposFacturaBuilder inicia la construcción para tipos de factura.
-func (sincronizacionNamespace) NewSincronizarParametricaTiposFacturaBuilder() SincronizacionBuilder[sincronizacion.SincronizarParametricaTiposFactura, SincronizarParametricaTiposFactura] {
+func NewSincronizarParametricaTiposFacturaBuilder() SincronizacionBuilder[sincronizacion.SincronizarParametricaTiposFactura, SincronizarParametricaTiposFactura] {
 	req := &sincronizacion.SincronizarParametricaTiposFactura{}
 	return &sincronizacionBuilder[sincronizacion.SincronizarParametricaTiposFactura, SincronizarParametricaTiposFactura]{
 		request: req,
@@ -286,8 +259,7 @@ func (sincronizacionNamespace) NewSincronizarParametricaTiposFacturaBuilder() Si
 	}
 }
 
-// NewSincronizarParametricaUnidadMedidaBuilder inicia la construcción para unidades de medida.
-func (sincronizacionNamespace) NewSincronizarParametricaUnidadMedidaBuilder() SincronizacionBuilder[sincronizacion.SincronizarParametricaUnidadMedida, SincronizarParametricaUnidadMedida] {
+func NewSincronizarParametricaUnidadMedidaBuilder() SincronizacionBuilder[sincronizacion.SincronizarParametricaUnidadMedida, SincronizarParametricaUnidadMedida] {
 	req := &sincronizacion.SincronizarParametricaUnidadMedida{}
 	return &sincronizacionBuilder[sincronizacion.SincronizarParametricaUnidadMedida, SincronizarParametricaUnidadMedida]{
 		request: req,
@@ -300,7 +272,6 @@ func (sincronizacionNamespace) NewSincronizarParametricaUnidadMedidaBuilder() Si
 
 // --- Implementations ---
 
-// RegistroEventoSignificativoBuilder ayuda a configurar el registro de un evento significativo.
 type verificarComunicacionSincronizacionBuilder struct {
 	request *sincronizacion.VerificarComunicacion
 }
@@ -311,18 +282,12 @@ func (b *verificarComunicacionSincronizacionBuilder) Build() VerificarComunicaci
 
 // SincronizacionBuilder define la interfaz para configurar las diversas solicitudes de sincronización del SIAT.
 type SincronizacionBuilder[T any, R any] interface {
-	// WithCodigoAmbiente establece el código de ambiente (Piloto o Producción).
-	WithCodigoAmbiente(int) SincronizacionBuilder[T, R]
 	// WithCodigoPuntoVenta establece el código del punto de venta.
 	WithCodigoPuntoVenta(int) SincronizacionBuilder[T, R]
-	// WithCodigoSistema establece el código del sistema autorizado por el SIN.
-	WithCodigoSistema(string) SincronizacionBuilder[T, R]
 	// WithCodigoSucursal establece el código de la sucursal.
 	WithCodigoSucursal(int) SincronizacionBuilder[T, R]
 	// WithCuis establece el Código Único de Inicio de Sistemas.
 	WithCuis(string) SincronizacionBuilder[T, R]
-	// WithNit establece el NIT del emisor.
-	WithNit(int64) SincronizacionBuilder[T, R]
 	// Build construye y retorna la solicitud configurada.
 	Build() R
 }
@@ -334,21 +299,9 @@ type sincronizacionBuilder[T any, R any] struct {
 	wrap    func(RequestWrapper[T]) R
 }
 
-// WithCodigoAmbiente establece el código de ambiente.
-func (b *sincronizacionBuilder[T, R]) WithCodigoAmbiente(codigoAmbiente int) SincronizacionBuilder[T, R] {
-	b.sol.CodigoAmbiente = codigoAmbiente
-	return b
-}
-
 // WithCodigoPuntoVenta establece el código del punto de venta.
 func (b *sincronizacionBuilder[T, R]) WithCodigoPuntoVenta(codigoPuntoVenta int) SincronizacionBuilder[T, R] {
 	b.sol.CodigoPuntoVenta = codigoPuntoVenta
-	return b
-}
-
-// WithCodigoSistema establece el código del sistema authorized.
-func (b *sincronizacionBuilder[T, R]) WithCodigoSistema(codigoSistema string) SincronizacionBuilder[T, R] {
-	b.sol.CodigoSistema = codigoSistema
 	return b
 }
 
@@ -361,12 +314,6 @@ func (b *sincronizacionBuilder[T, R]) WithCodigoSucursal(codigoSucursal int) Sin
 // WithCuis establece el CUIS.
 func (b *sincronizacionBuilder[T, R]) WithCuis(cuis string) SincronizacionBuilder[T, R] {
 	b.sol.Cuis = cuis
-	return b
-}
-
-// WithNit establece el NIT del emisor.
-func (b *sincronizacionBuilder[T, R]) WithNit(nit int64) SincronizacionBuilder[T, R] {
-	b.sol.NIT = nit
 	return b
 }
 

@@ -2,7 +2,6 @@ package invoices_test
 
 import (
 	"context"
-	"encoding/xml"
 	"testing"
 	"time"
 
@@ -74,22 +73,7 @@ func TestDuttyFree_Electronica(t *testing.T) {
 		AddDetalle(detalle).
 		Build()
 
-	xmlData, _ := xml.Marshal(factura)
-	signedXML, err := utils.SignXML(xmlData, "key.pem", "cert.crt")
-	if err != nil {
-		t.Fatalf("error firmando XML: %v", err)
-	}
-
-	hashString, encodedArchivo, err := utils.CompressAndHash(signedXML)
-	if err != nil {
-		t.Fatalf("error preparando archivo: %v", err)
-	}
-
-	req := models.Electronica().NewRecepcionFacturaBuilder().
-		WithCodigoAmbiente(tc.Ambiente).
-		WithCodigoModalidad(tc.Modalidad).
-		WithCodigoSistema(tc.Sistema).
-		WithNit(tc.Nit).
+	builder := models.NewRecepcionFacturaBuilder().
 		WithCodigoSucursal(0).
 		WithCodigoDocumentoSector(10).
 		WithCodigoEmision(1).
@@ -97,12 +81,15 @@ func TestDuttyFree_Electronica(t *testing.T) {
 		WithCufd(cufd).
 		WithCuis(cuis).
 		WithTipoFacturaDocumento(2).
-		WithArchivo(encodedArchivo).
-		WithFechaEnvio(fechaEmision).
-		WithHashArchivo(hashString).
-		Build()
+		WithFechaEnvio(fechaEmision)
 
-	resp, err := tc.Client.Electronica().RecepcionFactura(context.Background(), tc.Config, req)
+	err = builder.WithFactura(factura, tc.Client.Config())
+	if err != nil {
+		t.Fatalf("error preparando factura con el constructor: %v", err)
+	}
+	req := builder.Build()
+
+	resp, err := tc.Client.Electronica().RecepcionFactura(context.Background(), req)
 	if err != nil {
 		t.Fatalf("error en solicitud: %v", err)
 	}
@@ -172,17 +159,7 @@ func TestDuttyFree_Computarizada(t *testing.T) {
 		AddDetalle(detalle).
 		Build()
 
-	xmlData, _ := xml.Marshal(factura)
-	hashString, encodedArchivo, err := utils.CompressAndHash(xmlData)
-	if err != nil {
-		t.Fatalf("error preparando archivo: %v", err)
-	}
-
-	req := models.Computarizada().NewRecepcionFacturaBuilder().
-		WithCodigoAmbiente(tc.Ambiente).
-		WithCodigoModalidad(tc.Modalidad).
-		WithCodigoSistema(tc.Sistema).
-		WithNit(tc.Nit).
+	builder := models.NewRecepcionFacturaBuilder().
 		WithCodigoSucursal(0).
 		WithCodigoDocumentoSector(10).
 		WithCodigoEmision(1).
@@ -190,12 +167,15 @@ func TestDuttyFree_Computarizada(t *testing.T) {
 		WithCufd(cufd).
 		WithCuis(cuis).
 		WithTipoFacturaDocumento(2).
-		WithArchivo(encodedArchivo).
-		WithFechaEnvio(fechaEmision).
-		WithHashArchivo(hashString).
-		Build()
+		WithFechaEnvio(fechaEmision)
 
-	resp, err := tc.Client.Computarizada().RecepcionFactura(context.Background(), tc.Config, req)
+	err = builder.WithFactura(factura, tc.Client.Config())
+	if err != nil {
+		t.Fatalf("error preparando factura con el constructor: %v", err)
+	}
+	req := builder.Build()
+
+	resp, err := tc.Client.Computarizada().RecepcionFactura(context.Background(), req)
 	if err != nil {
 		t.Fatalf("error en solicitud: %v", err)
 	}
@@ -208,25 +188,22 @@ func TestAnulacionDuttyFree_Computarizada(t *testing.T) {
 	cuis := tc.GetCuis(t)
 	cufd, _ := tc.GetCufd(t, cuis)
 
-	cuf := "D5340CCDF031F2596FC03311F6F76AB5334D0A86A626F497FCE6AAF74"
+	cuf := "D5340CCDF031F2596FC0331..."
 
-	req := models.Computarizada().NewAnulacionFacturaBuilder().
-		WithCodigoAmbiente(tc.Ambiente).
+	req := models.NewAnulacionFacturaBuilder().
+		WithCodigoModalidad(tc.Modalidad).
 		WithCodigoDocumentoSector(10).
 		WithTipoFacturaDocumento(2).
 		WithCodigoEmision(1).
-		WithCodigoModalidad(tc.Modalidad).
 		WithCodigoPuntoVenta(tc.PuntoVenta).
-		WithCodigoSistema(tc.Sistema).
 		WithCodigoSucursal(tc.Sucursal).
 		WithCuis(cuis).
-		WithNit(tc.Nit).
 		WithCufd(cufd).
 		WithCuf(cuf).
 		WithCodigoMotivo(1).
 		Build()
 
-	resp, err := tc.Client.Computarizada().AnulacionFactura(context.Background(), tc.Config, req)
+	resp, err := tc.Client.Computarizada().AnulacionFactura(context.Background(), req)
 	if err != nil {
 		t.Fatalf("error en solicitud de anulación: %v", err)
 	}

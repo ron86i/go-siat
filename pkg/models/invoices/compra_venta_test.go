@@ -1,12 +1,7 @@
 package invoices_test
 
 import (
-	"archive/tar"
-	"bytes"
 	"context"
-	"encoding/xml"
-	"fmt"
-	"log"
 	"strconv"
 	"testing"
 	"time"
@@ -72,22 +67,8 @@ func TestCompraVenta_Electronica(t *testing.T) {
 		AddDetalle(detalle).
 		Build()
 
-	xmlData, _ := xml.Marshal(factura)
-	signedXML, err := utils.SignXML(xmlData, "key.pem", "cert.crt")
-	if err != nil {
-		t.Fatalf("error firmando XML: %v", err)
-	}
-	log.Println(string(xmlData))
-	hashString, encodedArchivo, err := utils.CompressAndHash(signedXML)
-	if err != nil {
-		t.Fatalf("error preparando archivo: %v", err)
-	}
-
-	req := models.CompraVenta().NewRecepcionFacturaBuilder().
-		WithCodigoAmbiente(tc.Ambiente).
+	builder := models.NewRecepcionFacturaBuilder().
 		WithCodigoModalidad(tc.Modalidad).
-		WithCodigoSistema(tc.Sistema).
-		WithNit(tc.Nit).
 		WithCodigoSucursal(0).
 		WithCodigoDocumentoSector(1).
 		WithCodigoEmision(1).
@@ -95,12 +76,15 @@ func TestCompraVenta_Electronica(t *testing.T) {
 		WithCufd(cufd).
 		WithCuis(cuis).
 		WithTipoFacturaDocumento(1).
-		WithArchivo(encodedArchivo).
-		WithFechaEnvio(fechaEmision).
-		WithHashArchivo(hashString).
-		Build()
+		WithFechaEnvio(fechaEmision)
 
-	resp, err := tc.Client.CompraVenta().RecepcionFactura(context.Background(), tc.Config, req)
+	err := builder.WithFactura(factura, tc.Client.Config())
+	if err != nil {
+		t.Fatalf("error preparando factura con el constructor: %v", err)
+	}
+	req := builder.Build()
+
+	resp, err := tc.Client.CompraVenta().RecepcionFactura(context.Background(), req)
 	if err != nil {
 		t.Fatalf("error en solicitud: %v", err)
 	}
@@ -163,18 +147,8 @@ func TestCompraVenta_Computarizada(t *testing.T) {
 		AddDetalle(detalle).
 		Build()
 
-	xmlData, _ := xml.Marshal(factura)
-	// Omitimos la firma digital para modalidad computarizada
-	hashString, encodedArchivo, err := utils.CompressAndHash(xmlData)
-	if err != nil {
-		t.Fatalf("error preparando archivo: %v", err)
-	}
-
-	req := models.CompraVenta().NewRecepcionFacturaBuilder().
-		WithCodigoAmbiente(tc.Ambiente).
+	builder := models.NewRecepcionFacturaBuilder().
 		WithCodigoModalidad(tc.Modalidad).
-		WithCodigoSistema(tc.Sistema).
-		WithNit(tc.Nit).
 		WithCodigoSucursal(0).
 		WithCodigoDocumentoSector(1).
 		WithCodigoEmision(1).
@@ -182,12 +156,15 @@ func TestCompraVenta_Computarizada(t *testing.T) {
 		WithCufd(cufd).
 		WithCuis(cuis).
 		WithTipoFacturaDocumento(1).
-		WithArchivo(encodedArchivo).
-		WithFechaEnvio(fechaEmision).
-		WithHashArchivo(hashString).
-		Build()
+		WithFechaEnvio(fechaEmision)
 
-	resp, err := tc.Client.CompraVenta().RecepcionFactura(context.Background(), tc.Config, req)
+	err := builder.WithFactura(factura, tc.Client.Config())
+	if err != nil {
+		t.Fatalf("error preparando factura computarizada con el constructor: %v", err)
+	}
+	req := builder.Build()
+
+	resp, err := tc.Client.CompraVenta().RecepcionFactura(context.Background(), req)
 	if err != nil {
 		t.Fatalf("error en solicitud: %v", err)
 	}
@@ -200,8 +177,7 @@ func TestCompraVenta_Masiva(t *testing.T) {
 	cuis := tc.GetCuis(t)
 	cufd, cufdControl := tc.GetCufd(t, cuis)
 
-	var tarBuf bytes.Buffer
-	tw := tar.NewWriter(&tarBuf)
+	var facturas []any
 	fechaEmision := time.Now()
 	codigoPuntoVenta := 0
 	for i := 1; i <= 5; i++ {
@@ -250,43 +226,27 @@ func TestCompraVenta_Masiva(t *testing.T) {
 			AddDetalle(detalle).
 			Build()
 
-		xmlData, _ := xml.Marshal(factura)
-		signedXML, _ := utils.SignXML(xmlData, "key.pem", "cert.crt")
-
-		hdr := &tar.Header{
-			Name: fmt.Sprintf("factura_%d.xml", i),
-			Mode: 0600,
-			Size: int64(len(signedXML)),
-		}
-		tw.WriteHeader(hdr)
-		tw.Write(signedXML)
-	}
-	tw.Close()
-
-	hashString, encodedArchivo, err := utils.CompressAndHash(tarBuf.Bytes())
-	if err != nil {
-		t.Fatalf("error preparando paquete masivo: %v", err)
+		facturas = append(facturas, factura)
 	}
 
-	req := models.CompraVenta().NewRecepcionMasivaFacturaBuilder().
-		WithCodigoAmbiente(tc.Ambiente).
+	builder := models.NewRecepcionMasivaFacturaBuilder().
 		WithCodigoDocumentoSector(1).
 		WithCodigoEmision(siat.EmisionMasiva).
-		WithCodigoModalidad(tc.Modalidad).
 		WithCodigoPuntoVenta(0).
-		WithCodigoSistema(tc.Sistema).
 		WithCodigoSucursal(0).
 		WithCufd(cufd).
 		WithCuis(cuis).
-		WithNit(tc.Nit).
 		WithTipoFacturaDocumento(1).
-		WithArchivo(encodedArchivo).
 		WithFechaEnvio(fechaEmision).
-		WithHashArchivo(hashString).
-		WithCantidadFacturas(5).
-		Build()
+		WithCodigoModalidad(tc.Modalidad)
 
-	resp, err := tc.Client.CompraVenta().RecepcionMasivaFactura(context.Background(), tc.Config, req)
+	err := builder.WithFacturas(facturas, tc.Client.Config())
+	if err != nil {
+		t.Fatalf("error preparando paquete masivo con el constructor: %v", err)
+	}
+	req := builder.Build()
+
+	resp, err := tc.Client.CompraVenta().RecepcionMasivaFactura(context.Background(), req)
 	if err != nil {
 		t.Fatalf("error en solicitud: %v", err)
 	}

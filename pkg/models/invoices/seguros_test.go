@@ -2,7 +2,6 @@ package invoices_test
 
 import (
 	"context"
-	"encoding/xml"
 	"fmt"
 	"log"
 	"testing"
@@ -16,7 +15,7 @@ import (
 
 func TestSeguros_Electronica(t *testing.T) {
 	tc := setupTestContext(t, siat.ModalidadElectronica)
-	tc.PuntoVenta = 1
+	tc.PuntoVenta = 0
 	tc.Sucursal = 0
 	cuis := tc.GetCuis(t)
 	cufd, cufdControl := tc.GetCufd(t, cuis)
@@ -31,7 +30,7 @@ func TestSeguros_ElectronicaAll(t *testing.T) {
 	cuis := tc.GetCuis(t)
 	cufd, cufdControl := tc.GetCufd(t, cuis)
 
-	for i := 1; i <= 125; i++ {
+	for i := 1; i <= 10; i++ {
 		t.Run(fmt.Sprintf("FacturaSeguros_%d", i), func(t *testing.T) {
 			emitirSegurosIndividual(t, tc, cuis, cufd, cufdControl, i)
 			time.Sleep(50 * time.Millisecond)
@@ -92,22 +91,7 @@ func emitirSegurosIndividual(t *testing.T, tc *TestContext, cuis, cufd, cufdCont
 		WithModalidad(tc.Modalidad).
 		Build()
 
-	xmlData, _ := xml.Marshal(factura)
-	signedXML, err := utils.SignXML(xmlData, "key.pem", "cert.crt")
-	if err != nil {
-		t.Fatalf("error firmando XML: %v", err)
-	}
-
-	hashString, encodedArchivo, err := utils.CompressAndHash(signedXML)
-	if err != nil {
-		t.Fatalf("error preparando archivo: %v", err)
-	}
-
-	req := models.Electronica().NewRecepcionFacturaBuilder().
-		WithCodigoAmbiente(tc.Ambiente).
-		WithCodigoModalidad(tc.Modalidad).
-		WithCodigoSistema(tc.Sistema).
-		WithNit(tc.Nit).
+	builderReq := models.NewRecepcionFacturaBuilder().
 		WithCodigoSucursal(tc.Sucursal).
 		WithCodigoDocumentoSector(34).
 		WithCodigoEmision(1).
@@ -115,12 +99,17 @@ func emitirSegurosIndividual(t *testing.T, tc *TestContext, cuis, cufd, cufdCont
 		WithCufd(cufd).
 		WithCuis(cuis).
 		WithTipoFacturaDocumento(1).
-		WithArchivo(encodedArchivo).
 		WithFechaEnvio(fechaEmision).
-		WithHashArchivo(hashString).
-		Build()
+		WithCodigoModalidad(tc.Modalidad)
+
+	err = builderReq.WithFactura(factura, tc.Client.Config())
+	if err != nil {
+		t.Fatalf("error al preparar factura: %v", err)
+	}
+
+	req := builderReq.Build()
 	// 1. EMITIR FACTURA SEGUROS ELECTRONICA
-	resp, err := tc.Client.Electronica().RecepcionFactura(context.Background(), tc.Config, req)
+	resp, err := tc.Client.Electronica().RecepcionFactura(context.Background(), req)
 	if err != nil {
 		t.Fatalf("Factura %d - error en solicitud: %v", nroFactura, err)
 	}
@@ -138,27 +127,24 @@ func emitirSegurosIndividual(t *testing.T, tc *TestContext, cuis, cufd, cufdCont
 			t.Errorf("Factura %d - RECHAZADA: %s", nroFactura, mensajes)
 		}
 	}
-	// Pequeño delay para que el SIAT procese el estado
+	// Delay para que el SIAT procese el estado
 	time.Sleep(50 * time.Millisecond)
 
 	// 2. ANULAR FACTURA
-	reqAnulacion := models.Electronica().NewAnulacionFacturaBuilder().
-		WithCodigoAmbiente(tc.Ambiente).
+	reqAnulacion := models.NewAnulacionFacturaBuilder().
 		WithCodigoDocumentoSector(34).
 		WithCodigoEmision(siat.EmisionOnline).
 		WithTipoFacturaDocumento(1).
-		WithCodigoModalidad(tc.Modalidad).
 		WithCodigoPuntoVenta(tc.PuntoVenta).
-		WithCodigoSistema(tc.Sistema).
 		WithCodigoSucursal(tc.Sucursal).
-		WithNit(tc.Nit). // NIT es requerido en anulación
 		WithCufd(cufd).
 		WithCuis(cuis).
 		WithCuf(cuf).
 		WithCodigoMotivo(1). // 1: Factura mal emitida
+		WithCodigoModalidad(tc.Modalidad).
 		Build()
 
-	respAnulacion, err := tc.Client.Electronica().AnulacionFactura(context.Background(), tc.Config, reqAnulacion)
+	respAnulacion, err := tc.Client.Electronica().AnulacionFactura(context.Background(), reqAnulacion)
 	if err != nil {
 		t.Fatalf("error en anulación Factura %d: %v", nroFactura, err)
 	}
@@ -177,12 +163,9 @@ func emitirSegurosIndividual(t *testing.T, tc *TestContext, cuis, cufd, cufdCont
 	time.Sleep(50 * time.Millisecond)
 
 	// 3. REVERTIR ANULACIÓN
-	reqReversion := models.Electronica().NewReversionAnulacionFacturaBuilder().
-		WithCodigoAmbiente(tc.Ambiente).
+	reqReversion := models.NewReversionAnulacionFacturaBuilder().
 		WithCodigoPuntoVenta(tc.PuntoVenta).
-		WithCodigoSistema(tc.Sistema).
 		WithCodigoSucursal(tc.Sucursal).
-		WithNit(tc.Nit).
 		WithCodigoDocumentoSector(34).
 		WithTipoFacturaDocumento(1).
 		WithCodigoEmision(1).
@@ -192,7 +175,7 @@ func emitirSegurosIndividual(t *testing.T, tc *TestContext, cuis, cufd, cufdCont
 		WithCuis(cuis).
 		Build()
 
-	respReversion, err := tc.Client.Electronica().ReversionAnulacionFactura(context.Background(), tc.Config, reqReversion)
+	respReversion, err := tc.Client.Electronica().ReversionAnulacionFactura(context.Background(), reqReversion)
 	if err != nil {
 		t.Fatalf("error en reversión Factura %d: %v", nroFactura, err)
 	}

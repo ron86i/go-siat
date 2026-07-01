@@ -147,37 +147,25 @@ func TestNotaFiscalCreditoDebitoIntegration_Computarizada(t *testing.T) {
 			Build()).
 		Build()
 
-	xmlBytes, err := xml.Marshal(nota)
-	if err != nil {
-		t.Fatalf("error marshal: %v", err)
-	}
-
-	// 5. Preparar envío
-	hash, encoded, err := utils.CompressAndHash(xmlBytes)
-	if err != nil {
-		t.Fatalf("error compress: %v", err)
-	}
-
-	// 6. Solicitud de recepción
-	req := models.DocumentoAjuste().NewRecepcionBuilder().
-		WithCodigoAmbiente(tc.Ambiente).
+	builderReq := models.NewRecepcionDocumentoAjusteBuilder().
 		WithCodigoDocumentoSector(24).
 		WithCodigoEmision(siat.EmisionOnline).
-		WithCodigoModalidad(tc.Modalidad).
 		WithCodigoPuntoVenta(tc.PuntoVenta).
-		WithCodigoSistema(tc.Sistema).
 		WithCodigoSucursal(tc.Sucursal).
 		WithCufd(cufd).
 		WithCuis(cuis).
-		WithNit(tc.Nit).
 		WithTipoFacturaDocumento(3).
-		WithArchivo(encoded).
-		WithFechaEnvio(fecha).
-		WithHashArchivo(hash).
-		Build()
+		WithFechaEnvio(fecha)
+
+	err = builderReq.WithDocumento(nota, tc.Client.Config())
+	if err != nil {
+		t.Fatalf("error al preparar documento: %v", err)
+	}
+
+	req := builderReq.Build()
 
 	// 7. Intentar envío
-	resp, err := service.RecepcionDocumentoAjuste(context.Background(), tc.Config, req)
+	resp, err := service.RecepcionDocumentoAjuste(context.Background(), req)
 	if err != nil {
 		t.Fatalf("Error en la comunicación con el SIAT: %v", err)
 	}
@@ -255,42 +243,25 @@ func TestNotaFiscalCreditoDebitoIntegration_Electronica(t *testing.T) {
 			Build()).
 		Build()
 
-	xmlBytes, err := xml.Marshal(nota)
-	if err != nil {
-		t.Fatalf("error marshal: %v", err)
-	}
-
-	xmlBytes, err = utils.SignXML(xmlBytes, "key.pem", "cert.crt")
-	if err != nil {
-		t.Fatalf("error al firmar: %v", err)
-	}
-
-	// 5. Preparar envío
-	hash, encoded, err := utils.CompressAndHash(xmlBytes)
-	if err != nil {
-		t.Fatalf("error compress: %v", err)
-	}
-
-	// 6. Solicitud de recepción
-	req := models.DocumentoAjuste().NewRecepcionBuilder().
-		WithCodigoAmbiente(tc.Ambiente).
+	builderReq := models.NewRecepcionDocumentoAjusteBuilder().
 		WithCodigoDocumentoSector(24).
 		WithCodigoEmision(siat.EmisionOnline).
-		WithCodigoModalidad(tc.Modalidad).
 		WithCodigoPuntoVenta(tc.PuntoVenta).
-		WithCodigoSistema(tc.Sistema).
 		WithCodigoSucursal(tc.Sucursal).
 		WithCufd(cufd).
 		WithCuis(cuis).
-		WithNit(tc.Nit).
 		WithTipoFacturaDocumento(3).
-		WithArchivo(encoded).
-		WithFechaEnvio(fecha).
-		WithHashArchivo(hash).
-		Build()
+		WithFechaEnvio(fecha)
+
+	err = builderReq.WithDocumento(nota, tc.Client.Config())
+	if err != nil {
+		t.Fatalf("error al preparar documento: %v", err)
+	}
+
+	req := builderReq.Build()
 
 	// 7. Intentar envío
-	resp, err := service.RecepcionDocumentoAjuste(context.Background(), tc.Config, req)
+	resp, err := service.RecepcionDocumentoAjuste(context.Background(), req)
 	if err != nil {
 		t.Fatalf("Error en la comunicación con el SIAT: %v", err)
 	}

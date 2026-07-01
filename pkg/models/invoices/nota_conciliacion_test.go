@@ -161,17 +161,14 @@ func TestNotaConciliacionIntegration_Computarizada(t *testing.T) {
 	}
 
 	// 6. Crear solicitud de recepción
-	req := models.DocumentoAjuste().NewRecepcionBuilder().
-		WithCodigoAmbiente(tc.Ambiente).
+	req := models.NewRecepcionDocumentoAjusteBuilder().
+		WithCodigoModalidad(tc.Modalidad).
 		WithCodigoDocumentoSector(29).
 		WithCodigoEmision(siat.EmisionOnline).
-		WithCodigoModalidad(tc.Modalidad).
 		WithCodigoPuntoVenta(tc.PuntoVenta).
-		WithCodigoSistema(tc.Sistema).
 		WithCodigoSucursal(tc.Sucursal).
 		WithCufd(cufd).
 		WithCuis(cuis).
-		WithNit(tc.Nit).
 		WithTipoFacturaDocumento(3).
 		WithArchivo(encoded).
 		WithFechaEnvio(fecha).
@@ -179,7 +176,7 @@ func TestNotaConciliacionIntegration_Computarizada(t *testing.T) {
 		Build()
 
 	// 7. Intentar envío
-	resp, err := service.RecepcionDocumentoAjuste(context.Background(), tc.Config, req)
+	resp, err := service.RecepcionDocumentoAjuste(context.Background(), req)
 	if err != nil {
 		t.Fatalf("Error en la comunicación con el SIAT: %v", err)
 	}
@@ -274,17 +271,14 @@ func TestNotaConciliacionIntegration_Electronica(t *testing.T) {
 	}
 
 	// 6. Crear solicitud de recepción
-	req := models.DocumentoAjuste().NewRecepcionBuilder().
-		WithCodigoAmbiente(tc.Ambiente).
+	req := models.NewRecepcionDocumentoAjusteBuilder().
+		WithCodigoModalidad(tc.Modalidad).
 		WithCodigoDocumentoSector(29).
 		WithCodigoEmision(siat.EmisionOnline).
-		WithCodigoModalidad(tc.Modalidad).
 		WithCodigoPuntoVenta(tc.PuntoVenta).
-		WithCodigoSistema(tc.Sistema).
 		WithCodigoSucursal(tc.Sucursal).
 		WithCufd(cufd).
 		WithCuis(cuis).
-		WithNit(tc.Nit).
 		WithTipoFacturaDocumento(3).
 		WithArchivo(encoded).
 		WithFechaEnvio(fecha).
@@ -292,7 +286,7 @@ func TestNotaConciliacionIntegration_Electronica(t *testing.T) {
 		Build()
 
 	// 7. Intentar envío
-	resp, err := service.RecepcionDocumentoAjuste(context.Background(), tc.Config, req)
+	resp, err := service.RecepcionDocumentoAjuste(context.Background(), req)
 	if err != nil {
 		t.Fatalf("Error en la comunicación con el SIAT: %v", err)
 	}

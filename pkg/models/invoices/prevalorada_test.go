@@ -2,7 +2,6 @@ package invoices_test
 
 import (
 	"context"
-	"encoding/xml"
 	"fmt"
 	"log"
 	"testing"
@@ -99,30 +98,9 @@ func emitirPrevaloradaIndividual(t *testing.T, tc *TestContext, cuis, cufd, cufd
 		WithDetalle(detalle).
 		Build()
 
-	xmlData, _ := xml.Marshal(factura)
-	var finalXML []byte
-	var signErr error
-
 	if tc.Modalidad == siat.ModalidadElectronica {
-		finalXML, signErr = utils.SignXML(xmlData, "key.pem", "cert.crt")
-		if signErr != nil {
-			t.Fatalf("error firmando XML: %v", signErr)
-		}
-	} else {
-		finalXML = xmlData
-	}
-
-	hashString, encodedArchivo, err := utils.CompressAndHash(finalXML)
-	if err != nil {
-		t.Fatalf("error preparando archivo: %v", err)
-	}
-
-	if tc.Modalidad == siat.ModalidadElectronica {
-		req := models.Electronica().NewRecepcionFacturaBuilder().
-			WithCodigoAmbiente(tc.Ambiente).
+		builderReq := models.NewRecepcionFacturaBuilder().
 			WithCodigoModalidad(tc.Modalidad).
-			WithCodigoSistema(tc.Sistema).
-			WithNit(tc.Nit).
 			WithCodigoSucursal(tc.Sucursal).
 			WithCodigoDocumentoSector(23).
 			WithCodigoEmision(1).
@@ -130,35 +108,36 @@ func emitirPrevaloradaIndividual(t *testing.T, tc *TestContext, cuis, cufd, cufd
 			WithCufd(cufd).
 			WithCuis(cuis).
 			WithTipoFacturaDocumento(1).
-			WithArchivo(encodedArchivo).
-			WithFechaEnvio(fechaEmision).
-			WithHashArchivo(hashString).
-			Build()
+			WithFechaEnvio(fechaEmision)
+
+		err := builderReq.WithFactura(factura, tc.Client.Config())
+		if err != nil {
+			t.Fatalf("error al preparar factura: %v", err)
+		}
+
+		req := builderReq.Build()
 		// 1. EMITIR PREVALORADA ELECTRONICA
-		resp, err := tc.Client.Electronica().RecepcionFactura(context.Background(), tc.Config, req)
+		resp, err := tc.Client.Electronica().RecepcionFactura(context.Background(), req)
 		procesarRespuestaSIAT(t, nroFactura, resp, err)
 
 		// Pequeño delay para que el SIAT procese el estado
 		time.Sleep(50 * time.Millisecond)
 
 		// 2. ANULAR FACTURA
-		reqAnulacion := models.Electronica().NewAnulacionFacturaBuilder().
-			WithCodigoAmbiente(tc.Ambiente).
+		reqAnulacion := models.NewAnulacionFacturaBuilder().
 			WithCodigoDocumentoSector(23).
 			WithCodigoEmision(siat.EmisionOnline).
 			WithTipoFacturaDocumento(1).
 			WithCodigoModalidad(tc.Modalidad).
 			WithCodigoPuntoVenta(tc.PuntoVenta).
-			WithCodigoSistema(tc.Sistema).
 			WithCodigoSucursal(tc.Sucursal).
-			WithNit(tc.Nit). // NIT es requerido en anulación
 			WithCufd(cufd).
 			WithCuis(cuis).
 			WithCuf(cuf).
 			WithCodigoMotivo(1). // 1: Factura mal emitida
 			Build()
 
-		respAnulacion, err := tc.Client.Electronica().AnulacionFactura(context.Background(), tc.Config, reqAnulacion)
+		respAnulacion, err := tc.Client.Electronica().AnulacionFactura(context.Background(), reqAnulacion)
 		if err != nil {
 			t.Fatalf("error en anulación Factura %d: %v", nroFactura, err)
 		}
@@ -177,12 +156,9 @@ func emitirPrevaloradaIndividual(t *testing.T, tc *TestContext, cuis, cufd, cufd
 		time.Sleep(50 * time.Millisecond)
 
 		// 3. REVERTIR ANULACIÓN
-		reqReversion := models.Electronica().NewReversionAnulacionFacturaBuilder().
-			WithCodigoAmbiente(tc.Ambiente).
+		reqReversion := models.NewReversionAnulacionFacturaBuilder().
 			WithCodigoPuntoVenta(tc.PuntoVenta).
-			WithCodigoSistema(tc.Sistema).
 			WithCodigoSucursal(tc.Sucursal).
-			WithNit(tc.Nit).
 			WithCodigoDocumentoSector(23).
 			WithTipoFacturaDocumento(1).
 			WithCodigoEmision(1).
@@ -192,7 +168,7 @@ func emitirPrevaloradaIndividual(t *testing.T, tc *TestContext, cuis, cufd, cufd
 			WithCuis(cuis).
 			Build()
 
-		respReversion, err := tc.Client.Electronica().ReversionAnulacionFactura(context.Background(), tc.Config, reqReversion)
+		respReversion, err := tc.Client.Electronica().ReversionAnulacionFactura(context.Background(), reqReversion)
 		if err != nil {
 			t.Fatalf("error en reversión Factura %d: %v", nroFactura, err)
 		}
@@ -207,11 +183,8 @@ func emitirPrevaloradaIndividual(t *testing.T, tc *TestContext, cuis, cufd, cufd
 		}
 		log.Printf("Factura %d REVERTIDA (vuelve a ser válida)", nroFactura)
 	} else {
-		req := models.Computarizada().NewRecepcionFacturaBuilder().
-			WithCodigoAmbiente(tc.Ambiente).
+		builderReq := models.NewRecepcionFacturaBuilder().
 			WithCodigoModalidad(tc.Modalidad).
-			WithCodigoSistema(tc.Sistema).
-			WithNit(tc.Nit).
 			WithCodigoSucursal(tc.Sucursal).
 			WithCodigoDocumentoSector(23).
 			WithCodigoEmision(1).
@@ -219,12 +192,16 @@ func emitirPrevaloradaIndividual(t *testing.T, tc *TestContext, cuis, cufd, cufd
 			WithCufd(cufd).
 			WithCuis(cuis).
 			WithTipoFacturaDocumento(1).
-			WithArchivo(encodedArchivo).
-			WithFechaEnvio(fechaEmision).
-			WithHashArchivo(hashString).
-			Build()
+			WithFechaEnvio(fechaEmision)
 
-		resp, err := tc.Client.Computarizada().RecepcionFactura(context.Background(), tc.Config, req)
+		err := builderReq.WithFactura(factura, tc.Client.Config())
+		if err != nil {
+			t.Fatalf("error al preparar factura: %v", err)
+		}
+
+		req := builderReq.Build()
+
+		resp, err := tc.Client.Computarizada().RecepcionFactura(context.Background(), req)
 		procesarRespuestaSIAT(t, nroFactura, resp, err)
 	}
 }

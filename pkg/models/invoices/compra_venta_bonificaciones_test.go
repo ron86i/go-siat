@@ -2,7 +2,6 @@ package invoices_test
 
 import (
 	"context"
-	"encoding/xml"
 	"fmt"
 	"log"
 	"testing"
@@ -70,14 +69,7 @@ func TestCompraVentaBonificaciones_Computarizada(t *testing.T) {
 		AddDetalle(detalle).
 		Build()
 
-	xmlData, _ := xml.Marshal(factura)
-	hashString, encodedArchivo, _ := utils.CompressAndHash(xmlData)
-
-	req := models.CompraVenta().NewRecepcionFacturaBuilder().
-		WithCodigoAmbiente(tc.Ambiente).
-		WithCodigoModalidad(tc.Modalidad).
-		WithCodigoSistema(tc.Sistema).
-		WithNit(tc.Nit).
+	builderReq := models.NewRecepcionFacturaBuilder().
 		WithCodigoSucursal(0).
 		WithCodigoDocumentoSector(35).
 		WithCodigoEmision(1).
@@ -85,12 +77,16 @@ func TestCompraVentaBonificaciones_Computarizada(t *testing.T) {
 		WithCufd(cufd).
 		WithCuis(cuis).
 		WithTipoFacturaDocumento(1).
-		WithArchivo(encodedArchivo).
-		WithFechaEnvio(fechaEmision).
-		WithHashArchivo(hashString).
-		Build()
+		WithFechaEnvio(fechaEmision)
 
-	resp, err := tc.Client.CompraVenta().RecepcionFactura(context.Background(), tc.Config, req)
+	err := builderReq.WithFactura(factura, tc.Client.Config())
+	if err != nil {
+		t.Fatalf("error al preparar factura: %v", err)
+	}
+
+	req := builderReq.Build()
+
+	resp, err := tc.Client.CompraVenta().RecepcionFactura(context.Background(), req)
 	if err != nil {
 		t.Fatalf("error en solicitud: %v", err)
 	}
@@ -177,25 +173,8 @@ func emitirCompraVentaBonificacionesElectronicaIndividual(t *testing.T, tc *Test
 		AddDetalle(detalle).
 		Build()
 
-	xmlBytes, err := xml.Marshal(factura)
-	if err != nil {
-		t.Fatalf("error marshal: %v", err)
-	}
-
-	xmlBytes, err = utils.SignXML(xmlBytes, "key.pem", "cert.crt")
-	if err != nil {
-		t.Fatalf("error al firmar: %v", err)
-	}
-	hashString, encodedArchivo, err := utils.CompressAndHash(xmlBytes)
-	if err != nil {
-		t.Fatalf("error compress: %v", err)
-	}
-
-	req := models.CompraVenta().NewRecepcionFacturaBuilder().
-		WithCodigoAmbiente(tc.Ambiente).
+	builderReq := models.NewRecepcionFacturaBuilder().
 		WithCodigoModalidad(tc.Modalidad).
-		WithCodigoSistema(tc.Sistema).
-		WithNit(tc.Nit).
 		WithCodigoSucursal(tc.Sucursal).
 		WithCodigoDocumentoSector(35).
 		WithCodigoEmision(siat.EmisionOnline).
@@ -203,12 +182,16 @@ func emitirCompraVentaBonificacionesElectronicaIndividual(t *testing.T, tc *Test
 		WithCufd(cufd).
 		WithCuis(cuis).
 		WithTipoFacturaDocumento(1).
-		WithArchivo(encodedArchivo).
-		WithFechaEnvio(fechaEmision).
-		WithHashArchivo(hashString).
-		Build()
+		WithFechaEnvio(fechaEmision)
+
+	err = builderReq.WithFactura(factura, tc.Client.Config())
+	if err != nil {
+		t.Fatalf("error al preparar factura: %v", err)
+	}
+
+	req := builderReq.Build()
 	// 1. EMITIR FACTURA COMPRA VENTA BONIFICACIONES
-	resp, err := tc.Client.CompraVenta().RecepcionFactura(context.Background(), tc.Config, req)
+	resp, err := tc.Client.CompraVenta().RecepcionFactura(context.Background(), req)
 	if err != nil {
 		t.Fatalf("Factura %d - error en solicitud: %v", nroFactura, err)
 	}
@@ -222,23 +205,21 @@ func emitirCompraVentaBonificacionesElectronicaIndividual(t *testing.T, tc *Test
 	time.Sleep(50 * time.Millisecond)
 
 	// 2. ANULAR FACTURA
-	reqAnulacion := models.CompraVenta().NewAnulacionFacturaBuilder().
-		WithCodigoAmbiente(tc.Ambiente).
+	reqAnulacion := models.NewAnulacionFacturaBuilder().
+		WithCodigoModalidad(tc.Modalidad).
 		WithCodigoDocumentoSector(35).
 		WithCodigoEmision(siat.EmisionOnline).
 		WithTipoFacturaDocumento(1).
-		WithCodigoModalidad(tc.Modalidad).
 		WithCodigoPuntoVenta(tc.PuntoVenta).
-		WithCodigoSistema(tc.Sistema).
 		WithCodigoSucursal(tc.Sucursal).
-		WithNit(tc.Nit). // NIT es requerido en anulación
+		// NIT es requerido en anulación
 		WithCufd(cufd).
 		WithCuis(cuis).
 		WithCuf(cuf).
 		WithCodigoMotivo(1). // 1: Factura mal emitida
 		Build()
 
-	respAnulacion, err := tc.Client.CompraVenta().AnulacionFactura(context.Background(), tc.Config, reqAnulacion)
+	respAnulacion, err := tc.Client.CompraVenta().AnulacionFactura(context.Background(), reqAnulacion)
 	if err != nil {
 		t.Fatalf("error en anulación Factura %d: %v", nroFactura, err)
 	}
@@ -257,22 +238,19 @@ func emitirCompraVentaBonificacionesElectronicaIndividual(t *testing.T, tc *Test
 	time.Sleep(50 * time.Millisecond)
 
 	// 3. REVERTIR ANULACIÓN
-	reqReversion := models.CompraVenta().NewReversionAnulacionFacturaBuilder().
-		WithCodigoAmbiente(tc.Ambiente).
+	reqReversion := models.NewReversionAnulacionFacturaBuilder().
+		WithCodigoModalidad(tc.Modalidad).
 		WithCodigoPuntoVenta(tc.PuntoVenta).
-		WithCodigoSistema(tc.Sistema).
 		WithCodigoSucursal(tc.Sucursal).
-		WithNit(tc.Nit).
 		WithCodigoDocumentoSector(35).
 		WithTipoFacturaDocumento(1).
 		WithCodigoEmision(1).
-		WithCodigoModalidad(tc.Modalidad).
 		WithCuf(cuf).
 		WithCufd(cufd).
 		WithCuis(cuis).
 		Build()
 
-	respReversion, err := tc.Client.CompraVenta().ReversionAnulacionFactura(context.Background(), tc.Config, reqReversion)
+	respReversion, err := tc.Client.CompraVenta().ReversionAnulacionFactura(context.Background(), reqReversion)
 	if err != nil {
 		t.Fatalf("error en reversión Factura %d: %v", nroFactura, err)
 	}

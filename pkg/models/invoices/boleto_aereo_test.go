@@ -2,10 +2,7 @@ package invoices_test
 
 import (
 	"context"
-	"crypto/sha256"
-	"encoding/base64"
 	"encoding/xml"
-	"fmt"
 	"log"
 	"os"
 	"testing"
@@ -15,7 +12,6 @@ import (
 	"github.com/ron86i/go-siat/internal/core/domain/documents"
 	"github.com/ron86i/go-siat/pkg/models"
 	"github.com/ron86i/go-siat/pkg/models/invoices"
-	"github.com/ron86i/go-siat/pkg/utils"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -117,49 +113,24 @@ func TestBoletoAereoIntegration(t *testing.T) {
 					Build()).
 				Build()
 
-			xmlData, _ := xml.Marshal(factura)
-			var processedXML []byte
-
-			if mod == siat.ModalidadElectronica {
-				signedXML, err := utils.SignXML(xmlData, "key.pem", "cert.crt")
-				if err != nil {
-					t.Skip("Saltando envío Electronica: Error firmando (probablemente faltan certificados):", err)
-					return
-				}
-				processedXML = signedXML
-			} else {
-				processedXML = xmlData
-			}
-
-			// Boleto Aereo usa envio masivo (se requiere comprimir en tar.gz)
-			tarGz, err := utils.CreateTarGz(map[string][]byte{"factura.xml": processedXML})
-			if err != nil {
-				t.Fatalf("Error creando tar.gz: %v", err)
-			}
-
-			hashSum := sha256.Sum256(tarGz)
-			hashString := fmt.Sprintf("%x", hashSum)
-			encodedArchivo := base64.StdEncoding.EncodeToString(tarGz)
-
-			req := models.BoletoAereo().NewRecepcionMasivaFacturaBuilder().
-				WithCodigoAmbiente(tc.Ambiente).
+			builderReq := models.NewRecepcionMasivaFacturaBuilder().
 				WithCodigoDocumentoSector(30).
 				WithCodigoEmision(3).
-				WithCodigoModalidad(tc.Modalidad).
 				WithCodigoPuntoVenta(tc.PuntoVenta).
-				WithCodigoSistema(tc.Sistema).
 				WithCodigoSucursal(tc.Sucursal).
 				WithCufd(cufd).
 				WithCuis(cuis).
-				WithNit(tc.Nit).
 				WithTipoFacturaDocumento(4).
-				WithArchivo(encodedArchivo).
-				WithFechaEnvio(time.Now()).
-				WithHashArchivo(hashString).
-				WithCantidadFacturas(1).
-				Build()
+				WithFechaEnvio(time.Now())
 
-			resp, err := service.RecepcionMasivaFactura(context.Background(), tc.Config, req)
+			err := builderReq.WithFacturas([]any{factura}, tc.Client.Config())
+			if err != nil {
+				t.Fatalf("Error al preparar factura masiva: %v", err)
+			}
+
+			req := builderReq.Build()
+
+			resp, err := service.RecepcionMasivaFactura(context.Background(), req)
 
 			if err == nil && resp != nil {
 				log.Printf("Respuesta Recepcion Masiva Boleto Aereo (%s): %+v", name, resp.Body.Content.RespuestaServicioFacturacion)

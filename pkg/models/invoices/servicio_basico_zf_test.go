@@ -11,7 +11,6 @@ import (
 	"github.com/ron86i/go-siat/internal/core/domain/documents"
 	"github.com/ron86i/go-siat/pkg/models"
 	"github.com/ron86i/go-siat/pkg/models/invoices"
-	"github.com/ron86i/go-siat/pkg/utils"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -81,7 +80,7 @@ func TestServicioBasicoZFBuilder(t *testing.T) {
 	})
 }
 
-func TestServicioBasicoZFIntegration(t *testing.T) {
+func TestServicioBasicoZF_Electronica(t *testing.T) {
 	tc := setupTestContext(t, siat.ModalidadElectronica)
 
 	service := tc.Client.ServicioBasico()
@@ -144,32 +143,25 @@ func TestServicioBasicoZFIntegration(t *testing.T) {
 		Build()
 
 	// 5. Serializar, Firmar, Comprimir
-	xmlData, _ := xml.Marshal(factura)
-	signedXML, err := utils.SignXML(xmlData, "key.pem", "cert.crt")
-	if err != nil {
-		t.Fatalf("Error firmando: %v", err)
-	}
-	hashString, encodedArchivo, _ := utils.CompressAndHash(signedXML)
-
-	// 6. Solicitud de recepción
-	req := models.ServicioBasico().NewRecepcionFacturaBuilder().
-		WithCodigoAmbiente(tc.Ambiente).
+	builderReq := models.NewRecepcionFacturaBuilder().
+		WithCodigoModalidad(tc.Modalidad).
 		WithCodigoDocumentoSector(40).
 		WithCodigoEmision(siat.EmisionOnline).
-		WithCodigoModalidad(tc.Modalidad).
 		WithCodigoPuntoVenta(tc.PuntoVenta).
-		WithCodigoSistema(tc.Sistema).
 		WithCodigoSucursal(tc.Sucursal).
 		WithCufd(cufd).
 		WithCuis(cuis).
-		WithNit(tc.Nit).
 		WithTipoFacturaDocumento(2).
-		WithArchivo(encodedArchivo).
-		WithFechaEnvio(fechaEmision).
-		WithHashArchivo(hashString).
-		Build()
+		WithFechaEnvio(fechaEmision)
 
-	resp, err := service.RecepcionFactura(context.Background(), tc.Config, req)
+	err := builderReq.WithFactura(factura, tc.Client.Config())
+	if err != nil {
+		t.Fatalf("error al preparar factura: %v", err)
+	}
+
+	req := builderReq.Build()
+
+	resp, err := service.RecepcionFactura(context.Background(), req)
 
 	if err == nil && resp != nil {
 		log.Printf("Respuesta Recepcion Servicio Basico ZF: %+v", resp.Body.Content)

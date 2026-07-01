@@ -52,9 +52,17 @@ func setupTestContext(t *testing.T, modalidad int) *TestContext {
 			}).DialContext,
 			TLSHandshakeTimeout: 10 * time.Second,
 		},
-		Timeout: 30 * time.Second,
 	}
-	siatClient, err := siat.New(os.Getenv("SIAT_URL"), client)
+	cfg := siat.Config{
+		Token:          os.Getenv("SIAT_TOKEN"),
+		Nit:            nit,
+		CodigoSistema:  sistema,
+		CodigoAmbiente: codAmbiente,
+		BaseURL:        os.Getenv("SIAT_URL"),
+		HTTPClient:     client,
+		CredentialSign: siat.NewPEMCredential("cert.crt", "key.pem"),
+	}
+	siatClient, err := siat.New(cfg)
 	if err != nil {
 		t.Fatalf("error al crear el cliente SIAT: %v", err)
 	}
@@ -73,16 +81,13 @@ func setupTestContext(t *testing.T, modalidad int) *TestContext {
 
 // GetCuis solicita un código CUIS al SIAT simplificando el flujo de los tests.
 func (tc *TestContext) GetCuis(t *testing.T) string {
-	cuisReq := models.Codigos().NewCuisBuilder().
-		WithCodigoAmbiente(tc.Ambiente).
-		WithCodigoModalidad(tc.Modalidad).
-		WithCodigoSistema(tc.Sistema).
-		WithNit(tc.Nit).
+	cuisReq := models.NewCuisBuilder().
 		WithCodigoPuntoVenta(tc.PuntoVenta).
 		WithCodigoSucursal(tc.Sucursal).
+		WithCodigoModalidad(tc.Modalidad).
 		Build()
 
-	resp, err := tc.Client.Codigos().SolicitudCuis(context.Background(), tc.Config, cuisReq)
+	resp, err := tc.Client.Codigos().SolicitudCuis(context.Background(), cuisReq)
 	if err != nil {
 		t.Fatalf("error al obtener CUIS: %v", err)
 	}
@@ -94,17 +99,14 @@ func (tc *TestContext) GetCuis(t *testing.T) string {
 
 // GetCufd solicita un código CUFD y su código de control al SIAT.
 func (tc *TestContext) GetCufd(t *testing.T, cuis string) (string, string) {
-	cufdReq := models.Codigos().NewCufdBuilder().
-		WithCodigoAmbiente(tc.Ambiente).
-		WithCodigoModalidad(tc.Modalidad).
-		WithCodigoSistema(tc.Sistema).
-		WithNit(tc.Nit).
+	cufdReq := models.NewCufdBuilder().
 		WithCuis(cuis).
 		WithCodigoPuntoVenta(tc.PuntoVenta).
 		WithCodigoSucursal(tc.Sucursal).
+		WithCodigoModalidad(tc.Modalidad).
 		Build()
 
-	resp, err := tc.Client.Codigos().SolicitudCufd(context.Background(), tc.Config, cufdReq)
+	resp, err := tc.Client.Codigos().SolicitudCufd(context.Background(), cufdReq)
 	if err != nil {
 		t.Fatalf("error al obtener CUFD: %v", err)
 	}

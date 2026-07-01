@@ -161,17 +161,14 @@ func TestNotaCreditoDebitoIntegration_Computarizada(t *testing.T) {
 	}
 
 	// 6. Crear solicitud de recepción
-	req := models.DocumentoAjuste().NewRecepcionBuilder().
-		WithCodigoAmbiente(tc.Ambiente).
+	req := models.NewRecepcionDocumentoAjusteBuilder().
+		WithCodigoModalidad(tc.Modalidad).
 		WithCodigoDocumentoSector(47).
 		WithCodigoEmision(siat.EmisionOnline).
-		WithCodigoModalidad(tc.Modalidad).
 		WithCodigoPuntoVenta(tc.PuntoVenta).
-		WithCodigoSistema(tc.Sistema).
 		WithCodigoSucursal(tc.Sucursal).
 		WithCufd(cufd).
 		WithCuis(cuis).
-		WithNit(tc.Nit).
 		WithTipoFacturaDocumento(3).
 		WithArchivo(encoded).
 		WithFechaEnvio(fecha).
@@ -179,7 +176,7 @@ func TestNotaCreditoDebitoIntegration_Computarizada(t *testing.T) {
 		Build()
 
 	// 7. Intentar envío
-	resp, err := service.RecepcionDocumentoAjuste(context.Background(), tc.Config, req)
+	resp, err := service.RecepcionDocumentoAjuste(context.Background(), req)
 	if err != nil {
 		t.Fatalf("Error en la comunicación con el SIAT: %v", err)
 	}
@@ -285,24 +282,20 @@ func emitirNotaIndividual(t *testing.T, tc *TestContext, cuis, cufd, cufdControl
 		t.Fatalf("error compress: %v", err)
 	}
 
-	req := models.DocumentoAjuste().NewRecepcionBuilder().
-		WithCodigoAmbiente(tc.Ambiente).
+	req := models.NewRecepcionDocumentoAjusteBuilder().
 		WithCodigoDocumentoSector(24).
 		WithCodigoEmision(siat.EmisionOnline).
-		WithCodigoModalidad(tc.Modalidad).
 		WithCodigoPuntoVenta(tc.PuntoVenta).
-		WithCodigoSistema(tc.Sistema).
 		WithCodigoSucursal(tc.Sucursal).
 		WithCufd(cufd).
 		WithCuis(cuis).
-		WithNit(tc.Nit).
 		WithTipoFacturaDocumento(3).
 		WithArchivo(encoded).
 		WithFechaEnvio(fecha).
 		WithHashArchivo(hash).
 		Build()
 	// 1. EMITIR NOTA DE CREDITO DEBITO
-	resp, err := tc.Client.DocumentoAjuste().RecepcionDocumentoAjuste(context.Background(), tc.Config, req)
+	resp, err := tc.Client.DocumentoAjuste().RecepcionDocumentoAjuste(context.Background(), req)
 	if err != nil {
 		t.Fatalf("Nota %d - Error de red: %v", nroNota, err)
 	}
@@ -324,23 +317,20 @@ func emitirNotaIndividual(t *testing.T, tc *TestContext, cuis, cufd, cufdControl
 	time.Sleep(50 * time.Millisecond)
 
 	// 2. ANULAR FACTURA
-	reqAnulacion := models.DocumentoAjuste().NewAnulacionBuilder().
-		WithCodigoAmbiente(tc.Ambiente).
+	reqAnulacion := models.NewAnulacionDocumentoAjusteBuilder().
 		WithCodigoDocumentoSector(24).
 		WithCodigoEmision(siat.EmisionOnline).
 		WithTipoFacturaDocumento(3).
-		WithCodigoModalidad(tc.Modalidad).
 		WithCodigoPuntoVenta(tc.PuntoVenta).
-		WithCodigoSistema(tc.Sistema).
 		WithCodigoSucursal(tc.Sucursal).
-		WithNit(tc.Nit). // NIT es requerido en anulación
+		// NIT es requerido en anulación
 		WithCufd(cufd).
 		WithCuis(cuis).
 		WithCuf(cuf).
 		WithCodigoMotivo(2). // 2: NOTA DE CREDITO-DEBITO MAL EMITIDA
 		Build()
 
-	respAnulacion, err := tc.Client.DocumentoAjuste().AnulacionDocumentoAjuste(context.Background(), tc.Config, reqAnulacion)
+	respAnulacion, err := tc.Client.DocumentoAjuste().AnulacionDocumentoAjuste(context.Background(), reqAnulacion)
 	if err != nil {
 		t.Fatalf("error en anulación nota %d: %v", nroNota, err)
 	}
@@ -359,22 +349,18 @@ func emitirNotaIndividual(t *testing.T, tc *TestContext, cuis, cufd, cufdControl
 	time.Sleep(50 * time.Millisecond)
 
 	// 3. REVERTIR ANULACIÓN
-	reqReversion := models.DocumentoAjuste().NewReversionAnulacionBuilder().
-		WithCodigoAmbiente(tc.Ambiente).
+	reqReversion := models.NewReversionAnulacionDocumentoAjusteBuilder().
 		WithCodigoPuntoVenta(tc.PuntoVenta).
-		WithCodigoSistema(tc.Sistema).
 		WithCodigoSucursal(tc.Sucursal).
-		WithNit(tc.Nit).
 		WithCodigoDocumentoSector(24).
 		WithTipoFacturaDocumento(3).
 		WithCodigoEmision(1).
-		WithCodigoModalidad(tc.Modalidad).
 		WithCuf(cuf).
 		WithCufd(cufd).
 		WithCuis(cuis).
 		Build()
 
-	respReversion, err := tc.Client.DocumentoAjuste().ReversionAnulacionDocumentoAjuste(context.Background(), tc.Config, reqReversion)
+	respReversion, err := tc.Client.DocumentoAjuste().ReversionAnulacionDocumentoAjuste(context.Background(), reqReversion)
 	if err != nil {
 		t.Fatalf("error en reversión Nota Credito debito %d: %v", nroNota, err)
 	}
@@ -473,24 +459,20 @@ func emitirNotaComputarizadaIndividual(t *testing.T, tc *TestContext, cuis, cufd
 		t.Fatalf("error compress: %v", err)
 	}
 
-	req := models.DocumentoAjuste().NewRecepcionBuilder().
-		WithCodigoAmbiente(tc.Ambiente).
+	req := models.NewRecepcionDocumentoAjusteBuilder().
 		WithCodigoDocumentoSector(47).
 		WithCodigoEmision(siat.EmisionOnline).
-		WithCodigoModalidad(tc.Modalidad).
 		WithCodigoPuntoVenta(tc.PuntoVenta).
-		WithCodigoSistema(tc.Sistema).
 		WithCodigoSucursal(tc.Sucursal).
 		WithCufd(cufd).
 		WithCuis(cuis).
-		WithNit(tc.Nit).
 		WithTipoFacturaDocumento(3).
 		WithArchivo(encoded).
 		WithFechaEnvio(fecha).
 		WithHashArchivo(hash).
 		Build()
 	// 1. EMITIR NOTA DE CREDITO DEBITO COMPUTARIZADA
-	resp, err := tc.Client.DocumentoAjuste().RecepcionDocumentoAjuste(context.Background(), tc.Config, req)
+	resp, err := tc.Client.DocumentoAjuste().RecepcionDocumentoAjuste(context.Background(), req)
 	if err != nil {
 		t.Fatalf("Nota %d - Error de red: %v", nroNota, err)
 	}
@@ -513,23 +495,20 @@ func emitirNotaComputarizadaIndividual(t *testing.T, tc *TestContext, cuis, cufd
 	time.Sleep(50 * time.Millisecond)
 
 	// 2. ANULAR FACTURA
-	reqAnulacion := models.DocumentoAjuste().NewAnulacionBuilder().
-		WithCodigoAmbiente(tc.Ambiente).
+	reqAnulacion := models.NewAnulacionDocumentoAjusteBuilder().
 		WithCodigoDocumentoSector(23).
 		WithCodigoEmision(siat.EmisionOnline).
 		WithTipoFacturaDocumento(1).
-		WithCodigoModalidad(tc.Modalidad).
 		WithCodigoPuntoVenta(tc.PuntoVenta).
-		WithCodigoSistema(tc.Sistema).
 		WithCodigoSucursal(tc.Sucursal).
-		WithNit(tc.Nit). // NIT es requerido en anulación
+		// NIT es requerido en anulación
 		WithCufd(cufd).
 		WithCuis(cuis).
 		WithCuf(cuf).
 		WithCodigoMotivo(1). // 1: Factura mal emitida
 		Build()
 
-	respAnulacion, err := tc.Client.DocumentoAjuste().AnulacionDocumentoAjuste(context.Background(), tc.Config, reqAnulacion)
+	respAnulacion, err := tc.Client.DocumentoAjuste().AnulacionDocumentoAjuste(context.Background(), reqAnulacion)
 	if err != nil {
 		t.Fatalf("error en anulación nota credito debito %d: %v", nroNota, err)
 	}
@@ -548,22 +527,18 @@ func emitirNotaComputarizadaIndividual(t *testing.T, tc *TestContext, cuis, cufd
 	time.Sleep(50 * time.Millisecond)
 
 	// 3. REVERTIR ANULACIÓN
-	reqReversion := models.DocumentoAjuste().NewReversionAnulacionBuilder().
-		WithCodigoAmbiente(tc.Ambiente).
+	reqReversion := models.NewReversionAnulacionDocumentoAjusteBuilder().
 		WithCodigoPuntoVenta(tc.PuntoVenta).
-		WithCodigoSistema(tc.Sistema).
 		WithCodigoSucursal(tc.Sucursal).
-		WithNit(tc.Nit).
 		WithCodigoDocumentoSector(23).
 		WithTipoFacturaDocumento(1).
 		WithCodigoEmision(1).
-		WithCodigoModalidad(tc.Modalidad).
 		WithCuf(cuf).
 		WithCufd(cufd).
 		WithCuis(cuis).
 		Build()
 
-	respReversion, err := tc.Client.DocumentoAjuste().ReversionAnulacionDocumentoAjuste(context.Background(), tc.Config, reqReversion)
+	respReversion, err := tc.Client.DocumentoAjuste().ReversionAnulacionDocumentoAjuste(context.Background(), reqReversion)
 	if err != nil {
 		t.Fatalf("error en reversión Nota Credito debito %d: %v", nroNota, err)
 	}

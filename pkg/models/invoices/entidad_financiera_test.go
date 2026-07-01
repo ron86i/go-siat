@@ -12,7 +12,6 @@ import (
 	"github.com/ron86i/go-siat/internal/core/domain/documents"
 	"github.com/ron86i/go-siat/pkg/models"
 	"github.com/ron86i/go-siat/pkg/models/invoices"
-	"github.com/ron86i/go-siat/pkg/utils"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -76,7 +75,7 @@ func TestEntidadFinancieraBuilder(t *testing.T) {
 	})
 }
 
-func TestEntidadFinancieraIntegration(t *testing.T) {
+func TestEntidadFinanciera_Electronica(t *testing.T) {
 	if _, err := os.Stat(".env"); os.IsNotExist(err) {
 		t.Skip("Saltando prueba de integración: .env no encontrado")
 	}
@@ -140,41 +139,25 @@ func TestEntidadFinancieraIntegration(t *testing.T) {
 				AddDetalle(detalle).
 				Build()
 
-			xmlData, _ := xml.Marshal(factura)
-			var processedXML []byte
-
-			if mod == siat.ModalidadElectronica {
-				signedXML, err := utils.SignXML(xmlData, "key.pem", "cert.crt")
-				if err != nil {
-					t.Skip("Saltando envío Electronica: Error firmando (probablemente faltan certificados):", err)
-					return
-				}
-				processedXML = signedXML
-			} else {
-				// Computarizada no se firma
-				processedXML = xmlData
-			}
-
-			hashString, encodedArchivo, _ := utils.CompressAndHash(processedXML)
-
-			req := models.EntidadFinanciera().NewRecepcionFacturaBuilder().
-				WithCodigoAmbiente(tc.Ambiente).
+			builderReq := models.NewRecepcionFacturaBuilder().
+				WithCodigoModalidad(tc.Modalidad).
 				WithCodigoDocumentoSector(15).
 				WithCodigoEmision(siat.EmisionOnline).
-				WithCodigoModalidad(tc.Modalidad).
 				WithCodigoPuntoVenta(tc.PuntoVenta).
-				WithCodigoSistema(tc.Sistema).
 				WithCodigoSucursal(tc.Sucursal).
 				WithCufd(cufd).
 				WithCuis(cuis).
-				WithNit(tc.Nit).
 				WithTipoFacturaDocumento(1).
-				WithArchivo(encodedArchivo).
-				WithFechaEnvio(time.Now()).
-				WithHashArchivo(hashString).
-				Build()
+				WithFechaEnvio(time.Now())
 
-			resp, err := service.RecepcionFactura(context.Background(), tc.Config, req)
+			err := builderReq.WithFactura(factura, tc.Client.Config())
+			if err != nil {
+				t.Fatalf("error al preparar factura: %v", err)
+			}
+
+			req := builderReq.Build()
+
+			resp, err := service.RecepcionFactura(context.Background(), req)
 
 			if err == nil && resp != nil {
 				log.Printf("Respuesta Recepcion Entidad Financiera (%s): %+v", name, resp.Body.Content)
