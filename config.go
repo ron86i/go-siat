@@ -15,8 +15,9 @@ type CredentialSign = ports.CredentialSign
 
 // Constructores de credenciales re-exportados para uso público del cliente:
 var (
-	NewPEMCredential = ports.NewPEMCredential
-	NewP12Credential = ports.NewP12Credential
+	NewPEMCredential  = ports.NewPEMCredential
+	NewP12Credential  = ports.NewP12Credential
+	WithDynamicConfig = ports.WithDynamicConfig
 )
 
 // validateConfig comprueba que todos los campos requeridos estén presentes y sean válidos.

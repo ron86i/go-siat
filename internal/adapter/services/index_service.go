@@ -171,6 +171,28 @@ performSoapRequest es una función genérica que encapsula el flujo completo de 
 */
 func performSoapRequest[TReq any, TResp any](ctx context.Context, httpClient *http.Client, url string, config ports.Config, opaqueReq any) (*soap.EnvelopeResponse[TResp], error) {
 
+	// Merge con config dinámica si existe en el contexto
+	if dynCfg, ok := ports.GetConfigFromContext(ctx); ok {
+		if dynCfg.Token != "" {
+			config.Token = dynCfg.Token
+		}
+		if dynCfg.Nit != 0 {
+			config.Nit = dynCfg.Nit
+		}
+		if dynCfg.CodigoSistema != "" {
+			config.CodigoSistema = dynCfg.CodigoSistema
+		}
+		if dynCfg.CodigoAmbiente != 0 {
+			config.CodigoAmbiente = dynCfg.CodigoAmbiente
+		}
+		if dynCfg.TraceId != "" {
+			config.TraceId = dynCfg.TraceId
+		}
+		if dynCfg.CredentialSign.GetType() != "UNKNOWN" {
+			config.CredentialSign = dynCfg.CredentialSign
+		}
+	}
+
 	req := getInternalRequest[TReq](opaqueReq)
 	injectCredenciales(req, config)
 

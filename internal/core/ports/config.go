@@ -1,6 +1,7 @@
 package ports
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"os"
@@ -128,3 +129,21 @@ type Config struct {
 func (c Config) SignXML(xmlBytes []byte) ([]byte, error) {
 	return c.CredentialSign.SignXML(xmlBytes)
 }
+
+// contextKey es un tipo privado para evitar colisiones de llaves de contexto
+type contextKey string
+
+const dynamicConfigKey contextKey = "siat_dynamic_config"
+
+// WithDynamicConfig inyecta una configuración dinámica en el contexto de la petición.
+// Los valores definidos aquí sobreescribirán a los de la configuración global del cliente.
+func WithDynamicConfig(ctx context.Context, config Config) context.Context {
+	return context.WithValue(ctx, dynamicConfigKey, config)
+}
+
+// GetConfigFromContext extrae la configuración dinámica si existe en el contexto.
+func GetConfigFromContext(ctx context.Context) (Config, bool) {
+	cfg, ok := ctx.Value(dynamicConfigKey).(Config)
+	return cfg, ok
+}
+
