@@ -16,6 +16,7 @@ import (
 // LubricantesIehd representa la estructura completa de una factura Sector 53
 // lista para ser procesada.
 type LubricantesIehd struct {
+	models.MetadatosFactura
 	models.RequestWrapper[documents.FacturaLubricantesIehd]
 }
 
@@ -32,6 +33,7 @@ type LubricantesIehdDetalle struct {
 // NewLubricantesIehd inicia el proceso de construcción de la factura.
 func NewLubricantesIehdBuilder() *lubricantesIehdBuilder {
 	return &lubricantesIehdBuilder{
+		metadatos: models.NuevosMetadatosFactura(53),
 		factura: &documents.FacturaLubricantesIehd{
 			XMLName:           xml.Name{Local: "facturaElectronicaImportacionComercializacionLubricantesIEHD"},
 			XmlnsXsi:          "http://www.w3.org/2001/XMLSchema-instance",
@@ -57,7 +59,8 @@ func NewLubricantesIehdDetalleBuilder() *lubricantesIehdDetalleBuilder {
 }
 
 type lubricantesIehdBuilder struct {
-	factura *documents.FacturaLubricantesIehd
+	metadatos models.MetadatosFactura
+	factura   *documents.FacturaLubricantesIehd
 }
 
 func (b *lubricantesIehdBuilder) WithCabecera(req LubricantesIehdCabecera) *lubricantesIehdBuilder {
@@ -87,7 +90,7 @@ func (b *lubricantesIehdBuilder) WithModalidad(tipo int) *lubricantesIehdBuilder
 }
 
 func (b *lubricantesIehdBuilder) Build() LubricantesIehd {
-	return LubricantesIehd{models.NewRequestWrapper(b.factura)}
+	return LubricantesIehd{RequestWrapper: models.NewRequestWrapper(b.factura), MetadatosFactura: b.metadatos}
 }
 
 type lubricantesIehdCabeceraBuilder struct {

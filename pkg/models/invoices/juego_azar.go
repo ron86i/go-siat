@@ -15,6 +15,7 @@ import (
 
 // JuegoAzar representa la estructura completa de una factura de Juego de Azar lista para ser procesada.
 type JuegoAzar struct {
+	models.MetadatosFactura
 	models.RequestWrapper[documents.FacturaJuegoAzar]
 }
 
@@ -31,6 +32,7 @@ type JuegoAzarDetalle struct {
 // NewJuegoAzarBuilder inicia el proceso de construcción de una Factura de Juego de Azar.
 func NewJuegoAzarBuilder() *juegoAzarBuilder {
 	return &juegoAzarBuilder{
+		metadatos: models.NuevosMetadatosFactura(18),
 		factura: &documents.FacturaJuegoAzar{
 			XMLName:           xml.Name{Local: "facturaElectronicaJuegoAzar"},
 			XmlnsXsi:          "http://www.w3.org/2001/XMLSchema-instance",
@@ -56,7 +58,8 @@ func NewJuegoAzarDetalleBuilder() *juegoAzarDetalleBuilder {
 }
 
 type juegoAzarBuilder struct {
-	factura *documents.FacturaJuegoAzar
+	metadatos models.MetadatosFactura
+	factura   *documents.FacturaJuegoAzar
 }
 
 func (b *juegoAzarBuilder) WithCabecera(req JuegoAzarCabecera) *juegoAzarBuilder {
@@ -86,7 +89,7 @@ func (b *juegoAzarBuilder) WithModalidad(tipo int) *juegoAzarBuilder {
 }
 
 func (b *juegoAzarBuilder) Build() JuegoAzar {
-	return JuegoAzar{models.NewRequestWrapper(b.factura)}
+	return JuegoAzar{RequestWrapper: models.NewRequestWrapper(b.factura), MetadatosFactura: b.metadatos}
 }
 
 type juegoAzarCabeceraBuilder struct {

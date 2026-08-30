@@ -16,6 +16,7 @@ import (
 
 // ComercialExportacionPVenta representa la estructura completa de una factura PVenta lista para ser procesada.
 type ComercialExportacionPVenta struct {
+	models.MetadatosFactura
 	models.RequestWrapper[documents.FacturaComercialExportacionPVenta]
 }
 
@@ -32,6 +33,7 @@ type ComercialExportacionPVentaDetalle struct {
 // NewComercialExportacionPVentaBuilder inicia el proceso de construcción de una Factura PVenta.
 func NewComercialExportacionPVentaBuilder() *comercialExportacionPVentaBuilder {
 	return &comercialExportacionPVentaBuilder{
+		metadatos: models.NuevosMetadatosFactura(45),
 		factura: &documents.FacturaComercialExportacionPVenta{
 			XMLName:           xml.Name{Local: "facturaElectronicaComercialExportacionPVenta"},
 			XmlnsXsi:          "http://www.w3.org/2001/XMLSchema-instance",
@@ -58,7 +60,8 @@ func NewComercialExportacionPVentaDetalleBuilder() *comercialExportacionPVentaDe
 }
 
 type comercialExportacionPVentaBuilder struct {
-	factura *documents.FacturaComercialExportacionPVenta
+	metadatos models.MetadatosFactura
+	factura   *documents.FacturaComercialExportacionPVenta
 }
 
 func (b *comercialExportacionPVentaBuilder) WithCabecera(req ComercialExportacionPVentaCabecera) *comercialExportacionPVentaBuilder {
@@ -88,7 +91,7 @@ func (b *comercialExportacionPVentaBuilder) WithModalidad(tipo int) *comercialEx
 }
 
 func (b *comercialExportacionPVentaBuilder) Build() ComercialExportacionPVenta {
-	return ComercialExportacionPVenta{models.NewRequestWrapper(b.factura)}
+	return ComercialExportacionPVenta{RequestWrapper: models.NewRequestWrapper(b.factura), MetadatosFactura: b.metadatos}
 }
 
 type comercialExportacionPVentaCabeceraBuilder struct {

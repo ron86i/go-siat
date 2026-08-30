@@ -14,6 +14,7 @@ import (
 // NotaConciliacion representa la estructura completa de una nota de conciliación lista para ser procesada.
 type NotaConciliacion struct {
 	models.RequestWrapper[documents.NotaConciliacion]
+	models.MetadatosFactura
 }
 
 // NotaConciliacionCabecera representa la sección de cabecera de una nota de conciliación.
@@ -34,6 +35,7 @@ type NotaDetalleConciliacion struct {
 // NewNotaConciliacionBuilder inicia el proceso de construcción de una Nota de Conciliación.
 func NewNotaConciliacionBuilder() *notaConciliacionBuilder {
 	return &notaConciliacionBuilder{
+		metadatos: models.NuevosMetadatosFactura(29),
 		nota: &documents.NotaConciliacion{
 			XMLName:           xml.Name{Local: "notaElectronicaConciliacion"},
 			XmlnsXsi:          "http://www.w3.org/2001/XMLSchema-instance",
@@ -66,7 +68,8 @@ func NewNotaDetalleConciliacionBuilder() *notaDetalleConciliacionBuilder {
 }
 
 type notaConciliacionBuilder struct {
-	nota *documents.NotaConciliacion
+	metadatos models.MetadatosFactura
+	nota      *documents.NotaConciliacion
 }
 
 func (b *notaConciliacionBuilder) WithCabecera(req NotaConciliacionCabecera) *notaConciliacionBuilder {
@@ -104,7 +107,7 @@ func (b *notaConciliacionBuilder) WithModalidad(tipo int) *notaConciliacionBuild
 }
 
 func (b *notaConciliacionBuilder) Build() NotaConciliacion {
-	return NotaConciliacion{models.NewRequestWrapper(b.nota)}
+	return NotaConciliacion{RequestWrapper: models.NewRequestWrapper(b.nota), MetadatosFactura: b.metadatos}
 }
 
 type notaConciliacionCabeceraBuilder struct {

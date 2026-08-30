@@ -14,6 +14,7 @@ import (
 // NotaFiscalCreditoDebito representa la estructura completa de una nota de crédito/débito standard (Sector 24) lista para ser procesada.
 type NotaFiscalCreditoDebito struct {
 	models.RequestWrapper[documents.NotaFiscalCreditoDebito]
+	models.MetadatosFactura
 }
 
 // NotaFiscalCreditoDebitoCabecera representa la sección de cabecera de la nota (Sector 24).
@@ -29,6 +30,7 @@ type NotaDetalleFiscalCreditoDebito struct {
 // NewNotaFiscalCreditoDebitoBuilder inicia el proceso de construcción de una Nota Fiscal.
 func NewNotaFiscalCreditoDebitoBuilder() *notaFiscalCreditoDebitoBuilder {
 	return &notaFiscalCreditoDebitoBuilder{
+		metadatos: models.NuevosMetadatosFactura(24),
 		nota: &documents.NotaFiscalCreditoDebito{
 			XMLName:           xml.Name{Local: "notaFiscalElectronicaCreditoDebito"}, // Default a electrónica
 			XmlnsXsi:          "http://www.w3.org/2001/XMLSchema-instance",
@@ -54,7 +56,8 @@ func NewNotaDetalleFiscalCreditoDebitoBuilder() *notaDetalleFiscalCreditoDebitoB
 }
 
 type notaFiscalCreditoDebitoBuilder struct {
-	nota *documents.NotaFiscalCreditoDebito
+	metadatos models.MetadatosFactura
+	nota      *documents.NotaFiscalCreditoDebito
 }
 
 func (b *notaFiscalCreditoDebitoBuilder) WithCabecera(req NotaFiscalCreditoDebitoCabecera) *notaFiscalCreditoDebitoBuilder {
@@ -84,7 +87,7 @@ func (b *notaFiscalCreditoDebitoBuilder) WithModalidad(tipo int) *notaFiscalCred
 }
 
 func (b *notaFiscalCreditoDebitoBuilder) Build() NotaFiscalCreditoDebito {
-	return NotaFiscalCreditoDebito{models.NewRequestWrapper(b.nota)}
+	return NotaFiscalCreditoDebito{RequestWrapper: models.NewRequestWrapper(b.nota), MetadatosFactura: b.metadatos}
 }
 
 type notaFiscalCreditoDebitoCabeceraBuilder struct {

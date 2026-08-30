@@ -15,6 +15,7 @@ import (
 
 // ImportacionComercializacionLubricantes representa la estructura completa de una factura de Sector 44.
 type ImportacionComercializacionLubricantes struct {
+	models.MetadatosFactura
 	models.RequestWrapper[documents.FacturaImportacionComercializacionLubricantes]
 }
 
@@ -31,6 +32,7 @@ type ImportacionComercializacionLubricantesDetalle struct {
 // NewImportacionComercializacionLubricantesBuilder inicia el proceso de construcción.
 func NewImportacionComercializacionLubricantesBuilder() *importacionComercializacionLubricantesBuilder {
 	return &importacionComercializacionLubricantesBuilder{
+		metadatos: models.NuevosMetadatosFactura(44),
 		factura: &documents.FacturaImportacionComercializacionLubricantes{
 			XMLName:  xml.Name{Local: "facturaElectronicaImportacionComercializacionLubricantes"},
 			XmlnsXsi: "http://www.w3.org/2001/XMLSchema-instance",
@@ -55,7 +57,8 @@ func NewImportacionComercializacionLubricantesDetalleBuilder() *importacionComer
 }
 
 type importacionComercializacionLubricantesBuilder struct {
-	factura *documents.FacturaImportacionComercializacionLubricantes
+	metadatos models.MetadatosFactura
+	factura   *documents.FacturaImportacionComercializacionLubricantes
 }
 
 func (b *importacionComercializacionLubricantesBuilder) WithCabecera(req ImportacionComercializacionLubricantesCabecera) *importacionComercializacionLubricantesBuilder {
@@ -83,7 +86,7 @@ func (b *importacionComercializacionLubricantesBuilder) WithModalidad(tipo int) 
 }
 
 func (b *importacionComercializacionLubricantesBuilder) Build() ImportacionComercializacionLubricantes {
-	return ImportacionComercializacionLubricantes{models.NewRequestWrapper(b.factura)}
+	return ImportacionComercializacionLubricantes{RequestWrapper: models.NewRequestWrapper(b.factura), MetadatosFactura: b.metadatos}
 }
 
 type importacionComercializacionLubricantesCabeceraBuilder struct {

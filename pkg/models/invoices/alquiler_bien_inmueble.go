@@ -16,6 +16,7 @@ import (
 // AlquilerBienInmueble representa la estructura completa de una factura de Alquiler de Bienes Inmuebles lista para ser procesada.
 type AlquilerBienInmueble struct {
 	models.RequestWrapper[documents.FacturaAlquilerBienInmueble]
+	models.MetadatosFactura
 }
 
 // AlquilerBienInmuebleCabecera representa la sección de cabecera de una factura de Alquiler de Bienes Inmuebles.
@@ -31,6 +32,7 @@ type AlquilerBienInmuebleDetalle struct {
 // NewAlquilerBienInmuebleBuilder inicia el proceso de construcción de una Factura de Alquiler de Bienes Inmuebles.
 func NewAlquilerBienInmuebleBuilder() *alquilerBienInmuebleBuilder {
 	return &alquilerBienInmuebleBuilder{
+		metadatos: models.NuevosMetadatosFactura(2),
 		factura: &documents.FacturaAlquilerBienInmueble{
 			XMLName:           xml.Name{Local: "facturaElectronicaAlquilerBienInmueble"},
 			XmlnsXsi:          "http://www.w3.org/2001/XMLSchema-instance",
@@ -56,7 +58,14 @@ func NewAlquilerBienInmuebleDetalleBuilder() *alquilerBienInmuebleDetalleBuilder
 }
 
 type alquilerBienInmuebleBuilder struct {
-	factura *documents.FacturaAlquilerBienInmueble
+	factura   *documents.FacturaAlquilerBienInmueble
+	metadatos models.MetadatosFactura
+}
+
+// WithTipoFacturaDocumento reemplaza el tipo fiscal predeterminado de alquiler.
+func (b *alquilerBienInmuebleBuilder) WithTipoFacturaDocumento(tipo int) *alquilerBienInmuebleBuilder {
+	b.metadatos.WithTipoFacturaDocumento(tipo)
+	return b
 }
 
 func (b *alquilerBienInmuebleBuilder) WithCabecera(req AlquilerBienInmuebleCabecera) *alquilerBienInmuebleBuilder {
@@ -86,7 +95,7 @@ func (b *alquilerBienInmuebleBuilder) WithModalidad(tipo int) *alquilerBienInmue
 }
 
 func (b *alquilerBienInmuebleBuilder) Build() AlquilerBienInmueble {
-	return AlquilerBienInmueble{models.NewRequestWrapper(b.factura)}
+	return AlquilerBienInmueble{RequestWrapper: models.NewRequestWrapper(b.factura), MetadatosFactura: b.metadatos}
 }
 
 type alquilerBienInmuebleCabeceraBuilder struct {

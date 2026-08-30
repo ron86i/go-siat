@@ -16,6 +16,7 @@ import (
 // TasaCero representa la estructura completa de una factura Tasa Cero lista para ser procesada.
 type TasaCero struct {
 	models.RequestWrapper[documents.FacturaTasaCero]
+	models.MetadatosFactura
 }
 
 // TasaCeroCabecera representa la sección de cabecera de una factura Tasa Cero.
@@ -31,6 +32,7 @@ type TasaCeroDetalle struct {
 // NewTasaCeroBuilder inicia el proceso de construcción de una Factura Tasa Cero.
 func NewTasaCeroBuilder() *tasaCeroBuilder {
 	return &tasaCeroBuilder{
+		metadatos: models.NuevosMetadatosFactura(8),
 		factura: &documents.FacturaTasaCero{
 			XMLName:           xml.Name{Local: "facturaElectronicaTasaCero"},
 			XmlnsXsi:          "http://www.w3.org/2001/XMLSchema-instance",
@@ -57,7 +59,14 @@ func NewTasaCeroDetalleBuilder() *tasaCeroDetalleBuilder {
 }
 
 type tasaCeroBuilder struct {
-	factura *documents.FacturaTasaCero
+	factura   *documents.FacturaTasaCero
+	metadatos models.MetadatosFactura
+}
+
+// WithTipoFacturaDocumento reemplaza el tipo fiscal predeterminado de tasa cero.
+func (b *tasaCeroBuilder) WithTipoFacturaDocumento(tipo int) *tasaCeroBuilder {
+	b.metadatos.WithTipoFacturaDocumento(tipo)
+	return b
 }
 
 func (b *tasaCeroBuilder) WithCabecera(req TasaCeroCabecera) *tasaCeroBuilder {
@@ -87,7 +96,7 @@ func (b *tasaCeroBuilder) WithModalidad(tipo int) *tasaCeroBuilder {
 }
 
 func (b *tasaCeroBuilder) Build() TasaCero {
-	return TasaCero{models.NewRequestWrapper(b.factura)}
+	return TasaCero{RequestWrapper: models.NewRequestWrapper(b.factura), MetadatosFactura: b.metadatos}
 }
 
 type tasaCeroCabeceraBuilder struct {

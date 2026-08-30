@@ -14,6 +14,7 @@ import (
 )
 
 type FacturaPrevaloradaSinDerechoCreditoFiscal struct {
+	models.MetadatosFactura
 	models.RequestWrapper[documents.FacturaPrevaloradaSinDerechoCreditoFiscal]
 }
 
@@ -27,6 +28,7 @@ type FacturaPrevaloradaSinDerechoCreditoFiscalDetalle struct {
 
 func NewPrevaloradaSinDerechoCreditoFiscalBuilder() *prevaloradaSinDerechoCreditoFiscalBuilder {
 	return &prevaloradaSinDerechoCreditoFiscalBuilder{
+		metadatos: models.NuevosMetadatosFactura(36),
 		factura: &documents.FacturaPrevaloradaSinDerechoCreditoFiscal{
 			XMLName:           xml.Name{Local: "facturaElectronicaPrevaloradaSD"},
 			XmlnsXsi:          "http://www.w3.org/2001/XMLSchema-instance",
@@ -36,7 +38,8 @@ func NewPrevaloradaSinDerechoCreditoFiscalBuilder() *prevaloradaSinDerechoCredit
 }
 
 type prevaloradaSinDerechoCreditoFiscalBuilder struct {
-	factura *documents.FacturaPrevaloradaSinDerechoCreditoFiscal
+	metadatos models.MetadatosFactura
+	factura   *documents.FacturaPrevaloradaSinDerechoCreditoFiscal
 }
 
 func (b *prevaloradaSinDerechoCreditoFiscalBuilder) WithCabecera(req FacturaPrevaloradaSinDerechoCreditoFiscalCabecera) *prevaloradaSinDerechoCreditoFiscalBuilder {
@@ -66,7 +69,7 @@ func (b *prevaloradaSinDerechoCreditoFiscalBuilder) WithDetalle(req FacturaPreva
 }
 
 func (b *prevaloradaSinDerechoCreditoFiscalBuilder) Build() FacturaPrevaloradaSinDerechoCreditoFiscal {
-	return FacturaPrevaloradaSinDerechoCreditoFiscal{models.NewRequestWrapper(b.factura)}
+	return FacturaPrevaloradaSinDerechoCreditoFiscal{RequestWrapper: models.NewRequestWrapper(b.factura), MetadatosFactura: b.metadatos}
 }
 
 type prevaloradaSinDerechoCreditoFiscalCabeceraBuilder struct {

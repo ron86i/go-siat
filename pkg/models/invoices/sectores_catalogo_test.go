@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	siat "github.com/ron86i/go-siat/v2"
+	"github.com/ron86i/go-siat/v2/pkg/models"
 	"github.com/ron86i/go-siat/v2/pkg/models/invoices"
 )
 
@@ -208,5 +209,46 @@ func TestSectores_CoberturaCatalogo(t *testing.T) {
 
 	if cubiertos[33] {
 		t.Error("el sector 33 no tiene builder en el SDK; si se agregó, actualizá la documentación")
+	}
+}
+
+func TestSectores_TipoFacturaDocumentoPredeterminado(t *testing.T) {
+	catalogo := invoices.DefinicionesTipoFactura()
+	definiciones := make(map[int]int, len(catalogo))
+	for _, definicion := range catalogo {
+		if _, duplicado := definiciones[definicion.CodigoDocumentoSector]; duplicado {
+			t.Fatalf("el sector %d está duplicado en DefinicionesTipoFactura", definicion.CodigoDocumentoSector)
+		}
+		definiciones[definicion.CodigoDocumentoSector] = definicion.TipoFacturaDocumento
+	}
+	for _, c := range sectorCases() {
+		t.Run(c.nombre, func(t *testing.T) {
+			documento, ok := c.build(siat.ModalidadElectronica).(models.FacturaConMetadatos)
+			if !ok {
+				t.Fatal("la factura no expone sus metadatos fiscales")
+			}
+			if obtenido := documento.CodigoDocumentoSector(); obtenido != c.codigo {
+				t.Fatalf("sector del metadato = %d; se esperaba %d", obtenido, c.codigo)
+			}
+			esperado, existe := definiciones[c.codigo]
+			if !existe {
+				t.Fatalf("el sector %d no está definido en DefinicionesTipoFactura", c.codigo)
+			}
+			if obtenido := documento.TipoFacturaDocumento(); obtenido != esperado {
+				t.Fatalf("tipo de factura = %d; se esperaba %d", obtenido, esperado)
+			}
+		})
+	}
+	if len(definiciones) != len(sectorCases())-1 {
+		t.Fatalf("definiciones = %d; se esperaban %d sectores únicos", len(definiciones), len(sectorCases())-1)
+	}
+}
+
+func TestSectores_CatalogoTiposFacturaEsInmutable(t *testing.T) {
+	catalogo := invoices.DefinicionesTipoFactura()
+	original := catalogo[0].TipoFacturaDocumento
+	catalogo[0].TipoFacturaDocumento = 999
+	if obtenido := invoices.DefinicionesTipoFactura()[0].TipoFacturaDocumento; obtenido != original {
+		t.Fatalf("el catálogo público fue modificado: %d", obtenido)
 	}
 }

@@ -15,6 +15,7 @@ import (
 
 // VentaCombustibleSinSubvencion representa la estructura completa de una factura de Venta de Combustible Sin Subvención lista para ser procesada.
 type VentaCombustibleSinSubvencion struct {
+	models.MetadatosFactura
 	models.RequestWrapper[documents.FacturaVentaCombustibleSinSubvencion]
 }
 
@@ -31,6 +32,7 @@ type VentaCombustibleSinSubvencionDetalle struct {
 // NewVentaCombustibleSinSubvencionBuilder inicia el proceso de construcción de una Factura de Venta de Combustible Sin Subvención.
 func NewVentaCombustibleSinSubvencionBuilder() *ventaCombustibleSinSubvencionBuilder {
 	return &ventaCombustibleSinSubvencionBuilder{
+		metadatos: models.NuevosMetadatosFactura(55),
 		factura: &documents.FacturaVentaCombustibleSinSubvencion{
 			XMLName:           xml.Name{Local: "facturaElectronicaVentaCombustibleSinSubvencion"},
 			XmlnsXsi:          "http://www.w3.org/2001/XMLSchema-instance",
@@ -56,7 +58,8 @@ func NewVentaCombustibleSinSubvencionDetalleBuilder() *ventaCombustibleSinSubven
 }
 
 type ventaCombustibleSinSubvencionBuilder struct {
-	factura *documents.FacturaVentaCombustibleSinSubvencion
+	metadatos models.MetadatosFactura
+	factura   *documents.FacturaVentaCombustibleSinSubvencion
 }
 
 func (b *ventaCombustibleSinSubvencionBuilder) WithCabecera(req VentaCombustibleSinSubvencionCabecera) *ventaCombustibleSinSubvencionBuilder {
@@ -86,7 +89,7 @@ func (b *ventaCombustibleSinSubvencionBuilder) WithModalidad(tipo int) *ventaCom
 }
 
 func (b *ventaCombustibleSinSubvencionBuilder) Build() VentaCombustibleSinSubvencion {
-	return VentaCombustibleSinSubvencion{models.NewRequestWrapper(b.factura)}
+	return VentaCombustibleSinSubvencion{RequestWrapper: models.NewRequestWrapper(b.factura), MetadatosFactura: b.metadatos}
 }
 
 type ventaCombustibleSinSubvencionCabeceraBuilder struct {

@@ -15,6 +15,7 @@ import (
 
 // Seguros representa la estructura completa de una factura de Seguros lista para ser procesada.
 type Seguros struct {
+	models.MetadatosFactura
 	models.RequestWrapper[documents.FacturaSeguros]
 }
 
@@ -31,6 +32,7 @@ type SegurosDetalle struct {
 // NewSegurosBuilder inicia el proceso de construcción de una Factura de Seguros.
 func NewSegurosBuilder() *segurosBuilder {
 	return &segurosBuilder{
+		metadatos: models.NuevosMetadatosFactura(34),
 		factura: &documents.FacturaSeguros{
 			XMLName:           xml.Name{Local: "facturaElectronicaSeguros"},
 			XmlnsXsi:          "http://www.w3.org/2001/XMLSchema-instance",
@@ -56,7 +58,8 @@ func NewSegurosDetalleBuilder() *segurosDetalleBuilder {
 }
 
 type segurosBuilder struct {
-	factura *documents.FacturaSeguros
+	metadatos models.MetadatosFactura
+	factura   *documents.FacturaSeguros
 }
 
 func (b *segurosBuilder) WithCabecera(req SegurosCabecera) *segurosBuilder {
@@ -86,7 +89,7 @@ func (b *segurosBuilder) WithModalidad(tipo int) *segurosBuilder {
 }
 
 func (b *segurosBuilder) Build() Seguros {
-	return Seguros{models.NewRequestWrapper(b.factura)}
+	return Seguros{RequestWrapper: models.NewRequestWrapper(b.factura), MetadatosFactura: b.metadatos}
 }
 
 type segurosCabeceraBuilder struct {

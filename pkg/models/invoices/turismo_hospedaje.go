@@ -16,6 +16,7 @@ import (
 // TurismoHospedaje representa la estructura completa de una factura de Turismo y Hospedaje lista para ser procesada.
 type TurismoHospedaje struct {
 	models.RequestWrapper[documents.FacturaTurismoHospedaje]
+	models.MetadatosFactura
 }
 
 // TurismoHospedajeCabecera representa la sección de cabecera de una factura de Turismo y Hospedaje.
@@ -31,6 +32,7 @@ type TurismoHospedajeDetalle struct {
 // NewTurismoHospedajeBuilder inicia el proceso de construcción de una Factura de Turismo y Hospedaje.
 func NewTurismoHospedajeBuilder() *turismoHospedajeBuilder {
 	return &turismoHospedajeBuilder{
+		metadatos: models.NuevosMetadatosFactura(6),
 		factura: &documents.FacturaTurismoHospedaje{
 			XMLName:           xml.Name{Local: "facturaElectronicaServicioTuristicoHospedaje"},
 			XmlnsXsi:          "http://www.w3.org/2001/XMLSchema-instance",
@@ -57,7 +59,14 @@ func NewTurismoHospedajeDetalleBuilder() *turismoHospedajeDetalleBuilder {
 }
 
 type turismoHospedajeBuilder struct {
-	factura *documents.FacturaTurismoHospedaje
+	factura   *documents.FacturaTurismoHospedaje
+	metadatos models.MetadatosFactura
+}
+
+// WithTipoFacturaDocumento reemplaza el tipo fiscal predeterminado de turismo y hospedaje.
+func (b *turismoHospedajeBuilder) WithTipoFacturaDocumento(tipo int) *turismoHospedajeBuilder {
+	b.metadatos.WithTipoFacturaDocumento(tipo)
+	return b
 }
 
 func (b *turismoHospedajeBuilder) WithCabecera(req TurismoHospedajeCabecera) *turismoHospedajeBuilder {
@@ -87,7 +96,7 @@ func (b *turismoHospedajeBuilder) WithModalidad(tipo int) *turismoHospedajeBuild
 }
 
 func (b *turismoHospedajeBuilder) Build() TurismoHospedaje {
-	return TurismoHospedaje{models.NewRequestWrapper(b.factura)}
+	return TurismoHospedaje{RequestWrapper: models.NewRequestWrapper(b.factura), MetadatosFactura: b.metadatos}
 }
 
 type turismoHospedajeCabeceraBuilder struct {

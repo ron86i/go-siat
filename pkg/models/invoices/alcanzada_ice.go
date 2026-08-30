@@ -16,6 +16,7 @@ import (
 // AlcanzadaIce representa la estructura completa de una factura Sector 14
 // lista para ser procesada.
 type AlcanzadaIce struct {
+	models.MetadatosFactura
 	models.RequestWrapper[documents.FacturaAlcanzadaIce]
 }
 
@@ -32,6 +33,7 @@ type AlcanzadaIceDetalle struct {
 // NewAlcanzadaIceBuilder inicia el proceso de construcción de la factura.
 func NewAlcanzadaIceBuilder() *alcanzadaIceBuilder {
 	return &alcanzadaIceBuilder{
+		metadatos: models.NuevosMetadatosFactura(14),
 		factura: &documents.FacturaAlcanzadaIce{
 			XMLName:           xml.Name{Local: "facturaElectronicaAlcanzadaIce"},
 			XmlnsXsi:          "http://www.w3.org/2001/XMLSchema-instance",
@@ -57,7 +59,8 @@ func NewAlcanzadaIceDetalleBuilder() *alcanzadaIceDetalleBuilder {
 }
 
 type alcanzadaIceBuilder struct {
-	factura *documents.FacturaAlcanzadaIce
+	metadatos models.MetadatosFactura
+	factura   *documents.FacturaAlcanzadaIce
 }
 
 func (b *alcanzadaIceBuilder) WithCabecera(req AlcanzadaIceCabecera) *alcanzadaIceBuilder {
@@ -87,7 +90,7 @@ func (b *alcanzadaIceBuilder) WithModalidad(tipo int) *alcanzadaIceBuilder {
 }
 
 func (b *alcanzadaIceBuilder) Build() AlcanzadaIce {
-	return AlcanzadaIce{models.NewRequestWrapper(b.factura)}
+	return AlcanzadaIce{RequestWrapper: models.NewRequestWrapper(b.factura), MetadatosFactura: b.metadatos}
 }
 
 type alcanzadaIceCabeceraBuilder struct {

@@ -16,6 +16,7 @@ import (
 // SectorEducativo representa la estructura completa de una factura del Sector Educativo lista para ser procesada.
 type SectorEducativo struct {
 	models.RequestWrapper[documents.FacturaSectorEducativo]
+	models.MetadatosFactura
 }
 
 // SectorEducativoCabecera representa la sección de cabecera de una factura del Sector Educativo.
@@ -31,6 +32,7 @@ type SectorEducativoDetalle struct {
 // NewSectorEducativoBuilder inicia el proceso de construcción de una Factura del Sector Educativo.
 func NewSectorEducativoBuilder() *sectorEducativoBuilder {
 	return &sectorEducativoBuilder{
+		metadatos: models.NuevosMetadatosFactura(11),
 		factura: &documents.FacturaSectorEducativo{
 			XMLName:           xml.Name{Local: "facturaElectronicaSectorEducativo"},
 			XmlnsXsi:          "http://www.w3.org/2001/XMLSchema-instance",
@@ -56,7 +58,14 @@ func NewSectorEducativoDetalleBuilder() *sectorEducativoDetalleBuilder {
 }
 
 type sectorEducativoBuilder struct {
-	factura *documents.FacturaSectorEducativo
+	factura   *documents.FacturaSectorEducativo
+	metadatos models.MetadatosFactura
+}
+
+// WithTipoFacturaDocumento reemplaza el tipo fiscal predeterminado del sector educativo.
+func (b *sectorEducativoBuilder) WithTipoFacturaDocumento(tipo int) *sectorEducativoBuilder {
+	b.metadatos.WithTipoFacturaDocumento(tipo)
+	return b
 }
 
 func (b *sectorEducativoBuilder) WithCabecera(req SectorEducativoCabecera) *sectorEducativoBuilder {
@@ -86,7 +95,7 @@ func (b *sectorEducativoBuilder) WithModalidad(tipo int) *sectorEducativoBuilder
 }
 
 func (b *sectorEducativoBuilder) Build() SectorEducativo {
-	return SectorEducativo{models.NewRequestWrapper(b.factura)}
+	return SectorEducativo{RequestWrapper: models.NewRequestWrapper(b.factura), MetadatosFactura: b.metadatos}
 }
 
 type sectorEducativoCabeceraBuilder struct {

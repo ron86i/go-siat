@@ -13,6 +13,7 @@ import (
 
 // ServicioBasicoZF representa la estructura completa de una factura de servicio básico ZF lista para ser procesada.
 type ServicioBasicoZF struct {
+	models.MetadatosFactura
 	models.RequestWrapper[documents.FacturaServicioBasicoZF]
 }
 
@@ -27,11 +28,13 @@ type ServicioBasicoZFDetalle struct {
 }
 
 type servicioBasicoZFBuilder struct {
-	factura *documents.FacturaServicioBasicoZF
+	metadatos models.MetadatosFactura
+	factura   *documents.FacturaServicioBasicoZF
 }
 
 func NewServicioBasicoZFBuilder() *servicioBasicoZFBuilder {
 	return &servicioBasicoZFBuilder{
+		metadatos: models.NuevosMetadatosFactura(40),
 		factura: &documents.FacturaServicioBasicoZF{
 			XMLName:           xml.Name{Local: "facturaElectronicaServicioBasicoZf"},
 			XmlnsXsi:          "http://www.w3.org/2001/XMLSchema-instance",
@@ -67,7 +70,7 @@ func (b *servicioBasicoZFBuilder) AddDetalle(req ServicioBasicoZFDetalle) *servi
 }
 
 func (b *servicioBasicoZFBuilder) Build() ServicioBasicoZF {
-	return ServicioBasicoZF{models.NewRequestWrapper(b.factura)}
+	return ServicioBasicoZF{RequestWrapper: models.NewRequestWrapper(b.factura), MetadatosFactura: b.metadatos}
 }
 
 // Cabecera Builder

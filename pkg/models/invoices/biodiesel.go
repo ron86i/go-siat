@@ -15,6 +15,7 @@ import (
 
 // Biodiesel representa la estructura completa de una factura de Biodiesel lista para ser procesada.
 type Biodiesel struct {
+	models.MetadatosFactura
 	models.RequestWrapper[documents.FacturaBiodiesel]
 }
 
@@ -31,6 +32,7 @@ type BiodieselDetalle struct {
 // NewBiodieselBuilder inicia el proceso de construcción de una Factura de Biodiesel.
 func NewBiodieselBuilder() *biodieselBuilder {
 	return &biodieselBuilder{
+		metadatos: models.NuevosMetadatosFactura(54),
 		factura: &documents.FacturaBiodiesel{
 			XMLName:           xml.Name{Local: "facturaElectronicaBiodiesel"},
 			XmlnsXsi:          "http://www.w3.org/2001/XMLSchema-instance",
@@ -57,7 +59,8 @@ func NewBiodieselDetalleBuilder() *biodieselDetalleBuilder {
 }
 
 type biodieselBuilder struct {
-	factura *documents.FacturaBiodiesel
+	metadatos models.MetadatosFactura
+	factura   *documents.FacturaBiodiesel
 }
 
 func (b *biodieselBuilder) WithCabecera(req BiodieselCabecera) *biodieselBuilder {
@@ -87,7 +90,7 @@ func (b *biodieselBuilder) WithModalidad(tipo int) *biodieselBuilder {
 }
 
 func (b *biodieselBuilder) Build() Biodiesel {
-	return Biodiesel{models.NewRequestWrapper(b.factura)}
+	return Biodiesel{RequestWrapper: models.NewRequestWrapper(b.factura), MetadatosFactura: b.metadatos}
 }
 
 type biodieselCabeceraBuilder struct {

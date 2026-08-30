@@ -13,6 +13,7 @@ import (
 
 // EntidadFinanciera representa la estructura completa de una factura de entidad financiera lista para ser procesada.
 type EntidadFinanciera struct {
+	models.MetadatosFactura
 	models.RequestWrapper[documents.FacturaEntidadFinanciera]
 }
 
@@ -27,11 +28,13 @@ type EntidadFinancieraDetalle struct {
 }
 
 type entidadFinancieraBuilder struct {
-	factura *documents.FacturaEntidadFinanciera
+	metadatos models.MetadatosFactura
+	factura   *documents.FacturaEntidadFinanciera
 }
 
 func NewEntidadFinancieraBuilder() *entidadFinancieraBuilder {
 	return &entidadFinancieraBuilder{
+		metadatos: models.NuevosMetadatosFactura(15),
 		factura: &documents.FacturaEntidadFinanciera{
 			XMLName:           xml.Name{Local: "facturaElectronicaEntidadFinanciera"},
 			XmlnsXsi:          "http://www.w3.org/2001/XMLSchema-instance",
@@ -67,7 +70,7 @@ func (b *entidadFinancieraBuilder) AddDetalle(req EntidadFinancieraDetalle) *ent
 }
 
 func (b *entidadFinancieraBuilder) Build() EntidadFinanciera {
-	return EntidadFinanciera{models.NewRequestWrapper(b.factura)}
+	return EntidadFinanciera{RequestWrapper: models.NewRequestWrapper(b.factura), MetadatosFactura: b.metadatos}
 }
 
 // Cabecera Builder

@@ -15,6 +15,7 @@ import (
 // CompraVentaBonificaciones representa una factura de compra-venta con bonificaciones lista para procesar.
 type CompraVentaBonificaciones struct {
 	models.RequestWrapper[documents.FacturaCompraVentaBonificaciones]
+	models.MetadatosFactura
 }
 
 // CompraVentaBonificacionesCabecera representa la cabecera de una factura de bonificaciones.
@@ -30,6 +31,7 @@ type CompraVentaBonificacionesDetalle struct {
 // NewCompraVentaBonificacionesBuilder inicia la construcción de una factura de compra-venta con bonificaciones.
 func NewCompraVentaBonificacionesBuilder() *compraVentaBonificacionesBuilder {
 	return &compraVentaBonificacionesBuilder{
+		metadatos: models.NuevosMetadatosFactura(35),
 		factura: &documents.FacturaCompraVentaBonificaciones{
 			XMLName:           xml.Name{Local: "facturaElectronicaCompraVentaBon"},
 			XmlnsXsi:          "http://www.w3.org/2001/XMLSchema-instance",
@@ -57,7 +59,14 @@ func NewCompraVentaBonificacionesDetalleBuilder() *detalleBonificacionesBuilder 
 // --- Builder Factura Bonificaciones ---
 
 type compraVentaBonificacionesBuilder struct {
-	factura *documents.FacturaCompraVentaBonificaciones
+	factura   *documents.FacturaCompraVentaBonificaciones
+	metadatos models.MetadatosFactura
+}
+
+// WithTipoFacturaDocumento reemplaza el tipo fiscal predeterminado de bonificaciones.
+func (b *compraVentaBonificacionesBuilder) WithTipoFacturaDocumento(tipo int) *compraVentaBonificacionesBuilder {
+	b.metadatos.WithTipoFacturaDocumento(tipo)
+	return b
 }
 
 // WithModalidad configura los metadatos XML según la modalidad.
@@ -88,7 +97,7 @@ func (b *compraVentaBonificacionesBuilder) AddDetalle(req CompraVentaBonificacio
 }
 
 func (b *compraVentaBonificacionesBuilder) Build() CompraVentaBonificaciones {
-	return CompraVentaBonificaciones{models.NewRequestWrapper(b.factura)}
+	return CompraVentaBonificaciones{RequestWrapper: models.NewRequestWrapper(b.factura), MetadatosFactura: b.metadatos}
 }
 
 // --- Builder Cabecera Bonificaciones ---

@@ -15,6 +15,7 @@ import (
 
 // VentaMineralBCB representa la estructura completa de una factura de Venta de Minerales para el BCB lista para ser procesada.
 type VentaMineralBCB struct {
+	models.MetadatosFactura
 	models.RequestWrapper[documents.FacturaVentaMineralBCB]
 }
 
@@ -31,6 +32,7 @@ type VentaMineralBCBDetalle struct {
 // NewVentaMineralBCBBuilder inicia el proceso de construcción de la factura.
 func NewVentaMineralBCBBuilder() *ventaMineralBCBBuilder {
 	return &ventaMineralBCBBuilder{
+		metadatos: models.NuevosMetadatosFactura(52),
 		factura: &documents.FacturaVentaMineralBCB{
 			XMLName:           xml.Name{Local: "facturaElectronicaVentaMineralBCB"},
 			XmlnsXsi:          "http://www.w3.org/2001/XMLSchema-instance",
@@ -60,7 +62,8 @@ func NewVentaMineralBCBDetalleBuilder() *ventaMineralBCBDetalleBuilder {
 }
 
 type ventaMineralBCBBuilder struct {
-	factura *documents.FacturaVentaMineralBCB
+	metadatos models.MetadatosFactura
+	factura   *documents.FacturaVentaMineralBCB
 }
 
 func (b *ventaMineralBCBBuilder) WithCabecera(req VentaMineralBCBCabecera) *ventaMineralBCBBuilder {
@@ -92,7 +95,7 @@ func (b *ventaMineralBCBBuilder) WithModalidad(tipo int) *ventaMineralBCBBuilder
 }
 
 func (b *ventaMineralBCBBuilder) Build() VentaMineralBCB {
-	return VentaMineralBCB{models.NewRequestWrapper(b.factura)}
+	return VentaMineralBCB{RequestWrapper: models.NewRequestWrapper(b.factura), MetadatosFactura: b.metadatos}
 }
 
 type ventaMineralBCBCabeceraBuilder struct {

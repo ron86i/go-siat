@@ -15,6 +15,7 @@ import (
 
 // MonedaExtranjera representa la estructura completa de una factura de Sector 9.
 type MonedaExtranjera struct {
+	models.MetadatosFactura
 	models.RequestWrapper[documents.FacturaMonedaExtranjera]
 }
 
@@ -31,6 +32,7 @@ type MonedaExtranjeraDetalle struct {
 // NewMonedaExtranjeraBuilder inicia el proceso de construcción.
 func NewMonedaExtranjeraBuilder() *monedaExtranjeraBuilder {
 	return &monedaExtranjeraBuilder{
+		metadatos: models.NuevosMetadatosFactura(9),
 		factura: &documents.FacturaMonedaExtranjera{
 			XMLName:  xml.Name{Local: "facturaElectronicaMonedaExtranjera"},
 			XmlnsXsi: "http://www.w3.org/2001/XMLSchema-instance",
@@ -55,7 +57,8 @@ func NewMonedaExtranjeraDetalleBuilder() *monedaExtranjeraDetalleBuilder {
 }
 
 type monedaExtranjeraBuilder struct {
-	factura *documents.FacturaMonedaExtranjera
+	metadatos models.MetadatosFactura
+	factura   *documents.FacturaMonedaExtranjera
 }
 
 func (b *monedaExtranjeraBuilder) WithCabecera(req MonedaExtranjeraCabecera) *monedaExtranjeraBuilder {
@@ -83,7 +86,7 @@ func (b *monedaExtranjeraBuilder) WithModalidad(tipo int) *monedaExtranjeraBuild
 }
 
 func (b *monedaExtranjeraBuilder) Build() MonedaExtranjera {
-	return MonedaExtranjera{models.NewRequestWrapper(b.factura)}
+	return MonedaExtranjera{RequestWrapper: models.NewRequestWrapper(b.factura), MetadatosFactura: b.metadatos}
 }
 
 type monedaExtranjeraCabeceraBuilder struct {

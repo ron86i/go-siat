@@ -15,6 +15,7 @@ import (
 // CompraVenta representa la estructura completa de una factura lista para ser procesada.
 type CompraVenta struct {
 	models.RequestWrapper[documents.FacturaCompraVenta]
+	models.MetadatosFactura
 }
 
 // CompraVentaCabecera representa la sección de cabecera de una factura de compra y venta.
@@ -33,6 +34,7 @@ type CompraVentaDetalle struct {
 // Por defecto, la factura se configura para ser emitida electrónica.
 func NewCompraVentaBuilder() *compraVentaBuilder {
 	return &compraVentaBuilder{
+		metadatos: models.NuevosMetadatosFactura(1),
 		factura: &documents.FacturaCompraVenta{
 			XMLName:           xml.Name{Local: "facturaElectronicaCompraVenta"},
 			XmlnsXsi:          "http://www.w3.org/2001/XMLSchema-instance",
@@ -60,7 +62,14 @@ func NewCompraVentaDetalleBuilder() *detalleBuilder {
 }
 
 type compraVentaBuilder struct {
-	factura *documents.FacturaCompraVenta
+	factura   *documents.FacturaCompraVenta
+	metadatos models.MetadatosFactura
+}
+
+// WithTipoFacturaDocumento reemplaza el tipo fiscal predeterminado de compra y venta.
+func (b *compraVentaBuilder) WithTipoFacturaDocumento(tipo int) *compraVentaBuilder {
+	b.metadatos.WithTipoFacturaDocumento(tipo)
+	return b
 }
 
 // WithCabecera asocia la cabecera construida previamente a la factura.
@@ -94,7 +103,7 @@ func (b *compraVentaBuilder) WithModalidad(tipo int) *compraVentaBuilder {
 
 // Build finaliza la construcción y retorna la estructura opaca lista para ser firmada y enviada.
 func (b *compraVentaBuilder) Build() CompraVenta {
-	return CompraVenta{models.NewRequestWrapper(b.factura)}
+	return CompraVenta{RequestWrapper: models.NewRequestWrapper(b.factura), MetadatosFactura: b.metadatos}
 }
 
 // compraVentaCabeceraBuilder ayuda a configurar la cabecera de la factura de compra y venta.

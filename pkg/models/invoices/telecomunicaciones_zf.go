@@ -13,6 +13,7 @@ import (
 
 // TelecomunicacionesZF representa la estructura completa de una factura de telecomunicaciones en Zona Franca.
 type TelecomunicacionesZF struct {
+	models.MetadatosFactura
 	models.RequestWrapper[documents.FacturaTelecomunicacionesZF]
 }
 
@@ -29,6 +30,7 @@ type TelecomunicacionesZFDetalle struct {
 // NewTelecomunicacionesZFBuilder inicia el proceso de construcción de una factura de Telecomunicaciones ZF.
 func NewTelecomunicacionesZFBuilder() *telecomunicacionesZFBuilder {
 	return &telecomunicacionesZFBuilder{
+		metadatos: models.NuevosMetadatosFactura(49),
 		factura: &documents.FacturaTelecomunicacionesZF{
 			XMLName:           xml.Name{Local: "facturaElectronicaTelecomunicacionZF"},
 			XmlnsXsi:          "http://www.w3.org/2001/XMLSchema-instance",
@@ -55,7 +57,8 @@ func NewTelecomunicacionesZFDetalleBuilder() *telecomunicacionesZFDetalleBuilder
 }
 
 type telecomunicacionesZFBuilder struct {
-	factura *documents.FacturaTelecomunicacionesZF
+	metadatos models.MetadatosFactura
+	factura   *documents.FacturaTelecomunicacionesZF
 }
 
 // WithCabecera asocia la cabecera construida previamente a la factura.
@@ -90,7 +93,7 @@ func (b *telecomunicacionesZFBuilder) WithModalidad(tipo int) *telecomunicacione
 
 // Build finaliza la construcción y retorna la estructura opaca.
 func (b *telecomunicacionesZFBuilder) Build() TelecomunicacionesZF {
-	return TelecomunicacionesZF{models.NewRequestWrapper(b.factura)}
+	return TelecomunicacionesZF{RequestWrapper: models.NewRequestWrapper(b.factura), MetadatosFactura: b.metadatos}
 }
 
 // telecomunicacionesZFCabeceraBuilder ayuda a configurar la cabecera de la factura ZF.

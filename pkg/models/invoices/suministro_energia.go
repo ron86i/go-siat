@@ -15,6 +15,7 @@ import (
 
 // SuministroEnergia representa la estructura completa de una factura de Suministro de Energía lista para ser procesada.
 type SuministroEnergia struct {
+	models.MetadatosFactura
 	models.RequestWrapper[documents.FacturaSuministroEnergia]
 }
 
@@ -31,6 +32,7 @@ type SuministroEnergiaDetalle struct {
 // NewSuministroEnergiaBuilder inicia el proceso de construcción de una Factura de Suministro de Energía.
 func NewSuministroEnergiaBuilder() *suministroEnergiaBuilder {
 	return &suministroEnergiaBuilder{
+		metadatos: models.NuevosMetadatosFactura(31),
 		factura: &documents.FacturaSuministroEnergia{
 			XMLName:           xml.Name{Local: "facturaElectronicaSuministroEnergia"},
 			XmlnsXsi:          "http://www.w3.org/2001/XMLSchema-instance",
@@ -56,7 +58,8 @@ func NewSuministroEnergiaDetalleBuilder() *suministroEnergiaDetalleBuilder {
 }
 
 type suministroEnergiaBuilder struct {
-	factura *documents.FacturaSuministroEnergia
+	metadatos models.MetadatosFactura
+	factura   *documents.FacturaSuministroEnergia
 }
 
 func (b *suministroEnergiaBuilder) WithCabecera(req SuministroEnergiaCabecera) *suministroEnergiaBuilder {
@@ -86,7 +89,7 @@ func (b *suministroEnergiaBuilder) WithModalidad(tipo int) *suministroEnergiaBui
 }
 
 func (b *suministroEnergiaBuilder) Build() SuministroEnergia {
-	return SuministroEnergia{models.NewRequestWrapper(b.factura)}
+	return SuministroEnergia{RequestWrapper: models.NewRequestWrapper(b.factura), MetadatosFactura: b.metadatos}
 }
 
 type suministroEnergiaCabeceraBuilder struct {

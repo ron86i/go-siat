@@ -1,5 +1,7 @@
 package siat
 
+import "github.com/ron86i/go-siat/v2/pkg/models"
+
 const (
 	// AmbienteProduccion (1): Operaciones reales con validez tributaria.
 	AmbienteProduccion = iota + 1
@@ -21,4 +23,14 @@ const (
 	EmisionOffline
 	// EmisionMasiva (3): Para procesos de alta demanda de facturación.
 	EmisionMasiva
+)
+
+// Tipos de documento fiscal definidos por el SIAT.
+const (
+	// Estos alias mantienen la API del paquete raíz; la definición canónica
+	// está en pkg/models, que es donde la consumen los builders de facturas.
+	TipoFacturaConDerechoCreditoFiscal = models.TipoFacturaConDerechoCreditoFiscal
+	TipoFacturaSinDerechoCreditoFiscal = models.TipoFacturaSinDerechoCreditoFiscal
+	TipoNotaCreditoDebito              = models.TipoNotaCreditoDebito
+	TipoBoletoAereo                    = models.TipoBoletoAereo
 )
