@@ -4,6 +4,7 @@ import (
 	"archive/tar"
 	"bytes"
 	"encoding/xml"
+	"errors"
 	"fmt"
 	"time"
 
@@ -15,6 +16,24 @@ import (
 // XMLSigner define la interfaz para realizar la firma de documentos XML
 type XMLSigner interface {
 	SignXML(xmlBytes []byte) ([]byte, error)
+}
+
+// ErrFirmaElectronicaRequerida indica que se intentó preparar una factura
+// electrónica sin el firmador XML configurado en modo estricto.
+var ErrFirmaElectronicaRequerida = errors.New("se requiere un firmador XML para facturación electrónica")
+
+// FacturaConTipoDocumento expone el tipo fiscal predeterminado definido por
+// el builder de una factura. No forma parte del XML del documento: se usa al
+// construir la solicitud SOAP de recepción.
+type FacturaConTipoDocumento interface {
+	TipoFacturaDocumento() int
+}
+
+// FacturaConMetadatos expone la información fiscal completa del documento.
+// Los servicios sólo consumen estos valores y no aplican reglas por sector.
+type FacturaConMetadatos interface {
+	FacturaConTipoDocumento
+	CodigoDocumentoSector() int
 }
 
 // --- Interfaces opacas de Facturación ---
@@ -153,7 +172,11 @@ func (b *AnulacionFacturaBuilder) Build() AnulacionFactura {
 
 // RecepcionFacturaBuilder
 type RecepcionFacturaBuilder struct {
-	request *facturacion.RecepcionFactura
+	request                   *facturacion.RecepcionFactura
+	xmlPreparado              []byte
+	hashArchivo               string
+	xmlIndentado              bool
+	firmaElectronicaRequerida bool
 }
 
 func NewRecepcionFacturaBuilder() *RecepcionFacturaBuilder {
@@ -212,10 +235,51 @@ func (b *RecepcionFacturaBuilder) WithHashArchivo(hashArchivo string) *Recepcion
 	return b
 }
 
+// WithXMLIndentado conserva una representación legible del documento. Debe
+// activarse antes de WithFactura: la indentación forma parte del XML firmado.
+func (b *RecepcionFacturaBuilder) WithXMLIndentado() *RecepcionFacturaBuilder {
+	b.xmlIndentado = true
+	return b
+}
+
+// WithFirmaElectronicaRequerida exige un XMLSigner cuando la modalidad sea
+// electrónica. No afecta la modalidad computarizada ni el comportamiento
+// existente mientras no se invoque explícitamente.
+func (b *RecepcionFacturaBuilder) WithFirmaElectronicaRequerida() *RecepcionFacturaBuilder {
+	b.firmaElectronicaRequerida = true
+	return b
+}
+
+// WithDocumentoFiscal es la alternativa tipada a WithFactura. Garantiza en
+// compilación que el documento expone sector y tipo fiscal.
+func (b *RecepcionFacturaBuilder) WithDocumentoFiscal(documento FacturaConMetadatos, signer XMLSigner) error {
+	return b.WithFactura(documento, signer)
+}
+
 // WithFactura serializa, firma (si es electrónica), comprime y calcula el hash de la factura automáticamente,
 // mapeando los valores obtenidos en los campos Archivo y HashArchivo de la solicitud.
 func (b *RecepcionFacturaBuilder) WithFactura(factura any, signer XMLSigner) error {
-	xmlData, err := xml.Marshal(factura)
+	solicitud := &b.request.SolicitudServicioRecepcionFactura.SolicitudRecepcion
+	if documento, ok := factura.(FacturaConMetadatos); ok {
+		if solicitud.CodigoDocumentoSector == 0 {
+			solicitud.CodigoDocumentoSector = documento.CodigoDocumentoSector()
+		}
+		if solicitud.TipoFacturaDocumento == 0 {
+			solicitud.TipoFacturaDocumento = documento.TipoFacturaDocumento()
+		}
+	} else if solicitud.TipoFacturaDocumento == 0 {
+		if documento, ok := factura.(FacturaConTipoDocumento); ok {
+			solicitud.TipoFacturaDocumento = documento.TipoFacturaDocumento()
+		}
+	}
+	var xmlData []byte
+	var err error
+	if b.xmlIndentado {
+		xmlData, err = xml.MarshalIndent(factura, "", "    ")
+		xmlData = append([]byte(xml.Header), xmlData...)
+	} else {
+		xmlData, err = xml.Marshal(factura)
+	}
 	if err != nil {
 		return err
 	}
@@ -225,6 +289,9 @@ func (b *RecepcionFacturaBuilder) WithFactura(factura any, signer XMLSigner) err
 	if b.request.SolicitudServicioRecepcionFactura.CodigoModalidad == ModalidadElectronica {
 		signRequired = true
 	}
+	if signRequired && signer == nil && b.firmaElectronicaRequerida {
+		return ErrFirmaElectronicaRequerida
+	}
 
 	if signRequired && signer != nil {
 		var err error
@@ -233,6 +300,9 @@ func (b *RecepcionFacturaBuilder) WithFactura(factura any, signer XMLSigner) err
 			return err
 		}
 	}
+	if b.xmlIndentado && !bytes.HasPrefix(xmlToSend, []byte("<?xml")) {
+		xmlToSend = append([]byte(xml.Header), xmlToSend...)
+	}
 
 	hashString, encodedArchivo, err := utils.CompressAndHash(xmlToSend)
 	if err != nil {
@@ -240,7 +310,19 @@ func (b *RecepcionFacturaBuilder) WithFactura(factura any, signer XMLSigner) err
 	}
 	b.request.SolicitudServicioRecepcionFactura.Archivo = encodedArchivo
 	b.request.SolicitudServicioRecepcionFactura.HashArchivo = hashString
+	b.xmlPreparado = append(b.xmlPreparado[:0], xmlToSend...)
+	b.hashArchivo = hashString
 	return nil
+}
+
+// XMLPreparado devuelve una copia del XML firmado (o el XML computarizado) y
+// el hash exacto incluidos en la recepción SIAT. Sólo está disponible después
+// de invocar WithFactura.
+func (b *RecepcionFacturaBuilder) XMLPreparado() ([]byte, string, bool) {
+	if len(b.xmlPreparado) == 0 || b.hashArchivo == "" {
+		return nil, "", false
+	}
+	return append([]byte(nil), b.xmlPreparado...), b.hashArchivo, true
 }
 
 func (b *RecepcionFacturaBuilder) WithCodigoModalidad(codigoModalidad int) *RecepcionFacturaBuilder {

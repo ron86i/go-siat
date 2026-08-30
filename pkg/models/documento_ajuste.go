@@ -66,7 +66,8 @@ func NewVerificarComunicacionDocumentoAjusteBuilder() *verificarComunicacionDocu
 // -- Implementaciones de Builders --
 
 type recepcionDocumentoAjusteBuilder struct {
-	request *documento_ajuste.RecepcionDocumentoAjuste
+	request                   *documento_ajuste.RecepcionDocumentoAjuste
+	firmaElectronicaRequerida bool
 }
 
 func (b *recepcionDocumentoAjusteBuilder) WithCodigoModalidad(v int) *recepcionDocumentoAjusteBuilder {
@@ -124,15 +125,46 @@ func (b *recepcionDocumentoAjusteBuilder) WithHashArchivo(v string) *recepcionDo
 	return b
 }
 
+// WithFirmaElectronicaRequerida exige un XMLSigner cuando la modalidad sea
+// electrónica. No afecta la modalidad computarizada ni el comportamiento
+// existente mientras no se invoque explícitamente.
+func (b *recepcionDocumentoAjusteBuilder) WithFirmaElectronicaRequerida() *recepcionDocumentoAjusteBuilder {
+	b.firmaElectronicaRequerida = true
+	return b
+}
+
+// WithDocumentoFiscal es la alternativa tipada a WithDocumento. Garantiza en
+// compilación que el documento expone sector y tipo fiscal.
+func (b *recepcionDocumentoAjusteBuilder) WithDocumentoFiscal(documento FacturaConMetadatos, signer XMLSigner) error {
+	return b.WithDocumento(documento, signer)
+}
+
 // WithDocumento serializa, firma (si se provee signer), comprime y calcula el hash del documento de ajuste automáticamente,
 // mapeando los valores obtenidos en los campos Archivo y HashArchivo de la solicitud.
 func (b *recepcionDocumentoAjusteBuilder) WithDocumento(documento any, signer XMLSigner) error {
+	solicitud := &b.request.SolicitudRecepcionFactura
+	if fiscal, ok := documento.(FacturaConMetadatos); ok {
+		if solicitud.CodigoDocumentoSector == 0 {
+			solicitud.CodigoDocumentoSector = fiscal.CodigoDocumentoSector()
+		}
+		if solicitud.TipoFacturaDocumento == 0 {
+			solicitud.TipoFacturaDocumento = fiscal.TipoFacturaDocumento()
+		}
+	} else if solicitud.TipoFacturaDocumento == 0 {
+		if fiscal, ok := documento.(FacturaConTipoDocumento); ok {
+			solicitud.TipoFacturaDocumento = fiscal.TipoFacturaDocumento()
+		}
+	}
 	xmlData, err := xml.Marshal(documento)
 	if err != nil {
 		return err
 	}
 
 	var xmlToSend = xmlData
+	if b.request.SolicitudRecepcionFactura.CodigoModalidad == ModalidadElectronica &&
+		signer == nil && b.firmaElectronicaRequerida {
+		return ErrFirmaElectronicaRequerida
+	}
 
 	if signer != nil {
 		var err error
