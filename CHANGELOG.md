@@ -1,5 +1,20 @@
 # Changelog
 
+## [2.2.0](https://github.com/ron86i/go-siat/compare/v2.1.3...v2.2.0) (2026-08-30)
+
+
+### Features
+
+* **facturas:** agrega metadatos fiscales para los builders de documentos sectoriales ([d48e432](https://github.com/ron86i/go-siat/commit/d48e432c75a7a246b881e5b7b34d6b2bff4af4b4))
+* **facturacion:** tipa la recepción fiscal y permite exigir firma XML electrónica ([4cd2ba7](https://github.com/ron86i/go-siat/commit/4cd2ba7aa2d51156928119784ec617742348b888))
+
+
+### Bug Fixes
+
+* **models:** incluye modalidad en puntos de venta ([4205747](https://github.com/ron86i/go-siat/commit/42057479ad38aeb4899a02b848f0ddae5df8038c))
+* **models:** agrega modalidad para punto de venta comisionista ([59fe8a6](https://github.com/ron86i/go-siat/commit/59fe8a65a1a6c77873233e169ccc57fe9cb146dd))
+* **operaciones:** incluye el punto de venta cero en solicitudes de cierre ([46d70b9](https://github.com/ron86i/go-siat/commit/46d70b9ac00d45a1da8e5c5ed8ed3600da2dd45b))
+
 ## [2.1.3](https://github.com/ron86i/go-siat/compare/v2.1.2...v2.1.3) (2026-08-22)
 
 
