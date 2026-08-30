@@ -237,6 +237,11 @@ type cierreOperacionesSistemaBuilder struct {
 	request *operaciones.CierreOperacionesSistema
 }
 
+func (b *cierreOperacionesSistemaBuilder) WithCodigoModalidad(codigoModalidad int) *cierreOperacionesSistemaBuilder {
+	b.request.SolicitudOperaciones.CodigoModalidad = codigoModalidad
+	return b
+}
+
 func (b *cierreOperacionesSistemaBuilder) WithCodigoSucursal(codigoSucursal int) *cierreOperacionesSistemaBuilder {
 	b.request.SolicitudOperaciones.CodigoSucursal = codigoSucursal
 	return b

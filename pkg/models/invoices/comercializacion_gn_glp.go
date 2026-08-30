@@ -15,6 +15,7 @@ import (
 
 // ComercializacionGnGlp representa la estructura completa de una factura de Comercialización de GN y GLP lista para ser procesada.
 type ComercializacionGnGlp struct {
+	models.MetadatosFactura
 	models.RequestWrapper[documents.FacturaComercializacionGnGlp]
 }
 
@@ -31,6 +32,7 @@ type ComercializacionGnGlpDetalle struct {
 // NewComercializacionGnGlpBuilder inicia el proceso de construcción de una Factura de Comercialización de GN y GLP.
 func NewComercializacionGnGlpBuilder() *comercializacionGnGlpBuilder {
 	return &comercializacionGnGlpBuilder{
+		metadatos: models.NuevosMetadatosFactura(39),
 		factura: &documents.FacturaComercializacionGnGlp{
 			XMLName:           xml.Name{Local: "facturaElectronicaComercializacionGnGlp"},
 			XmlnsXsi:          "http://www.w3.org/2001/XMLSchema-instance",
@@ -56,7 +58,8 @@ func NewComercializacionGnGlpDetalleBuilder() *comercializacionGnGlpDetalleBuild
 }
 
 type comercializacionGnGlpBuilder struct {
-	factura *documents.FacturaComercializacionGnGlp
+	metadatos models.MetadatosFactura
+	factura   *documents.FacturaComercializacionGnGlp
 }
 
 func (b *comercializacionGnGlpBuilder) WithCabecera(req ComercializacionGnGlpCabecera) *comercializacionGnGlpBuilder {
@@ -86,7 +89,7 @@ func (b *comercializacionGnGlpBuilder) WithModalidad(tipo int) *comercializacion
 }
 
 func (b *comercializacionGnGlpBuilder) Build() ComercializacionGnGlp {
-	return ComercializacionGnGlp{models.NewRequestWrapper(b.factura)}
+	return ComercializacionGnGlp{RequestWrapper: models.NewRequestWrapper(b.factura), MetadatosFactura: b.metadatos}
 }
 
 type comercializacionGnGlpCabeceraBuilder struct {

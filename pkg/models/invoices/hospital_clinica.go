@@ -16,6 +16,7 @@ import (
 // HospitalClinica representa la estructura completa de una factura de Hospital o Clínica lista para ser procesada.
 type HospitalClinica struct {
 	models.RequestWrapper[documents.FacturaHospitalClinica]
+	models.MetadatosFactura
 }
 
 // HospitalClinicaCabecera representa la sección de cabecera de la factura.
@@ -31,6 +32,7 @@ type HospitalClinicaDetalle struct {
 // NewHospitalClinicaBuilder inicia el proceso de construcción de la factura.
 func NewHospitalClinicaBuilder() *hospitalClinicaBuilder {
 	return &hospitalClinicaBuilder{
+		metadatos: models.NuevosMetadatosFactura(17),
 		factura: &documents.FacturaHospitalClinica{
 			XMLName:           xml.Name{Local: "facturaElectronicaHospitalClinica"},
 			XmlnsXsi:          "http://www.w3.org/2001/XMLSchema-instance",
@@ -56,7 +58,14 @@ func NewHospitalClinicaDetalleBuilder() *hospitalClinicaDetalleBuilder {
 }
 
 type hospitalClinicaBuilder struct {
-	factura *documents.FacturaHospitalClinica
+	factura   *documents.FacturaHospitalClinica
+	metadatos models.MetadatosFactura
+}
+
+// WithTipoFacturaDocumento reemplaza el tipo fiscal predeterminado de hospital o clínica.
+func (b *hospitalClinicaBuilder) WithTipoFacturaDocumento(tipo int) *hospitalClinicaBuilder {
+	b.metadatos.WithTipoFacturaDocumento(tipo)
+	return b
 }
 
 func (b *hospitalClinicaBuilder) WithCabecera(req HospitalClinicaCabecera) *hospitalClinicaBuilder {
@@ -86,7 +95,7 @@ func (b *hospitalClinicaBuilder) WithModalidad(tipo int) *hospitalClinicaBuilder
 }
 
 func (b *hospitalClinicaBuilder) Build() HospitalClinica {
-	return HospitalClinica{models.NewRequestWrapper(b.factura)}
+	return HospitalClinica{RequestWrapper: models.NewRequestWrapper(b.factura), MetadatosFactura: b.metadatos}
 }
 
 type hospitalClinicaCabeceraBuilder struct {

@@ -13,6 +13,7 @@ import (
 
 type NotaCreditoDebitoDescuento struct {
 	models.RequestWrapper[documents.NotaCreditoDebitoDescuento]
+	models.MetadatosFactura
 }
 
 type NotaCreditoDebitoDescuentoCabecera struct {
@@ -25,6 +26,7 @@ type NotaDetalleCreditoDebitoDescuento struct {
 
 func NewNotaCreditoDebitoDescuentoBuilder() *notaCreditoDebitoDescuentoBuilder {
 	return &notaCreditoDebitoDescuentoBuilder{
+		metadatos: models.NuevosMetadatosFactura(47),
 		nota: &documents.NotaCreditoDebitoDescuento{
 			XMLName:           xml.Name{Local: "notaElectronicaCreditoDebitoDescuento"},
 			XmlnsXsi:          "http://www.w3.org/2001/XMLSchema-instance",
@@ -48,7 +50,8 @@ func NewNotaDetalleCreditoDebitoDescuentoBuilder() *notaDetalleCreditoDebitoDesc
 }
 
 type notaCreditoDebitoDescuentoBuilder struct {
-	nota *documents.NotaCreditoDebitoDescuento
+	metadatos models.MetadatosFactura
+	nota      *documents.NotaCreditoDebitoDescuento
 }
 
 func (b *notaCreditoDebitoDescuentoBuilder) WithCabecera(req NotaCreditoDebitoDescuentoCabecera) *notaCreditoDebitoDescuentoBuilder {
@@ -78,7 +81,7 @@ func (b *notaCreditoDebitoDescuentoBuilder) WithModalidad(tipo int) *notaCredito
 }
 
 func (b *notaCreditoDebitoDescuentoBuilder) Build() NotaCreditoDebitoDescuento {
-	return NotaCreditoDebitoDescuento{models.NewRequestWrapper(b.nota)}
+	return NotaCreditoDebitoDescuento{RequestWrapper: models.NewRequestWrapper(b.nota), MetadatosFactura: b.metadatos}
 }
 
 type notaCreditoDebitoDescuentoCabeceraBuilder struct {

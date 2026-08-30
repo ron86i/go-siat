@@ -18,6 +18,7 @@ import (
 // lista para ser procesada.
 type Hotel struct {
 	models.RequestWrapper[documents.FacturaHotel]
+	models.MetadatosFactura
 }
 
 // HotelCabecera representa la sección de cabecera de la factura.
@@ -33,6 +34,7 @@ type HotelDetalle struct {
 // NewHotel inicia el proceso de construcción de la factura.
 func NewHotelBuilder() *hotelBuilder {
 	return &hotelBuilder{
+		metadatos: models.NuevosMetadatosFactura(16),
 		factura: &documents.FacturaHotel{
 			XMLName:           xml.Name{Local: "facturaElectronicaHotel"},
 			XmlnsXsi:          "http://www.w3.org/2001/XMLSchema-instance",
@@ -58,7 +60,14 @@ func NewHotelDetalleBuilder() *hotelDetalleBuilder {
 }
 
 type hotelBuilder struct {
-	factura *documents.FacturaHotel
+	factura   *documents.FacturaHotel
+	metadatos models.MetadatosFactura
+}
+
+// WithTipoFacturaDocumento reemplaza el tipo fiscal predeterminado de hotel.
+func (b *hotelBuilder) WithTipoFacturaDocumento(tipo int) *hotelBuilder {
+	b.metadatos.WithTipoFacturaDocumento(tipo)
+	return b
 }
 
 func (b *hotelBuilder) WithCabecera(req HotelCabecera) *hotelBuilder {
@@ -88,7 +97,7 @@ func (b *hotelBuilder) WithModalidad(tipo int) *hotelBuilder {
 }
 
 func (b *hotelBuilder) Build() Hotel {
-	return Hotel{models.NewRequestWrapper(b.factura)}
+	return Hotel{RequestWrapper: models.NewRequestWrapper(b.factura), MetadatosFactura: b.metadatos}
 }
 
 type hotelCabeceraBuilder struct {

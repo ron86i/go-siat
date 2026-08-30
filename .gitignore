@@ -10,6 +10,7 @@
 
 # Coverage files (added by CoverLens)
 coverage.out
+.siat-traces/
 
 # AI Agents & RAG Documentation
 AGENT.md

@@ -15,6 +15,7 @@ import (
 
 // Engarrafadoras representa la estructura completa de una factura de engarrafadoras lista para ser procesada.
 type Engarrafadoras struct {
+	models.MetadatosFactura
 	models.RequestWrapper[documents.FacturaEngarrafadoras]
 }
 
@@ -31,6 +32,7 @@ type EngarrafadorasDetalle struct {
 // NewEngarrafadoras inicia el proceso de construcción de la factura.
 func NewEngarrafadorasBuilder() *engarrafadorasBuilder {
 	return &engarrafadorasBuilder{
+		metadatos: models.NuevosMetadatosFactura(51),
 		factura: &documents.FacturaEngarrafadoras{
 			XMLName:           xml.Name{Local: "facturaElectronicaEngarrafadoras"},
 			XmlnsXsi:          "http://www.w3.org/2001/XMLSchema-instance",
@@ -56,7 +58,8 @@ func NewEngarrafadorasDetalleBuilder() *engarrafadorasDetalleBuilder {
 }
 
 type engarrafadorasBuilder struct {
-	factura *documents.FacturaEngarrafadoras
+	metadatos models.MetadatosFactura
+	factura   *documents.FacturaEngarrafadoras
 }
 
 func (b *engarrafadorasBuilder) WithCabecera(req EngarrafadorasCabecera) *engarrafadorasBuilder {
@@ -86,7 +89,7 @@ func (b *engarrafadorasBuilder) WithModalidad(tipo int) *engarrafadorasBuilder {
 }
 
 func (b *engarrafadorasBuilder) Build() Engarrafadoras {
-	return Engarrafadoras{models.NewRequestWrapper(b.factura)}
+	return Engarrafadoras{RequestWrapper: models.NewRequestWrapper(b.factura), MetadatosFactura: b.metadatos}
 }
 
 type engarrafadorasCabeceraBuilder struct {

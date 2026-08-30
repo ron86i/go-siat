@@ -13,6 +13,7 @@ import (
 
 // Telecomunicaciones representa la estructura completa de una factura de telecomunicaciones lista para ser procesada.
 type Telecomunicaciones struct {
+	models.MetadatosFactura
 	models.RequestWrapper[documents.FacturaTelecomunicaciones]
 }
 
@@ -31,6 +32,7 @@ type TelecomunicacionesDetalle struct {
 // Por defecto, la factura se configura para ser emitida electrónica.
 func NewTelecomunicacionesBuilder() *telecomunicacionesBuilder {
 	return &telecomunicacionesBuilder{
+		metadatos: models.NuevosMetadatosFactura(22),
 		factura: &documents.FacturaTelecomunicaciones{
 			XMLName:           xml.Name{Local: "facturaElectronicaTelecomunicacion"},
 			XmlnsXsi:          "http://www.w3.org/2001/XMLSchema-instance",
@@ -58,7 +60,8 @@ func NewTelecomunicacionesDetalleBuilder() *telecomunicacionesDetalleBuilder {
 }
 
 type telecomunicacionesBuilder struct {
-	factura *documents.FacturaTelecomunicaciones
+	metadatos models.MetadatosFactura
+	factura   *documents.FacturaTelecomunicaciones
 }
 
 // WithCabecera asocia la cabecera construida previamente a la factura.
@@ -92,7 +95,7 @@ func (b *telecomunicacionesBuilder) WithModalidad(tipo int) *telecomunicacionesB
 
 // Build finaliza la construcción y retorna la estructura opaca lista para ser firmada y enviada.
 func (b *telecomunicacionesBuilder) Build() Telecomunicaciones {
-	return Telecomunicaciones{models.NewRequestWrapper(b.factura)}
+	return Telecomunicaciones{RequestWrapper: models.NewRequestWrapper(b.factura), MetadatosFactura: b.metadatos}
 }
 
 // telecomunicacionesCabeceraBuilder ayuda a configurar la cabecera de la factura.

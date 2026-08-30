@@ -15,6 +15,7 @@ import (
 
 // Prevalorada representa la estructura completa de una factura Prevalorada lista para ser procesada.
 type Prevalorada struct {
+	models.MetadatosFactura
 	models.RequestWrapper[documents.FacturaPrevalorada]
 }
 
@@ -31,6 +32,7 @@ type PrevaloradaDetalle struct {
 // NewPrevaloradaBuilder inicia el proceso de construcción de una Factura Prevalorada.
 func NewPrevaloradaBuilder() *prevaloradaBuilder {
 	return &prevaloradaBuilder{
+		metadatos: models.NuevosMetadatosFactura(23),
 		factura: &documents.FacturaPrevalorada{
 			XMLName:           xml.Name{Local: "facturaElectronicaPrevalorada"},
 			XmlnsXsi:          "http://www.w3.org/2001/XMLSchema-instance",
@@ -60,7 +62,8 @@ func NewPrevaloradaDetalleBuilder() *prevaloradaDetalleBuilder {
 }
 
 type prevaloradaBuilder struct {
-	factura *documents.FacturaPrevalorada
+	metadatos models.MetadatosFactura
+	factura   *documents.FacturaPrevalorada
 }
 
 func (b *prevaloradaBuilder) WithCabecera(req PrevaloradaCabecera) *prevaloradaBuilder {
@@ -90,7 +93,7 @@ func (b *prevaloradaBuilder) WithModalidad(tipo int) *prevaloradaBuilder {
 }
 
 func (b *prevaloradaBuilder) Build() Prevalorada {
-	return Prevalorada{models.NewRequestWrapper(b.factura)}
+	return Prevalorada{RequestWrapper: models.NewRequestWrapper(b.factura), MetadatosFactura: b.metadatos}
 }
 
 type prevaloradaCabeceraBuilder struct {

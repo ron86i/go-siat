@@ -12,7 +12,7 @@ type CierreOperacionesSistema struct {
 type SolicitudOperaciones struct {
 	CodigoAmbiente   int    `xml:"codigoAmbiente" json:"codigoAmbiente"`
 	CodigoModalidad  int    `xml:"codigoModalidad" json:"codigoModalidad"`
-	CodigoPuntoVenta int    `xml:"codigoPuntoVenta,omitempty" json:"codigoPuntoVenta,omitempty"`
+	CodigoPuntoVenta int    `xml:"codigoPuntoVenta" json:"codigoPuntoVenta"`
 	CodigoSistema    string `xml:"codigoSistema" json:"codigoSistema"`
 	CodigoSucursal   int    `xml:"codigoSucursal" json:"codigoSucursal"`
 	Cuis             string `xml:"cuis" json:"cuis"`

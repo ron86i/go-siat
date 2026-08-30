@@ -15,6 +15,7 @@ import (
 
 // LibreConsignacion representa la estructura completa de una factura Libre Consignación lista para ser procesada.
 type LibreConsignacion struct {
+	models.MetadatosFactura
 	models.RequestWrapper[documents.FacturaLibreConsignacion]
 }
 
@@ -31,6 +32,7 @@ type LibreConsignacionDetalle struct {
 // NewLibreConsignacionBuilder inicia el proceso de construcción de una Factura Libre Consignación.
 func NewLibreConsignacionBuilder() *libreConsignacionBuilder {
 	return &libreConsignacionBuilder{
+		metadatos: models.NuevosMetadatosFactura(4),
 		factura: &documents.FacturaLibreConsignacion{
 			XMLName:           xml.Name{Local: "facturaElectronicaLibreConsignacion"},
 			XmlnsXsi:          "http://www.w3.org/2001/XMLSchema-instance",
@@ -62,7 +64,8 @@ func NewLibreConsignacionDetalleBuilder() *libreConsignacionDetalleBuilder {
 }
 
 type libreConsignacionBuilder struct {
-	factura *documents.FacturaLibreConsignacion
+	metadatos models.MetadatosFactura
+	factura   *documents.FacturaLibreConsignacion
 }
 
 func (b *libreConsignacionBuilder) WithCabecera(req LibreConsignacionCabecera) *libreConsignacionBuilder {
@@ -92,7 +95,7 @@ func (b *libreConsignacionBuilder) WithModalidad(tipo int) *libreConsignacionBui
 }
 
 func (b *libreConsignacionBuilder) Build() LibreConsignacion {
-	return LibreConsignacion{models.NewRequestWrapper(b.factura)}
+	return LibreConsignacion{RequestWrapper: models.NewRequestWrapper(b.factura), MetadatosFactura: b.metadatos}
 }
 
 type libreConsignacionCabeceraBuilder struct {

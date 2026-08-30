@@ -15,6 +15,7 @@ import (
 
 // AlquilerZF representa la estructura completa de una factura de Alquiler ZF lista para ser procesada.
 type AlquilerZF struct {
+	models.MetadatosFactura
 	models.RequestWrapper[documents.FacturaAlquilerZF]
 }
 
@@ -31,6 +32,7 @@ type AlquilerZFDetalle struct {
 // NewAlquilerZFBuilder inicia el proceso de construcción de una Factura de Alquiler ZF.
 func NewAlquilerZFBuilder() *alquilerZFBuilder {
 	return &alquilerZFBuilder{
+		metadatos: models.NuevosMetadatosFactura(42),
 		factura: &documents.FacturaAlquilerZF{
 			XMLName:           xml.Name{Local: "facturaElectronicaAlquilerZF"},
 			XmlnsXsi:          "http://www.w3.org/2001/XMLSchema-instance",
@@ -57,7 +59,8 @@ func NewAlquilerZFDetalleBuilder() *alquilerZFDetalleBuilder {
 }
 
 type alquilerZFBuilder struct {
-	factura *documents.FacturaAlquilerZF
+	metadatos models.MetadatosFactura
+	factura   *documents.FacturaAlquilerZF
 }
 
 func (b *alquilerZFBuilder) WithCabecera(req AlquilerZFCabecera) *alquilerZFBuilder {
@@ -87,7 +90,7 @@ func (b *alquilerZFBuilder) WithModalidad(tipo int) *alquilerZFBuilder {
 }
 
 func (b *alquilerZFBuilder) Build() AlquilerZF {
-	return AlquilerZF{models.NewRequestWrapper(b.factura)}
+	return AlquilerZF{RequestWrapper: models.NewRequestWrapper(b.factura), MetadatosFactura: b.metadatos}
 }
 
 type alquilerZFCabeceraBuilder struct {

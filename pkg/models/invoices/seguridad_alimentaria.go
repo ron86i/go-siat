@@ -15,6 +15,7 @@ import (
 
 // SeguridadAlimentaria representa la estructura completa de una factura de Seguridad Alimentaria lista para ser procesada.
 type SeguridadAlimentaria struct {
+	models.MetadatosFactura
 	models.RequestWrapper[documents.FacturaSeguridadAlimentaria]
 }
 
@@ -31,6 +32,7 @@ type SeguridadAlimentariaDetalle struct {
 // NewSeguridadAlimentariaBuilder inicia el proceso de construcción de la factura.
 func NewSeguridadAlimentariaBuilder() *seguridadAlimentariaBuilder {
 	return &seguridadAlimentariaBuilder{
+		metadatos: models.NuevosMetadatosFactura(7),
 		factura: &documents.FacturaSeguridadAlimentaria{
 			XMLName:           xml.Name{Local: "facturaElectronicaSeguridadAlimentaria"},
 			XmlnsXsi:          "http://www.w3.org/2001/XMLSchema-instance",
@@ -57,7 +59,8 @@ func NewSeguridadAlimentariaDetalleBuilder() *seguridadAlimentariaDetalleBuilder
 }
 
 type seguridadAlimentariaBuilder struct {
-	factura *documents.FacturaSeguridadAlimentaria
+	metadatos models.MetadatosFactura
+	factura   *documents.FacturaSeguridadAlimentaria
 }
 
 func (b *seguridadAlimentariaBuilder) WithCabecera(req SeguridadAlimentariaCabecera) *seguridadAlimentariaBuilder {
@@ -88,7 +91,7 @@ func (b *seguridadAlimentariaBuilder) WithModalidad(tipo int) *seguridadAlimenta
 }
 
 func (b *seguridadAlimentariaBuilder) Build() SeguridadAlimentaria {
-	return SeguridadAlimentaria{models.NewRequestWrapper(b.factura)}
+	return SeguridadAlimentaria{RequestWrapper: models.NewRequestWrapper(b.factura), MetadatosFactura: b.metadatos}
 }
 
 type seguridadAlimentariaCabeceraBuilder struct {

@@ -16,6 +16,7 @@ import (
 // ComercialExportacionServicio representa la estructura completa de una factura comercial
 // de exportación de servicios lista para ser procesada.
 type ComercialExportacionServicio struct {
+	models.MetadatosFactura
 	models.RequestWrapper[documents.FacturaComercialExportacionServicio]
 }
 
@@ -32,6 +33,7 @@ type ComercialExportacionServicioDetalle struct {
 // NewComercialExportacionServicioBuilder inicia el proceso de construcción de la factura.
 func NewComercialExportacionServicioBuilder() *comercialExportacionServicioBuilder {
 	return &comercialExportacionServicioBuilder{
+		metadatos: models.NuevosMetadatosFactura(28),
 		factura: &documents.FacturaComercialExportacionServicio{
 			XMLName:           xml.Name{Local: "facturaElectronicaComercialExportacionServicio"},
 			XmlnsXsi:          "http://www.w3.org/2001/XMLSchema-instance",
@@ -60,7 +62,8 @@ func NewComercialExportacionServicioDetalleBuilder() *comercialExportacionServic
 }
 
 type comercialExportacionServicioBuilder struct {
-	factura *documents.FacturaComercialExportacionServicio
+	metadatos models.MetadatosFactura
+	factura   *documents.FacturaComercialExportacionServicio
 }
 
 func (b *comercialExportacionServicioBuilder) WithCabecera(req ComercialExportacionServicioCabecera) *comercialExportacionServicioBuilder {
@@ -90,7 +93,7 @@ func (b *comercialExportacionServicioBuilder) WithModalidad(tipo int) *comercial
 }
 
 func (b *comercialExportacionServicioBuilder) Build() ComercialExportacionServicio {
-	return ComercialExportacionServicio{models.NewRequestWrapper(b.factura)}
+	return ComercialExportacionServicio{RequestWrapper: models.NewRequestWrapper(b.factura), MetadatosFactura: b.metadatos}
 }
 
 type comercialExportacionServicioCabeceraBuilder struct {

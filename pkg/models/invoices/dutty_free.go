@@ -15,6 +15,7 @@ import (
 
 // DuttyFree representa la estructura completa de una factura Dutty Free lista para ser procesada.
 type DuttyFree struct {
+	models.MetadatosFactura
 	models.RequestWrapper[documents.FacturaDuttyFree]
 }
 
@@ -32,6 +33,7 @@ type DuttyFreeDetalle struct {
 // NewDuttyFree inicia el proceso de construcción de una DuttyFree.
 func NewDuttyFreeBuilder() *duttyFreeBuilder {
 	return &duttyFreeBuilder{
+		metadatos: models.NuevosMetadatosFactura(10),
 		factura: &documents.FacturaDuttyFree{
 			XMLName:           xml.Name{Local: "facturaElectronicaDuttyFree"},
 			XmlnsXsi:          "http://www.w3.org/2001/XMLSchema-instance",
@@ -60,7 +62,8 @@ func NewDuttyFreeDetalleBuilder() *duttyFreeDetalleBuilder {
 }
 
 type duttyFreeBuilder struct {
-	factura *documents.FacturaDuttyFree
+	metadatos models.MetadatosFactura
+	factura   *documents.FacturaDuttyFree
 }
 
 func (b *duttyFreeBuilder) WithCabecera(req DuttyFreeCabecera) *duttyFreeBuilder {
@@ -90,7 +93,7 @@ func (b *duttyFreeBuilder) WithModalidad(tipo int) *duttyFreeBuilder {
 }
 
 func (b *duttyFreeBuilder) Build() DuttyFree {
-	return DuttyFree{models.NewRequestWrapper(b.factura)}
+	return DuttyFree{RequestWrapper: models.NewRequestWrapper(b.factura), MetadatosFactura: b.metadatos}
 }
 
 type duttyFreeCabeceraBuilder struct {

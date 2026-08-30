@@ -139,7 +139,7 @@ func TestSolicitudCuis(t *testing.T) {
 
 	req := models.NewCuisBuilder().
 		WithCodigoSucursal(0).
-		WithCodigoPuntoVenta(1).
+		WithCodigoPuntoVenta(12).
 		WithCodigoModalidad(codModalidad).
 		Build()
 

@@ -15,6 +15,7 @@ import (
 
 // ZonaFranca representa la estructura completa de una factura Zona Franca lista para ser procesada.
 type ZonaFranca struct {
+	models.MetadatosFactura
 	models.RequestWrapper[documents.FacturaZonaFranca]
 }
 
@@ -31,6 +32,7 @@ type ZonaFrancaDetalle struct {
 // NewZonaFrancaBuilder inicia el proceso de construcción de una Factura Zona Franca.
 func NewZonaFrancaBuilder() *zonaFrancaBuilder {
 	return &zonaFrancaBuilder{
+		metadatos: models.NuevosMetadatosFactura(5),
 		factura: &documents.FacturaZonaFranca{
 			XMLName:           xml.Name{Local: "facturaElectronicaZonaFranca"},
 			XmlnsXsi:          "http://www.w3.org/2001/XMLSchema-instance",
@@ -57,7 +59,8 @@ func NewZonaFrancaDetalleBuilder() *zonaFrancaDetalleBuilder {
 }
 
 type zonaFrancaBuilder struct {
-	factura *documents.FacturaZonaFranca
+	metadatos models.MetadatosFactura
+	factura   *documents.FacturaZonaFranca
 }
 
 func (b *zonaFrancaBuilder) WithCabecera(req ZonaFrancaCabecera) *zonaFrancaBuilder {
@@ -87,7 +90,7 @@ func (b *zonaFrancaBuilder) WithModalidad(tipo int) *zonaFrancaBuilder {
 }
 
 func (b *zonaFrancaBuilder) Build() ZonaFranca {
-	return ZonaFranca{models.NewRequestWrapper(b.factura)}
+	return ZonaFranca{RequestWrapper: models.NewRequestWrapper(b.factura), MetadatosFactura: b.metadatos}
 }
 
 type zonaFrancaCabeceraBuilder struct {

@@ -15,6 +15,7 @@ import (
 
 // VentaMineral representa la estructura completa de una factura de Venta de Minerales lista para ser procesada.
 type VentaMineral struct {
+	models.MetadatosFactura
 	models.RequestWrapper[documents.FacturaVentaMineral]
 }
 
@@ -31,6 +32,7 @@ type VentaMineralDetalle struct {
 // NewVentaMineralBuilder inicia el proceso de construcción de la factura.
 func NewVentaMineralBuilder() *ventaMineralBuilder {
 	return &ventaMineralBuilder{
+		metadatos: models.NuevosMetadatosFactura(21),
 		factura: &documents.FacturaVentaMineral{
 			XMLName:           xml.Name{Local: "facturaElectronicaVentaMineral"},
 			XmlnsXsi:          "http://www.w3.org/2001/XMLSchema-instance",
@@ -58,7 +60,8 @@ func NewVentaMineralDetalleBuilder() *ventaMineralDetalleBuilder {
 }
 
 type ventaMineralBuilder struct {
-	factura *documents.FacturaVentaMineral
+	metadatos models.MetadatosFactura
+	factura   *documents.FacturaVentaMineral
 }
 
 func (b *ventaMineralBuilder) WithCabecera(req VentaMineralCabecera) *ventaMineralBuilder {
@@ -88,7 +91,7 @@ func (b *ventaMineralBuilder) WithModalidad(tipo int) *ventaMineralBuilder {
 }
 
 func (b *ventaMineralBuilder) Build() VentaMineral {
-	return VentaMineral{models.NewRequestWrapper(b.factura)}
+	return VentaMineral{RequestWrapper: models.NewRequestWrapper(b.factura), MetadatosFactura: b.metadatos}
 }
 
 type ventaMineralCabeceraBuilder struct {

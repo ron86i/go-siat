@@ -14,6 +14,7 @@ import (
 // BoletoAereo representa la estructura completa de una factura de boleto aéreo lista para ser procesada.
 // Esta estructura encapsula la factura del sector 30 para su uso en los servicios del SDK.
 type BoletoAereo struct {
+	models.MetadatosFactura
 	models.RequestWrapper[documents.FacturaBoletoAereo]
 }
 
@@ -24,12 +25,14 @@ type BoletoAereoCabecera struct {
 
 // boletoAereoBuilder permite la construcción fluida de una factura de Boleto Aéreo.
 type boletoAereoBuilder struct {
-	factura *documents.FacturaBoletoAereo
+	metadatos models.MetadatosFactura
+	factura   *documents.FacturaBoletoAereo
 }
 
 // NewBoletoAereoBuilder inicializa un nuevo constructor para una factura de Boleto Aéreo.
 func NewBoletoAereoBuilder() *boletoAereoBuilder {
 	return &boletoAereoBuilder{
+		metadatos: models.NuevosMetadatosFactura(30),
 		factura: &documents.FacturaBoletoAereo{
 			XMLName:           xml.Name{Local: "facturaElectronicaBoletoAereo"},
 			XmlnsXsi:          "http://www.w3.org/2001/XMLSchema-instance",
@@ -61,7 +64,7 @@ func (b *boletoAereoBuilder) WithCabecera(req BoletoAereoCabecera) *boletoAereoB
 
 // Build finaliza la construcción y retorna el objeto BoletoAereo para su envío.
 func (b *boletoAereoBuilder) Build() BoletoAereo {
-	return BoletoAereo{models.NewRequestWrapper(b.factura)}
+	return BoletoAereo{RequestWrapper: models.NewRequestWrapper(b.factura), MetadatosFactura: b.metadatos}
 }
 
 // --- Cabecera Builder ---

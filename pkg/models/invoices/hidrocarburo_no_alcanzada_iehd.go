@@ -16,6 +16,7 @@ import (
 // HidrocarburoNoAlcanzadaIehd representa una factura de Hidrocarburos No Alcanzada por el IEHD
 // (Sector 38) lista para ser procesada.
 type HidrocarburoNoAlcanzadaIehd struct {
+	models.MetadatosFactura
 	models.RequestWrapper[documents.FacturaHidrocarburoNoAlcanzadaIehd]
 }
 
@@ -33,6 +34,7 @@ type HidrocarburoNoAlcanzadaIehdDetalle struct {
 // Hidrocarburos No Alcanzada por el IEHD (Sector 38).
 func NewHidrocarburoNoAlcanzadaIehdBuilder() *hidrocarburoNoAlcanzadaIehdBuilder {
 	return &hidrocarburoNoAlcanzadaIehdBuilder{
+		metadatos: models.NuevosMetadatosFactura(38),
 		factura: &documents.FacturaHidrocarburoNoAlcanzadaIehd{
 			XMLName:           xml.Name{Local: "facturaElectronicaHidrocarburoNoAlcanzadaIehd"},
 			XmlnsXsi:          "http://www.w3.org/2001/XMLSchema-instance",
@@ -58,7 +60,8 @@ func NewHidrocarburoNoAlcanzadaIehdDetalleBuilder() *hidrocarburoNoAlcanzadaIehd
 }
 
 type hidrocarburoNoAlcanzadaIehdBuilder struct {
-	factura *documents.FacturaHidrocarburoNoAlcanzadaIehd
+	metadatos models.MetadatosFactura
+	factura   *documents.FacturaHidrocarburoNoAlcanzadaIehd
 }
 
 func (b *hidrocarburoNoAlcanzadaIehdBuilder) WithCabecera(req HidrocarburoNoAlcanzadaIehdCabecera) *hidrocarburoNoAlcanzadaIehdBuilder {
@@ -88,7 +91,7 @@ func (b *hidrocarburoNoAlcanzadaIehdBuilder) WithModalidad(tipo int) *hidrocarbu
 }
 
 func (b *hidrocarburoNoAlcanzadaIehdBuilder) Build() HidrocarburoNoAlcanzadaIehd {
-	return HidrocarburoNoAlcanzadaIehd{models.NewRequestWrapper(b.factura)}
+	return HidrocarburoNoAlcanzadaIehd{RequestWrapper: models.NewRequestWrapper(b.factura), MetadatosFactura: b.metadatos}
 }
 
 type hidrocarburoNoAlcanzadaIehdCabeceraBuilder struct {

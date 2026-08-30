@@ -15,6 +15,7 @@ import (
 
 // HospitalClinicaZF representa la estructura completa de una factura Hospital Clínica Zona Franca.
 type HospitalClinicaZF struct {
+	models.MetadatosFactura
 	models.RequestWrapper[documents.FacturaHospitalClinicaZF]
 }
 
@@ -31,6 +32,7 @@ type HospitalClinicaZFDetalle struct {
 // NewHospitalClinicaZFBuilder inicia el proceso de construcción.
 func NewHospitalClinicaZFBuilder() *hospitalClinicaZFBuilder {
 	return &hospitalClinicaZFBuilder{
+		metadatos: models.NuevosMetadatosFactura(50),
 		factura: &documents.FacturaHospitalClinicaZF{
 			XMLName:           xml.Name{Local: "facturaElectronicaHospitalClinicaZF"},
 			XmlnsXsi:          "http://www.w3.org/2001/XMLSchema-instance",
@@ -57,7 +59,8 @@ func NewHospitalClinicaZonaFrancaDetalleBuilder() *hospitalClinicaZFDetalleBuild
 }
 
 type hospitalClinicaZFBuilder struct {
-	factura *documents.FacturaHospitalClinicaZF
+	metadatos models.MetadatosFactura
+	factura   *documents.FacturaHospitalClinicaZF
 }
 
 func (b *hospitalClinicaZFBuilder) WithCabecera(req HospitalClinicaZFCabecera) *hospitalClinicaZFBuilder {
@@ -87,7 +90,7 @@ func (b *hospitalClinicaZFBuilder) WithModalidad(tipo int) *hospitalClinicaZFBui
 }
 
 func (b *hospitalClinicaZFBuilder) Build() HospitalClinicaZF {
-	return HospitalClinicaZF{models.NewRequestWrapper(b.factura)}
+	return HospitalClinicaZF{RequestWrapper: models.NewRequestWrapper(b.factura), MetadatosFactura: b.metadatos}
 }
 
 type hospitalClinicaZFCabeceraBuilder struct {

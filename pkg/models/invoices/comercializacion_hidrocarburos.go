@@ -15,6 +15,7 @@ import (
 
 // ComercializacionHidro representa la estructura completa de una factura de Comercialización de Hidrocarburos lista para ser procesada.
 type ComercializacionHidro struct {
+	models.MetadatosFactura
 	models.RequestWrapper[documents.FacturaComercializacionHidro]
 }
 
@@ -31,6 +32,7 @@ type ComercializacionHidroDetalle struct {
 // NewComercializacionHidroBuilder inicia el proceso de construcción de una Factura de Comercialización de Hidrocarburos.
 func NewComercializacionHidroBuilder() *comercializacionHidroBuilder {
 	return &comercializacionHidroBuilder{
+		metadatos: models.NuevosMetadatosFactura(12),
 		factura: &documents.FacturaComercializacionHidro{
 			XMLName:           xml.Name{Local: "facturaElectronicaComercializacionHidrocarburo"},
 			XmlnsXsi:          "http://www.w3.org/2001/XMLSchema-instance",
@@ -56,7 +58,8 @@ func NewComercializacionHidroDetalleBuilder() *comercializacionHidroDetalleBuild
 }
 
 type comercializacionHidroBuilder struct {
-	factura *documents.FacturaComercializacionHidro
+	metadatos models.MetadatosFactura
+	factura   *documents.FacturaComercializacionHidro
 }
 
 func (b *comercializacionHidroBuilder) WithCabecera(req ComercializacionHidroCabecera) *comercializacionHidroBuilder {
@@ -86,7 +89,7 @@ func (b *comercializacionHidroBuilder) WithModalidad(tipo int) *comercializacion
 }
 
 func (b *comercializacionHidroBuilder) Build() ComercializacionHidro {
-	return ComercializacionHidro{models.NewRequestWrapper(b.factura)}
+	return ComercializacionHidro{RequestWrapper: models.NewRequestWrapper(b.factura), MetadatosFactura: b.metadatos}
 }
 
 type comercializacionHidroCabeceraBuilder struct {

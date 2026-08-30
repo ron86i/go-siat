@@ -15,6 +15,7 @@ import (
 // CompraVentaTasas representa una factura de compra-venta con tasas lista para procesar.
 type CompraVentaTasas struct {
 	models.RequestWrapper[documents.FacturaCompraVentaTasas]
+	models.MetadatosFactura
 }
 
 // CompraVentaTasasCabecera representa la cabecera de una factura de tasas.
@@ -30,6 +31,7 @@ type CompraVentaTasasDetalle struct {
 // NewCompraVentaTasasBuilder inicia la construcción de una factura de compra-venta con tasas.
 func NewCompraVentaTasasBuilder() *compraVentaTasasBuilder {
 	return &compraVentaTasasBuilder{
+		metadatos: models.NuevosMetadatosFactura(41),
 		factura: &documents.FacturaCompraVentaTasas{
 			XMLName:           xml.Name{Local: "facturaElectronicaCompraVentaTasas"},
 			XmlnsXsi:          "http://www.w3.org/2001/XMLSchema-instance",
@@ -57,7 +59,14 @@ func NewCompraVentaTasasDetalleBuilder() *detalleTasasBuilder {
 // --- Builder Factura Tasas ---
 
 type compraVentaTasasBuilder struct {
-	factura *documents.FacturaCompraVentaTasas
+	factura   *documents.FacturaCompraVentaTasas
+	metadatos models.MetadatosFactura
+}
+
+// WithTipoFacturaDocumento reemplaza el tipo fiscal predeterminado de tasas.
+func (b *compraVentaTasasBuilder) WithTipoFacturaDocumento(tipo int) *compraVentaTasasBuilder {
+	b.metadatos.WithTipoFacturaDocumento(tipo)
+	return b
 }
 
 // WithModalidad configura los metadatos XML según la modalidad.
@@ -93,7 +102,7 @@ func (b *compraVentaTasasBuilder) AddDetalle(req ...CompraVentaTasasDetalle) *co
 
 // Build finaliza la construcción y retorna la estructura opaca.
 func (b *compraVentaTasasBuilder) Build() CompraVentaTasas {
-	return CompraVentaTasas{models.NewRequestWrapper(b.factura)}
+	return CompraVentaTasas{RequestWrapper: models.NewRequestWrapper(b.factura), MetadatosFactura: b.metadatos}
 }
 
 // --- Builder Cabecera Tasas ---
