@@ -1,5 +1,19 @@
 # Changelog
 
+## [2.2.0](https://github.com/ron86i/go-siat/compare/v2.1.5...v2.2.0) (2026-08-30)
+
+
+### Features
+
+* **facturacion:** tipar recepción fiscal ([4cd2ba7](https://github.com/ron86i/go-siat/commit/4cd2ba7aa2d51156928119784ec617742348b888))
+* **facturas:** agregar metadatos fiscales ([d48e432](https://github.com/ron86i/go-siat/commit/d48e432c75a7a246b881e5b7b34d6b2bff4af4b4))
+* metadatos fiscales y recepción tipada SIAT ([fa77ce1](https://github.com/ron86i/go-siat/commit/fa77ce1cbdeb10ecdcde202ca0d65855c19459a7))
+
+
+### Bug Fixes
+
+* **operaciones:** incluir punto de venta cero ([46d70b9](https://github.com/ron86i/go-siat/commit/46d70b9ac00d45a1da8e5c5ed8ed3600da2dd45b))
+
 ## [2.1.5](https://github.com/ron86i/go-siat/compare/v2.1.4...v2.1.5) (2026-08-24)
 
 
