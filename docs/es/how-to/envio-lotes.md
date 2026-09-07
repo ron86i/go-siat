@@ -64,7 +64,39 @@ codigoRecepcion := resp.Body.Content.RespuestaServicioFacturacion.CodigoRecepcio
 
 ### Paquetes de contingencia
 
-Cuando el lote es resultado de una caída, agregá el código de autorización y el evento que registraste con `Operaciones()`:
+Cuando el lote es resultado de una caída, registrá primero el evento significativo. El código de recepción del evento vincula el lote con esa contingencia:
+
+```go
+inicio := time.Now().Add(-15 * time.Minute) // inicio real de la caída
+fin := time.Now()                           // recuperación o fin de emisión offline
+
+eventoReq := models.NewRegistroEventoSignificativoBuilder().
+    WithCodigoSucursal(0).
+    WithCodigoPuntoVenta(0).
+    WithCuis(cuis).
+    WithCufd(cufd).
+    WithCufdEvento(cufdEvento).
+    WithCodigoMotivoEvento(motivoEvento).
+    WithDescripcion("Corte de conexión").
+    WithFechaInicio(inicio).
+    WithFechaFin(fin).
+    Build()
+
+eventoResp, err := s.Operaciones().RegistroEventosSignificativos(ctx, eventoReq)
+if err != nil {
+    log.Fatal(err)
+}
+evento, err := eventoResp.GetContent()
+if err != nil {
+    log.Fatal(err)
+}
+if !evento.Respuesta.Transaccion {
+    log.Fatalf("el SIAT rechazó el evento de contingencia: %+v", evento.Respuesta.MensajesList)
+}
+codigoEvento := evento.Respuesta.CodigoRecepcionEventoSignificativo
+```
+
+Después agregá el CAFC y ese código al paquete. El lote debe usar `siat.EmisionOffline`:
 
 ```go
 cafc := "TU-CODIGO-CAFC"

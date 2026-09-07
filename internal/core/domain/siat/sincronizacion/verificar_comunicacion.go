@@ -17,6 +17,5 @@ type VerificarComunicacionResponse struct {
 
 // RespuestaComunicacion representa la estructura interna de la respuesta
 type RespuestaComunicacion struct {
-	MensajesList []MensajeServicio `xml:"mensajesList" json:"mensajesList"`
-	Transaccion  bool              `xml:"transaccion" json:"transaccion"`
+	RespuestaServicio
 }

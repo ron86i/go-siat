@@ -40,6 +40,7 @@ func (t *xmlTraceTransport) RoundTrip(req *http.Request) (*http.Response, error)
 	if err != nil {
 		return nil, err
 	}
+	t.t.Logf("respuesta HTTP del SIAT: %s %s -> %s", req.Method, req.URL, resp.Status)
 
 	responseBody, err := io.ReadAll(resp.Body)
 	if err != nil {
@@ -242,6 +243,7 @@ func TestSolicitudCuisYCierreOperaciones(t *testing.T) {
 
 	resultadoCuis := cuisResp.Body.Content.RespuestaCuis
 	if resultadoCuis.Codigo == "" {
+		t.Logf("CUIS obtenido: %v", resultadoCuis)
 		t.Fatalf("SIAT no devolvió CUIS: %+v", resultadoCuis.MensajesList)
 	}
 	t.Logf("CUIS obtenido: %s (transacción: %v, vigencia: %s)",

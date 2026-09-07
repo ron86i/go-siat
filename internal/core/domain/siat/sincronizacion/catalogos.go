@@ -33,7 +33,7 @@ type SincronizarActividadesResponse struct {
 
 // RespuestaListaActividades contiene el resultado de la sincronización de actividades.
 type RespuestaListaActividades struct {
-	Transaccion      bool               `xml:"transaccion" json:"transaccion"`
+	RespuestaServicio
 	ListaActividades []ListaActividades `xml:"listaActividades" json:"listaActividades"`
 }
 
@@ -61,8 +61,8 @@ type SincronizarFechaHoraResponse struct {
 
 // RespuestaFechaHora contiene la fecha y hora sincronizada con el SIAT.
 type RespuestaFechaHora struct {
-	Transaccion bool              `xml:"transaccion" json:"transaccion"`
-	FechaHora   datatype.TimeSiat `xml:"fechaHora" json:"fechaHora"`
+	RespuestaServicio
+	FechaHora datatype.TimeSiat `xml:"fechaHora" json:"fechaHora"`
 }
 
 // --- Sincronizar lista actividades documento sector ---
@@ -82,7 +82,7 @@ type SincronizarListaActividadesDocumentoSectorResponse struct {
 
 // RespuestaListaActividadesDocumentoSector contiene el listado de documentos por actividad.
 type RespuestaListaActividadesDocumentoSector struct {
-	Transaccion                     bool                              `xml:"transaccion" json:"transaccion"`
+	RespuestaServicio
 	ListaActividadesDocumentoSector []ListaActividadesDocumentoSector `xml:"listaActividadesDocumentoSector" json:"listaActividadesDocumentoSector"`
 }
 
@@ -110,7 +110,7 @@ type SincronizarListaLeyendasFacturaResponse struct {
 
 // RespuestaListaParametricasLeyendas contiene las leyendas obtenidas para las actividades.
 type RespuestaListaParametricasLeyendas struct {
-	Transaccion   bool             `xml:"transaccion" json:"transaccion"`
+	RespuestaServicio
 	ListaLeyendas *[]ListaLeyendas `xml:"listaLeyendas" json:"listaLeyendas"`
 }
 
@@ -137,7 +137,7 @@ type SincronizarListaProductosServiciosResponse struct {
 
 // RespuestaListaProductos contiene el listado de productos homologados.
 type RespuestaListaProductos struct {
-	Transaccion  bool                    `xml:"transaccion" json:"transaccion"`
+	RespuestaServicio
 	ListaCodigos []ListaCodigosProductos `xml:"listaCodigos" json:"listaCodigos"`
 }
 
@@ -152,7 +152,7 @@ type ListaCodigosProductos struct {
 
 // RespuestaListaParametricas es una estructura genérica para las respuestas de catálogos paramétricos del SIAT.
 type RespuestaListaParametricas struct {
-	Transaccion  bool           `xml:"transaccion" json:"transaccion"`
+	RespuestaServicio
 	ListaCodigos []ListaCodigos `xml:"listaCodigos" json:"listaCodigos"`
 }
 
