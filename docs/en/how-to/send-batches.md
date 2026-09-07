@@ -64,7 +64,39 @@ receptionCode := resp.Body.Content.RespuestaServicioFacturacion.CodigoRecepcion
 
 ### Contingency packages
 
-When the batch is the result of an outage, add the authorization code and the event you registered through `Operaciones()`:
+When the batch is the result of an outage, first register the significant event. Its reception code links the batch to that contingency:
+
+```go
+start := time.Now().Add(-15 * time.Minute) // actual outage start
+end := time.Now()                          // recovery or end of offline issuance
+
+eventReq := models.NewRegistroEventoSignificativoBuilder().
+    WithCodigoSucursal(0).
+    WithCodigoPuntoVenta(0).
+    WithCuis(cuis).
+    WithCufd(cufd).
+    WithCufdEvento(eventCufd).
+    WithCodigoMotivoEvento(eventReason).
+    WithDescripcion("Connection outage").
+    WithFechaInicio(start).
+    WithFechaFin(end).
+    Build()
+
+eventResp, err := s.Operaciones().RegistroEventosSignificativos(ctx, eventReq)
+if err != nil {
+    log.Fatal(err)
+}
+event, err := eventResp.GetContent()
+if err != nil {
+    log.Fatal(err)
+}
+if !event.Respuesta.Transaccion {
+    log.Fatalf("SIAT rejected the contingency event: %+v", event.Respuesta.MensajesList)
+}
+eventCode := event.Respuesta.CodigoRecepcionEventoSignificativo
+```
+
+Then add the CAFC and that event code to the package. The batch must use `siat.EmisionOffline`:
 
 ```go
 cafc := "YOUR-CAFC-CODE"
