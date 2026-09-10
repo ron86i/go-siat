@@ -3,7 +3,7 @@ module github.com/ron86i/go-siat/v2
 go 1.25.0
 
 require (
-	github.com/beevik/etree v1.7.1
+	github.com/beevik/etree v1.8.0
 	github.com/joho/godotenv v1.5.1
 	github.com/russellhaering/goxmldsig v1.6.1
 	github.com/stretchr/testify v1.12.1
