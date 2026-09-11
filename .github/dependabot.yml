@@ -5,14 +5,14 @@
 
 version: 2
 updates:
-  # Daily updates for Go dependencies (Go 1.25)
+  # Daily updates for Go dependencies
   - package-ecosystem: "gomod"
     directory: "/"
     schedule:
       interval: "daily"
     labels:
       - "dependencies"
-      - "go-1.25"
+      - "go"
     open-pull-requests-limit: 10
     # Config for release automation
     commit-message:
