@@ -191,6 +191,11 @@ type anulacionDocumentoAjusteBuilder struct {
 	request *documento_ajuste.AnulacionDocumentoAjuste
 }
 
+func (b *anulacionDocumentoAjusteBuilder) WithCodigoModalidad(v int) *anulacionDocumentoAjusteBuilder {
+	b.request.SolicitudServicioAnulacionDocumentoAjuste.CodigoModalidad = v
+	return b
+}
+
 func (b *anulacionDocumentoAjusteBuilder) WithCodigoDocumentoSector(v int) *anulacionDocumentoAjusteBuilder {
 	b.request.SolicitudServicioAnulacionDocumentoAjuste.CodigoDocumentoSector = v
 	return b
@@ -242,6 +247,11 @@ func (b *anulacionDocumentoAjusteBuilder) Build() AnulacionDocumentoAjuste {
 
 type reversionAnulacionDocumentoAjusteBuilder struct {
 	request *documento_ajuste.ReversionAnulacionDocumentoAjuste
+}
+
+func (b *reversionAnulacionDocumentoAjusteBuilder) WithCodigoModalidad(v int) *reversionAnulacionDocumentoAjusteBuilder {
+	b.request.SolicitudServicioReversionAnulacionDocumentoAjuste.CodigoModalidad = v
+	return b
 }
 
 func (b *reversionAnulacionDocumentoAjusteBuilder) WithCodigoDocumentoSector(v int) *reversionAnulacionDocumentoAjusteBuilder {

@@ -46,6 +46,7 @@ func buildRequest(req any) ([]byte, error) {
 	requestBody := soap.Envelope[any]{
 		XmlnsSoapenv: "http://schemas.xmlsoap.org/soap/envelope/",
 		XmlnsNs:      "https://siat.impuestos.gob.bo/",
+		XmlnsXsi:     "http://www.w3.org/2001/XMLSchema-instance",
 		Body: soap.EnvelopeBody[any]{
 			Content: req,
 		},

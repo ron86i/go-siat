@@ -8,6 +8,9 @@ type Envelope[T any] struct {
 	XMLName      xml.Name `xml:"soapenv:Envelope"`
 	XmlnsSoapenv string   `xml:"xmlns:soapenv,attr"`
 	XmlnsNs      string   `xml:"xmlns:ns,attr"`
+	// XmlnsXsi permite serializar campos opcionales con xsi:nil="true".
+	// Es requerido, por ejemplo, cuando cafc no aplica en recepción de paquetes.
+	XmlnsXsi string `xml:"xmlns:xsi,attr"`
 	// Usamos un puntero para omitir la etiqueta completamente si el Header está vacío
 	Header *Header         `xml:"soapenv:Header,omitempty"`
 	Body   EnvelopeBody[T] `xml:"soapenv:Body"`
