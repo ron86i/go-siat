@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.3.0](https://github.com/ron86i/go-siat/compare/v2.2.1...v2.3.0) (2026-09-11)
+
+
+### Features
+
+* **ajustes:** agrega modalidad a builders ([e2b64e7](https://github.com/ron86i/go-siat/commit/e2b64e7f17bf5e2c39834dcbcdba70bcf39b2543))
+
+
+### Bug Fixes
+
+* mejora soporte SOAP y documentos de ajuste ([0ba720d](https://github.com/ron86i/go-siat/commit/0ba720dbe6b1aa870ebacdc2efd9962bbda5abf9))
+* **soap:** declara namespace xsi ([ccb0d79](https://github.com/ron86i/go-siat/commit/ccb0d797449d285c02995a831e84e612e3f86a1b))
+
 ## [2.2.0](https://github.com/ron86i/go-siat/compare/v2.1.3...v2.2.0) (2026-08-30)
 
 
