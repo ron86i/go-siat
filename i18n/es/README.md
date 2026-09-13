@@ -76,7 +76,7 @@ go get github.com/ron86i/go-siat/v2
 
 ### Requisitos
 
-- Go 1.25 o superior.
+- Go 1.26 o superior.
 - Certificado digital válido (p12/pfx) y clave privada (para modalidad Electrónica).
 
 > [!TIP]

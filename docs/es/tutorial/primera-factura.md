@@ -16,7 +16,7 @@ Lo harás en siete pasos, y al terminar vas a entender la cadena que toda factur
 
 | Requisito | Notas |
 | :-------- | :---- |
-| Go 1.25+ | Verificá con `go version` |
+| Go 1.26+ | Verificá con `go version` |
 | Un token del SIAT | Lo obtenés desde tu portal de contribuyente |
 | Tu NIT | El número de contribuyente al que pertenece el token |
 | Un código de sistema autorizado | `CodigoSistema`, que el SIAT emite al registrar tu sistema |

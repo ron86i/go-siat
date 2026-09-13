@@ -6,7 +6,7 @@ Agradecemos el interés en contribuir a go-siat. Este documento describe el proc
 
 ## 📋 Requisitos Previos
 
-- Go 1.25 o superior
+- Go 1.26 o superior
 - Git
 - Familiaridad con SIAT (Sistema Integrado de Administración Tributaria)
 - Lectura de la [Guía de Arquitectura](../../docs/es/explanation/arquitectura.md)

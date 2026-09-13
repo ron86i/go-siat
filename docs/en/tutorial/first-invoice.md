@@ -16,7 +16,7 @@ You will do it in seven steps, and by the end you will understand the chain that
 
 | Requirement | Notes |
 | :---------- | :---- |
-| Go 1.25+ | `go version` to check |
+| Go 1.26+ | `go version` to check |
 | A SIAT API token | Obtained from your SIAT taxpayer portal |
 | Your NIT | The taxpayer number the token belongs to |
 | An authorized system code | `CodigoSistema`, issued by SIAT when you register your system |
