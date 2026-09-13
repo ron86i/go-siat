@@ -33,7 +33,6 @@ updates:
       interval: "daily"
     labels:
       - "dependencies"
-      - "github-actions"
     groups:
       github-actions:
         patterns:
