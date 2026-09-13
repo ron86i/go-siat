@@ -7,7 +7,6 @@
 <p align="center">
   <a href="../en/README.md"><img src="https://img.shields.io/badge/lang-english-red?style=flat" alt="English Version"></a>
   <a href="https://masterminds.github.io/stability/active.html"><img src="https://masterminds.github.io/stability/active.svg" alt="Stability: Active"></a>
-  <a href="https://goreportcard.com/report/github.com/ron86i/go-siat/v2"><img src="https://goreportcard.com/badge/github.com/ron86i/go-siat/v2" alt="Go Report Card"></a>
   <br>
   <a href="https://pkg.go.dev/github.com/ron86i/go-siat/v2"><img src="https://pkg.go.dev/badge/github.com/ron86i/go-siat/v2.svg" alt="Go Reference"></a>
   <a href="https://go.dev/"><img src="https://img.shields.io/github/go-mod/go-version/ron86i/go-siat?style=flat" alt="Go Version"></a>
