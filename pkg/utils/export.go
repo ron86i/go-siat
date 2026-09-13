@@ -15,7 +15,7 @@ type XMLSigner interface {
 
 // ExportXML serializes a given struct to XML and writes it to the specified file path.
 func ExportXML(factura any, path string) error {
-	xmlData, err := xml.Marshal(factura)
+	xmlData, err := MarshalIndentedXML(factura)
 	if err != nil {
 		return fmt.Errorf("error marshaling XML: %w", err)
 	}
@@ -28,7 +28,7 @@ func ExportXML(factura any, path string) error {
 
 // ExportSignedXML serializes, signs the XML using the provided signer, and writes it to the file path.
 func ExportSignedXML(factura any, signer XMLSigner, path string) error {
-	xmlData, err := xml.Marshal(factura)
+	xmlData, err := MarshalIndentedXML(factura)
 	if err != nil {
 		return fmt.Errorf("error marshaling XML: %w", err)
 	}
@@ -51,7 +51,7 @@ func ExportTarGz(facturas []any, signer XMLSigner, path string) error {
 	tw := tar.NewWriter(&tarBuf)
 
 	for i, f := range facturas {
-		xmlData, err := xml.Marshal(f)
+		xmlData, err := MarshalIndentedXML(f)
 		if err != nil {
 			return fmt.Errorf("error marshaling invoice %d: %w", i+1, err)
 		}

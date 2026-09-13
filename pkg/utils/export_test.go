@@ -43,7 +43,7 @@ func TestExportXML(t *testing.T) {
 		t.Fatalf("Failed to read exported file: %v", err)
 	}
 
-	expectedXML := xml.Header + `<Factura><id>1</id><total>100.5</total></Factura>`
+	expectedXML := xml.Header + "<Factura>\n  <id>1</id>\n  <total>100.5</total>\n</Factura>"
 	if string(content) != expectedXML {
 		t.Errorf("Unexpected XML content.\nGot: %s\nWant: %s", string(content), expectedXML)
 	}
@@ -66,7 +66,7 @@ func TestExportSignedXML(t *testing.T) {
 		t.Fatalf("Failed to read exported signed file: %v", err)
 	}
 
-	expectedXML := xml.Header + `<Factura><id>2</id><total>250.75</total></Factura><!-- signed -->`
+	expectedXML := xml.Header + "<Factura>\n  <id>2</id>\n  <total>250.75</total>\n</Factura><!-- signed -->"
 	if string(content) != expectedXML {
 		t.Errorf("Unexpected signed XML content.\nGot: %s\nWant: %s", string(content), expectedXML)
 	}
