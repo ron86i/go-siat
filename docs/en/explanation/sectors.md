@@ -54,6 +54,26 @@ Three constructors per sector: `New<Sector>CabeceraBuilder()` for the header, `N
 
 What changes between sectors is only the field list on the header and detail builders. Your editor's autocomplete on the returned builder type is the fastest reference there is.
 
+### Free-form JSON fields
+
+Some sector fields accept free-form JSON, including the hotel
+`WithDetalleHuespedes` field and cost, package, or other-data fields in export
+headers. Pass either an already prepared JSON `string` or a Go value that
+`encoding/json` can marshal. If the value cannot be serialized, the builder
+keeps the error rather than panicking:
+
+```go
+detailBuilder := invoices.NewHotelDetalleBuilder().
+    WithDetalleHuespedes(map[string]any{"name": "Ana"})
+if err := detailBuilder.Err(); err != nil {
+    return err
+}
+detail := detailBuilder.Build()
+```
+
+`Err()` is available on `HotelDetalle` and on commercial-export,
+hydrocarbon-export, mining-export, and sale-price-export header builders.
+
 ---
 
 ## How a sector picks its service endpoint

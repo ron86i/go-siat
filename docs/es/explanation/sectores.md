@@ -54,6 +54,27 @@ Tres constructores por sector: `New<Sector>CabeceraBuilder()` para la cabecera, 
 
 Entre sectores lo único que cambia es la lista de campos de la cabecera y el detalle. El autocompletado de tu editor sobre el tipo de builder devuelto es la referencia más rápida que existe.
 
+### Campos JSON libres
+
+Algunos campos sectoriales aceptan JSON libre, por ejemplo
+`WithDetalleHuespedes` de hotel y los campos de costos, bultos u otros datos de
+las cabeceras de exportación. Pasales un `string` JSON ya preparado o un valor
+Go que `encoding/json` pueda serializar. Si el valor no se puede serializar, el
+builder conserva el error y no entra en pánico:
+
+```go
+detalleBuilder := invoices.NewHotelDetalleBuilder().
+    WithDetalleHuespedes(map[string]any{"nombre": "Ana"})
+if err := detalleBuilder.Err(); err != nil {
+    return err
+}
+detalle := detalleBuilder.Build()
+```
+
+`Err()` está disponible en `HotelDetalle` y en las cabeceras de exportación
+comercial, exportación de hidrocarburos, exportación minera y exportación a
+precio de venta.
+
 ---
 
 ## Cómo elige un sector su endpoint
