@@ -7,11 +7,17 @@ on:
     branches: [ "main", "dev" ]
   schedule:
     - cron: '30 1 * * 1' # Runs once a week
+  workflow_dispatch:
+
+concurrency:
+  group: codeql-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   analyze:
     name: Analyze
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     permissions:
       actions: read
       contents: read
