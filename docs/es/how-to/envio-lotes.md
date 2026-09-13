@@ -58,6 +58,91 @@ if err := siat.Verify(resp.Body.Content.RespuestaServicioFacturacion); err != ni
 codigoRecepcion := resp.Body.Content.RespuestaServicioFacturacion.CodigoRecepcion
 ```
 
+### Aprovechar varios CPU al procesar el lote
+
+`WithFacturas` conserva el procesamiento serial. Para lotes grandes usá
+`WithFacturasEnLote`: con `nil` (o `Workers: 0`) el SDK usa los CPU lógicos
+disponibles menos uno, dejando capacidad para HTTP, base de datos u otras
+tareas de la aplicación. Podés indicar otro valor si conocés la capacidad del
+entorno.
+
+```go
+err := builder.WithFacturasEnLote(
+    facturas,
+    s.Config(),
+    nil, // CPU lógicos menos uno
+)
+if err != nil {
+    log.Fatal("no se pudo procesar el lote:", err)
+}
+```
+
+En modalidad electrónica, el SDK sólo firma en paralelo si el firmador declara
+que es seguro para concurrencia. Los firmadores personalizados sin esa garantía
+se procesan serialmente.
+
+### Mejoras para lotes muy grandes
+
+Para lotes de cientos o miles de facturas, considerá estas mejoras alrededor
+del SDK:
+
+- `WithFacturasEnLoteContext` permite cancelar antes de iniciar el siguiente
+  documento. Una firma ya iniciada termina porque la interfaz `XMLSigner` no
+  recibe contexto.
+- `OnComplete` recibe cantidad, tiempos de serialización, firma y empaquetado,
+  tamaño final y workers efectivos para instrumentar métricas.
+- `DestinoArchivo` recibe una copia del TAR.GZ ya firmado. Podés guardarla en
+  disco y reintentar una falla de red sin volver a firmar el lote.
+- `MaxFacturas` permite definir un límite propio, incluso si el SIAT admite
+  hasta 1.000 facturas, para no agotar memoria con XML inusualmente grandes.
+- Si tu aplicación ya construyó XML compacto, implementá `XMLBytesMarshaler`.
+  El SDK reutiliza esos bytes y evita llamar a `encoding/xml.Marshal` por cada
+  factura.
+- Ejecutá benchmarks con 100, 500 y 1.000 facturas; el mejor valor de workers
+  depende del CPU, certificado y carga real de tu aplicación.
+- Mantené el XML compacto antes de firmar. Nunca lo indentés ni lo modifiques
+  después de firmarlo.
+- En multi-tenant, creá una configuración y credencial nuevas al rotar el
+  certificado; no mutés una credencial existente.
+
+El SOAP finalmente recibe `Archivo` como una cadena Base64, por lo que esa
+cadena completa debe existir en memoria antes de enviar la solicitud.
+
+```go
+ctx, cancel := context.WithTimeout(context.Background(), 2*time.Minute)
+defer cancel()
+
+archivo, err := os.CreateTemp("", "siat-lote-*.tar.gz")
+if err != nil {
+    log.Fatal(err)
+}
+defer archivo.Close()
+
+options := &models.FacturasEnLoteOptions{
+    MaxFacturas:    1000,
+    DestinoArchivo: archivo,
+    OnComplete: func(metrics models.FacturasEnLoteMetrics) {
+        log.Printf("lote: %d facturas, %d workers, %s", metrics.CantidadFacturas, metrics.Workers, metrics.DuracionTotal)
+    },
+}
+if err := builder.WithFacturasEnLoteContext(ctx, facturas, s.Config(), options); err != nil {
+    log.Fatal(err)
+}
+```
+
+Para ejecutar el benchmark incluido: `go test -bench 'BenchmarkRecepcionMasivaFacturaBuilder_WithFacturasEnLote' -benchmem ./pkg/models`.
+
+Para medir firma XMLDSig y RSA real, sin llamar al SIAT:
+`go test -run '^$' -bench 'BenchmarkRecepcionMasivaFacturaBuilder_WithFacturasEnLoteFirmaElectronica/1000_facturas_firmadas$' -benchtime=1x -benchmem ./pkg/models`.
+
+```go
+type facturaPreconstruida struct{ xml []byte }
+
+func (f facturaPreconstruida) MarshalXMLBytes() ([]byte, error) {
+    return f.xml, nil // XML compacto sin firma
+}
+```
+
 **Guardá ese `CodigoRecepcion`.** Es la única manija que tenés para averiguar qué pasó con las facturas de adentro.
 
 `WithCantidadFacturas` tiene que coincidir con la cantidad real de facturas del slice. Si no coincide, se rechaza.
@@ -119,7 +204,6 @@ builder := models.NewRecepcionMasivaFacturaBuilder().
     WithCodigoSucursal(0).
     WithCodigoPuntoVenta(0).
     WithCodigoDocumentoSector(1).
-    WithCodigoEmision(siat.EmisionMasiva).
     WithTipoFacturaDocumento(1).
     WithCuis(cuis).
     WithCufd(cufd).
@@ -132,6 +216,9 @@ if err := builder.WithFacturas(facturas, s.Config()); err != nil {
 
 resp, err := s.Electronica().RecepcionMasivaFactura(ctx, builder.Build())
 ```
+
+`NewRecepcionMasivaFacturaBuilder` usa `siat.EmisionMasiva` por defecto. Solo
+llamá a `WithCodigoEmision` si necesitás reemplazar ese valor explícitamente.
 
 ---
 
@@ -163,7 +250,11 @@ if err := siat.Verify(resp.Body.Content.RespuestaServicioFacturacion); err != ni
 }
 ```
 
-Para lotes masivos usá `NewValidacionRecepcionMasivaFacturaBuilder` y `ValidacionRecepcionMasivaFactura` — forma idéntica.
+Para lotes masivos usá `NewValidacionRecepcionMasivaFacturaBuilder` y
+`ValidacionRecepcionMasivaFactura`. También inicia con
+`siat.EmisionMasiva`; configurá el código de recepción y los mismos datos
+fiscales del envío. Cuando no los complete la configuración del cliente, el
+builder expone además `WithCodigoAmbiente`, `WithCodigoSistema` y `WithNit`.
 
 No consultes en un bucle cerrado. El SIAT procesa los lotes de forma asíncrona; esperá entre intentos y tratá "todavía procesando" como un estado normal, no como un error.
 

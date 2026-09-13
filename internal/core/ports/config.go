@@ -16,6 +16,7 @@ type CredentialSign struct {
 	P12Bytes        []byte
 	P12Password     string
 	err             error // Guarda errores de lectura de archivo durante la inicialización
+	signer          *utils.XMLDocumentSigner
 }
 
 // NewPEMCredential crea una credencial de firma a partir de un certificado y llave privada (.crt/.key, pueden ser rutas string o bytes []byte).
@@ -43,6 +44,9 @@ func NewPEMCredential(cert, privateKey any) CredentialSign {
 	case []byte:
 		cf.PrivateKeyBytes = k
 	}
+	if cf.err == nil && len(cf.CertBytes) > 0 && len(cf.PrivateKeyBytes) > 0 {
+		cf.signer, cf.err = utils.NewXMLDocumentSigner(cf.PrivateKeyBytes, cf.CertBytes)
+	}
 	return cf
 }
 
@@ -62,6 +66,9 @@ func NewP12Credential(p12 any, password string) CredentialSign {
 	case []byte:
 		cf.P12Bytes = p
 	}
+	if cf.err == nil && len(cf.P12Bytes) > 0 {
+		cf.signer, cf.err = utils.NewXMLDocumentSignerFromP12(cf.P12Bytes, cf.P12Password)
+	}
 	return cf
 }
 
@@ -80,6 +87,9 @@ func (cf CredentialSign) GetType() string {
 func (cf CredentialSign) SignXML(xmlBytes []byte) ([]byte, error) {
 	if cf.err != nil {
 		return nil, cf.err
+	}
+	if cf.signer != nil {
+		return cf.signer.SignXML(xmlBytes)
 	}
 
 	// 1. Intentar firmar con P12
@@ -128,6 +138,12 @@ type Config struct {
 // SignXML firma un documento XML utilizando las credenciales configuradas en Config.
 func (c Config) SignXML(xmlBytes []byte) ([]byte, error) {
 	return c.CredentialSign.SignXML(xmlBytes)
+}
+
+// ConcurrentXMLSigning reports whether SignXML may be invoked concurrently.
+// Config uses isolated XMLDSig contexts and is safe for batch workers.
+func (c Config) ConcurrentXMLSigning() bool {
+	return true
 }
 
 // contextKey es un tipo privado para evitar colisiones de llaves de contexto

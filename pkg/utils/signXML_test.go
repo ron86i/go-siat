@@ -10,6 +10,7 @@ import (
 	"encoding/pem"
 	"math/big"
 	"os"
+	"sync"
 	"testing"
 	"time"
 
@@ -61,6 +62,25 @@ func TestSignXMLBytes(t *testing.T) {
 	signedXML, err := SignXMLBytes(xmlInput, keyPEM, certPEM)
 	assert.NoError(t, err)
 	assert.Greater(t, len(signedXML), len(xmlInput), "Signed XML should be larger than input")
+}
+
+func TestXMLDocumentSignerConcurrent(t *testing.T) {
+	keyPEM, certPEM, _, _, err := generateTestCertificate()
+	require.NoError(t, err)
+	signer, err := NewXMLDocumentSigner(keyPEM, certPEM)
+	require.NoError(t, err)
+
+	var wg sync.WaitGroup
+	for range 8 {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			signed, err := signer.SignXML([]byte("<root><node>value</node></root>"))
+			assert.NoError(t, err)
+			assert.Contains(t, string(signed), "Signature")
+		}()
+	}
+	wg.Wait()
 }
 
 func TestSignXMLBytes_InvalidKeyPEM(t *testing.T) {

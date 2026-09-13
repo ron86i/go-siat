@@ -20,67 +20,101 @@ type pemKeyStore struct {
 	Cert       []byte
 }
 
+// XMLDocumentSigner keeps already parsed signing material in memory. It is safe
+// to use concurrently: each signature creates its own XMLDSig context.
+type XMLDocumentSigner struct {
+	privateKey  *rsa.PrivateKey
+	certificate []byte
+}
+
+// ConcurrentXMLSigning reports that SignXML can run concurrently. Each call
+// creates an isolated XMLDSig context while reusing immutable key material.
+func (*XMLDocumentSigner) ConcurrentXMLSigning() bool {
+	return true
+}
+
+// NewXMLDocumentSigner creates a reusable signer from PEM-encoded key and
+// certificate bytes. The certificate is validated once at construction time.
+func NewXMLDocumentSigner(keyBytes, certBytes []byte) (*XMLDocumentSigner, error) {
+	privateKey, err := parseRSAPrivateKey(keyBytes)
+	if err != nil {
+		return nil, err
+	}
+	privateKey.Precompute()
+
+	blockCert, _ := pem.Decode(certBytes)
+	if blockCert == nil {
+		return nil, fmt.Errorf("error decoding PEM certificate")
+	}
+	cert, err := x509.ParseCertificate(blockCert.Bytes)
+	if err != nil {
+		return nil, err
+	}
+	if err := VerifyCertificateValidity(cert); err != nil {
+		return nil, err
+	}
+
+	return &XMLDocumentSigner{
+		privateKey:  privateKey,
+		certificate: append([]byte(nil), blockCert.Bytes...),
+	}, nil
+}
+
+// NewXMLDocumentSignerFromP12 creates a reusable signer from PKCS#12 bytes.
+func NewXMLDocumentSignerFromP12(p12Data []byte, password string) (*XMLDocumentSigner, error) {
+	privateKey, cert, err := pkcs12.Decode(p12Data, password)
+	if err != nil {
+		return nil, err
+	}
+	if err := VerifyCertificateValidity(cert); err != nil {
+		return nil, err
+	}
+	rsaPrivateKey, ok := privateKey.(*rsa.PrivateKey)
+	if !ok {
+		return nil, fmt.Errorf("private key is not of type RSA")
+	}
+	rsaPrivateKey.Precompute()
+	return &XMLDocumentSigner{
+		privateKey:  rsaPrivateKey,
+		certificate: append([]byte(nil), cert.Raw...),
+	}, nil
+}
+
+// SignXML signs one XML document using the reusable signing material.
+func (s *XMLDocumentSigner) SignXML(xmlBytes []byte) ([]byte, error) {
+	ks := &pemKeyStore{PrivateKey: s.privateKey, Cert: s.certificate}
+	ctx := dsig.NewDefaultSigningContext(ks)
+	ctx.Canonicalizer = dsig.MakeC14N10WithCommentsCanonicalizer()
+	ctx.SetSignatureMethod(dsig.RSASHA256SignatureMethod)
+
+	doc := etree.NewDocument()
+	if err := doc.ReadFromBytes(xmlBytes); err != nil {
+		return nil, err
+	}
+	signedElement, err := ctx.SignEnveloped(doc.Root())
+	if err != nil {
+		return nil, err
+	}
+	signedDoc := etree.NewDocument()
+	signedDoc.SetRoot(signedElement)
+	var buf bytes.Buffer
+	if _, err := signedDoc.WriteTo(&buf); err != nil {
+		return nil, err
+	}
+	return buf.Bytes(), nil
+}
+
 func (ks *pemKeyStore) GetKeyPair() (*rsa.PrivateKey, []byte, error) {
 	return ks.PrivateKey, ks.Cert, nil
 }
 
 // SignXMLBytes signs an XML document receiving certificates and key directly in bytes
 func SignXMLBytes(xmlBytes, keyBytes, certBytes []byte) ([]byte, error) {
-	// Parse private key from provided bytes
-	privKey, err := parseRSAPrivateKey(keyBytes)
+	signer, err := NewXMLDocumentSigner(keyBytes, certBytes)
 	if err != nil {
 		return nil, err
 	}
-
-	// Decode PEM certificate
-	blockCert, _ := pem.Decode(certBytes)
-	if blockCert == nil {
-		return nil, fmt.Errorf("error decoding PEM certificate")
-	}
-
-	// Parse the certificate to validate it
-	cert, err := x509.ParseCertificate(blockCert.Bytes)
-	if err != nil {
-		return nil, err
-	}
-
-	if err := VerifyCertificateValidity(cert); err != nil {
-		return nil, err
-	}
-
-	// Configure KeyStore
-	ks := &pemKeyStore{
-		PrivateKey: privKey,
-		Cert:       blockCert.Bytes,
-	}
-
-	// Configure signing context
-	ctx := dsig.NewDefaultSigningContext(ks)
-	ctx.Canonicalizer = dsig.MakeC14N10WithCommentsCanonicalizer()
-	ctx.SetSignatureMethod(dsig.RSASHA256SignatureMethod)
-
-	// Parse XML
-	doc := etree.NewDocument()
-	if err := doc.ReadFromBytes(xmlBytes); err != nil {
-		return nil, err
-	}
-
-	// Sign XML (Enveloped Signature)
-	signedElement, err := ctx.SignEnveloped(doc.Root())
-	if err != nil {
-		return nil, err
-	}
-
-	signedDoc := etree.NewDocument()
-	signedDoc.SetRoot(signedElement)
-
-	// Render to bytes
-	var buf bytes.Buffer
-	if _, err := signedDoc.WriteTo(&buf); err != nil {
-		return nil, err
-	}
-
-	return buf.Bytes(), nil
+	return signer.SignXML(xmlBytes)
 }
 
 // SignXML signs an XML document receiving certificates and key from files
@@ -102,22 +136,11 @@ func SignXML(xmlBytes []byte, keyPath, certPath string) ([]byte, error) {
 // SignWithP12Bytes signs an XML using the bytes of the p12 file
 // Ideal for when the certificate comes from a DB or a Vault
 func SignWithP12Bytes(xmlBytes, p12Data []byte, password string) ([]byte, error) {
-	// Decode the P12 from memory
-	priv, cert, err := pkcs12.Decode(p12Data, password)
+	signer, err := NewXMLDocumentSignerFromP12(p12Data, password)
 	if err != nil {
 		return nil, err
 	}
-	if err := VerifyCertificateValidity(cert); err != nil {
-		return nil, err
-	}
-	// Encode P12 to PEM
-	keyPEM, certPEM, err := encodeP12ToPEM(priv, cert)
-	if err != nil {
-		return nil, err
-	}
-
-	// Delegate to the base signing function
-	return SignXMLBytes(xmlBytes, keyPEM, certPEM)
+	return signer.SignXML(xmlBytes)
 }
 
 // SignWithP12 acts as a bridge between the p12 file and the existing signing function
@@ -127,22 +150,7 @@ func SignWithP12(xmlBytes []byte, p12Path, password string) ([]byte, error) {
 		return nil, err
 	}
 
-	// Decode the P12
-	priv, cert, err := pkcs12.Decode(p12Data, password)
-	if err != nil {
-		return nil, err
-	}
-	if err := VerifyCertificateValidity(cert); err != nil {
-		return nil, err
-	}
-	// Encode P12 to PEM
-	keyPEM, certPEM, err := encodeP12ToPEM(priv, cert)
-	if err != nil {
-		return nil, err
-	}
-
-	// Call the existing working function
-	return SignXMLBytes(xmlBytes, keyPEM, certPEM)
+	return SignWithP12Bytes(xmlBytes, p12Data, password)
 }
 
 // encodeP12ToPEM is an internal helper to avoid code duplication

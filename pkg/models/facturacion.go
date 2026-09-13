@@ -1,11 +1,15 @@
 package models
 
 import (
-	"archive/tar"
 	"bytes"
+	"context"
 	"encoding/xml"
 	"errors"
 	"fmt"
+	"io"
+	"runtime"
+	"strconv"
+	"sync"
 	"time"
 
 	"github.com/ron86i/go-siat/v2/internal/core/domain/datatype"
@@ -16,6 +20,58 @@ import (
 // XMLSigner define la interfaz para realizar la firma de documentos XML
 type XMLSigner interface {
 	SignXML(xmlBytes []byte) ([]byte, error)
+}
+
+// XMLBytesMarshaler permite entregar el XML compacto ya construido de una
+// factura. WithFacturasEnLote lo usa en lugar de encoding/xml.Marshal, lo que
+// evita reflexión y asignaciones para integraciones de alto volumen.
+//
+// El XML debe representar el documento sin firma: en modalidad electrónica el
+// SDK lo firma antes de incorporarlo al archivo. El llamador no debe modificar
+// los bytes mientras se procesa el lote.
+type XMLBytesMarshaler interface {
+	MarshalXMLBytes() ([]byte, error)
+}
+
+// FacturasEnLoteOptions configura el procesamiento de facturas en lote.
+//
+// Workers indica la cantidad máxima de documentos que se serializan y firman
+// simultáneamente. Con cero, WithFacturasEnLote usa los CPU lógicos disponibles
+// menos uno, manteniendo capacidad para el resto de la aplicación. Un valor de
+// uno o menor conserva el procesamiento serial. El valor se limita
+// automáticamente a la cantidad de facturas del lote.
+//
+// WithFacturasEnLote acepta nil para usar este comportamiento automático.
+//
+// Para proteger integraciones existentes, un firmador personalizado se procesa
+// serialmente, salvo que implemente ConcurrentXMLSigning y retorne true.
+type FacturasEnLoteOptions struct {
+	// Workers limita los documentos preparados simultáneamente.
+	Workers int
+	// MaxFacturas rechaza lotes que superen este valor. Cero no aplica límite.
+	MaxFacturas int
+	// DestinoArchivo recibe una copia del TAR.GZ ya firmado para reintentos.
+	// El SDK no cierra este writer.
+	DestinoArchivo io.Writer
+	// OnComplete recibe métricas al terminar correctamente el procesamiento.
+	OnComplete func(FacturasEnLoteMetrics)
+}
+
+// FacturasEnLoteMetrics describe el trabajo realizado al preparar un lote.
+// Las duraciones de serialización y firma son acumuladas por factura, por lo
+// que pueden ser mayores que DuracionTotal cuando se usan varios workers.
+type FacturasEnLoteMetrics struct {
+	CantidadFacturas      int
+	Workers               int
+	DuracionSerializacion time.Duration
+	DuracionFirma         time.Duration
+	DuracionEmpaquetado   time.Duration
+	DuracionTotal         time.Duration
+	TamanoArchivo         int64
+}
+
+type concurrentXMLSigner interface {
+	ConcurrentXMLSigning() bool
 }
 
 // ErrFirmaElectronicaRequerida indica que se intentó preparar una factura
@@ -503,49 +559,45 @@ func (b *RecepcionPaqueteFacturaBuilder) WithCodigoEvento(codigoEvento int64) *R
 // WithFacturas serializa, firma (si es electrónica), empaqueta en un archivo TAR.GZ y calcula el hash de las facturas automáticamente,
 // mapeando los valores obtenidos en los campos Archivo, HashArchivo y CantidadFacturas de la solicitud.
 func (b *RecepcionPaqueteFacturaBuilder) WithFacturas(facturas []any, signer XMLSigner) error {
-	var tarBuf bytes.Buffer
-	tw := tar.NewWriter(&tarBuf)
+	return b.WithFacturasEnLote(facturas, signer, &FacturasEnLoteOptions{Workers: 1})
+}
 
-	var signRequired = true
-	if b.request.SolicitudServicioRecepcionPaquete.CodigoModalidad == 2 { // Modalidad Computarizada
-		signRequired = false
-	}
+// WithFacturasEnLote serializa las facturas, las firma cuando corresponde y
+// crea el archivo TAR.GZ codificado en Base64 requerido por el SIAT.
+//
+// Al finalizar actualiza Archivo, HashArchivo y CantidadFacturas de la
+// solicitud. El hash se calcula sobre el archivo comprimido. Los XML se
+// incorporan al TAR en el mismo orden recibido, incluso si Workers es mayor a
+// uno.
+//
+// Con options nil, o con options.Workers igual a cero, se usa automáticamente
+// los CPU lógicos disponibles menos uno. WithFacturas conserva su
+// comportamiento serial para compatibilidad.
+//
+// En modalidad electrónica, el firmador se usa sólo en paralelo si declara
+// ConcurrentXMLSigning() bool y retorna true. Si no lo declara, o si Workers
+// es menor a dos, el procesamiento es serial. Esto evita asumir que un
+// firmador de una aplicación consumidora es seguro para concurrencia.
+func (b *RecepcionPaqueteFacturaBuilder) WithFacturasEnLote(facturas []any, signer XMLSigner, options *FacturasEnLoteOptions) error {
+	return b.WithFacturasEnLoteContext(context.Background(), facturas, signer, options)
+}
 
-	for i, f := range facturas {
-		xmlData, err := xml.Marshal(f)
-		if err != nil {
-			return fmt.Errorf("error serializando factura %d: %w", i+1, err)
-		}
-		var xmlToSend = xmlData
-		if signRequired && signer != nil {
-			var err error
-			xmlToSend, err = signer.SignXML(xmlData)
-			if err != nil {
-				return fmt.Errorf("error firmando XML de factura %d: %w", i+1, err)
-			}
-		}
-		hdr := &tar.Header{
-			Name: fmt.Sprintf("factura_%d.xml", i+1),
-			Mode: 0600,
-			Size: int64(len(xmlToSend)),
-		}
-		if err := tw.WriteHeader(hdr); err != nil {
-			return fmt.Errorf("error escribiendo cabecera tar de factura %d: %w", i+1, err)
-		}
-		if _, err := tw.Write(xmlToSend); err != nil {
-			return fmt.Errorf("error escribiendo datos tar de factura %d: %w", i+1, err)
-		}
-	}
-	if err := tw.Close(); err != nil {
-		return fmt.Errorf("error cerrando tar: %w", err)
-	}
-	hashString, encodedArchivo, err := utils.CompressAndHash(tarBuf.Bytes())
+// WithFacturasEnLoteContext prepara un lote respetando la cancelación de ctx.
+// Si ctx se cancela, no se asignan Archivo, HashArchivo ni CantidadFacturas.
+// La firma que ya esté en ejecución no puede interrumpirse porque XMLSigner no
+// recibe contexto, pero no se inicia el siguiente documento.
+func (b *RecepcionPaqueteFacturaBuilder) WithFacturasEnLoteContext(ctx context.Context, facturas []any, signer XMLSigner, options *FacturasEnLoteOptions) error {
+	signRequired := b.request.SolicitudServicioRecepcionPaquete.CodigoModalidad != 2
+	hashString, encodedArchivo, metrics, err := prepararFacturas(ctx, facturas, signer, signRequired, options)
 	if err != nil {
-		return fmt.Errorf("error comprimiendo archivo: %w", err)
+		return err
 	}
 	b.request.SolicitudServicioRecepcionPaquete.SolicitudRecepcionFactura.Archivo = encodedArchivo
 	b.request.SolicitudServicioRecepcionPaquete.SolicitudRecepcionFactura.HashArchivo = hashString
 	b.request.SolicitudServicioRecepcionPaquete.CantidadFacturas = len(facturas)
+	if options != nil && options.OnComplete != nil {
+		options.OnComplete(metrics)
+	}
 	return nil
 }
 
@@ -735,50 +787,212 @@ func (b *RecepcionMasivaFacturaBuilder) WithCantidadFacturas(cantidadFacturas in
 // WithFacturas serializa, firma (si es electrónica), empaqueta en un archivo TAR.GZ y calcula el hash de las facturas automáticamente,
 // mapeando los valores obtenidos en los campos Archivo, HashArchivo y CantidadFacturas de la solicitud.
 func (b *RecepcionMasivaFacturaBuilder) WithFacturas(facturas []any, signer XMLSigner) error {
-	var tarBuf bytes.Buffer
-	tw := tar.NewWriter(&tarBuf)
+	return b.WithFacturasEnLote(facturas, signer, &FacturasEnLoteOptions{Workers: 1})
+}
 
-	var signRequired = true
-	if b.request.SolicitudServicioRecepcionMasiva.SolicitudRecepcionFactura.CodigoModalidad == 2 { // Modalidad Computarizada
-		signRequired = false
-	}
+// WithFacturasEnLote serializa las facturas, las firma cuando corresponde y
+// crea el archivo TAR.GZ codificado en Base64 para recepción masiva del SIAT.
+//
+// Al finalizar actualiza Archivo, HashArchivo y CantidadFacturas de la
+// solicitud. El hash corresponde al archivo TAR.GZ, no al XML individual. El
+// orden de los XML dentro del archivo coincide siempre con el orden de
+// facturas, aunque Workers sea mayor a uno.
+//
+// Con options nil, o con options.Workers igual a cero, se usa automáticamente
+// los CPU lógicos disponibles menos uno. WithFacturas conserva su
+// comportamiento serial para compatibilidad.
+//
+// En modalidad electrónica, sólo se firma en paralelo si el firmador declara
+// ConcurrentXMLSigning() bool y retorna true. Esta restricción evita carreras
+// con firmadores personalizados que no estén preparados para concurrencia.
+func (b *RecepcionMasivaFacturaBuilder) WithFacturasEnLote(facturas []any, signer XMLSigner, options *FacturasEnLoteOptions) error {
+	return b.WithFacturasEnLoteContext(context.Background(), facturas, signer, options)
+}
 
-	for i, f := range facturas {
-		xmlData, err := xml.Marshal(f)
-		if err != nil {
-			return fmt.Errorf("error serializando factura %d: %w", i+1, err)
-		}
-		var xmlToSend = xmlData
-		if signRequired && signer != nil {
-			var err error
-			xmlToSend, err = signer.SignXML(xmlData)
-			if err != nil {
-				return fmt.Errorf("error firmando XML de factura %d: %w", i+1, err)
-			}
-		}
-		hdr := &tar.Header{
-			Name: fmt.Sprintf("factura_%d.xml", i+1),
-			Mode: 0600,
-			Size: int64(len(xmlToSend)),
-		}
-		if err := tw.WriteHeader(hdr); err != nil {
-			return fmt.Errorf("error escribiendo cabecera tar de factura %d: %w", i+1, err)
-		}
-		if _, err := tw.Write(xmlToSend); err != nil {
-			return fmt.Errorf("error escribiendo datos tar de factura %d: %w", i+1, err)
-		}
-	}
-	if err := tw.Close(); err != nil {
-		return fmt.Errorf("error cerrando tar: %w", err)
-	}
-	hashString, encodedArchivo, err := utils.CompressAndHash(tarBuf.Bytes())
+// WithFacturasEnLoteContext prepara un lote masivo respetando la cancelación
+// de ctx. Si ctx se cancela, la solicitud se conserva sin modificaciones.
+// XMLSigner no recibe contexto, por lo que una firma ya iniciada finaliza antes
+// de observar la cancelación.
+func (b *RecepcionMasivaFacturaBuilder) WithFacturasEnLoteContext(ctx context.Context, facturas []any, signer XMLSigner, options *FacturasEnLoteOptions) error {
+	signRequired := b.request.SolicitudServicioRecepcionMasiva.SolicitudRecepcionFactura.CodigoModalidad != 2
+	hashString, encodedArchivo, metrics, err := prepararFacturas(ctx, facturas, signer, signRequired, options)
 	if err != nil {
-		return fmt.Errorf("error comprimiendo archivo: %w", err)
+		return err
 	}
 	b.request.SolicitudServicioRecepcionMasiva.SolicitudRecepcionFactura.Archivo = encodedArchivo
 	b.request.SolicitudServicioRecepcionMasiva.SolicitudRecepcionFactura.HashArchivo = hashString
 	b.request.SolicitudServicioRecepcionMasiva.CantidadFacturas = len(facturas)
+	if options != nil && options.OnComplete != nil {
+		options.OnComplete(metrics)
+	}
 	return nil
+}
+
+type facturaPreparada struct {
+	xml           []byte
+	err           error
+	serializacion time.Duration
+	firma         time.Duration
+}
+
+func prepararFacturas(ctx context.Context, facturas []any, signer XMLSigner, signRequired bool, options *FacturasEnLoteOptions) (hashArchivo, archivo string, metrics FacturasEnLoteMetrics, err error) {
+	if ctx == nil {
+		ctx = context.Background()
+	}
+	metrics = FacturasEnLoteMetrics{CantidadFacturas: len(facturas)}
+	started := time.Now()
+	defer func() { metrics.DuracionTotal = time.Since(started) }()
+	if err := ctx.Err(); err != nil {
+		return "", "", metrics, err
+	}
+	if options != nil && options.MaxFacturas > 0 && len(facturas) > options.MaxFacturas {
+		return "", "", metrics, fmt.Errorf("el lote contiene %d facturas y supera el máximo configurado de %d", len(facturas), options.MaxFacturas)
+	}
+
+	var destination io.Writer
+	if options != nil {
+		destination = options.DestinoArchivo
+	}
+	archive := utils.NewTarGzBase64WriterWithOutput(destination)
+	workers := workersFacturas(len(facturas), signer, signRequired, options)
+	metrics.Workers = workers
+	if workers == 1 {
+		for index, factura := range facturas {
+			result := prepararFactura(ctx, factura, index+1, signer, signRequired)
+			metrics.DuracionSerializacion += result.serializacion
+			metrics.DuracionFirma += result.firma
+			if result.err != nil {
+				return "", "", metrics, result.err
+			}
+			if err := ctx.Err(); err != nil {
+				return "", "", metrics, err
+			}
+			startedPackaging := time.Now()
+			if err := agregarFacturaAlArchivo(archive, index+1, result.xml); err != nil {
+				return "", "", metrics, err
+			}
+			metrics.DuracionEmpaquetado += time.Since(startedPackaging)
+		}
+		return cerrarArchivoFacturas(archive, metrics)
+	}
+
+	for first := 0; first < len(facturas); first += workers {
+		if err := ctx.Err(); err != nil {
+			return "", "", metrics, err
+		}
+		last := min(first+workers, len(facturas))
+		prepared := make([]facturaPreparada, last-first)
+		var wg sync.WaitGroup
+		for index := first; index < last; index++ {
+			localIndex := index - first
+			wg.Add(1)
+			go func(invoice any, invoiceNumber, position int) {
+				defer wg.Done()
+				prepared[position] = prepararFactura(ctx, invoice, invoiceNumber, signer, signRequired)
+			}(facturas[index], index+1, localIndex)
+		}
+		wg.Wait()
+		if err := ctx.Err(); err != nil {
+			return "", "", metrics, err
+		}
+
+		for index, result := range prepared {
+			metrics.DuracionSerializacion += result.serializacion
+			metrics.DuracionFirma += result.firma
+			if result.err != nil {
+				return "", "", metrics, result.err
+			}
+			startedPackaging := time.Now()
+			if err := agregarFacturaAlArchivo(archive, first+index+1, result.xml); err != nil {
+				return "", "", metrics, err
+			}
+			metrics.DuracionEmpaquetado += time.Since(startedPackaging)
+		}
+	}
+	return cerrarArchivoFacturas(archive, metrics)
+}
+
+func prepararFactura(ctx context.Context, factura any, invoiceNumber int, signer XMLSigner, signRequired bool) facturaPreparada {
+	if err := ctx.Err(); err != nil {
+		return facturaPreparada{err: err}
+	}
+	startedSerialization := time.Now()
+	xmlData, err := marshalFacturaXML(factura)
+	serializationDuration := time.Since(startedSerialization)
+	if err != nil {
+		return facturaPreparada{err: fmt.Errorf("error serializando factura %d: %w", invoiceNumber, err), serializacion: serializationDuration}
+	}
+	result := facturaPreparada{xml: xmlData, serializacion: serializationDuration}
+	if signRequired && signer != nil {
+		if err := ctx.Err(); err != nil {
+			result.err = err
+			return result
+		}
+		startedSigning := time.Now()
+		xmlData, err = signer.SignXML(xmlData)
+		result.firma = time.Since(startedSigning)
+		if err != nil {
+			result.err = fmt.Errorf("error firmando XML de factura %d: %w", invoiceNumber, err)
+			return result
+		}
+		result.xml = xmlData
+	}
+	return result
+}
+
+func marshalFacturaXML(factura any) ([]byte, error) {
+	if marshaler, ok := factura.(XMLBytesMarshaler); ok {
+		return marshaler.MarshalXMLBytes()
+	}
+	return xml.Marshal(factura)
+}
+
+func agregarFacturaAlArchivo(archive *utils.TarGzBase64Writer, invoiceNumber int, xmlData []byte) error {
+	if err := archive.Add(nombreFacturaArchivo(invoiceNumber), xmlData); err != nil {
+		return fmt.Errorf("error escribiendo factura %d en el archivo: %w", invoiceNumber, err)
+	}
+	return nil
+}
+
+func nombreFacturaArchivo(invoiceNumber int) string {
+	var buffer [32]byte
+	name := append(buffer[:0], "factura_"...)
+	name = strconv.AppendInt(name, int64(invoiceNumber), 10)
+	name = append(name, ".xml"...)
+	return string(name)
+}
+
+func cerrarArchivoFacturas(archive *utils.TarGzBase64Writer, metrics FacturasEnLoteMetrics) (string, string, FacturasEnLoteMetrics, error) {
+	startedPackaging := time.Now()
+	if err := archive.Close(); err != nil {
+		return "", "", metrics, fmt.Errorf("error cerrando archivo comprimido: %w", err)
+	}
+	metrics.DuracionEmpaquetado += time.Since(startedPackaging)
+	metrics.TamanoArchivo = archive.Size()
+	return archive.Hash(), archive.Encoded(), metrics, nil
+}
+
+func workersFacturas(total int, signer XMLSigner, signRequired bool, options *FacturasEnLoteOptions) int {
+	if total < 1 {
+		return 1
+	}
+	workers := 0
+	if options != nil {
+		workers = options.Workers
+	}
+	if workers == 0 {
+		workers = max(1, runtime.GOMAXPROCS(0)-1)
+	}
+	if workers < 2 {
+		return 1
+	}
+	if !signRequired || signer == nil {
+		return min(workers, total)
+	}
+	if concurrent, ok := signer.(concurrentXMLSigner); !ok || !concurrent.ConcurrentXMLSigning() {
+		return 1
+	}
+	return min(workers, total)
 }
 
 func (b *RecepcionMasivaFacturaBuilder) Build() RecepcionMasivaFactura {

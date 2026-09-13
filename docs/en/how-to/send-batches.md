@@ -58,6 +58,90 @@ if err := siat.Verify(resp.Body.Content.RespuestaServicioFacturacion); err != ni
 receptionCode := resp.Body.Content.RespuestaServicioFacturacion.CodigoRecepcion
 ```
 
+### Use multiple CPUs when processing a batch
+
+`WithFacturas` preserves sequential processing. For large batches, use
+`WithFacturasEnLote`: with `nil` (or `Workers: 0`), the SDK uses the available
+logical CPUs minus one, leaving capacity for HTTP, database work, and the rest
+of the application. You can set another value when you know the environment
+capacity.
+
+```go
+err := builder.WithFacturasEnLote(
+    invoices,
+    s.Config(),
+    nil, // logical CPUs minus one
+)
+if err != nil {
+    log.Fatal("could not process the batch:", err)
+}
+```
+
+For electronic invoicing, the SDK signs in parallel only when the signer
+declares that concurrent use is safe. Custom signers without that guarantee are
+processed sequentially.
+
+### Improvements for very large batches
+
+For batches of hundreds or thousands of invoices, consider these improvements
+around the SDK:
+
+- `WithFacturasEnLoteContext` cancels before starting the next document. A
+  signature already in progress finishes because `XMLSigner` does not receive a
+  context.
+- `OnComplete` receives invoice count, serialization, signing and packaging
+  times, final size, and effective workers for metrics instrumentation.
+- `DestinoArchivo` receives a copy of the signed TAR.GZ. You can persist it to
+  disk and retry a network failure without signing the batch again.
+- `MaxFacturas` defines an application-level limit, even if SIAT allows up to
+  1,000 invoices, to avoid exhausting memory with unusually large XML files.
+- If your application already builds compact XML, implement `XMLBytesMarshaler`.
+  The SDK reuses those bytes and avoids calling `encoding/xml.Marshal` for each
+  invoice.
+- Run benchmarks with 100, 500, and 1,000 invoices; the best worker count
+  depends on CPU, certificate, and actual application load.
+- Keep XML compact before signing. Never indent or modify it after signing.
+- In multi-tenant applications, create a new configuration and credential when
+  rotating a certificate; do not mutate an existing credential.
+
+SOAP ultimately receives `Archivo` as a Base64 string, so the complete string
+must exist in memory before sending the request.
+
+```go
+ctx, cancel := context.WithTimeout(context.Background(), 2*time.Minute)
+defer cancel()
+
+archive, err := os.CreateTemp("", "siat-batch-*.tar.gz")
+if err != nil {
+    log.Fatal(err)
+}
+defer archive.Close()
+
+options := &models.FacturasEnLoteOptions{
+    MaxFacturas:    1000,
+    DestinoArchivo: archive,
+    OnComplete: func(metrics models.FacturasEnLoteMetrics) {
+        log.Printf("batch: %d invoices, %d workers, %s", metrics.CantidadFacturas, metrics.Workers, metrics.DuracionTotal)
+    },
+}
+if err := builder.WithFacturasEnLoteContext(ctx, invoices, s.Config(), options); err != nil {
+    log.Fatal(err)
+}
+```
+
+To run the included benchmark: `go test -bench 'BenchmarkRecepcionMasivaFacturaBuilder_WithFacturasEnLote' -benchmem ./pkg/models`.
+
+To measure real XMLDSig and RSA signing without calling SIAT:
+`go test -run '^$' -bench 'BenchmarkRecepcionMasivaFacturaBuilder_WithFacturasEnLoteFirmaElectronica/1000_facturas_firmadas$' -benchtime=1x -benchmem ./pkg/models`.
+
+```go
+type preparedInvoice struct{ xml []byte }
+
+func (f preparedInvoice) MarshalXMLBytes() ([]byte, error) {
+    return f.xml, nil // unsigned compact XML
+}
+```
+
 **Keep that `CodigoRecepcion`.** It is the only handle you have to find out what happened to the invoices inside.
 
 `WithCantidadFacturas` must match the real number of invoices in the slice. A mismatch is rejected.
@@ -119,7 +203,6 @@ builder := models.NewRecepcionMasivaFacturaBuilder().
     WithCodigoSucursal(0).
     WithCodigoPuntoVenta(0).
     WithCodigoDocumentoSector(1).
-    WithCodigoEmision(siat.EmisionMasiva).
     WithTipoFacturaDocumento(1).
     WithCuis(cuis).
     WithCufd(cufd).
@@ -132,6 +215,9 @@ if err := builder.WithFacturas(invoices, s.Config()); err != nil {
 
 resp, err := s.Electronica().RecepcionMasivaFactura(ctx, builder.Build())
 ```
+
+`NewRecepcionMasivaFacturaBuilder` defaults to `siat.EmisionMasiva`. Call
+`WithCodigoEmision` only when you need to explicitly override that value.
 
 ---
 
@@ -163,7 +249,11 @@ if err := siat.Verify(resp.Body.Content.RespuestaServicioFacturacion); err != ni
 }
 ```
 
-For massive batches use `NewValidacionRecepcionMasivaFacturaBuilder` and `ValidacionRecepcionMasivaFactura` — identical shape.
+For massive batches use `NewValidacionRecepcionMasivaFacturaBuilder` and
+`ValidacionRecepcionMasivaFactura`. It also defaults to
+`siat.EmisionMasiva`; set the reception code and the fiscal data used for the
+submission. When the client configuration does not supply them, the builder
+also exposes `WithCodigoAmbiente`, `WithCodigoSistema`, and `WithNit`.
 
 Do not poll in a tight loop. SIAT processes batches asynchronously; wait between attempts and treat "still processing" as a normal state rather than an error.
 

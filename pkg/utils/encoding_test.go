@@ -4,6 +4,9 @@ import (
 	"archive/tar"
 	"bytes"
 	"compress/gzip"
+	"crypto/sha256"
+	"encoding/base64"
+	"encoding/hex"
 	"io"
 	"testing"
 
@@ -46,6 +49,45 @@ func TestGzip(t *testing.T) {
 		// Compressed should be smaller than original for repetitive data
 		assert.Less(t, len(compressed), len(data))
 	})
+}
+
+func TestTarGzBase64Writer(t *testing.T) {
+	w := NewTarGzBase64Writer()
+	require.NoError(t, w.Add("factura_1.xml", []byte("uno")))
+	require.NoError(t, w.Add("factura_2.xml", []byte("dos")))
+	require.NoError(t, w.Close())
+
+	compressed, err := base64.StdEncoding.DecodeString(w.Encoded())
+	require.NoError(t, err)
+	expectedHash := sha256.Sum256(compressed)
+	assert.Equal(t, hex.EncodeToString(expectedHash[:]), w.Hash())
+
+	gr, err := gzip.NewReader(bytes.NewReader(compressed))
+	require.NoError(t, err)
+	tr := tar.NewReader(gr)
+	first, err := tr.Next()
+	require.NoError(t, err)
+	assert.Equal(t, "factura_1.xml", first.Name)
+	content, err := io.ReadAll(tr)
+	require.NoError(t, err)
+	assert.Equal(t, []byte("uno"), content)
+	second, err := tr.Next()
+	require.NoError(t, err)
+	assert.Equal(t, "factura_2.xml", second.Name)
+
+	var rawTar bytes.Buffer
+	tw := tar.NewWriter(&rawTar)
+	require.NoError(t, tw.WriteHeader(&tar.Header{Name: "factura_1.xml", Mode: 0600, Size: 3}))
+	_, err = tw.Write([]byte("uno"))
+	require.NoError(t, err)
+	require.NoError(t, tw.WriteHeader(&tar.Header{Name: "factura_2.xml", Mode: 0600, Size: 3}))
+	_, err = tw.Write([]byte("dos"))
+	require.NoError(t, err)
+	require.NoError(t, tw.Close())
+	expectedArchiveHash, expectedEncoded, err := CompressAndHash(rawTar.Bytes())
+	require.NoError(t, err)
+	assert.Equal(t, expectedArchiveHash, w.Hash())
+	assert.Equal(t, expectedEncoded, w.Encoded())
 }
 
 func TestCompressAndHash(t *testing.T) {
