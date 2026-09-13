@@ -1,5 +1,25 @@
 # Changelog
 
+## [2.4.0](https://github.com/ron86i/go-siat/compare/v2.3.0...v2.4.0) (2026-09-13)
+
+
+### Features
+
+* **models:** agrega confirmación de compra ([ce0c16a](https://github.com/ron86i/go-siat/commit/ce0c16a01eb12756c64ede8502d3ab6fa23bbc72))
+* **models:** agrega defaults masivos ([4fa91d7](https://github.com/ron86i/go-siat/commit/4fa91d7fdda2158c8728c55973d9c8bc553d7cef))
+* **utils:** formatea XML exportado ([4790b0f](https://github.com/ron86i/go-siat/commit/4790b0f61f2ff4680a65f8197e1e3c57e84e90e8))
+
+
+### Bug Fixes
+
+* **dependabot:** usa etiqueta Go existente ([ace20e6](https://github.com/ron86i/go-siat/commit/ace20e6a3528a9afa3c571c17c24edf4ef7674c4))
+* **invoices:** expone errores JSON libres ([e83afaa](https://github.com/ron86i/go-siat/commit/e83afaa0271dca266c16f93a411411a9354006d5))
+
+
+### Performance Improvements
+
+* **facturacion:** optimiza lotes firmados ([cd7f90e](https://github.com/ron86i/go-siat/commit/cd7f90e06996792e45363b8d02c02d60a1c3dbf8))
+
 ## [2.3.0](https://github.com/ron86i/go-siat/compare/v2.2.1...v2.3.0) (2026-09-11)
 
 
