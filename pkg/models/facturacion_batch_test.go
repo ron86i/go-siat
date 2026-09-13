@@ -59,7 +59,7 @@ func (s *concurrentBatchSigner) SignXML(document []byte) ([]byte, error) {
 	return append([]byte("<firmada>"), append(document, []byte("</firmada>")...)...), nil
 }
 
-func TestRecepcionMasivaFacturaBuilder_WithFacturasEnLote(t *testing.T) {
+func TestRecepcionMasivaFacturaBuilder_WithFacturasMasivas(t *testing.T) {
 	facturas := make([]any, 8)
 	for i := range facturas {
 		facturas[i] = batchTestInvoice{Nro: i + 1}
@@ -67,7 +67,7 @@ func TestRecepcionMasivaFacturaBuilder_WithFacturasEnLote(t *testing.T) {
 
 	signer := &concurrentBatchSigner{}
 	builder := NewRecepcionMasivaFacturaBuilder().WithCodigoModalidad(ModalidadElectronica)
-	require.NoError(t, builder.WithFacturasEnLote(facturas, signer, &FacturasEnLoteOptions{Workers: 3}))
+	require.NoError(t, builder.WithFacturasMasivas(facturas, signer, &FacturasMasivasOptions{Workers: 3}))
 
 	request := builder.request.SolicitudServicioRecepcionMasiva
 	assert.Equal(t, len(facturas), request.CantidadFacturas)
@@ -91,10 +91,10 @@ func TestRecepcionMasivaFacturaBuilder_WithFacturasEnLote(t *testing.T) {
 	assert.Equal(t, io.EOF, err)
 }
 
-func TestRecepcionMasivaFacturaBuilder_WithFacturasEnLoteXMLPreconstruido(t *testing.T) {
+func TestRecepcionMasivaFacturaBuilder_WithFacturasMasivasXMLPreconstruido(t *testing.T) {
 	factura := &preparedBatchInvoice{document: []byte("<factura><nro>1</nro></factura>")}
 	builder := NewRecepcionMasivaFacturaBuilder().WithCodigoModalidad(ModalidadComputarizada)
-	require.NoError(t, builder.WithFacturasEnLote([]any{factura}, nil, &FacturasEnLoteOptions{Workers: 1}))
+	require.NoError(t, builder.WithFacturasMasivas([]any{factura}, nil, &FacturasMasivasOptions{Workers: 1}))
 	assert.Equal(t, int32(1), atomic.LoadInt32(&factura.calls))
 
 	archive, err := base64.StdEncoding.DecodeString(builder.request.SolicitudServicioRecepcionMasiva.SolicitudRecepcionFactura.Archivo)
@@ -109,27 +109,27 @@ func TestRecepcionMasivaFacturaBuilder_WithFacturasEnLoteXMLPreconstruido(t *tes
 	assert.Equal(t, factura.document, document)
 }
 
-func TestFacturasEnLoteOptions_ProtegeFirmadoresNoConcurrentes(t *testing.T) {
+func TestFacturasMasivasOptions_ProtegeFirmadoresNoConcurrentes(t *testing.T) {
 	facturas := []any{batchTestInvoice{Nro: 1}, batchTestInvoice{Nro: 2}}
 	signer := &serialBatchSigner{}
 	builder := NewRecepcionMasivaFacturaBuilder().WithCodigoModalidad(ModalidadElectronica)
-	require.NoError(t, builder.WithFacturasEnLote(facturas, signer, &FacturasEnLoteOptions{Workers: 4}))
+	require.NoError(t, builder.WithFacturasMasivas(facturas, signer, &FacturasMasivasOptions{Workers: 4}))
 	assert.Equal(t, int32(1), atomic.LoadInt32(&signer.max))
 }
 
 func TestWorkersFacturas(t *testing.T) {
-	options := &FacturasEnLoteOptions{Workers: 4}
+	options := &FacturasMasivasOptions{Workers: 4}
 	assert.Equal(t, 4, workersFacturas(10, &concurrentBatchSigner{}, true, options))
 	assert.Equal(t, 1, workersFacturas(10, &serialBatchSigner{}, true, options))
 	assert.Equal(t, 4, workersFacturas(10, nil, false, options))
 	assert.Equal(t, min(10, max(1, runtime.GOMAXPROCS(0)-1)), workersFacturas(10, &concurrentBatchSigner{}, true, nil))
 }
 
-func TestRecepcionMasivaFacturaBuilder_WithFacturasEnLoteContextCancelada(t *testing.T) {
+func TestRecepcionMasivaFacturaBuilder_WithFacturasMasivasContextCancelada(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	cancel()
 	builder := NewRecepcionMasivaFacturaBuilder().WithCodigoModalidad(ModalidadComputarizada)
-	err := builder.WithFacturasEnLoteContext(ctx, []any{batchTestInvoice{Nro: 1}}, nil, nil)
+	err := builder.WithFacturasMasivasContext(ctx, []any{batchTestInvoice{Nro: 1}}, nil, nil)
 	require.ErrorIs(t, err, context.Canceled)
 	request := builder.request.SolicitudServicioRecepcionMasiva
 	assert.Empty(t, request.SolicitudRecepcionFactura.Archivo)
@@ -137,19 +137,19 @@ func TestRecepcionMasivaFacturaBuilder_WithFacturasEnLoteContextCancelada(t *tes
 	assert.Zero(t, request.CantidadFacturas)
 }
 
-func TestRecepcionMasivaFacturaBuilder_WithFacturasEnLoteOptions(t *testing.T) {
+func TestRecepcionMasivaFacturaBuilder_WithFacturasMasivasOptions(t *testing.T) {
 	facturas := []any{batchTestInvoice{Nro: 1}, batchTestInvoice{Nro: 2}}
 	builder := NewRecepcionMasivaFacturaBuilder().WithCodigoModalidad(ModalidadComputarizada)
-	err := builder.WithFacturasEnLote(facturas, nil, &FacturasEnLoteOptions{MaxFacturas: 1})
+	err := builder.WithFacturasMasivas(facturas, nil, &FacturasMasivasOptions{MaxFacturas: 1})
 	require.ErrorContains(t, err, "supera el máximo configurado")
 
 	var persisted bytes.Buffer
-	var metrics FacturasEnLoteMetrics
+	var metrics FacturasMasivasMetrics
 	builder = NewRecepcionMasivaFacturaBuilder().WithCodigoModalidad(ModalidadComputarizada)
-	require.NoError(t, builder.WithFacturasEnLote(facturas, nil, &FacturasEnLoteOptions{
+	require.NoError(t, builder.WithFacturasMasivas(facturas, nil, &FacturasMasivasOptions{
 		Workers:        1,
 		DestinoArchivo: &persisted,
-		OnComplete: func(value FacturasEnLoteMetrics) {
+		OnComplete: func(value FacturasMasivasMetrics) {
 			metrics = value
 		},
 	}))
@@ -163,19 +163,19 @@ func TestRecepcionMasivaFacturaBuilder_WithFacturasEnLoteOptions(t *testing.T) {
 	assert.Positive(t, metrics.DuracionTotal)
 }
 
-func BenchmarkRecepcionMasivaFacturaBuilder_WithFacturasEnLote(b *testing.B) {
+func BenchmarkRecepcionMasivaFacturaBuilder_WithFacturasMasivas(b *testing.B) {
 	for _, count := range []int{100, 500, 1000} {
 		b.Run(strconv.Itoa(count)+"_facturas", func(b *testing.B) {
 			facturas := make([]any, count)
 			for index := range facturas {
 				facturas[index] = batchTestInvoice{Nro: index + 1}
 			}
-			options := &FacturasEnLoteOptions{Workers: 1}
+			options := &FacturasMasivasOptions{Workers: 1}
 			b.ReportAllocs()
 			b.ResetTimer()
 			for iteration := 0; iteration < b.N; iteration++ {
 				builder := NewRecepcionMasivaFacturaBuilder().WithCodigoModalidad(ModalidadComputarizada)
-				if err := builder.WithFacturasEnLote(facturas, nil, options); err != nil {
+				if err := builder.WithFacturasMasivas(facturas, nil, options); err != nil {
 					b.Fatal(err)
 				}
 			}
@@ -186,19 +186,19 @@ func BenchmarkRecepcionMasivaFacturaBuilder_WithFacturasEnLote(b *testing.B) {
 		for index := range facturas {
 			facturas[index] = &preparedBatchInvoice{document: []byte("<factura><nro>1</nro></factura>")}
 		}
-		options := &FacturasEnLoteOptions{Workers: 1}
+		options := &FacturasMasivasOptions{Workers: 1}
 		b.ReportAllocs()
 		b.ResetTimer()
 		for iteration := 0; iteration < b.N; iteration++ {
 			builder := NewRecepcionMasivaFacturaBuilder().WithCodigoModalidad(ModalidadComputarizada)
-			if err := builder.WithFacturasEnLote(facturas, nil, options); err != nil {
+			if err := builder.WithFacturasMasivas(facturas, nil, options); err != nil {
 				b.Fatal(err)
 			}
 		}
 	})
 }
 
-func BenchmarkRecepcionMasivaFacturaBuilder_WithFacturasEnLoteFirmaElectronica(b *testing.B) {
+func BenchmarkRecepcionMasivaFacturaBuilder_WithFacturasMasivasFirmaElectronica(b *testing.B) {
 	signer := newBenchmarkXMLSigner(b)
 	for _, count := range []int{100, 500, 1000} {
 		b.Run(strconv.Itoa(count)+"_facturas_firmadas", func(b *testing.B) {
@@ -206,12 +206,12 @@ func BenchmarkRecepcionMasivaFacturaBuilder_WithFacturasEnLoteFirmaElectronica(b
 			for index := range facturas {
 				facturas[index] = &preparedBatchInvoice{document: []byte("<factura><nro>1</nro></factura>")}
 			}
-			options := &FacturasEnLoteOptions{Workers: max(1, runtime.GOMAXPROCS(0)-1)}
+			options := &FacturasMasivasOptions{Workers: max(1, runtime.GOMAXPROCS(0)-1)}
 			b.ReportAllocs()
 			b.ResetTimer()
 			for iteration := 0; iteration < b.N; iteration++ {
 				builder := NewRecepcionMasivaFacturaBuilder().WithCodigoModalidad(ModalidadElectronica)
-				if err := builder.WithFacturasEnLote(facturas, signer, options); err != nil {
+				if err := builder.WithFacturasMasivas(facturas, signer, options); err != nil {
 					b.Fatal(err)
 				}
 			}

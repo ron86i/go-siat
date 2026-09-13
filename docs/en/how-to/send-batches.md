@@ -61,13 +61,13 @@ receptionCode := resp.Body.Content.RespuestaServicioFacturacion.CodigoRecepcion
 ### Use multiple CPUs when processing a batch
 
 `WithFacturas` preserves sequential processing. For large batches, use
-`WithFacturasEnLote`: with `nil` (or `Workers: 0`), the SDK uses the available
+`WithFacturasMasivas`: with `nil` (or `Workers: 0`), the SDK uses the available
 logical CPUs minus one, leaving capacity for HTTP, database work, and the rest
 of the application. You can set another value when you know the environment
 capacity.
 
 ```go
-err := builder.WithFacturasEnLote(
+err := builder.WithFacturasMasivas(
     invoices,
     s.Config(),
     nil, // logical CPUs minus one
@@ -86,7 +86,7 @@ processed sequentially.
 For batches of hundreds or thousands of invoices, consider these improvements
 around the SDK:
 
-- `WithFacturasEnLoteContext` cancels before starting the next document. A
+- `WithFacturasMasivasContext` cancels before starting the next document. A
   signature already in progress finishes because `XMLSigner` does not receive a
   context.
 - `OnComplete` receives invoice count, serialization, signing and packaging
@@ -117,22 +117,22 @@ if err != nil {
 }
 defer archive.Close()
 
-options := &models.FacturasEnLoteOptions{
+options := &models.FacturasMasivasOptions{
     MaxFacturas:    1000,
     DestinoArchivo: archive,
-    OnComplete: func(metrics models.FacturasEnLoteMetrics) {
+    OnComplete: func(metrics models.FacturasMasivasMetrics) {
         log.Printf("batch: %d invoices, %d workers, %s", metrics.CantidadFacturas, metrics.Workers, metrics.DuracionTotal)
     },
 }
-if err := builder.WithFacturasEnLoteContext(ctx, invoices, s.Config(), options); err != nil {
+if err := builder.WithFacturasMasivasContext(ctx, invoices, s.Config(), options); err != nil {
     log.Fatal(err)
 }
 ```
 
-To run the included benchmark: `go test -bench 'BenchmarkRecepcionMasivaFacturaBuilder_WithFacturasEnLote' -benchmem ./pkg/models`.
+To run the included benchmark: `go test -bench 'BenchmarkRecepcionMasivaFacturaBuilder_WithFacturasMasivas' -benchmem ./pkg/models`.
 
 To measure real XMLDSig and RSA signing without calling SIAT:
-`go test -run '^$' -bench 'BenchmarkRecepcionMasivaFacturaBuilder_WithFacturasEnLoteFirmaElectronica/1000_facturas_firmadas$' -benchtime=1x -benchmem ./pkg/models`.
+`go test -run '^$' -bench 'BenchmarkRecepcionMasivaFacturaBuilder_WithFacturasMasivasFirmaElectronica/1000_facturas_firmadas$' -benchtime=1x -benchmem ./pkg/models`.
 
 ```go
 type preparedInvoice struct{ xml []byte }
