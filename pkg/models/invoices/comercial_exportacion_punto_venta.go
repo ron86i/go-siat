@@ -96,6 +96,7 @@ func (b *comercialExportacionPVentaBuilder) Build() ComercialExportacionPVenta {
 
 type comercialExportacionPVentaCabeceraBuilder struct {
 	cabecera *documents.CabeceraComercialExportacionPVenta
+	err      error
 }
 
 func (b *comercialExportacionPVentaCabeceraBuilder) WithNitEmisor(v int64) *comercialExportacionPVentaCabeceraBuilder {
@@ -258,7 +259,11 @@ func (b *comercialExportacionPVentaCabeceraBuilder) WithCostosGastosNacionales(v
 	case string:
 		b.cabecera.CostosGastosNacionales = datatype.Nilable[string]{Value: &val}
 	default:
-		jsonData, _ := json.Marshal(v)
+		jsonData, err := json.Marshal(v)
+		if err != nil {
+			b.err = err
+			return b
+		}
 		valStr := string(jsonData)
 		b.cabecera.CostosGastosNacionales = datatype.Nilable[string]{Value: &valStr}
 	}
@@ -280,7 +285,11 @@ func (b *comercialExportacionPVentaCabeceraBuilder) WithCostosGastosInternaciona
 	case string:
 		b.cabecera.CostosGastosInternacionales = datatype.Nilable[string]{Value: &val}
 	default:
-		jsonData, _ := json.Marshal(v)
+		jsonData, err := json.Marshal(v)
+		if err != nil {
+			b.err = err
+			return b
+		}
 		valStr := string(jsonData)
 		b.cabecera.CostosGastosInternacionales = datatype.Nilable[string]{Value: &valStr}
 	}
@@ -341,7 +350,11 @@ func (b *comercialExportacionPVentaCabeceraBuilder) WithNumeroDescripcionPaquete
 	case string:
 		b.cabecera.NumeroDescripcionPaquetesBultos = datatype.Nilable[string]{Value: &val}
 	default:
-		jsonData, _ := json.Marshal(v)
+		jsonData, err := json.Marshal(v)
+		if err != nil {
+			b.err = err
+			return b
+		}
 		valStr := string(jsonData)
 		b.cabecera.NumeroDescripcionPaquetesBultos = datatype.Nilable[string]{Value: &valStr}
 	}
@@ -413,6 +426,11 @@ func (b *comercialExportacionPVentaCabeceraBuilder) WithCodigoDocumentoSector(v 
 
 func (b *comercialExportacionPVentaCabeceraBuilder) Build() ComercialExportacionPVentaCabecera {
 	return ComercialExportacionPVentaCabecera{models.NewRequestWrapper(b.cabecera)}
+}
+
+// Err devuelve el último error de serialización de un campo JSON libre.
+func (b *comercialExportacionPVentaCabeceraBuilder) Err() error {
+	return b.err
 }
 
 type comercialExportacionPVentaDetalleBuilder struct {

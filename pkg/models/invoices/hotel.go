@@ -357,6 +357,7 @@ func (b *hotelCabeceraBuilder) Build() HotelCabecera {
 
 type hotelDetalleBuilder struct {
 	detalle *documents.DetalleHotel
+	err     error
 }
 
 func (b *hotelDetalleBuilder) WithActividadEconomica(v string) *hotelDetalleBuilder {
@@ -432,7 +433,11 @@ func (b *hotelDetalleBuilder) WithDetalleHuespedes(v any) *hotelDetalleBuilder {
 	if str, ok := v.(string); ok {
 		b.detalle.DetalleHuespedes = datatype.Nilable[string]{Value: &str}
 	} else {
-		jsonData, _ := json.Marshal(v)
+		jsonData, err := json.Marshal(v)
+		if err != nil {
+			b.err = err
+			return b
+		}
 		val := string(jsonData)
 		b.detalle.DetalleHuespedes = datatype.Nilable[string]{Value: &val}
 	}
@@ -441,4 +446,9 @@ func (b *hotelDetalleBuilder) WithDetalleHuespedes(v any) *hotelDetalleBuilder {
 
 func (b *hotelDetalleBuilder) Build() HotelDetalle {
 	return HotelDetalle{models.NewRequestWrapper(b.detalle)}
+}
+
+// Err devuelve el último error de serialización de un campo JSON libre.
+func (b *hotelDetalleBuilder) Err() error {
+	return b.err
 }

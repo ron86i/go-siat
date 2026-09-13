@@ -3,7 +3,6 @@ package invoices
 import (
 	"encoding/json"
 	"encoding/xml"
-	"fmt"
 	"time"
 
 	"github.com/shopspring/decimal"
@@ -104,6 +103,7 @@ func (b *comercialExportacionBuilder) Build() ComercialExportacion {
 
 type comercialExportacionCabeceraBuilder struct {
 	cabecera *documents.CabeceraComercialExportacion
+	err      error
 }
 
 func (b *comercialExportacionCabeceraBuilder) WithNitEmisor(v int64) *comercialExportacionCabeceraBuilder {
@@ -264,7 +264,8 @@ func (b *comercialExportacionCabeceraBuilder) WithCostosGastosNacionales(v map[s
 	}
 	jsonData, err := json.Marshal(v)
 	if err != nil {
-		panic(fmt.Sprintf("WithCostosGastosNacionales: valor no serializable a JSON: %v", err))
+		b.err = err
+		return b
 	}
 	val := string(jsonData)
 	b.cabecera.CostosGastosNacionales = datatype.Nilable[string]{Value: &val}
@@ -284,7 +285,8 @@ func (b *comercialExportacionCabeceraBuilder) WithCostosGastosInternacionales(v 
 	}
 	jsonData, err := json.Marshal(v)
 	if err != nil {
-		panic(fmt.Sprintf("WithCostosGastosInternacionales: valor no serializable a JSON: %v", err))
+		b.err = err
+		return b
 	}
 	val := string(jsonData)
 	b.cabecera.CostosGastosInternacionales = datatype.Nilable[string]{Value: &val}
@@ -332,7 +334,8 @@ func (b *comercialExportacionCabeceraBuilder) WithNumeroDescripcionPaquetesBulto
 	}
 	jsonData, err := json.Marshal(v)
 	if err != nil {
-		panic(fmt.Sprintf("WithNumeroDescripcionPaquetesBultos: valor no serializable a JSON: %v", err))
+		b.err = err
+		return b
 	}
 	val := string(jsonData)
 	b.cabecera.NumeroDescripcionPaquetesBultos = datatype.Nilable[string]{Value: &val}
@@ -404,6 +407,11 @@ func (b *comercialExportacionCabeceraBuilder) WithCodigoDocumentoSector(v int) *
 
 func (b *comercialExportacionCabeceraBuilder) Build() ComercialExportacionCabecera {
 	return ComercialExportacionCabecera{models.NewRequestWrapper(b.cabecera)}
+}
+
+// Err devuelve el último error de serialización detectado durante la construcción.
+func (b *comercialExportacionCabeceraBuilder) Err() error {
+	return b.err
 }
 
 type comercialExportacionDetalleBuilder struct {

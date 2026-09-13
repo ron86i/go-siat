@@ -2,6 +2,7 @@ package invoices_test
 
 import (
 	"context"
+	"encoding/json"
 	"testing"
 	"time"
 
@@ -108,4 +109,16 @@ func TestComercialExportacion_Computarizada(t *testing.T) {
 	}
 	assert.Nil(t, resp.Body.Fault)
 	t.Logf("Respuesta SIAT: %+v", resp.Body.Content)
+}
+
+func TestComercialExportacionCabeceraBuilder_DevuelveErrorJSON(t *testing.T) {
+	builder := invoices.NewComercialExportacionCabeceraBuilder().
+		WithCostosGastosNacionales(map[string]any{
+			"no_serializable": make(chan int),
+		})
+
+	builder.Build()
+	assert.Error(t, builder.Err())
+	var unsupportedTypeError *json.UnsupportedTypeError
+	assert.ErrorAs(t, builder.Err(), &unsupportedTypeError)
 }

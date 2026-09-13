@@ -95,6 +95,7 @@ func (b *comercialExportacionMineraBuilder) Build() ComercialExportacionMinera {
 
 type comercialExportacionMineraCabeceraBuilder struct {
 	cabecera *documents.CabeceraComercialExportacionMinera
+	err      error
 }
 
 func (b *comercialExportacionMineraCabeceraBuilder) WithNitEmisor(v int64) *comercialExportacionMineraCabeceraBuilder {
@@ -382,7 +383,11 @@ func (b *comercialExportacionMineraCabeceraBuilder) WithOtrosDatos(v any) *comer
 			value = *val
 		}
 	default:
-		jsonData, _ := json.Marshal(v)
+		jsonData, err := json.Marshal(v)
+		if err != nil {
+			b.err = err
+			return b
+		}
 		value = string(jsonData)
 	}
 	b.cabecera.OtrosDatos = datatype.Nilable[string]{Value: &value}
@@ -444,6 +449,11 @@ func (b *comercialExportacionMineraCabeceraBuilder) WithCodigoDocumentoSector(v 
 
 func (b *comercialExportacionMineraCabeceraBuilder) Build() ComercialExportacionMineraCabecera {
 	return ComercialExportacionMineraCabecera{models.NewRequestWrapper(b.cabecera)}
+}
+
+// Err devuelve el último error de serialización de un campo JSON libre.
+func (b *comercialExportacionMineraCabeceraBuilder) Err() error {
+	return b.err
 }
 
 type comercialExportacionMineraDetalleBuilder struct {

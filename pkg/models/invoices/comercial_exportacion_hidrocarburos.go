@@ -95,6 +95,7 @@ func (b *comercialExportacionHidroBuilder) Build() ComercialExportacionHidro {
 
 type comercialExportacionHidroCabeceraBuilder struct {
 	cabecera *documents.CabeceraComercialExportacionHidro
+	err      error
 }
 
 func (b *comercialExportacionHidroCabeceraBuilder) WithNitEmisor(v int64) *comercialExportacionHidroCabeceraBuilder {
@@ -262,7 +263,11 @@ func (b *comercialExportacionHidroCabeceraBuilder) WithCostosGastosNacionales(v 
 			value = *val
 		}
 	default:
-		jsonData, _ := json.Marshal(v)
+		jsonData, err := json.Marshal(v)
+		if err != nil {
+			b.err = err
+			return b
+		}
 		value = string(jsonData)
 	}
 	b.cabecera.CostosGastosNacionales = datatype.Nilable[string]{Value: &value}
@@ -289,7 +294,11 @@ func (b *comercialExportacionHidroCabeceraBuilder) WithCostosGastosInternacional
 			value = *val
 		}
 	default:
-		jsonData, _ := json.Marshal(v)
+		jsonData, err := json.Marshal(v)
+		if err != nil {
+			b.err = err
+			return b
+		}
 		value = string(jsonData)
 	}
 	b.cabecera.CostosGastosInternacionales = datatype.Nilable[string]{Value: &value}
@@ -344,7 +353,11 @@ func (b *comercialExportacionHidroCabeceraBuilder) WithNumeroDescripcionPaquetes
 			value = *val
 		}
 	default:
-		jsonData, _ := json.Marshal(v)
+		jsonData, err := json.Marshal(v)
+		if err != nil {
+			b.err = err
+			return b
+		}
 		value = string(jsonData)
 	}
 	b.cabecera.NumeroDescripcionPaquetesBultos = datatype.Nilable[string]{Value: &value}
@@ -416,6 +429,11 @@ func (b *comercialExportacionHidroCabeceraBuilder) WithCodigoDocumentoSector(v i
 
 func (b *comercialExportacionHidroCabeceraBuilder) Build() ComercialExportacionHidroCabecera {
 	return ComercialExportacionHidroCabecera{models.NewRequestWrapper(b.cabecera)}
+}
+
+// Err devuelve el último error de serialización de un campo JSON libre.
+func (b *comercialExportacionHidroCabeceraBuilder) Err() error {
+	return b.err
 }
 
 type comercialExportacionHidroDetalleBuilder struct {
