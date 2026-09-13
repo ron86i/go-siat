@@ -645,7 +645,15 @@ type RecepcionMasivaFacturaBuilder struct {
 
 func NewRecepcionMasivaFacturaBuilder() *RecepcionMasivaFacturaBuilder {
 	return &RecepcionMasivaFacturaBuilder{
-		request: &facturacion.RecepcionMasivaFactura{},
+		request: &facturacion.RecepcionMasivaFactura{
+			SolicitudServicioRecepcionMasiva: facturacion.SolicitudRecepcionMasiva{
+				SolicitudRecepcionFactura: facturacion.SolicitudRecepcionFactura{
+					SolicitudRecepcion: facturacion.SolicitudRecepcion{
+						CodigoEmision: EmisionMasiva,
+					},
+				},
+			},
+		},
 	}
 }
 
@@ -784,8 +792,19 @@ type ValidacionRecepcionMasivaFacturaBuilder struct {
 
 func NewValidacionRecepcionMasivaFacturaBuilder() *ValidacionRecepcionMasivaFacturaBuilder {
 	return &ValidacionRecepcionMasivaFacturaBuilder{
-		request: &facturacion.ValidacionRecepcionMasivaFactura{},
+		request: &facturacion.ValidacionRecepcionMasivaFactura{
+			SolicitudServicioValidacionRecepcionMasivaFactura: facturacion.SolicitudValidacionRecepcionMasiva{
+				SolicitudRecepcion: facturacion.SolicitudRecepcion{
+					CodigoEmision: EmisionMasiva,
+				},
+			},
+		},
 	}
+}
+
+func (b *ValidacionRecepcionMasivaFacturaBuilder) WithCodigoAmbiente(codigoAmbiente int) *ValidacionRecepcionMasivaFacturaBuilder {
+	b.request.SolicitudServicioValidacionRecepcionMasivaFactura.CodigoAmbiente = codigoAmbiente
+	return b
 }
 
 func (b *ValidacionRecepcionMasivaFacturaBuilder) WithCodigoSucursal(codigoSucursal int) *ValidacionRecepcionMasivaFacturaBuilder {
@@ -830,6 +849,16 @@ func (b *ValidacionRecepcionMasivaFacturaBuilder) WithCodigoRecepcion(codigoRece
 
 func (b *ValidacionRecepcionMasivaFacturaBuilder) WithCodigoModalidad(codigoModalidad int) *ValidacionRecepcionMasivaFacturaBuilder {
 	b.request.SolicitudServicioValidacionRecepcionMasivaFactura.CodigoModalidad = codigoModalidad
+	return b
+}
+
+func (b *ValidacionRecepcionMasivaFacturaBuilder) WithCodigoSistema(codigoSistema string) *ValidacionRecepcionMasivaFacturaBuilder {
+	b.request.SolicitudServicioValidacionRecepcionMasivaFactura.CodigoSistema = codigoSistema
+	return b
+}
+
+func (b *ValidacionRecepcionMasivaFacturaBuilder) WithNit(nit int64) *ValidacionRecepcionMasivaFacturaBuilder {
+	b.request.SolicitudServicioValidacionRecepcionMasivaFactura.Nit = nit
 	return b
 }
 

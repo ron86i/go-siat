@@ -4,25 +4,25 @@ import "github.com/ron86i/go-siat/v2/pkg/models"
 
 const (
 	// AmbienteProduccion (1): Operaciones reales con validez tributaria.
-	AmbienteProduccion = iota + 1
+	AmbienteProduccion = models.AmbienteProduccion
 	// AmbientePruebas (2): Entorno de desarrollo, pruebas y certificación.
-	AmbientePruebas
+	AmbientePruebas = models.AmbientePruebas
 )
 
 const (
 	// ModalidadElectronica (1): Requiere firma digital de los documentos XML.
-	ModalidadElectronica = iota + 1
+	ModalidadElectronica = models.ModalidadElectronica
 	// ModalidadComputarizada (2): No requiere firma digital, usa código de control.
-	ModalidadComputarizada
+	ModalidadComputarizada = models.ModalidadComputarizada
 )
 
 const (
 	// EmisionOnline (1): La emisión se realizó con conexión al SIAT.
-	EmisionOnline = iota + 1
+	EmisionOnline = models.EmisionOnline
 	// EmisionOffline (2): La emisión se realizó fuera de línea (Contingencia).
-	EmisionOffline
+	EmisionOffline = models.EmisionOffline
 	// EmisionMasiva (3): Para procesos de alta demanda de facturación.
-	EmisionMasiva
+	EmisionMasiva = models.EmisionMasiva
 )
 
 // Tipos de documento fiscal definidos por el SIAT.

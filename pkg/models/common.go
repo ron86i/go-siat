@@ -50,10 +50,31 @@ func UnwrapInternalRequest[T any](req any) *T {
 	return nil
 }
 
-// ModalidadComputarizada es la constante que identifica la modalidad de facturación
-// Electronica (valor = 1) y Computarizada (valor = 2) según la nomenclatura del SIAT.
-// Se usa internamente para determinar si el XML de la factura debe ser firmado digitalmente.
+// Códigos de ambiente definidos por el SIAT.
+const (
+	AmbienteProduccion = iota + 1
+	AmbientePruebas
+)
+
+// Códigos de modalidad definidos por el SIAT.
 const (
 	ModalidadElectronica   = 1
 	ModalidadComputarizada = 2
+)
+
+// Códigos de emisión definidos por el SIAT.
+const (
+	EmisionOnline = iota + 1
+	EmisionOffline
+	EmisionMasiva
+)
+
+// Tipos de documento fiscal definidos por el SIAT.
+// Se declaran también en el paquete raíz para mantener su API pública; esta
+// copia evita que models tenga que importar al paquete raíz y crear un ciclo.
+const (
+	TipoFacturaConDerechoCreditoFiscal = iota + 1
+	TipoFacturaSinDerechoCreditoFiscal
+	TipoNotaCreditoDebito
+	TipoBoletoAereo
 )

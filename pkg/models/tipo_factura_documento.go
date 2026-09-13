@@ -1,15 +1,5 @@
 package models
 
-// Tipos de documento fiscal definidos por el SIAT.
-// Se declaran también en el paquete raíz para mantener su API pública; esta
-// copia evita que models tenga que importar al paquete raíz y crear un ciclo.
-const (
-	TipoFacturaConDerechoCreditoFiscal = iota + 1
-	TipoFacturaSinDerechoCreditoFiscal
-	TipoNotaCreditoDebito
-	TipoBoletoAereo
-)
-
 // DefinicionTipoFactura describe el tipo fiscal predeterminado de un sector
 // implementado por el SDK.
 type DefinicionTipoFactura struct {
