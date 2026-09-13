@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.4.1](https://github.com/ron86i/go-siat/compare/v2.4.0...v2.4.1) (2026-09-13)
+
+
+### Bug Fixes
+
+* **ci:** elimina etiqueta inválida ([410fbd8](https://github.com/ron86i/go-siat/commit/410fbd8ae9cca0671b2b32e34f688c2f897c107f))
+
 ## [2.4.0](https://github.com/ron86i/go-siat/compare/v2.3.0...v2.4.0) (2026-09-13)
 
 
