@@ -61,13 +61,13 @@ codigoRecepcion := resp.Body.Content.RespuestaServicioFacturacion.CodigoRecepcio
 ### Aprovechar varios CPU al procesar el lote
 
 `WithFacturas` conserva el procesamiento serial. Para lotes grandes usá
-`WithFacturasMasivas`: con `nil` (o `Workers: 0`) el SDK usa los CPU lógicos
+`WithFacturasEnLote`: con `nil` (o `Workers: 0`) el SDK usa los CPU lógicos
 disponibles menos uno, dejando capacidad para HTTP, base de datos u otras
 tareas de la aplicación. Podés indicar otro valor si conocés la capacidad del
 entorno.
 
 ```go
-err := builder.WithFacturasMasivas(
+err := builder.WithFacturasEnLote(
     facturas,
     s.Config(),
     nil, // CPU lógicos menos uno
@@ -86,7 +86,7 @@ se procesan serialmente.
 Para lotes de cientos o miles de facturas, considerá estas mejoras alrededor
 del SDK:
 
-- `WithFacturasMasivasContext` permite cancelar antes de iniciar el siguiente
+- `WithFacturasEnLoteContext` permite cancelar antes de iniciar el siguiente
   documento. Una firma ya iniciada termina porque la interfaz `XMLSigner` no
   recibe contexto.
 - `OnComplete` recibe cantidad, tiempos de serialización, firma y empaquetado,
@@ -118,22 +118,22 @@ if err != nil {
 }
 defer archivo.Close()
 
-options := &models.FacturasMasivasOptions{
+options := &models.FacturasEnLoteOptions{
     MaxFacturas:    1000,
     DestinoArchivo: archivo,
-    OnComplete: func(metrics models.FacturasMasivasMetrics) {
+    OnComplete: func(metrics models.FacturasEnLoteMetrics) {
         log.Printf("lote: %d facturas, %d workers, %s", metrics.CantidadFacturas, metrics.Workers, metrics.DuracionTotal)
     },
 }
-if err := builder.WithFacturasMasivasContext(ctx, facturas, s.Config(), options); err != nil {
+if err := builder.WithFacturasEnLoteContext(ctx, facturas, s.Config(), options); err != nil {
     log.Fatal(err)
 }
 ```
 
-Para ejecutar el benchmark incluido: `go test -bench 'BenchmarkRecepcionMasivaFacturaBuilder_WithFacturasMasivas' -benchmem ./pkg/models`.
+Para ejecutar el benchmark incluido: `go test -bench 'BenchmarkRecepcionMasivaFacturaBuilder_WithFacturasEnLote' -benchmem ./pkg/models`.
 
 Para medir firma XMLDSig y RSA real, sin llamar al SIAT:
-`go test -run '^$' -bench 'BenchmarkRecepcionMasivaFacturaBuilder_WithFacturasMasivasFirmaElectronica/1000_facturas_firmadas$' -benchtime=1x -benchmem ./pkg/models`.
+`go test -run '^$' -bench 'BenchmarkRecepcionMasivaFacturaBuilder_WithFacturasEnLoteFirmaElectronica/1000_facturas_firmadas$' -benchtime=1x -benchmem ./pkg/models`.
 
 ```go
 type facturaPreconstruida struct{ xml []byte }
