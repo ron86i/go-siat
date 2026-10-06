@@ -1,5 +1,24 @@
 # Changelog
 
+## [3.0.0](https://github.com/ron86i/go-siat/compare/v2.4.1...v3.0.0) (2026-10-06)
+
+
+### ⚠ BREAKING CHANGES
+
+* **facturacion:** reemplaza WithFacturasEnLote por WithFacturasMasivas y renombra sus opciones y métricas.
+
+### Features
+
+* **facturacion:** renombra emisión masiva ([49cf4b6](https://github.com/ron86i/go-siat/commit/49cf4b6127fdcae4b048cf1578e1cde35e8b112c))
+
+
+### Bug Fixes
+
+* **contingencia:** completa builders de paquetes ([6a22d6a](https://github.com/ron86i/go-siat/commit/6a22d6a7244ffad9e60b4caa6314b9e7ad095c08))
+* **deps:** bump github.com/beevik/etree from 1.8.0 to 1.8.1 in the go-dependencies group ([58be45b](https://github.com/ron86i/go-siat/commit/58be45b5dd06c1ff6011fc5a33fbe8be2e684e10))
+* **deps:** bump github.com/beevik/etree in the go-dependencies group ([42f2118](https://github.com/ron86i/go-siat/commit/42f2118284944a7512c88621fdbebd394281baf0))
+* **facturacion:** restaura API EnLote ([418e129](https://github.com/ron86i/go-siat/commit/418e129134303a74a467501c04f7b3bad2e1e042))
+
 ## [2.4.0](https://github.com/ron86i/go-siat/compare/v2.3.0...v2.4.0) (2026-09-13)
 
 
