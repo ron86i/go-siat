@@ -8,7 +8,7 @@ require (
 	github.com/russellhaering/goxmldsig v1.6.1
 	github.com/shopspring/decimal v1.5.0
 	github.com/stretchr/testify v1.12.1
-	golang.org/x/crypto v0.57.0
+	golang.org/x/crypto v0.58.0
 )
 
 require (
