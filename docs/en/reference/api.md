@@ -4,14 +4,14 @@
   <a href="../../es/reference/api.md">🇪🇸 Español</a> · <a href="../README.md">Docs index</a>
 </p>
 
-Complete public surface of `github.com/ron86i/go-siat/v2`. For generated godoc see [pkg.go.dev](https://pkg.go.dev/github.com/ron86i/go-siat/v2).
+Complete public surface of `github.com/ron86i/go-siat/v3`. For generated godoc see [pkg.go.dev](https://pkg.go.dev/github.com/ron86i/go-siat/v3).
 
 ```go
 import (
-    siat "github.com/ron86i/go-siat/v2"
-    "github.com/ron86i/go-siat/v2/pkg/models"
-    "github.com/ron86i/go-siat/v2/pkg/models/invoices"
-    "github.com/ron86i/go-siat/v2/pkg/utils"
+    siat "github.com/ron86i/go-siat/v3"
+    "github.com/ron86i/go-siat/v3/pkg/models"
+    "github.com/ron86i/go-siat/v3/pkg/models/invoices"
+    "github.com/ron86i/go-siat/v3/pkg/utils"
 )
 ```
 
@@ -47,7 +47,7 @@ s, err := siat.New(siat.Config{
     Nit:            123456789,
     CodigoSistema:  "YOUR_SYSTEM_CODE",
     CodigoAmbiente: siat.AmbientePruebas,
-    BaseURL:        "https://pilotosiatservicios.impuestos.gob.bo/v2",
+    BaseURL:        "https://pilotosiatservicios.impuestos.gob.bo/sfd",
 })
 ```
 
@@ -258,7 +258,6 @@ The manual alternative is `WithArchivo(base64 string)` plus `WithHashArchivo(has
 | Setter | Type | Builder |
 | :--- | :--- | :--- |
 | `WithCantidadFacturas` | `int` | package, massive |
-| `WithCafc` | `*string` | package only |
 | `WithCodigoEvento` | `int64` | package only |
 | `WithCodigoRecepcion` | `string` | validation builders |
 

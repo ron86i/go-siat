@@ -14,7 +14,7 @@ Enviar facturas de a una funciona, pero cuesta un viaje HTTP por factura. El SIA
 | :--- | :--- | :--- |
 | Pensado para | Lotes offline / contingencia | Facturación online de alto volumen |
 | Código de emisión | `siat.EmisionOffline` o `EmisionMasiva` | `siat.EmisionMasiva` |
-| Admite CAFC | Sí — `WithCafc` | No |
+| Campo `cafc` en el paquete SOAP | No | No |
 | Admite código de evento | Sí — `WithCodigoEvento` | No |
 | Resultado | Asíncrono, se valida después | Asíncrono, se valida después |
 
@@ -181,16 +181,16 @@ if !evento.Respuesta.Transaccion {
 codigoEvento := evento.Respuesta.CodigoRecepcionEventoSignificativo
 ```
 
-Después agregá el CAFC y ese código al paquete. El lote debe usar `siat.EmisionOffline`:
+Después agregá el código del evento al paquete. El lote debe usar `siat.EmisionOffline`:
 
 ```go
-cafc := "TU-CODIGO-CAFC"
 builder.
-    WithCafc(&cafc).
     WithCodigoEvento(codigoEvento)   // int64, de RegistroEventosSignificativos
 ```
 
-`WithCafc` recibe un `*string` para poder omitirse — pasá `nil` o simplemente no lo llames cuando no hay CAFC.
+El contrato SOAP `/sfd/` no incluye `cafc` en la recepción del paquete. Esta
+diferencia no modifica los campos de la factura XML contenida en el archivo;
+su estructura depende del XSD del documento sector.
 
 ---
 

@@ -4,7 +4,7 @@ Thank you for your interest in contributing to **go-siat**. This document descri
 
 ## 📋 Prerequisites
 
-- Go 1.25 or higher
+- Go 1.26 or higher
 - Git
 - Familiarity with SIAT (Integrated Tax Administration System)
 - Read the [Architecture Guide](../docs/en/architecture.md)
@@ -187,12 +187,12 @@ go tool cover -html=coverage.out
 
 ```bash
 # Integration tests require these values
-export SIAT_API_TOKEN="your_token"
+export SIAT_TOKEN="your_token"
 export SIAT_NIT="your_nit"
-export SIAT_BASE_URL="https://pilotosiatservicios.impuestos.gob.bo/v2"
+export SIAT_URL="https://pilotosiatservicios.impuestos.gob.bo/sfd"
 
-# Run integration tests
-go test -tags=integration ./...
+# Run a specific real integration test explicitly
+SIAT_RUN=1 go test -v ./internal/adapter/services -run '^TestFacturasSector1_Individual$' -count=1
 ```
 
 ---
@@ -327,7 +327,7 @@ CUFD rejected with error "Invalid Control Code"
 Valid CUFD code
 
 ## System Information
-- Go: 1.25
+- Go: 1.26
 - go-siat: v1.2.0
 - SIAT: Production
 ```

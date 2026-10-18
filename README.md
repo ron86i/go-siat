@@ -5,7 +5,7 @@
 <p align="center">
   <a href="https://masterminds.github.io/stability/active.html"><img src="https://masterminds.github.io/stability/active.svg" alt="Stability: Active"></a>
   <br>
-  <a href="https://pkg.go.dev/github.com/ron86i/go-siat/v2"><img src="https://pkg.go.dev/badge/github.com/ron86i/go-siat/v2.svg" alt="Go Reference"></a>
+  <a href="https://pkg.go.dev/github.com/ron86i/go-siat/v3"><img src="https://pkg.go.dev/badge/github.com/ron86i/go-siat/v3.svg" alt="Go Reference"></a>
   <a href="https://go.dev/"><img src="https://img.shields.io/github/go-mod/go-version/ron86i/go-siat?style=flat" alt="Go Version"></a>
   <a href="LICENSE"><img src="https://img.shields.io/github/license/ron86i/go-siat?style=flat" alt="License"></a>
   <a href="https://github.com/ron86i/go-siat/releases"><img src="https://img.shields.io/github/v/release/ron86i/go-siat?style=flat&label=release" alt="Latest Release"></a>
@@ -23,6 +23,9 @@
 > Architecture, API Reference, Invoicing Guide, Error Codes, Utilities, and Configuration.
 
 ## 💡 Why go-siat?
+
+This branch prepares **v3.0.0** for SIAT's `/sfd/` services. See the
+[v3 migration guide](docs/en/how-to/siat-v3.md). Publication is pending.
 
 Integrating with SIAT's SOAP web services for electronic invoicing in Bolivia is often a complex process involving manual XML handling, digital signatures (XMLDSig), and error-prone nested data structures.
 
@@ -70,7 +73,7 @@ The SDK covers the critical services of the SIAT ecosystem:
 ### Installation
 
 ```bash
-go get github.com/ron86i/go-siat/v2
+go get github.com/ron86i/go-siat/v3
 ```
 
 ### Requirements
@@ -94,8 +97,8 @@ import (
     "log"
     "time"
 
-    "github.com/ron86i/go-siat/v2"
-    "github.com/ron86i/go-siat/v2/pkg/models"
+    "github.com/ron86i/go-siat/v3"
+    "github.com/ron86i/go-siat/v3/pkg/models"
 )
 
 func main() {
@@ -106,7 +109,7 @@ func main() {
         Nit:            123456789,
         CodigoSistema:  "YOUR_SYSTEM_CODE",
         CodigoAmbiente: siat.AmbientePruebas,
-        BaseURL:        "https://pilotosiatservicios.impuestos.gob.bo/v2",
+        BaseURL:        "https://pilotosiatservicios.impuestos.gob.bo/sfd",
     })
     if err != nil {
         log.Fatal(err)

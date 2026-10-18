@@ -5,7 +5,7 @@
 <p align="center">
   <a href="https://masterminds.github.io/stability/active.html"><img src="https://masterminds.github.io/stability/active.svg" alt="Stability: Active"></a>
   <br>
-  <a href="https://pkg.go.dev/github.com/ron86i/go-siat/v2"><img src="https://pkg.go.dev/badge/github.com/ron86i/go-siat/v2.svg" alt="Go Reference"></a>
+  <a href="https://pkg.go.dev/github.com/ron86i/go-siat/v3"><img src="https://pkg.go.dev/badge/github.com/ron86i/go-siat/v3.svg" alt="Go Reference"></a>
   <a href="https://go.dev/"><img src="https://img.shields.io/github/go-mod/go-version/ron86i/go-siat?style=flat" alt="Go Version"></a>
   <a href="../../LICENSE"><img src="https://img.shields.io/github/license/ron86i/go-siat?style=flat" alt="Licencia"></a>
   <a href="https://github.com/ron86i/go-siat/releases"><img src="https://img.shields.io/github/v/release/ron86i/go-siat?style=flat&label=release" alt="Última Versión"></a>
@@ -23,6 +23,9 @@
 > Arquitectura, Referencia de API, Guía de Facturación, Códigos de Error, Utilidades y Configuración.
 
 ## 💡 ¿Por qué go-siat?
+
+Esta rama prepara **v3.0.0** para los servicios SIAT `/sfd/`. Consultá la
+[guía de migración](../../docs/es/how-to/servicios-v3.md). La publicación está pendiente.
 
 Integrarse con los servicios web SOAP del SIAT para la facturación electrónica en Bolivia suele ser un proceso complejo que involucra el manejo manual de XML, firmas digitales (XMLDSig) y estructuras de datos anidadas propensas a errores.
 
@@ -70,7 +73,7 @@ El SDK cubre los servicios críticos del ecosistema SIAT:
 ### Instalación
 
 ```bash
-go get github.com/ron86i/go-siat/v2
+go get github.com/ron86i/go-siat/v3
 ```
 
 ### Requisitos
@@ -89,8 +92,8 @@ package main
 import (
     "context"
     "fmt"
-    "github.com/ron86i/go-siat/v2"
-    "github.com/ron86i/go-siat/v2/pkg/models"
+    "github.com/ron86i/go-siat/v3"
+    "github.com/ron86i/go-siat/v3/pkg/models"
 )
 
 func main() {

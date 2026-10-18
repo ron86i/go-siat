@@ -4,14 +4,14 @@
   <a href="../../en/reference/api.md">🇬🇧 English</a> · <a href="../README.md">Índice de documentación</a>
 </p>
 
-Superficie pública completa de `github.com/ron86i/go-siat/v2`. Para el godoc generado mirá [pkg.go.dev](https://pkg.go.dev/github.com/ron86i/go-siat/v2).
+Superficie pública completa de `github.com/ron86i/go-siat/v3`. Para el godoc generado mirá [pkg.go.dev](https://pkg.go.dev/github.com/ron86i/go-siat/v3).
 
 ```go
 import (
-    siat "github.com/ron86i/go-siat/v2"
-    "github.com/ron86i/go-siat/v2/pkg/models"
-    "github.com/ron86i/go-siat/v2/pkg/models/invoices"
-    "github.com/ron86i/go-siat/v2/pkg/utils"
+    siat "github.com/ron86i/go-siat/v3"
+    "github.com/ron86i/go-siat/v3/pkg/models"
+    "github.com/ron86i/go-siat/v3/pkg/models/invoices"
+    "github.com/ron86i/go-siat/v3/pkg/utils"
 )
 ```
 
@@ -47,7 +47,7 @@ s, err := siat.New(siat.Config{
     Nit:            123456789,
     CodigoSistema:  "TU_CODIGO_SISTEMA",
     CodigoAmbiente: siat.AmbientePruebas,
-    BaseURL:        "https://pilotosiatservicios.impuestos.gob.bo/v2",
+    BaseURL:        "https://pilotosiatservicios.impuestos.gob.bo/sfd",
 })
 ```
 
@@ -258,7 +258,6 @@ La alternativa manual es `WithArchivo(base64 string)` más `WithHashArchivo(hash
 | Setter | Tipo | Builder |
 | :--- | :--- | :--- |
 | `WithCantidadFacturas` | `int` | paquete, masivo |
-| `WithCafc` | `*string` | solo paquete |
 | `WithCodigoEvento` | `int64` | solo paquete |
 | `WithCodigoRecepcion` | `string` | builders de validación |
 

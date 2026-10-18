@@ -22,7 +22,7 @@ s, err := siat.New(siat.Config{
     Nit:            123456789,
     CodigoSistema:  "...",
     CodigoAmbiente: siat.AmbientePruebas,
-    BaseURL:        "https://pilotosiatservicios.impuestos.gob.bo/v2",
+    BaseURL:        "https://pilotosiatservicios.impuestos.gob.bo/sfd",
 
     CredentialSign: siat.NewP12Credential("cert.p12", "tu-contrasena"),
 })
@@ -78,7 +78,7 @@ Dos reglas gobiernan esto, y las dos son silenciosas cuando se rompen:
 Un certificado vencido falla al momento del envío, que es el peor momento para enterarse. Verificalo al arrancar:
 
 ```go
-import "github.com/ron86i/go-siat/v2/pkg/utils"
+import "github.com/ron86i/go-siat/v3/pkg/utils"
 
 p12Bytes, err := os.ReadFile("cert.p12")
 if err != nil {

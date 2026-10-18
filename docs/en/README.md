@@ -8,7 +8,7 @@
   <a href="../es/README.md"><img src="https://img.shields.io/badge/lang-español-blue?style=flat" alt="Spanish Version"></a>
   <a href="https://masterminds.github.io/stability/active.html"><img src="https://masterminds.github.io/stability/active.svg" alt="Stability: Active"></a>
   <br>
-  <a href="https://pkg.go.dev/github.com/ron86i/go-siat/v2"><img src="https://pkg.go.dev/badge/github.com/ron86i/go-siat/v2.svg" alt="Go Reference"></a>
+  <a href="https://pkg.go.dev/github.com/ron86i/go-siat/v3"><img src="https://pkg.go.dev/badge/github.com/ron86i/go-siat/v3.svg" alt="Go Reference"></a>
   <a href="https://go.dev/"><img src="https://img.shields.io/github/go-mod/go-version/ron86i/go-siat?style=flat" alt="Go Version"></a>
   <a href="../../LICENSE"><img src="https://img.shields.io/github/license/ron86i/go-siat?style=flat" alt="License"></a>
   <a href="https://github.com/ron86i/go-siat/releases"><img src="https://img.shields.io/github/v/release/ron86i/go-siat?style=flat&label=release" alt="Latest Release"></a>
@@ -43,6 +43,7 @@ These docs follow [Diátaxis](https://diataxis.fr/): four kinds of material, eac
 | Goal | Go to |
 | :--- | :--- |
 | Install the SDK and make my first call | [Tutorial](tutorial/first-invoice.md) |
+| Migrate to v3 and inspect `/sfd/` contracts | [Migration guide](how-to/siat-v3.md) |
 | Send a single electronic invoice | [Tutorial → Step 6](tutorial/first-invoice.md#step-6-package-and-send) |
 | Sign invoices with my `.p12` certificate | [How-to: Sign invoices](how-to/sign-invoices.md) |
 | Send hundreds of invoices in one request | [How-to: Send batches](how-to/send-batches.md) |
@@ -68,7 +69,7 @@ s, err := siat.New(siat.Config{
     Nit:            123456789,
     CodigoSistema:  "...",
     CodigoAmbiente: siat.AmbientePruebas,
-    BaseURL:        "https://pilotosiatservicios.impuestos.gob.bo/v2",
+    BaseURL:        "https://pilotosiatservicios.impuestos.gob.bo/sfd",
 })
 ```
 

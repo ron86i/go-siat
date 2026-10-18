@@ -22,7 +22,7 @@ s, err := siat.New(siat.Config{
     Nit:            123456789,
     CodigoSistema:  "...",
     CodigoAmbiente: siat.AmbientePruebas,
-    BaseURL:        "https://pilotosiatservicios.impuestos.gob.bo/v2",
+    BaseURL:        "https://pilotosiatservicios.impuestos.gob.bo/sfd",
 
     CredentialSign: siat.NewP12Credential("cert.p12", "your-password"),
 })
@@ -78,7 +78,7 @@ Two rules govern this, and both are silent when broken:
 An expired certificate fails at submission time, which is the worst moment to find out. Check it at startup instead:
 
 ```go
-import "github.com/ron86i/go-siat/v2/pkg/utils"
+import "github.com/ron86i/go-siat/v3/pkg/utils"
 
 p12Bytes, err := os.ReadFile("cert.p12")
 if err != nil {

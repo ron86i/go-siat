@@ -14,7 +14,7 @@ Sending invoices one at a time works, but it costs one HTTP round trip per invoi
 | :--- | :--- | :--- |
 | Built for | Offline / contingency batches | High-volume online invoicing |
 | Emission code | `siat.EmisionOffline` or `EmisionMasiva` | `siat.EmisionMasiva` |
-| Supports a CAFC | Yes — `WithCafc` | No |
+| SOAP package `cafc` field | No | No |
 | Supports an event code | Yes — `WithCodigoEvento` | No |
 | Result | Asynchronous, validated later | Asynchronous, validated later |
 
@@ -180,16 +180,16 @@ if !event.Respuesta.Transaccion {
 eventCode := event.Respuesta.CodigoRecepcionEventoSignificativo
 ```
 
-Then add the CAFC and that event code to the package. The batch must use `siat.EmisionOffline`:
+Then add the event code to the package. The batch must use `siat.EmisionOffline`:
 
 ```go
-cafc := "YOUR-CAFC-CODE"
 builder.
-    WithCafc(&cafc).
     WithCodigoEvento(eventCode)   // int64, from RegistroEventosSignificativos
 ```
 
-`WithCafc` takes a `*string` so it can be omitted — pass `nil` or simply don't call it when there is no CAFC.
+The `/sfd/` SOAP contract does not include `cafc` in package reception. This
+does not change the invoice XML inside the archive; invoice fields follow
+the corresponding sector document XSD.
 
 ---
 

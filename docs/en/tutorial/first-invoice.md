@@ -29,7 +29,7 @@ We deliberately start with the **computerized** modality so you can complete the
 ## Step 1: Install and configure the client
 
 ```bash
-go get github.com/ron86i/go-siat/v2
+go get github.com/ron86i/go-siat/v3
 ```
 
 Create `main.go`. The most important idea in this SDK: **your identity is configured once**, not repeated on every call.
@@ -42,10 +42,10 @@ import (
     "log"
     "time"
 
-    "github.com/ron86i/go-siat/v2"
+    "github.com/ron86i/go-siat/v3"
 )
 
-const pilotURL = "https://pilotosiatservicios.impuestos.gob.bo/v2"
+const pilotURL = "https://pilotosiatservicios.impuestos.gob.bo/sfd"
 
 func main() {
     s, err := siat.New(siat.Config{
@@ -95,7 +95,7 @@ cuis := cuisResp.Body.Content.RespuestaCuis.Codigo
 log.Println("CUIS:", cuis)
 ```
 
-Add `"github.com/ron86i/go-siat/v2/pkg/models"` to your imports.
+Add `"github.com/ron86i/go-siat/v3/pkg/models"` to your imports.
 
 Notice the **two-stage error check**. This pattern repeats in every single call you will make:
 
@@ -139,7 +139,7 @@ This call returns **two** values you need: the code itself and a `CodigoControl`
 The **CUF** (*Código Único de Facturación*) is a checksum that uniquely identifies one invoice. Unlike CUIS and CUFD, you compute it locally — no network call.
 
 ```go
-import "github.com/ron86i/go-siat/v2/pkg/utils"
+import "github.com/ron86i/go-siat/v3/pkg/utils"
 
 fechaEmision := time.Now()
 
@@ -171,7 +171,7 @@ if err != nil {
 Now the invoice itself. It has a **header** (who, when, totals) and one or more **detail lines** (what was sold).
 
 ```go
-import "github.com/ron86i/go-siat/v2/pkg/models/invoices"
+import "github.com/ron86i/go-siat/v3/pkg/models/invoices"
 
 customerName := "JUAN PEREZ"
 posCode := 0

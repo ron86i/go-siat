@@ -1,5 +1,31 @@
 # Changelog
 
+## [Unreleased]
+
+### ⚠️ Cambios incompatibles para v3.0.0
+
+* El módulo pasa a `github.com/ron86i/go-siat/v3` y usa los contratos SOAP `/sfd/` con una sola entrada `siat.New(config)`
+* Se retira `RecepcionPaqueteFacturaBuilder.WithCafc`, ausente en los paquetes SOAP v3; los modelos XML de documentos sectoriales conservan sus campos propios
+* La sincronización de productos devuelve `CodigoActividad` como `string`, `CodigoProducto` como `int64` y la lista `Nandina`
+* Las respuestas de recepción usan `MensajeRecepcion`, con advertencia y ubicación del error en archivo/detalle
+
+### Añadido
+
+* Campo `CodigoInterno` en la respuesta CUFD
+* Guías de migración en español e inglés
+
+### Corregido
+
+* Omisión del CUFD en la consulta de eventos significativos: el campo ya era requerido por v2 y ahora se expone mediante `WithCufd`
+* Orden XML `codigoMotivo`, `cuf` en la anulación de facturas
+* Inyección de identidad sobre una copia de la solicitud para evitar conservar credenciales dinámicas al reutilizar un builder
+* Las pruebas reales de los builders de facturas requieren `SIAT_RUN=1` antes de cargar credenciales
+
+### Pendiente de verificación externa
+
+* El WSDL `/sfd/ServicioRecepcionCompras` responde HTTP 503; su adaptador se conserva sin declarar validado su contrato v3
+* La dirección de producción v3 debe confirmarse con el SIN; la ruta consultada en el host anterior respondió HTTP 404
+
 ## [2.4.0](https://github.com/ron86i/go-siat/compare/v2.3.0...v2.4.0) (2026-09-13)
 
 

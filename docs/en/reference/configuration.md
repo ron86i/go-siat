@@ -44,8 +44,8 @@ type Config struct {
 
 | Environment | `CodigoAmbiente` | `BaseURL` |
 | :--- | :--- | :--- |
-| Pilot / testing | `siat.AmbientePruebas` (2) | `https://pilotosiatservicios.impuestos.gob.bo/v2` |
-| Production | `siat.AmbienteProduccion` (1) | `https://siatrest.impuestos.gob.bo/v2` |
+| Pilot / testing | `siat.AmbientePruebas` (2) | `https://pilotosiatservicios.impuestos.gob.bo/sfd` |
+| Production | `siat.AmbienteProduccion` (1) | SIN-assigned v3 endpoint; confirm before deployment |
 
 These two must agree. A production `CodigoAmbiente` against the pilot URL is rejected with code 910. Confirm the current production host against SIAT's own documentation before deploying — endpoints do change.
 
@@ -195,7 +195,7 @@ ctx = ports.WithDynamicConfig(ctx, siat.Config{TraceId: requestID})
 One client can serve many taxpayers. `WithDynamicConfig` overrides selected fields for a single call:
 
 ```go
-import "github.com/ron86i/go-siat/v2/internal/core/ports"
+import "github.com/ron86i/go-siat/v3/internal/core/ports"
 
 ctx = ports.WithDynamicConfig(ctx, siat.Config{
     Nit:            tenant.Nit,

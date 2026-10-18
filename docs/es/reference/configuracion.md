@@ -44,8 +44,8 @@ type Config struct {
 
 | Ambiente | `CodigoAmbiente` | `BaseURL` |
 | :--- | :--- | :--- |
-| Piloto / pruebas | `siat.AmbientePruebas` (2) | `https://pilotosiatservicios.impuestos.gob.bo/v2` |
-| Producción | `siat.AmbienteProduccion` (1) | `https://siatrest.impuestos.gob.bo/v2` |
+| Piloto / pruebas | `siat.AmbientePruebas` (2) | `https://pilotosiatservicios.impuestos.gob.bo/sfd` |
+| Producción | `siat.AmbienteProduccion` (1) | Dirección v3 asignada por el SIN; confirmar antes del despliegue |
 
 Los dos tienen que coincidir. Un `CodigoAmbiente` de producción contra la URL del piloto se rechaza con el código 910. Confirmá el host de producción vigente contra la documentación del propio SIAT antes de desplegar — los endpoints cambian.
 
@@ -195,7 +195,7 @@ ctx = ports.WithDynamicConfig(ctx, siat.Config{TraceId: requestID})
 Un solo cliente puede atender a muchos contribuyentes. `WithDynamicConfig` sobrescribe campos elegidos para una sola llamada:
 
 ```go
-import "github.com/ron86i/go-siat/v2/internal/core/ports"
+import "github.com/ron86i/go-siat/v3/internal/core/ports"
 
 ctx = ports.WithDynamicConfig(ctx, siat.Config{
     Nit:            inquilino.Nit,

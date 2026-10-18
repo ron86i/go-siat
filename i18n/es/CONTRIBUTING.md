@@ -183,12 +183,12 @@ go tool cover -html=coverage.out
 
 ```bash
 # Tests de integración requieren estos valores
-export SIAT_API_TOKEN="tu_token"
+export SIAT_TOKEN="tu_token"
 export SIAT_NIT="tu_nit"
-export SIAT_BASE_URL="https://pilotosiatservicios.impuestos.gob.bo/v2"
+export SIAT_URL="https://pilotosiatservicios.impuestos.gob.bo/sfd"
 
-# Ejecutar tests de integración
-go test -tags=integration ./...
+# Ejecutar una prueba real de integración explícitamente
+SIAT_RUN=1 go test -v ./internal/adapter/services -run '^TestFacturasSector1_Individual$' -count=1
 ```
 
 ## 📦 Tipos de Contribución
@@ -315,7 +315,7 @@ CUFD rechazado con error "Código de Control inválido"
 Código CUFD válido
 
 ## Información del Sistema
-- Go: 1.25
+- Go: 1.26
 - go-siat: v1.2.0
 - SIAT: Producción
 ```

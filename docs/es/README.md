@@ -8,7 +8,7 @@
   <a href="../en/README.md"><img src="https://img.shields.io/badge/lang-english-red?style=flat" alt="English Version"></a>
   <a href="https://masterminds.github.io/stability/active.html"><img src="https://masterminds.github.io/stability/active.svg" alt="Stability: Active"></a>
   <br>
-  <a href="https://pkg.go.dev/github.com/ron86i/go-siat/v2"><img src="https://pkg.go.dev/badge/github.com/ron86i/go-siat/v2.svg" alt="Go Reference"></a>
+  <a href="https://pkg.go.dev/github.com/ron86i/go-siat/v3"><img src="https://pkg.go.dev/badge/github.com/ron86i/go-siat/v3.svg" alt="Go Reference"></a>
   <a href="https://go.dev/"><img src="https://img.shields.io/github/go-mod/go-version/ron86i/go-siat?style=flat" alt="Go Version"></a>
   <a href="../../LICENSE"><img src="https://img.shields.io/github/license/ron86i/go-siat?style=flat" alt="License"></a>
   <a href="https://github.com/ron86i/go-siat/releases"><img src="https://img.shields.io/github/v/release/ron86i/go-siat?style=flat&label=release" alt="Latest Release"></a>
@@ -43,6 +43,7 @@ Estos documentos siguen [Diátaxis](https://diataxis.fr/): cuatro tipos de mater
 | Objetivo | Andá a |
 | :--- | :--- |
 | Instalar el SDK y hacer mi primera llamada | [Tutorial](tutorial/primera-factura.md) |
+| Migrar a v3 y revisar los contratos `/sfd/` | [Guía de migración](how-to/servicios-v3.md) |
 | Enviar una factura electrónica individual | [Tutorial → Paso 6](tutorial/primera-factura.md#paso-6-empaquetar-y-enviar) |
 | Firmar facturas con mi certificado `.p12` | [Guía: Firmar facturas](how-to/firmar-facturas.md) |
 | Enviar cientos de facturas en una sola petición | [Guía: Envío por lotes](how-to/envio-lotes.md) |
@@ -68,7 +69,7 @@ s, err := siat.New(siat.Config{
     Nit:            123456789,
     CodigoSistema:  "...",
     CodigoAmbiente: siat.AmbientePruebas,
-    BaseURL:        "https://pilotosiatservicios.impuestos.gob.bo/v2",
+    BaseURL:        "https://pilotosiatservicios.impuestos.gob.bo/sfd",
 })
 ```
 

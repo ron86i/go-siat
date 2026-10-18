@@ -4,10 +4,10 @@
   <a href="../../en/reference/utilities.md">🇬🇧 English</a> · <a href="../README.md">Índice de documentación</a>
 </p>
 
-Superficie completa de `github.com/ron86i/go-siat/v2/pkg/utils` — generación de CUF, firma, compresión, hash, exportación y helpers chicos de conversión.
+Superficie completa de `github.com/ron86i/go-siat/v3/pkg/utils` — generación de CUF, firma, compresión, hash, exportación y helpers chicos de conversión.
 
 ```go
-import "github.com/ron86i/go-siat/v2/pkg/utils"
+import "github.com/ron86i/go-siat/v3/pkg/utils"
 ```
 
 La mayor parte de esto corre automáticamente dentro de `WithFactura` / `WithFacturas` / `WithDocumento`. Recurrí a estas funciones de forma directa cuando necesitás los artefactos intermedios o estás trabajando fuera del flujo normal de envío.
