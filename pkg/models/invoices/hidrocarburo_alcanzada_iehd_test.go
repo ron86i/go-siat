@@ -77,7 +77,7 @@ func TestHidrocarburoAlcanzadaIehd_OrdenXSD(t *testing.T) {
 		WithNombreRazonSocial(&nombre).
 		WithCodigoTipoDocumentoIdentidad(1).
 		WithNumeroDocumento("1234567").
-		WithComplemento(nil).
+		WithComplemento("").
 		WithCodigoCliente("CLI-001").
 		WithCiudad(nil).
 		WithNombrePropietario(nil).
@@ -86,15 +86,14 @@ func TestHidrocarburoAlcanzadaIehd_OrdenXSD(t *testing.T) {
 		WithPeriodoEntrega(nil).
 		WithCodigoMetodoPago(1).
 		WithNumeroTarjeta(nil).
-		WithMontoTotal(100).
+		WithMontoAPagar(100).
 		WithMontoIehd(&montoIehd).
-		WithMontoTotalSujetoIva(100).
+		WithTotalPrecioNeto(100).
 		WithCodigoMoneda(1).
 		WithTipoCambio(1).
 		WithMontoTotalMoneda(100).
 		WithDescuentoAdicional(nil).
 		WithCodigoExcepcion(nil).
-		WithCafc(nil).
 		WithLeyenda("Ley N 453").
 		WithUsuario("tester").
 		Build()
@@ -106,7 +105,7 @@ func TestHidrocarburoAlcanzadaIehd_OrdenXSD(t *testing.T) {
 		WithDescripcion("Diesel Oil").
 		WithCantidad(2).
 		WithUnidadMedida(1).
-		WithPrecioUnitario(50).
+		WithPrecioNetoUnitario(50).
 		WithMontoDescuento(nil).
 		WithSubTotal(100).
 		WithPorcentajeIehd(&porcentaje).
@@ -128,23 +127,9 @@ func TestHidrocarburoAlcanzadaIehd_OrdenXSD(t *testing.T) {
 		t.Errorf("elemento raíz incorrecto:\n%.120s", got)
 	}
 
-	assertOrder(t, elementOrder(t, got, "cabecera"), []string{
-		"nitEmisor", "razonSocialEmisor", "municipio", "telefono", "numeroFactura",
-		"cuf", "cufd", "codigoSucursal", "direccion", "codigoPuntoVenta",
-		"fechaEmision", "nombreRazonSocial", "codigoTipoDocumentoIdentidad",
-		"numeroDocumento", "complemento", "codigoCliente", "ciudad",
-		"nombrePropietario", "nombreRepresentanteLegal", "condicionPago",
-		"periodoEntrega", "codigoMetodoPago", "numeroTarjeta", "montoTotal",
-		"montoIehd", "montoTotalSujetoIva", "codigoMoneda", "tipoCambio",
-		"montoTotalMoneda", "descuentoAdicional", "codigoExcepcion", "cafc",
-		"leyenda", "usuario", "codigoDocumentoSector",
-	}, "cabecera sector 19")
+	assertOrder(t, elementOrder(t, got, "cabecera"), []string{"nitEmisor", "razonSocialEmisor", "municipio", "telefono", "numeroFactura", "cuf", "cufd", "codigoSucursal", "direccion", "codigoPuntoVenta", "fechaEmision", "nombreRazonSocial", "codigoTipoDocumentoIdentidad", "numeroDocumento", "complemento", "codigoCliente", "ciudad", "nombrePropietario", "nombreRepresentanteLegal", "condicionPago", "periodoEntrega", "codigoMetodoPago", "numeroTarjeta", "montoIehd", "subTotalNeto", "totalPrecioNeto", "iva", "ivad", "montoaPagar", "codigoMoneda", "tipoCambio", "montoTotalMoneda", "descuentoAdicional", "codigoExcepcion", "leyenda", "usuario", "codigoInterno", "codigoDocumentoSector"}, "cabecera sector 19")
 
-	assertOrder(t, elementOrder(t, got, "detalle"), []string{
-		"actividadEconomica", "codigoProductoSin", "codigoProducto", "descripcion",
-		"cantidad", "unidadMedida", "precioUnitario", "montoDescuento", "subTotal",
-		"porcentajeIehd",
-	}, "detalle sector 19")
+	assertOrder(t, elementOrder(t, got, "detalle"), []string{"actividadEconomica", "codigoProductoSin", "codigoProducto", "descripcion", "cantidad", "unidadMedida", "precioNetoUnitario", "montoDescuento", "subTotal", "porcentajeIehd"}, "detalle sector 19")
 
 	if !strings.Contains(got, "<codigoDocumentoSector>19</codigoDocumentoSector>") {
 		t.Error("el código de documento sector no quedó fijado en 19")
@@ -182,7 +167,6 @@ func TestHidrocarburoAlcanzadaIehd_CompleteBuilder(t *testing.T) {
 	montoIehd := 15.50
 	descuentoAdic := 5.00
 	codigoExcepcion := 1
-	cafc := "1011000000000"
 	montoDesc := 2.50
 	porcentajeIehd := 7.50
 
@@ -201,7 +185,7 @@ func TestHidrocarburoAlcanzadaIehd_CompleteBuilder(t *testing.T) {
 		WithNombreRazonSocial(&nombre).
 		WithCodigoTipoDocumentoIdentidad(5).
 		WithNumeroDocumento("1029384").
-		WithComplemento(&complemento).
+		WithComplemento(complemento).
 		WithCodigoCliente("CLI-100").
 		WithCiudad(&ciudad).
 		WithNombrePropietario(&propietario).
@@ -210,15 +194,14 @@ func TestHidrocarburoAlcanzadaIehd_CompleteBuilder(t *testing.T) {
 		WithPeriodoEntrega(&periodoEntrega).
 		WithCodigoMetodoPago(2).
 		WithNumeroTarjeta(&tarjeta).
-		WithMontoTotal(200.00).
+		WithMontoAPagar(200.00).
 		WithMontoIehd(&montoIehd).
-		WithMontoTotalSujetoIva(184.50).
+		WithTotalPrecioNeto(184.50).
 		WithCodigoMoneda(1).
 		WithTipoCambio(1.0).
 		WithMontoTotalMoneda(200.00).
 		WithDescuentoAdicional(&descuentoAdic).
 		WithCodigoExcepcion(&codigoExcepcion).
-		WithCafc(&cafc).
 		WithLeyenda("Ley N 453").
 		WithUsuario("admin").
 		WithCodigoDocumentoSector(19).
@@ -231,7 +214,7 @@ func TestHidrocarburoAlcanzadaIehd_CompleteBuilder(t *testing.T) {
 		WithDescripcion("Gasolina Especial").
 		WithCantidad(10.0).
 		WithUnidadMedida(1).
-		WithPrecioUnitario(15.0).
+		WithPrecioNetoUnitario(15.0).
 		WithMontoDescuento(&montoDesc).
 		WithSubTotal(147.50).
 		WithPorcentajeIehd(&porcentajeIehd).
@@ -244,7 +227,7 @@ func TestHidrocarburoAlcanzadaIehd_CompleteBuilder(t *testing.T) {
 		WithDescripcion("Diesel Premium").
 		WithCantidad(5.0).
 		WithUnidadMedida(1).
-		WithPrecioUnitario(10.5).
+		WithPrecioNetoUnitario(10.5).
 		WithMontoDescuento(nil).
 		WithSubTotal(52.50).
 		WithPorcentajeIehd(nil).
@@ -295,7 +278,7 @@ func TestHidrocarburoAlcanzadaIehd_NilAndUnwrap(t *testing.T) {
 		WithNombreRazonSocial(nil).
 		WithCodigoTipoDocumentoIdentidad(1).
 		WithNumeroDocumento("998877").
-		WithComplemento(nil).
+		WithComplemento("").
 		WithCodigoCliente("CLI-NIL").
 		WithCiudad(nil).
 		WithNombrePropietario(nil).
@@ -304,15 +287,14 @@ func TestHidrocarburoAlcanzadaIehd_NilAndUnwrap(t *testing.T) {
 		WithPeriodoEntrega(nil).
 		WithCodigoMetodoPago(1).
 		WithNumeroTarjeta(nil).
-		WithMontoTotal(100.0).
+		WithMontoAPagar(100.0).
 		WithMontoIehd(nil).
-		WithMontoTotalSujetoIva(100.0).
+		WithTotalPrecioNeto(100.0).
 		WithCodigoMoneda(1).
 		WithTipoCambio(1.0).
 		WithMontoTotalMoneda(100.0).
 		WithDescuentoAdicional(nil).
 		WithCodigoExcepcion(nil).
-		WithCafc(nil).
 		WithLeyenda("Ley N 453").
 		WithUsuario("tester").
 		Build()
@@ -324,7 +306,7 @@ func TestHidrocarburoAlcanzadaIehd_NilAndUnwrap(t *testing.T) {
 		WithDescripcion("Producto").
 		WithCantidad(1.0).
 		WithUnidadMedida(1).
-		WithPrecioUnitario(100.0).
+		WithPrecioNetoUnitario(100.0).
 		WithMontoDescuento(nil).
 		WithSubTotal(100.0).
 		WithPorcentajeIehd(nil).
@@ -370,8 +352,8 @@ func TestHidrocarburoAlcanzadaIehd_RecepcionFacturaBuilder(t *testing.T) {
 		WithNumeroDocumento("12345").
 		WithCodigoCliente("C19").
 		WithCodigoMetodoPago(1).
-		WithMontoTotal(100).
-		WithMontoTotalSujetoIva(100).
+		WithMontoAPagar(100).
+		WithTotalPrecioNeto(100).
 		WithCodigoMoneda(1).
 		WithTipoCambio(1).
 		WithMontoTotalMoneda(100).
@@ -386,7 +368,7 @@ func TestHidrocarburoAlcanzadaIehd_RecepcionFacturaBuilder(t *testing.T) {
 		WithDescripcion("Combustible").
 		WithCantidad(2).
 		WithUnidadMedida(1).
-		WithPrecioUnitario(50).
+		WithPrecioNetoUnitario(50).
 		WithSubTotal(100).
 		Build()
 
@@ -447,9 +429,9 @@ func TestHidrocarburoAlcanzadaIehd_ElectronicaIntegration(t *testing.T) {
 		WithNumeroDocumento("1234567").
 		WithCodigoCliente("CLI-IEHD-01").
 		WithCodigoMetodoPago(1).
-		WithMontoTotal(100.00).
+		WithMontoAPagar(100.00).
 		WithMontoIehd(&montoIehd).
-		WithMontoTotalSujetoIva(90.00).
+		WithTotalPrecioNeto(90.00).
 		WithCodigoMoneda(1).
 		WithTipoCambio(1.0).
 		WithMontoTotalMoneda(100.00).
@@ -464,7 +446,7 @@ func TestHidrocarburoAlcanzadaIehd_ElectronicaIntegration(t *testing.T) {
 		WithDescripcion("GASOLINA PREMIUM").
 		WithCantidad(10.0).
 		WithUnidadMedida(1).
-		WithPrecioUnitario(10.0).
+		WithPrecioNetoUnitario(10.0).
 		WithSubTotal(100.0).
 		WithPorcentajeIehd(&porcentaje).
 		Build()

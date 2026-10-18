@@ -37,7 +37,7 @@ func TestTurismoHospedaje_Electronica(t *testing.T) {
 		WithNumeroDocumento("99887766").
 		WithCodigoCliente("TUR-001").
 		WithCodigoMetodoPago(1).
-		WithMontoTotal(500.00).
+		WithMontoAPagar(500.00).
 		WithCodigoMoneda(2). // Dólares
 		WithTipoCambio(6.96).
 		WithMontoTotalMoneda(71.84).
@@ -52,7 +52,7 @@ func TestTurismoHospedaje_Electronica(t *testing.T) {
 		WithDescripcion("HOSPEDAJE NOCHE").
 		WithCantidad(1.0).
 		WithUnidadMedida(1).
-		WithPrecioUnitario(500.0).
+		WithPrecioNetoUnitario(500.0).
 		WithSubTotal(500.00).
 		Build()
 

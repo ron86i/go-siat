@@ -97,6 +97,18 @@ type alcanzadaIceCabeceraBuilder struct {
 	cabecera *documents.CabeceraAlcanzadaIce
 }
 
+func (b *alcanzadaIceCabeceraBuilder) Build() AlcanzadaIceCabecera {
+	return AlcanzadaIceCabecera{models.NewRequestWrapper(b.cabecera)}
+}
+
+type alcanzadaIceDetalleBuilder struct {
+	detalle *documents.DetalleAlcanzadaIce
+}
+
+func (b *alcanzadaIceDetalleBuilder) Build() AlcanzadaIceDetalle {
+	return AlcanzadaIceDetalle{models.NewRequestWrapper(b.detalle)}
+}
+
 func (b *alcanzadaIceCabeceraBuilder) WithNitEmisor(v int64) *alcanzadaIceCabeceraBuilder {
 	b.cabecera.NitEmisor = v
 	return b
@@ -114,11 +126,11 @@ func (b *alcanzadaIceCabeceraBuilder) WithMunicipio(v string) *alcanzadaIceCabec
 
 func (b *alcanzadaIceCabeceraBuilder) WithTelefono(v *string) *alcanzadaIceCabeceraBuilder {
 	if v == nil {
-		b.cabecera.Telefono = datatype.Nilable[string]{Value: nil}
+		b.cabecera.Telefono = datatype.Nilable[string]{}
 		return b
 	}
-	val := *v
-	b.cabecera.Telefono = datatype.Nilable[string]{Value: &val}
+	value := *v
+	b.cabecera.Telefono = datatype.Nilable[string]{Value: &value}
 	return b
 }
 
@@ -149,26 +161,26 @@ func (b *alcanzadaIceCabeceraBuilder) WithDireccion(v string) *alcanzadaIceCabec
 
 func (b *alcanzadaIceCabeceraBuilder) WithCodigoPuntoVenta(v *int) *alcanzadaIceCabeceraBuilder {
 	if v == nil {
-		b.cabecera.CodigoPuntoVenta = datatype.Nilable[int]{Value: nil}
+		b.cabecera.CodigoPuntoVenta = datatype.Nilable[int]{}
 		return b
 	}
-	val := *v
-	b.cabecera.CodigoPuntoVenta = datatype.Nilable[int]{Value: &val}
+	value := *v
+	b.cabecera.CodigoPuntoVenta = datatype.Nilable[int]{Value: &value}
 	return b
 }
 
 func (b *alcanzadaIceCabeceraBuilder) WithFechaEmision(v time.Time) *alcanzadaIceCabeceraBuilder {
-	b.cabecera.FechaEmision = datatype.TimeSiat(v)
+	b.cabecera.FechaEmision = datatype.NewTimeSiat(v)
 	return b
 }
 
 func (b *alcanzadaIceCabeceraBuilder) WithNombreRazonSocial(v *string) *alcanzadaIceCabeceraBuilder {
 	if v == nil {
-		b.cabecera.NombreRazonSocial = datatype.Nilable[string]{Value: nil}
+		b.cabecera.NombreRazonSocial = datatype.Nilable[string]{}
 		return b
 	}
-	val := *v
-	b.cabecera.NombreRazonSocial = datatype.Nilable[string]{Value: &val}
+	value := *v
+	b.cabecera.NombreRazonSocial = datatype.Nilable[string]{Value: &value}
 	return b
 }
 
@@ -182,13 +194,8 @@ func (b *alcanzadaIceCabeceraBuilder) WithNumeroDocumento(v string) *alcanzadaIc
 	return b
 }
 
-func (b *alcanzadaIceCabeceraBuilder) WithComplemento(v *string) *alcanzadaIceCabeceraBuilder {
-	if v == nil {
-		b.cabecera.Complemento = datatype.Nilable[string]{Value: nil}
-		return b
-	}
-	val := *v
-	b.cabecera.Complemento = datatype.Nilable[string]{Value: &val}
+func (b *alcanzadaIceCabeceraBuilder) WithComplemento(v string) *alcanzadaIceCabeceraBuilder {
+	b.cabecera.Complemento = v
 	return b
 }
 
@@ -204,45 +211,53 @@ func (b *alcanzadaIceCabeceraBuilder) WithCodigoMetodoPago(v int) *alcanzadaIceC
 
 func (b *alcanzadaIceCabeceraBuilder) WithNumeroTarjeta(v *int64) *alcanzadaIceCabeceraBuilder {
 	if v == nil {
-		b.cabecera.NumeroTarjeta = datatype.Nilable[int64]{Value: nil}
+		b.cabecera.NumeroTarjeta = datatype.Nilable[int64]{}
 		return b
 	}
-	val := *v
-	b.cabecera.NumeroTarjeta = datatype.Nilable[int64]{Value: &val}
+	value := *v
+	b.cabecera.NumeroTarjeta = datatype.Nilable[int64]{Value: &value}
 	return b
 }
 
-func (b *alcanzadaIceCabeceraBuilder) WithMontoTotal(v float64) *alcanzadaIceCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.MontoTotal = v
+func (b *alcanzadaIceCabeceraBuilder) WithSubTotalNeto(v float64) *alcanzadaIceCabeceraBuilder {
+	b.cabecera.SubTotalNeto = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
-func (b *alcanzadaIceCabeceraBuilder) WithMontoIceEspecifico(v *float64) *alcanzadaIceCabeceraBuilder {
+func (b *alcanzadaIceCabeceraBuilder) WithTotalPrecioNeto(v float64) *alcanzadaIceCabeceraBuilder {
+	b.cabecera.TotalPrecioNeto = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+	return b
+}
+
+func (b *alcanzadaIceCabeceraBuilder) WithIva(v float64) *alcanzadaIceCabeceraBuilder {
+	b.cabecera.Iva = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+	return b
+}
+
+func (b *alcanzadaIceCabeceraBuilder) WithMontoAPagar(v float64) *alcanzadaIceCabeceraBuilder {
+	b.cabecera.MontoAPagar = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+	return b
+}
+
+func (b *alcanzadaIceCabeceraBuilder) WithTotalIceEspecifico(v *float64) *alcanzadaIceCabeceraBuilder {
 	if v == nil {
-		b.cabecera.MontoIceEspecifico = datatype.Nilable[float64]{Value: nil}
+		b.cabecera.TotalIceEspecifico = datatype.Nilable[float64]{}
 		return b
 	}
-	val := *v
-	val = decimal.NewFromFloat(val).Round(2).InexactFloat64()
-	b.cabecera.MontoIceEspecifico = datatype.Nilable[float64]{Value: &val}
+	value := *v
+	value = decimal.NewFromFloat(value).Round(2).InexactFloat64()
+	b.cabecera.TotalIceEspecifico = datatype.Nilable[float64]{Value: &value}
 	return b
 }
 
-func (b *alcanzadaIceCabeceraBuilder) WithMontoIcePorcentual(v *float64) *alcanzadaIceCabeceraBuilder {
+func (b *alcanzadaIceCabeceraBuilder) WithTotalIcePorcentual(v *float64) *alcanzadaIceCabeceraBuilder {
 	if v == nil {
-		b.cabecera.MontoIcePorcentual = datatype.Nilable[float64]{Value: nil}
+		b.cabecera.TotalIcePorcentual = datatype.Nilable[float64]{}
 		return b
 	}
-	val := *v
-	val = decimal.NewFromFloat(val).Round(2).InexactFloat64()
-	b.cabecera.MontoIcePorcentual = datatype.Nilable[float64]{Value: &val}
-	return b
-}
-
-func (b *alcanzadaIceCabeceraBuilder) WithMontoTotalSujetoIva(v float64) *alcanzadaIceCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.MontoTotalSujetoIva = v
+	value := *v
+	value = decimal.NewFromFloat(value).Round(2).InexactFloat64()
+	b.cabecera.TotalIcePorcentual = datatype.Nilable[float64]{Value: &value}
 	return b
 }
 
@@ -252,45 +267,33 @@ func (b *alcanzadaIceCabeceraBuilder) WithCodigoMoneda(v int) *alcanzadaIceCabec
 }
 
 func (b *alcanzadaIceCabeceraBuilder) WithTipoCambio(v float64) *alcanzadaIceCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.TipoCambio = v
+	b.cabecera.TipoCambio = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
 func (b *alcanzadaIceCabeceraBuilder) WithMontoTotalMoneda(v float64) *alcanzadaIceCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.MontoTotalMoneda = v
+	b.cabecera.MontoTotalMoneda = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
 func (b *alcanzadaIceCabeceraBuilder) WithDescuentoAdicional(v *float64) *alcanzadaIceCabeceraBuilder {
 	if v == nil {
-		b.cabecera.DescuentoAdicional = datatype.Nilable[float64]{Value: nil}
+		b.cabecera.DescuentoAdicional = datatype.Nilable[float64]{}
 		return b
 	}
-	val := *v
-	val = decimal.NewFromFloat(val).Round(2).InexactFloat64()
-	b.cabecera.DescuentoAdicional = datatype.Nilable[float64]{Value: &val}
+	value := *v
+	value = decimal.NewFromFloat(value).Round(2).InexactFloat64()
+	b.cabecera.DescuentoAdicional = datatype.Nilable[float64]{Value: &value}
 	return b
 }
 
 func (b *alcanzadaIceCabeceraBuilder) WithCodigoExcepcion(v *int) *alcanzadaIceCabeceraBuilder {
 	if v == nil {
-		b.cabecera.CodigoExcepcion = datatype.Nilable[int]{Value: nil}
+		b.cabecera.CodigoExcepcion = datatype.Nilable[int]{}
 		return b
 	}
-	val := *v
-	b.cabecera.CodigoExcepcion = datatype.Nilable[int]{Value: &val}
-	return b
-}
-
-func (b *alcanzadaIceCabeceraBuilder) WithCafc(v *string) *alcanzadaIceCabeceraBuilder {
-	if v == nil {
-		b.cabecera.Cafc = datatype.Nilable[string]{Value: nil}
-		return b
-	}
-	val := *v
-	b.cabecera.Cafc = datatype.Nilable[string]{Value: &val}
+	value := *v
+	b.cabecera.CodigoExcepcion = datatype.Nilable[int]{Value: &value}
 	return b
 }
 
@@ -304,18 +307,14 @@ func (b *alcanzadaIceCabeceraBuilder) WithUsuario(v string) *alcanzadaIceCabecer
 	return b
 }
 
-// WithCodigoDocumentoSector configura el código que identifica el diseño o sector de la factura.
-func (b *alcanzadaIceCabeceraBuilder) WithCodigoDocumentoSector(v int) *alcanzadaIceCabeceraBuilder {
-	b.cabecera.CodigoDocumentoSector = v
+func (b *alcanzadaIceCabeceraBuilder) WithCodigoInterno(v string) *alcanzadaIceCabeceraBuilder {
+	b.cabecera.CodigoInterno = v
 	return b
 }
 
-func (b *alcanzadaIceCabeceraBuilder) Build() AlcanzadaIceCabecera {
-	return AlcanzadaIceCabecera{models.NewRequestWrapper(b.cabecera)}
-}
-
-type alcanzadaIceDetalleBuilder struct {
-	detalle *documents.DetalleAlcanzadaIce
+func (b *alcanzadaIceCabeceraBuilder) WithCodigoDocumentoSector(v int) *alcanzadaIceCabeceraBuilder {
+	b.cabecera.CodigoDocumentoSector = v
+	return b
 }
 
 func (b *alcanzadaIceDetalleBuilder) WithActividadEconomica(v string) *alcanzadaIceDetalleBuilder {
@@ -339,8 +338,7 @@ func (b *alcanzadaIceDetalleBuilder) WithDescripcion(v string) *alcanzadaIceDeta
 }
 
 func (b *alcanzadaIceDetalleBuilder) WithCantidad(v float64) *alcanzadaIceDetalleBuilder {
-	v = decimal.NewFromFloat(v).Round(5).InexactFloat64()
-	b.detalle.Cantidad = v
+	b.detalle.Cantidad = decimal.NewFromFloat(v).Round(5).InexactFloat64()
 	return b
 }
 
@@ -349,26 +347,24 @@ func (b *alcanzadaIceDetalleBuilder) WithUnidadMedida(v int) *alcanzadaIceDetall
 	return b
 }
 
-func (b *alcanzadaIceDetalleBuilder) WithPrecioUnitario(v float64) *alcanzadaIceDetalleBuilder {
-	v = decimal.NewFromFloat(v).Round(5).InexactFloat64()
-	b.detalle.PrecioUnitario = v
+func (b *alcanzadaIceDetalleBuilder) WithPrecioNetoUnitario(v float64) *alcanzadaIceDetalleBuilder {
+	b.detalle.PrecioNetoUnitario = decimal.NewFromFloat(v).Round(5).InexactFloat64()
 	return b
 }
 
 func (b *alcanzadaIceDetalleBuilder) WithMontoDescuento(v *float64) *alcanzadaIceDetalleBuilder {
 	if v == nil {
-		b.detalle.MontoDescuento = datatype.Nilable[float64]{Value: nil}
+		b.detalle.MontoDescuento = datatype.Nilable[float64]{}
 		return b
 	}
-	val := *v
-	val = decimal.NewFromFloat(val).Round(5).InexactFloat64()
-	b.detalle.MontoDescuento = datatype.Nilable[float64]{Value: &val}
+	value := *v
+	value = decimal.NewFromFloat(value).Round(5).InexactFloat64()
+	b.detalle.MontoDescuento = datatype.Nilable[float64]{Value: &value}
 	return b
 }
 
 func (b *alcanzadaIceDetalleBuilder) WithSubTotal(v float64) *alcanzadaIceDetalleBuilder {
-	v = decimal.NewFromFloat(v).Round(5).InexactFloat64()
-	b.detalle.SubTotal = v
+	b.detalle.SubTotal = decimal.NewFromFloat(v).Round(5).InexactFloat64()
 	return b
 }
 
@@ -377,83 +373,68 @@ func (b *alcanzadaIceDetalleBuilder) WithMarcaIce(v int) *alcanzadaIceDetalleBui
 	return b
 }
 
-func (b *alcanzadaIceDetalleBuilder) WithAlicuotaIva(v *float64) *alcanzadaIceDetalleBuilder {
-	if v == nil {
-		b.detalle.AlicuotaIva = datatype.Nilable[float64]{Value: nil}
-		return b
-	}
-	val := *v
-	val = decimal.NewFromFloat(val).Round(5).InexactFloat64()
-	b.detalle.AlicuotaIva = datatype.Nilable[float64]{Value: &val}
-	return b
-}
-
 func (b *alcanzadaIceDetalleBuilder) WithPrecioNetoVentaIce(v *float64) *alcanzadaIceDetalleBuilder {
 	if v == nil {
-		b.detalle.PrecioNetoVentaIce = datatype.Nilable[float64]{Value: nil}
+		b.detalle.PrecioNetoVentaIce = datatype.Nilable[float64]{}
 		return b
 	}
-	val := *v
-	val = decimal.NewFromFloat(val).Round(5).InexactFloat64()
-	b.detalle.PrecioNetoVentaIce = datatype.Nilable[float64]{Value: &val}
+	value := *v
+	value = decimal.NewFromFloat(value).Round(5).InexactFloat64()
+	b.detalle.PrecioNetoVentaIce = datatype.Nilable[float64]{Value: &value}
 	return b
 }
 
 func (b *alcanzadaIceDetalleBuilder) WithAlicuotaEspecifica(v *float64) *alcanzadaIceDetalleBuilder {
 	if v == nil {
-		b.detalle.AlicuotaEspecifica = datatype.Nilable[float64]{Value: nil}
+		b.detalle.AlicuotaEspecifica = datatype.Nilable[float64]{}
 		return b
 	}
-	val := *v
-	val = decimal.NewFromFloat(val).Round(5).InexactFloat64()
-	b.detalle.AlicuotaEspecifica = datatype.Nilable[float64]{Value: &val}
+	value := *v
+	value = decimal.NewFromFloat(value).Round(5).InexactFloat64()
+	b.detalle.AlicuotaEspecifica = datatype.Nilable[float64]{Value: &value}
 	return b
 }
 
 func (b *alcanzadaIceDetalleBuilder) WithAlicuotaPorcentual(v *float64) *alcanzadaIceDetalleBuilder {
 	if v == nil {
-		b.detalle.AlicuotaPorcentual = datatype.Nilable[float64]{Value: nil}
+		b.detalle.AlicuotaPorcentual = datatype.Nilable[float64]{}
 		return b
 	}
-	val := *v
-	val = decimal.NewFromFloat(val).Round(5).InexactFloat64()
-	b.detalle.AlicuotaPorcentual = datatype.Nilable[float64]{Value: &val}
+	value := *v
+	value = decimal.NewFromFloat(value).Round(5).InexactFloat64()
+	b.detalle.AlicuotaPorcentual = datatype.Nilable[float64]{Value: &value}
 	return b
 }
 
 func (b *alcanzadaIceDetalleBuilder) WithMontoIceEspecifico(v *float64) *alcanzadaIceDetalleBuilder {
 	if v == nil {
-		b.detalle.MontoIceEspecifico = datatype.Nilable[float64]{Value: nil}
+		b.detalle.MontoIceEspecifico = datatype.Nilable[float64]{}
 		return b
 	}
-	val := *v
-	val = decimal.NewFromFloat(val).Round(5).InexactFloat64()
-	b.detalle.MontoIceEspecifico = datatype.Nilable[float64]{Value: &val}
+	value := *v
+	value = decimal.NewFromFloat(value).Round(5).InexactFloat64()
+	b.detalle.MontoIceEspecifico = datatype.Nilable[float64]{Value: &value}
 	return b
 }
 
 func (b *alcanzadaIceDetalleBuilder) WithMontoIcePorcentual(v *float64) *alcanzadaIceDetalleBuilder {
 	if v == nil {
-		b.detalle.MontoIcePorcentual = datatype.Nilable[float64]{Value: nil}
+		b.detalle.MontoIcePorcentual = datatype.Nilable[float64]{}
 		return b
 	}
-	val := *v
-	val = decimal.NewFromFloat(val).Round(5).InexactFloat64()
-	b.detalle.MontoIcePorcentual = datatype.Nilable[float64]{Value: &val}
+	value := *v
+	value = decimal.NewFromFloat(value).Round(5).InexactFloat64()
+	b.detalle.MontoIcePorcentual = datatype.Nilable[float64]{Value: &value}
 	return b
 }
 
 func (b *alcanzadaIceDetalleBuilder) WithCantidadIce(v *float64) *alcanzadaIceDetalleBuilder {
 	if v == nil {
-		b.detalle.CantidadIce = datatype.Nilable[float64]{Value: nil}
+		b.detalle.CantidadIce = datatype.Nilable[float64]{}
 		return b
 	}
-	val := *v
-	val = decimal.NewFromFloat(val).Round(5).InexactFloat64()
-	b.detalle.CantidadIce = datatype.Nilable[float64]{Value: &val}
+	value := *v
+	value = decimal.NewFromFloat(value).Round(5).InexactFloat64()
+	b.detalle.CantidadIce = datatype.Nilable[float64]{Value: &value}
 	return b
-}
-
-func (b *alcanzadaIceDetalleBuilder) Build() AlcanzadaIceDetalle {
-	return AlcanzadaIceDetalle{models.NewRequestWrapper(b.detalle)}
 }

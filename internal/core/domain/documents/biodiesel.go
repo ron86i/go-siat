@@ -31,20 +31,22 @@ type CabeceraBiodiesel struct {
 	NombreRazonSocial            datatype.Nilable[string]  `xml:"nombreRazonSocial" json:"nombreRazonSocial"`
 	CodigoTipoDocumentoIdentidad int                       `xml:"codigoTipoDocumentoIdentidad" json:"codigoTipoDocumentoIdentidad"`
 	NumeroDocumento              string                    `xml:"numeroDocumento" json:"numeroDocumento"`
-	Complemento                  datatype.Nilable[string]  `xml:"complemento" json:"complemento"`
+	Complemento                  string                    `xml:"complemento" json:"complemento"`
 	CodigoCliente                string                    `xml:"codigoCliente" json:"codigoCliente"`
 	CodigoMetodoPago             int                       `xml:"codigoMetodoPago" json:"codigoMetodoPago"`
 	NumeroTarjeta                datatype.Nilable[int64]   `xml:"numeroTarjeta" json:"numeroTarjeta"`
-	MontoTotal                   float64                   `xml:"montoTotal" json:"montoTotal"`
-	MontoTotalSujetoIva          float64                   `xml:"montoTotalSujetoIva" json:"montoTotalSujetoIva"`
+	SubTotalNeto                 float64                   `xml:"subTotalNeto" json:"subTotalNeto"`
+	TotalPrecioNeto              float64                   `xml:"totalPrecioNeto" json:"totalPrecioNeto"`
+	Iva                          float64                   `xml:"iva" json:"iva"`
+	MontoAPagar                  float64                   `xml:"montoaPagar" json:"montoaPagar"`
 	CodigoMoneda                 int                       `xml:"codigoMoneda" json:"codigoMoneda"`
 	TipoCambio                   float64                   `xml:"tipoCambio" json:"tipoCambio"`
 	MontoTotalMoneda             float64                   `xml:"montoTotalMoneda" json:"montoTotalMoneda"`
 	DescuentoAdicional           datatype.Nilable[float64] `xml:"descuentoAdicional" json:"descuentoAdicional"`
 	CodigoExcepcion              datatype.Nilable[int]     `xml:"codigoExcepcion" json:"codigoExcepcion"`
-	Cafc                         datatype.Nilable[string]  `xml:"cafc" json:"cafc"`
 	Leyenda                      string                    `xml:"leyenda" json:"leyenda"`
 	Usuario                      string                    `xml:"usuario" json:"usuario"`
+	CodigoInterno                string                    `xml:"codigoInterno" json:"codigoInterno"`
 	CodigoDocumentoSector        int                       `xml:"codigoDocumentoSector" json:"codigoDocumentoSector"`
 }
 
@@ -56,7 +58,7 @@ type DetalleBiodiesel struct {
 	Descripcion        string                    `xml:"descripcion" json:"descripcion"`
 	Cantidad           float64                   `xml:"cantidad" json:"cantidad"`
 	UnidadMedida       int                       `xml:"unidadMedida" json:"unidadMedida"`
-	PrecioUnitario     float64                   `xml:"precioUnitario" json:"precioUnitario"`
+	PrecioNetoUnitario float64                   `xml:"precioNetoUnitario" json:"precioNetoUnitario"`
 	MontoDescuento     datatype.Nilable[float64] `xml:"montoDescuento" json:"montoDescuento"`
 	SubTotal           float64                   `xml:"subTotal" json:"subTotal"`
 }

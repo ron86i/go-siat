@@ -47,8 +47,8 @@ func TestMonedaExtranjera_Electronica(t *testing.T) {
 		WithCodigoCliente("CLI-001").
 		WithCodigoTipoOperacion(1). // Venta
 		WithCodigoMetodoPago(1).
-		WithMontoTotal(montoTotal).
-		WithMontoTotalSujetoIva(0). // Usualmente 0 en Sector 9
+		WithMontoAPagar(montoTotal).
+		WithTotalPrecioNeto(0). // Usualmente 0 en Sector 9
 		WithIngresoDiferenciaCambio(ingresoDiferenciaCambio).
 		WithCodigoMoneda(2). // DOLARES
 		WithTipoCambio(tipoCambio).
@@ -65,7 +65,7 @@ func TestMonedaExtranjera_Electronica(t *testing.T) {
 		WithDescripcion("VENTA DE DOLARES").
 		WithCantidad(1.0).
 		WithUnidadMedida(1).
-		WithPrecioUnitario(montoTotal).
+		WithPrecioNetoUnitario(montoTotal).
 		WithSubTotal(montoTotal).
 		Build()
 

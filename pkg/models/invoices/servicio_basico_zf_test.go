@@ -44,7 +44,7 @@ func TestServicioBasicoZFBuilder(t *testing.T) {
 		WithNumeroDocumento("1234567").
 		WithCodigoCliente("CLI-ZF-001").
 		WithCodigoMetodoPago(1).
-		WithMontoTotal(100.00).
+		WithMontoAPagar(100.00).
 		WithCodigoMoneda(1).
 		WithTipoCambio(1).
 		WithMontoTotalMoneda(100.00).
@@ -59,7 +59,7 @@ func TestServicioBasicoZFBuilder(t *testing.T) {
 		WithDescripcion("CONSUMO ZF").
 		WithCantidad(1).
 		WithUnidadMedida(58).
-		WithPrecioUnitario(100.00).
+		WithPrecioNetoUnitario(100.00).
 		WithSubTotal(100.00).
 		Build()
 
@@ -75,7 +75,7 @@ func TestServicioBasicoZFBuilder(t *testing.T) {
 		xmlStr := string(output)
 
 		assert.Contains(t, xmlStr, "facturaElectronicaServicioBasicoZf")
-		assert.Contains(t, xmlStr, "<montoTotalSujetoIva>0</montoTotalSujetoIva>")
+		assert.Contains(t, xmlStr, "<iva>0</iva>")
 		assert.Contains(t, xmlStr, "<codigoDocumentoSector>40</codigoDocumentoSector>")
 	})
 }
@@ -114,7 +114,7 @@ func TestServicioBasicoZF_Electronica(t *testing.T) {
 		WithNumeroDocumento("1234567").
 		WithCodigoCliente("CLI-ZF-001").
 		WithCodigoMetodoPago(1).
-		WithMontoTotal(200).
+		WithMontoAPagar(200).
 		WithCodigoMoneda(1).
 		WithTipoCambio(1).
 		WithMontoTotalMoneda(200).
@@ -132,7 +132,7 @@ func TestServicioBasicoZF_Electronica(t *testing.T) {
 		WithDescripcion("Suministro ZF").
 		WithCantidad(1).
 		WithUnidadMedida(58).
-		WithPrecioUnitario(200).
+		WithPrecioNetoUnitario(200).
 		WithSubTotal(200).
 		Build()
 

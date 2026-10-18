@@ -96,6 +96,18 @@ type juegoAzarCabeceraBuilder struct {
 	cabecera *documents.CabeceraJuegoAzar
 }
 
+func (b *juegoAzarCabeceraBuilder) Build() JuegoAzarCabecera {
+	return JuegoAzarCabecera{models.NewRequestWrapper(b.cabecera)}
+}
+
+type juegoAzarDetalleBuilder struct {
+	detalle *documents.DetalleJuegoAzar
+}
+
+func (b *juegoAzarDetalleBuilder) Build() JuegoAzarDetalle {
+	return JuegoAzarDetalle{models.NewRequestWrapper(b.detalle)}
+}
+
 func (b *juegoAzarCabeceraBuilder) WithNitEmisor(v int64) *juegoAzarCabeceraBuilder {
 	b.cabecera.NitEmisor = v
 	return b
@@ -111,12 +123,12 @@ func (b *juegoAzarCabeceraBuilder) WithMunicipio(v string) *juegoAzarCabeceraBui
 	return b
 }
 
-func (b *juegoAzarCabeceraBuilder) WithTelefono(telefono *string) *juegoAzarCabeceraBuilder {
-	if telefono == nil {
-		b.cabecera.Telefono = datatype.Nilable[string]{Value: nil}
+func (b *juegoAzarCabeceraBuilder) WithTelefono(v *string) *juegoAzarCabeceraBuilder {
+	if v == nil {
+		b.cabecera.Telefono = datatype.Nilable[string]{}
 		return b
 	}
-	value := *telefono
+	value := *v
 	b.cabecera.Telefono = datatype.Nilable[string]{Value: &value}
 	return b
 }
@@ -148,7 +160,7 @@ func (b *juegoAzarCabeceraBuilder) WithDireccion(v string) *juegoAzarCabeceraBui
 
 func (b *juegoAzarCabeceraBuilder) WithCodigoPuntoVenta(v *int) *juegoAzarCabeceraBuilder {
 	if v == nil {
-		b.cabecera.CodigoPuntoVenta = datatype.Nilable[int]{Value: nil}
+		b.cabecera.CodigoPuntoVenta = datatype.Nilable[int]{}
 		return b
 	}
 	value := *v
@@ -163,7 +175,7 @@ func (b *juegoAzarCabeceraBuilder) WithFechaEmision(v time.Time) *juegoAzarCabec
 
 func (b *juegoAzarCabeceraBuilder) WithNombreRazonSocial(v *string) *juegoAzarCabeceraBuilder {
 	if v == nil {
-		b.cabecera.NombreRazonSocial = datatype.Nilable[string]{Value: nil}
+		b.cabecera.NombreRazonSocial = datatype.Nilable[string]{}
 		return b
 	}
 	value := *v
@@ -181,13 +193,8 @@ func (b *juegoAzarCabeceraBuilder) WithNumeroDocumento(v string) *juegoAzarCabec
 	return b
 }
 
-func (b *juegoAzarCabeceraBuilder) WithComplemento(v *string) *juegoAzarCabeceraBuilder {
-	if v == nil {
-		b.cabecera.Complemento = datatype.Nilable[string]{Value: nil}
-		return b
-	}
-	value := *v
-	b.cabecera.Complemento = datatype.Nilable[string]{Value: &value}
+func (b *juegoAzarCabeceraBuilder) WithComplemento(v string) *juegoAzarCabeceraBuilder {
+	b.cabecera.Complemento = v
 	return b
 }
 
@@ -203,7 +210,7 @@ func (b *juegoAzarCabeceraBuilder) WithCodigoMetodoPago(v int) *juegoAzarCabecer
 
 func (b *juegoAzarCabeceraBuilder) WithNumeroTarjeta(v *int64) *juegoAzarCabeceraBuilder {
 	if v == nil {
-		b.cabecera.NumeroTarjeta = datatype.Nilable[int64]{Value: nil}
+		b.cabecera.NumeroTarjeta = datatype.Nilable[int64]{}
 		return b
 	}
 	value := *v
@@ -211,27 +218,28 @@ func (b *juegoAzarCabeceraBuilder) WithNumeroTarjeta(v *int64) *juegoAzarCabecer
 	return b
 }
 
-func (b *juegoAzarCabeceraBuilder) WithMontoTotal(v float64) *juegoAzarCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.MontoTotal = v
+func (b *juegoAzarCabeceraBuilder) WithSubTotalNeto(v float64) *juegoAzarCabeceraBuilder {
+	b.cabecera.SubTotalNeto = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
-func (b *juegoAzarCabeceraBuilder) WithMontoTotalIj(v float64) *juegoAzarCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.MontoTotalIj = v
+func (b *juegoAzarCabeceraBuilder) WithTotalPrecioNeto(v float64) *juegoAzarCabeceraBuilder {
+	b.cabecera.TotalPrecioNeto = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
-func (b *juegoAzarCabeceraBuilder) WithMontoTotalSujetoIpj(v float64) *juegoAzarCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.MontoTotalSujetoIpj = v
+func (b *juegoAzarCabeceraBuilder) WithIva(v float64) *juegoAzarCabeceraBuilder {
+	b.cabecera.Iva = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
-func (b *juegoAzarCabeceraBuilder) WithMontoTotalSujetoIva(v float64) *juegoAzarCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.MontoTotalSujetoIva = v
+func (b *juegoAzarCabeceraBuilder) WithMontoAPagar(v float64) *juegoAzarCabeceraBuilder {
+	b.cabecera.MontoAPagar = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+	return b
+}
+
+func (b *juegoAzarCabeceraBuilder) WithMontoIpj(v float64) *juegoAzarCabeceraBuilder {
+	b.cabecera.MontoIpj = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
@@ -241,20 +249,18 @@ func (b *juegoAzarCabeceraBuilder) WithCodigoMoneda(v int) *juegoAzarCabeceraBui
 }
 
 func (b *juegoAzarCabeceraBuilder) WithTipoCambio(v float64) *juegoAzarCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.TipoCambio = v
+	b.cabecera.TipoCambio = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
 func (b *juegoAzarCabeceraBuilder) WithMontoTotalMoneda(v float64) *juegoAzarCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.MontoTotalMoneda = v
+	b.cabecera.MontoTotalMoneda = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
 func (b *juegoAzarCabeceraBuilder) WithDescuentoAdicional(v *float64) *juegoAzarCabeceraBuilder {
 	if v == nil {
-		b.cabecera.DescuentoAdicional = datatype.Nilable[float64]{Value: nil}
+		b.cabecera.DescuentoAdicional = datatype.Nilable[float64]{}
 		return b
 	}
 	value := *v
@@ -265,21 +271,11 @@ func (b *juegoAzarCabeceraBuilder) WithDescuentoAdicional(v *float64) *juegoAzar
 
 func (b *juegoAzarCabeceraBuilder) WithCodigoExcepcion(v *int) *juegoAzarCabeceraBuilder {
 	if v == nil {
-		b.cabecera.CodigoExcepcion = datatype.Nilable[int]{Value: nil}
+		b.cabecera.CodigoExcepcion = datatype.Nilable[int]{}
 		return b
 	}
 	value := *v
 	b.cabecera.CodigoExcepcion = datatype.Nilable[int]{Value: &value}
-	return b
-}
-
-func (b *juegoAzarCabeceraBuilder) WithCafc(v *string) *juegoAzarCabeceraBuilder {
-	if v == nil {
-		b.cabecera.Cafc = datatype.Nilable[string]{Value: nil}
-		return b
-	}
-	value := *v
-	b.cabecera.Cafc = datatype.Nilable[string]{Value: &value}
 	return b
 }
 
@@ -293,17 +289,14 @@ func (b *juegoAzarCabeceraBuilder) WithUsuario(v string) *juegoAzarCabeceraBuild
 	return b
 }
 
-func (b *juegoAzarCabeceraBuilder) WithCodigoDocumentoSector(v int) *juegoAzarCabeceraBuilder {
-	b.cabecera.CodigoDocumentoSector = v
+func (b *juegoAzarCabeceraBuilder) WithCodigoInterno(v string) *juegoAzarCabeceraBuilder {
+	b.cabecera.CodigoInterno = v
 	return b
 }
 
-func (b *juegoAzarCabeceraBuilder) Build() JuegoAzarCabecera {
-	return JuegoAzarCabecera{models.NewRequestWrapper(b.cabecera)}
-}
-
-type juegoAzarDetalleBuilder struct {
-	detalle *documents.DetalleJuegoAzar
+func (b *juegoAzarCabeceraBuilder) WithCodigoDocumentoSector(v int) *juegoAzarCabeceraBuilder {
+	b.cabecera.CodigoDocumentoSector = v
+	return b
 }
 
 func (b *juegoAzarDetalleBuilder) WithActividadEconomica(v string) *juegoAzarDetalleBuilder {
@@ -327,8 +320,7 @@ func (b *juegoAzarDetalleBuilder) WithDescripcion(v string) *juegoAzarDetalleBui
 }
 
 func (b *juegoAzarDetalleBuilder) WithCantidad(v float64) *juegoAzarDetalleBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.detalle.Cantidad = v
+	b.detalle.Cantidad = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
@@ -337,15 +329,14 @@ func (b *juegoAzarDetalleBuilder) WithUnidadMedida(v int) *juegoAzarDetalleBuild
 	return b
 }
 
-func (b *juegoAzarDetalleBuilder) WithPrecioUnitario(v float64) *juegoAzarDetalleBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.detalle.PrecioUnitario = v
+func (b *juegoAzarDetalleBuilder) WithPrecioNetoUnitario(v float64) *juegoAzarDetalleBuilder {
+	b.detalle.PrecioNetoUnitario = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
 func (b *juegoAzarDetalleBuilder) WithMontoDescuento(v *float64) *juegoAzarDetalleBuilder {
 	if v == nil {
-		b.detalle.MontoDescuento = datatype.Nilable[float64]{Value: nil}
+		b.detalle.MontoDescuento = datatype.Nilable[float64]{}
 		return b
 	}
 	value := *v
@@ -355,11 +346,6 @@ func (b *juegoAzarDetalleBuilder) WithMontoDescuento(v *float64) *juegoAzarDetal
 }
 
 func (b *juegoAzarDetalleBuilder) WithSubTotal(v float64) *juegoAzarDetalleBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.detalle.SubTotal = v
+	b.detalle.SubTotal = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
-}
-
-func (b *juegoAzarDetalleBuilder) Build() JuegoAzarDetalle {
-	return JuegoAzarDetalle{models.NewRequestWrapper(b.detalle)}
 }

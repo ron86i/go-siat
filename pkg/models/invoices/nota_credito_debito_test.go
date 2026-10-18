@@ -34,9 +34,9 @@ func TestNotaCreditoDebitoBuilder(t *testing.T) {
 		WithNumeroFactura(100).
 		WithNumeroAutorizacionCuf("FACT-ABC").
 		WithFechaEmisionFactura(fecha.Add(-24 * time.Hour)).
-		WithMontoTotalOriginal(1000.00).
-		WithMontoTotalDevuelto(900.00).
-		WithMontoEfectivoCreditoDebito(100.00).
+		WithMontoAPagarOriginal(1000.00).
+		WithMontoAPagarDevuelto(900.00).
+		WithIvaDevuelto(100.00).
 		WithLeyenda("Ley Nro 453").
 		WithUsuario("admin").
 		Build()
@@ -48,7 +48,6 @@ func TestNotaCreditoDebitoBuilder(t *testing.T) {
 		WithDescripcion("Producto A").
 		WithCantidad(10).
 		WithUnidadMedida(1).
-		WithPrecioUnitario(100).
 		WithSubTotal(1000).
 		WithCodigoDetalleTransaccion(1).
 		Build()
@@ -60,7 +59,6 @@ func TestNotaCreditoDebitoBuilder(t *testing.T) {
 		WithDescripcion("Producto B devuelto").
 		WithCantidad(5).
 		WithUnidadMedida(1).
-		WithPrecioUnitario(100).
 		WithSubTotal(500).
 		WithCodigoDetalleTransaccion(2).
 		Build()
@@ -119,9 +117,9 @@ func TestNotaCreditoDebitoIntegration_Computarizada(t *testing.T) {
 			WithNumeroFactura(100).
 			WithNumeroAutorizacionCuf("DUMMY_AUT_CUF").
 			WithFechaEmisionFactura(fecha.Add(-24 * time.Hour)).
-			WithMontoTotalOriginal(1000.00).
-			WithMontoTotalDevuelto(500.00).
-			WithMontoEfectivoCreditoDebito(65.00).
+			WithMontoAPagarOriginal(1000.00).
+			WithMontoAPagarDevuelto(500.00).
+			WithIvaDevuelto(65.00).
 			WithLeyenda("Ley Nro 453").
 			WithUsuario("admin").
 			Build()).
@@ -132,7 +130,6 @@ func TestNotaCreditoDebitoIntegration_Computarizada(t *testing.T) {
 			WithDescripcion("Producto A").
 			WithCantidad(10).
 			WithUnidadMedida(1).
-			WithPrecioUnitario(100).
 			WithSubTotal(1000).
 			WithCodigoDetalleTransaccion(1).
 			Build()).
@@ -143,7 +140,6 @@ func TestNotaCreditoDebitoIntegration_Computarizada(t *testing.T) {
 			WithDescripcion("Producto B devuelto").
 			WithCantidad(5).
 			WithUnidadMedida(1).
-			WithPrecioUnitario(100).
 			WithSubTotal(500).
 			WithCodigoDetalleTransaccion(2).
 			Build()).
@@ -237,9 +233,9 @@ func emitirNotaIndividual(t *testing.T, tc *TestContext, cuis, cufd, cufdControl
 			WithNumeroFactura(100).
 			WithNumeroAutorizacionCuf("DUMMY_AUT_CUF").
 			WithFechaEmisionFactura(fecha.Add(-24 * time.Hour)).
-			WithMontoTotalOriginal(1000.00).
-			WithMontoTotalDevuelto(500.00).
-			WithMontoEfectivoCreditoDebito(65.00).
+			WithMontoAPagarOriginal(1000.00).
+			WithMontoAPagarDevuelto(500.00).
+			WithIvaDevuelto(65.00).
 			WithLeyenda("Ley Nro 453").
 			WithUsuario("admin").
 			Build()).
@@ -250,7 +246,6 @@ func emitirNotaIndividual(t *testing.T, tc *TestContext, cuis, cufd, cufdControl
 			WithDescripcion("Producto A").
 			WithCantidad(10).
 			WithUnidadMedida(1).
-			WithPrecioUnitario(100).
 			WithSubTotal(1000).
 			WithCodigoDetalleTransaccion(1).
 			Build()).
@@ -261,7 +256,6 @@ func emitirNotaIndividual(t *testing.T, tc *TestContext, cuis, cufd, cufdControl
 			WithDescripcion("Producto B devuelto").
 			WithCantidad(5).
 			WithUnidadMedida(1).
-			WithPrecioUnitario(100).
 			WithSubTotal(500).
 			WithCodigoDetalleTransaccion(2).
 			Build()).
@@ -418,9 +412,9 @@ func emitirNotaComputarizadaIndividual(t *testing.T, tc *TestContext, cuis, cufd
 			WithNumeroFactura(100).
 			WithNumeroAutorizacionCuf("DUMMY_AUT_CUF").
 			WithFechaEmisionFactura(fecha.Add(-24 * time.Hour)).
-			WithMontoTotalOriginal(1000.00).
-			WithMontoTotalDevuelto(500.00).
-			WithMontoEfectivoCreditoDebito(65.00).
+			WithMontoAPagarOriginal(1000.00).
+			WithMontoAPagarDevuelto(500.00).
+			WithIvaDevuelto(65.00).
 			WithLeyenda("Ley Nro 453").
 			WithUsuario("admin").
 			Build()).
@@ -431,7 +425,6 @@ func emitirNotaComputarizadaIndividual(t *testing.T, tc *TestContext, cuis, cufd
 			WithDescripcion("Producto A").
 			WithCantidad(10).
 			WithUnidadMedida(1).
-			WithPrecioUnitario(100).
 			WithSubTotal(1000).
 			WithCodigoDetalleTransaccion(1).
 			Build()).
@@ -442,7 +435,6 @@ func emitirNotaComputarizadaIndividual(t *testing.T, tc *TestContext, cuis, cufd
 			WithDescripcion("Producto B devuelto").
 			WithCantidad(5).
 			WithUnidadMedida(1).
-			WithPrecioUnitario(100).
 			WithSubTotal(500).
 			WithCodigoDetalleTransaccion(2).
 			Build()).

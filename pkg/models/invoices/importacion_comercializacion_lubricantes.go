@@ -34,8 +34,9 @@ func NewImportacionComercializacionLubricantesBuilder() *importacionComercializa
 	return &importacionComercializacionLubricantesBuilder{
 		metadatos: models.NuevosMetadatosFactura(44),
 		factura: &documents.FacturaImportacionComercializacionLubricantes{
-			XMLName:  xml.Name{Local: "facturaElectronicaImportacionComercializacionLubricantes"},
-			XmlnsXsi: "http://www.w3.org/2001/XMLSchema-instance",
+			XMLName:           xml.Name{Local: "facturaElectronicaImportacionComercializacionLubricantes"},
+			XmlnsXsi:          "http://www.w3.org/2001/XMLSchema-instance",
+			XsiSchemaLocation: "facturaElectronicaImportacionComercializacionLubricantes.xsd",
 		},
 	}
 }
@@ -79,8 +80,10 @@ func (b *importacionComercializacionLubricantesBuilder) WithModalidad(tipo int) 
 	switch tipo {
 	case siat.ModalidadElectronica:
 		b.factura.XMLName = xml.Name{Local: "facturaElectronicaImportacionComercializacionLubricantes"}
+		b.factura.XsiSchemaLocation = "facturaElectronicaImportacionComercializacionLubricantes.xsd"
 	case siat.ModalidadComputarizada:
 		b.factura.XMLName = xml.Name{Local: "facturaComputarizadaImportacionComercializacionLubricantes"}
+		b.factura.XsiSchemaLocation = "facturaComputarizadaImportacionComercializacionLubricantes.xsd"
 	}
 	return b
 }
@@ -91,6 +94,18 @@ func (b *importacionComercializacionLubricantesBuilder) Build() ImportacionComer
 
 type importacionComercializacionLubricantesCabeceraBuilder struct {
 	cabecera *documents.CabeceraImportacionComercializacionLubricantes
+}
+
+func (b *importacionComercializacionLubricantesCabeceraBuilder) Build() ImportacionComercializacionLubricantesCabecera {
+	return ImportacionComercializacionLubricantesCabecera{models.NewRequestWrapper(b.cabecera)}
+}
+
+type importacionComercializacionLubricantesDetalleBuilder struct {
+	detalle *documents.DetalleImportacionComercializacionLubricantes
+}
+
+func (b *importacionComercializacionLubricantesDetalleBuilder) Build() ImportacionComercializacionLubricantesDetalle {
+	return ImportacionComercializacionLubricantesDetalle{models.NewRequestWrapper(b.detalle)}
 }
 
 func (b *importacionComercializacionLubricantesCabeceraBuilder) WithNitEmisor(v int64) *importacionComercializacionLubricantesCabeceraBuilder {
@@ -108,13 +123,13 @@ func (b *importacionComercializacionLubricantesCabeceraBuilder) WithMunicipio(v 
 	return b
 }
 
-func (b *importacionComercializacionLubricantesCabeceraBuilder) WithTelefono(telefono *string) *importacionComercializacionLubricantesCabeceraBuilder {
-	if telefono == nil {
-		b.cabecera.Telefono = datatype.Nilable[string]{Value: nil}
-	} else {
-		val := *telefono
-		b.cabecera.Telefono = datatype.Nilable[string]{Value: &val}
+func (b *importacionComercializacionLubricantesCabeceraBuilder) WithTelefono(v *string) *importacionComercializacionLubricantesCabeceraBuilder {
+	if v == nil {
+		b.cabecera.Telefono = datatype.Nilable[string]{}
+		return b
 	}
+	value := *v
+	b.cabecera.Telefono = datatype.Nilable[string]{Value: &value}
 	return b
 }
 
@@ -145,11 +160,11 @@ func (b *importacionComercializacionLubricantesCabeceraBuilder) WithDireccion(v 
 
 func (b *importacionComercializacionLubricantesCabeceraBuilder) WithCodigoPuntoVenta(v *int) *importacionComercializacionLubricantesCabeceraBuilder {
 	if v == nil {
-		b.cabecera.CodigoPuntoVenta = datatype.Nilable[int]{Value: nil}
-	} else {
-		val := *v
-		b.cabecera.CodigoPuntoVenta = datatype.Nilable[int]{Value: &val}
+		b.cabecera.CodigoPuntoVenta = datatype.Nilable[int]{}
+		return b
 	}
+	value := *v
+	b.cabecera.CodigoPuntoVenta = datatype.Nilable[int]{Value: &value}
 	return b
 }
 
@@ -160,11 +175,11 @@ func (b *importacionComercializacionLubricantesCabeceraBuilder) WithFechaEmision
 
 func (b *importacionComercializacionLubricantesCabeceraBuilder) WithNombreRazonSocial(v *string) *importacionComercializacionLubricantesCabeceraBuilder {
 	if v == nil {
-		b.cabecera.NombreRazonSocial = datatype.Nilable[string]{Value: nil}
-	} else {
-		val := *v
-		b.cabecera.NombreRazonSocial = datatype.Nilable[string]{Value: &val}
+		b.cabecera.NombreRazonSocial = datatype.Nilable[string]{}
+		return b
 	}
+	value := *v
+	b.cabecera.NombreRazonSocial = datatype.Nilable[string]{Value: &value}
 	return b
 }
 
@@ -178,13 +193,8 @@ func (b *importacionComercializacionLubricantesCabeceraBuilder) WithNumeroDocume
 	return b
 }
 
-func (b *importacionComercializacionLubricantesCabeceraBuilder) WithComplemento(v *string) *importacionComercializacionLubricantesCabeceraBuilder {
-	if v == nil {
-		b.cabecera.Complemento = datatype.Nilable[string]{Value: nil}
-	} else {
-		val := *v
-		b.cabecera.Complemento = datatype.Nilable[string]{Value: &val}
-	}
+func (b *importacionComercializacionLubricantesCabeceraBuilder) WithComplemento(v string) *importacionComercializacionLubricantesCabeceraBuilder {
+	b.cabecera.Complemento = v
 	return b
 }
 
@@ -195,51 +205,51 @@ func (b *importacionComercializacionLubricantesCabeceraBuilder) WithCodigoClient
 
 func (b *importacionComercializacionLubricantesCabeceraBuilder) WithCiudad(v *string) *importacionComercializacionLubricantesCabeceraBuilder {
 	if v == nil {
-		b.cabecera.Ciudad = datatype.Nilable[string]{Value: nil}
-	} else {
-		val := *v
-		b.cabecera.Ciudad = datatype.Nilable[string]{Value: &val}
+		b.cabecera.Ciudad = datatype.Nilable[string]{}
+		return b
 	}
+	value := *v
+	b.cabecera.Ciudad = datatype.Nilable[string]{Value: &value}
 	return b
 }
 
 func (b *importacionComercializacionLubricantesCabeceraBuilder) WithNombrePropietario(v *string) *importacionComercializacionLubricantesCabeceraBuilder {
 	if v == nil {
-		b.cabecera.NombrePropietario = datatype.Nilable[string]{Value: nil}
-	} else {
-		val := *v
-		b.cabecera.NombrePropietario = datatype.Nilable[string]{Value: &val}
+		b.cabecera.NombrePropietario = datatype.Nilable[string]{}
+		return b
 	}
+	value := *v
+	b.cabecera.NombrePropietario = datatype.Nilable[string]{Value: &value}
 	return b
 }
 
 func (b *importacionComercializacionLubricantesCabeceraBuilder) WithNombreRepresentanteLegal(v *string) *importacionComercializacionLubricantesCabeceraBuilder {
 	if v == nil {
-		b.cabecera.NombreRepresentanteLegal = datatype.Nilable[string]{Value: nil}
-	} else {
-		val := *v
-		b.cabecera.NombreRepresentanteLegal = datatype.Nilable[string]{Value: &val}
+		b.cabecera.NombreRepresentanteLegal = datatype.Nilable[string]{}
+		return b
 	}
+	value := *v
+	b.cabecera.NombreRepresentanteLegal = datatype.Nilable[string]{Value: &value}
 	return b
 }
 
 func (b *importacionComercializacionLubricantesCabeceraBuilder) WithCondicionPago(v *string) *importacionComercializacionLubricantesCabeceraBuilder {
 	if v == nil {
-		b.cabecera.CondicionPago = datatype.Nilable[string]{Value: nil}
-	} else {
-		val := *v
-		b.cabecera.CondicionPago = datatype.Nilable[string]{Value: &val}
+		b.cabecera.CondicionPago = datatype.Nilable[string]{}
+		return b
 	}
+	value := *v
+	b.cabecera.CondicionPago = datatype.Nilable[string]{Value: &value}
 	return b
 }
 
 func (b *importacionComercializacionLubricantesCabeceraBuilder) WithPeriodoEntrega(v *string) *importacionComercializacionLubricantesCabeceraBuilder {
 	if v == nil {
-		b.cabecera.PeriodoEntrega = datatype.Nilable[string]{Value: nil}
-	} else {
-		val := *v
-		b.cabecera.PeriodoEntrega = datatype.Nilable[string]{Value: &val}
+		b.cabecera.PeriodoEntrega = datatype.Nilable[string]{}
+		return b
 	}
+	value := *v
+	b.cabecera.PeriodoEntrega = datatype.Nilable[string]{Value: &value}
 	return b
 }
 
@@ -250,34 +260,42 @@ func (b *importacionComercializacionLubricantesCabeceraBuilder) WithCodigoMetodo
 
 func (b *importacionComercializacionLubricantesCabeceraBuilder) WithNumeroTarjeta(v *int64) *importacionComercializacionLubricantesCabeceraBuilder {
 	if v == nil {
-		b.cabecera.NumeroTarjeta = datatype.Nilable[int64]{Value: nil}
-	} else {
-		val := *v
-		b.cabecera.NumeroTarjeta = datatype.Nilable[int64]{Value: &val}
+		b.cabecera.NumeroTarjeta = datatype.Nilable[int64]{}
+		return b
 	}
-	return b
-}
-
-func (b *importacionComercializacionLubricantesCabeceraBuilder) WithMontoTotal(v float64) *importacionComercializacionLubricantesCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.MontoTotal = v
+	value := *v
+	b.cabecera.NumeroTarjeta = datatype.Nilable[int64]{Value: &value}
 	return b
 }
 
 func (b *importacionComercializacionLubricantesCabeceraBuilder) WithMontoDeduccionIehdDS25530(v *float64) *importacionComercializacionLubricantesCabeceraBuilder {
 	if v == nil {
-		b.cabecera.MontoDeduccionIehdDS25530 = datatype.Nilable[float64]{Value: nil}
-	} else {
-		val := *v
-		val = decimal.NewFromFloat(val).Round(2).InexactFloat64()
-		b.cabecera.MontoDeduccionIehdDS25530 = datatype.Nilable[float64]{Value: &val}
+		b.cabecera.MontoDeduccionIehdDS25530 = datatype.Nilable[float64]{}
+		return b
 	}
+	value := *v
+	value = decimal.NewFromFloat(value).Round(2).InexactFloat64()
+	b.cabecera.MontoDeduccionIehdDS25530 = datatype.Nilable[float64]{Value: &value}
 	return b
 }
 
-func (b *importacionComercializacionLubricantesCabeceraBuilder) WithMontoTotalSujetoIva(v float64) *importacionComercializacionLubricantesCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.MontoTotalSujetoIva = v
+func (b *importacionComercializacionLubricantesCabeceraBuilder) WithSubTotalNeto(v float64) *importacionComercializacionLubricantesCabeceraBuilder {
+	b.cabecera.SubTotalNeto = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+	return b
+}
+
+func (b *importacionComercializacionLubricantesCabeceraBuilder) WithTotalPrecioNeto(v float64) *importacionComercializacionLubricantesCabeceraBuilder {
+	b.cabecera.TotalPrecioNeto = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+	return b
+}
+
+func (b *importacionComercializacionLubricantesCabeceraBuilder) WithIva(v float64) *importacionComercializacionLubricantesCabeceraBuilder {
+	b.cabecera.Iva = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+	return b
+}
+
+func (b *importacionComercializacionLubricantesCabeceraBuilder) WithMontoAPagar(v float64) *importacionComercializacionLubricantesCabeceraBuilder {
+	b.cabecera.MontoAPagar = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
@@ -287,45 +305,33 @@ func (b *importacionComercializacionLubricantesCabeceraBuilder) WithCodigoMoneda
 }
 
 func (b *importacionComercializacionLubricantesCabeceraBuilder) WithTipoCambio(v float64) *importacionComercializacionLubricantesCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.TipoCambio = v
+	b.cabecera.TipoCambio = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
 func (b *importacionComercializacionLubricantesCabeceraBuilder) WithMontoTotalMoneda(v float64) *importacionComercializacionLubricantesCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.MontoTotalMoneda = v
+	b.cabecera.MontoTotalMoneda = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
 func (b *importacionComercializacionLubricantesCabeceraBuilder) WithDescuentoAdicional(v *float64) *importacionComercializacionLubricantesCabeceraBuilder {
 	if v == nil {
-		b.cabecera.DescuentoAdicional = datatype.Nilable[float64]{Value: nil}
-	} else {
-		val := *v
-		val = decimal.NewFromFloat(val).Round(2).InexactFloat64()
-		b.cabecera.DescuentoAdicional = datatype.Nilable[float64]{Value: &val}
+		b.cabecera.DescuentoAdicional = datatype.Nilable[float64]{}
+		return b
 	}
+	value := *v
+	value = decimal.NewFromFloat(value).Round(2).InexactFloat64()
+	b.cabecera.DescuentoAdicional = datatype.Nilable[float64]{Value: &value}
 	return b
 }
 
 func (b *importacionComercializacionLubricantesCabeceraBuilder) WithCodigoExcepcion(v *int) *importacionComercializacionLubricantesCabeceraBuilder {
 	if v == nil {
-		b.cabecera.CodigoExcepcion = datatype.Nilable[int]{Value: nil}
-	} else {
-		val := *v
-		b.cabecera.CodigoExcepcion = datatype.Nilable[int]{Value: &val}
+		b.cabecera.CodigoExcepcion = datatype.Nilable[int]{}
+		return b
 	}
-	return b
-}
-
-func (b *importacionComercializacionLubricantesCabeceraBuilder) WithCafc(v *string) *importacionComercializacionLubricantesCabeceraBuilder {
-	if v == nil {
-		b.cabecera.Cafc = datatype.Nilable[string]{Value: nil}
-	} else {
-		val := *v
-		b.cabecera.Cafc = datatype.Nilable[string]{Value: &val}
-	}
+	value := *v
+	b.cabecera.CodigoExcepcion = datatype.Nilable[int]{Value: &value}
 	return b
 }
 
@@ -339,18 +345,14 @@ func (b *importacionComercializacionLubricantesCabeceraBuilder) WithUsuario(v st
 	return b
 }
 
-// WithCodigoDocumentoSector configura el código que identifica el diseño o sector de la factura.
-func (b *importacionComercializacionLubricantesCabeceraBuilder) WithCodigoDocumentoSector(v int) *importacionComercializacionLubricantesCabeceraBuilder {
-	b.cabecera.CodigoDocumentoSector = v
+func (b *importacionComercializacionLubricantesCabeceraBuilder) WithCodigoInterno(v string) *importacionComercializacionLubricantesCabeceraBuilder {
+	b.cabecera.CodigoInterno = v
 	return b
 }
 
-func (b *importacionComercializacionLubricantesCabeceraBuilder) Build() ImportacionComercializacionLubricantesCabecera {
-	return ImportacionComercializacionLubricantesCabecera{models.NewRequestWrapper(b.cabecera)}
-}
-
-type importacionComercializacionLubricantesDetalleBuilder struct {
-	detalle *documents.DetalleImportacionComercializacionLubricantes
+func (b *importacionComercializacionLubricantesCabeceraBuilder) WithCodigoDocumentoSector(v int) *importacionComercializacionLubricantesCabeceraBuilder {
+	b.cabecera.CodigoDocumentoSector = v
+	return b
 }
 
 func (b *importacionComercializacionLubricantesDetalleBuilder) WithActividadEconomica(v string) *importacionComercializacionLubricantesDetalleBuilder {
@@ -374,8 +376,7 @@ func (b *importacionComercializacionLubricantesDetalleBuilder) WithDescripcion(v
 }
 
 func (b *importacionComercializacionLubricantesDetalleBuilder) WithCantidad(v float64) *importacionComercializacionLubricantesDetalleBuilder {
-	v = decimal.NewFromFloat(v).Round(5).InexactFloat64()
-	b.detalle.Cantidad = v
+	b.detalle.Cantidad = decimal.NewFromFloat(v).Round(5).InexactFloat64()
 	return b
 }
 
@@ -384,46 +385,39 @@ func (b *importacionComercializacionLubricantesDetalleBuilder) WithUnidadMedida(
 	return b
 }
 
-func (b *importacionComercializacionLubricantesDetalleBuilder) WithPrecioUnitario(v float64) *importacionComercializacionLubricantesDetalleBuilder {
-	v = decimal.NewFromFloat(v).Round(5).InexactFloat64()
-	b.detalle.PrecioUnitario = v
+func (b *importacionComercializacionLubricantesDetalleBuilder) WithPrecioNetoUnitario(v float64) *importacionComercializacionLubricantesDetalleBuilder {
+	b.detalle.PrecioNetoUnitario = decimal.NewFromFloat(v).Round(5).InexactFloat64()
 	return b
 }
 
 func (b *importacionComercializacionLubricantesDetalleBuilder) WithMontoDescuento(v *float64) *importacionComercializacionLubricantesDetalleBuilder {
 	if v == nil {
-		b.detalle.MontoDescuento = datatype.Nilable[float64]{Value: nil}
-	} else {
-		val := *v
-		val = decimal.NewFromFloat(val).Round(5).InexactFloat64()
-		b.detalle.MontoDescuento = datatype.Nilable[float64]{Value: &val}
+		b.detalle.MontoDescuento = datatype.Nilable[float64]{}
+		return b
 	}
+	value := *v
+	value = decimal.NewFromFloat(value).Round(5).InexactFloat64()
+	b.detalle.MontoDescuento = datatype.Nilable[float64]{Value: &value}
 	return b
 }
 
 func (b *importacionComercializacionLubricantesDetalleBuilder) WithSubTotal(v float64) *importacionComercializacionLubricantesDetalleBuilder {
-	v = decimal.NewFromFloat(v).Round(5).InexactFloat64()
-	b.detalle.SubTotal = v
+	b.detalle.SubTotal = decimal.NewFromFloat(v).Round(5).InexactFloat64()
 	return b
 }
 
 func (b *importacionComercializacionLubricantesDetalleBuilder) WithCantidadLitros(v float64) *importacionComercializacionLubricantesDetalleBuilder {
-	v = decimal.NewFromFloat(v).Round(5).InexactFloat64()
-	b.detalle.CantidadLitros = v
+	b.detalle.CantidadLitros = decimal.NewFromFloat(v).Round(5).InexactFloat64()
 	return b
 }
 
 func (b *importacionComercializacionLubricantesDetalleBuilder) WithPorcentajeDeduccionIehdDS25530(v *float64) *importacionComercializacionLubricantesDetalleBuilder {
 	if v == nil {
-		b.detalle.PorcentajeDeduccionIehdDS25530 = datatype.Nilable[float64]{Value: nil}
-	} else {
-		val := *v
-		val = decimal.NewFromFloat(val).Round(5).InexactFloat64()
-		b.detalle.PorcentajeDeduccionIehdDS25530 = datatype.Nilable[float64]{Value: &val}
+		b.detalle.PorcentajeDeduccionIehdDS25530 = datatype.Nilable[float64]{}
+		return b
 	}
+	value := *v
+	value = decimal.NewFromFloat(value).Round(5).InexactFloat64()
+	b.detalle.PorcentajeDeduccionIehdDS25530 = datatype.Nilable[float64]{Value: &value}
 	return b
-}
-
-func (b *importacionComercializacionLubricantesDetalleBuilder) Build() ImportacionComercializacionLubricantesDetalle {
-	return ImportacionComercializacionLubricantesDetalle{models.NewRequestWrapper(b.detalle)}
 }

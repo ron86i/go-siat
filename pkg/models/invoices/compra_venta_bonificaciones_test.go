@@ -41,8 +41,8 @@ func TestCompraVentaBonificaciones_Computarizada(t *testing.T) {
 		WithNumeroDocumento("5115889").
 		WithCodigoCliente("1").
 		WithCodigoMetodoPago(1).
-		WithMontoTotal(90).
-		WithMontoTotalSujetoIva(90).
+		WithMontoAPagar(90).
+		WithTotalPrecioNeto(90).
 		WithDescuentoAdicional(utils.Float64Ptr(10.0)).
 		WithCodigoMoneda(1).
 		WithTipoCambio(1).
@@ -58,7 +58,7 @@ func TestCompraVentaBonificaciones_Computarizada(t *testing.T) {
 		WithDescripcion("PRODUCTO CON BONIFICACION").
 		WithCantidad(1).
 		WithUnidadMedida(1).
-		WithPrecioUnitario(100).
+		WithPrecioNetoUnitario(100).
 		WithMontoDescuento(utils.Float64Ptr(0.0)).
 		WithSubTotal(100).
 		Build()
@@ -145,8 +145,8 @@ func emitirCompraVentaBonificacionesElectronicaIndividual(t *testing.T, tc *Test
 		WithNumeroDocumento("5115889").
 		WithCodigoCliente("1").
 		WithCodigoMetodoPago(1).
-		WithMontoTotal(90).
-		WithMontoTotalSujetoIva(90.0).
+		WithMontoAPagar(90).
+		WithTotalPrecioNeto(90.0).
 		WithDescuentoAdicional(utils.Float64Ptr(10.0)).
 		WithCodigoMoneda(1).
 		WithTipoCambio(1).
@@ -162,7 +162,7 @@ func emitirCompraVentaBonificacionesElectronicaIndividual(t *testing.T, tc *Test
 		WithDescripcion("PRODUCTO CON BONIFICACION").
 		WithCantidad(1).
 		WithUnidadMedida(1).
-		WithPrecioUnitario(100).
+		WithPrecioNetoUnitario(100).
 		WithMontoDescuento(utils.Float64Ptr(0.0)).
 		WithSubTotal(100).
 		Build()

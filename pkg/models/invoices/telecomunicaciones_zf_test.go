@@ -18,7 +18,6 @@ func TestTelecomunicacionesZFBuilder(t *testing.T) {
 	fechaEmision := time.Date(2024, 1, 1, 10, 0, 0, 0, time.UTC)
 	telefono := "2222222"
 	nombre := "JUAN PEREZ (ZONA FRANCA)"
-	nitConjunto := int64(123456789)
 	nSerie := "SN-ZF-123"
 
 	cabecera := invoices.NewTelecomunicacionesZFCabeceraBuilder().
@@ -26,7 +25,6 @@ func TestTelecomunicacionesZFBuilder(t *testing.T) {
 		WithRazonSocialEmisor("EMPRESA TELECOM ZF").
 		WithMunicipio("IQUIQUE (EXT)").
 		WithTelefono(&telefono).
-		WithNitConjunto(&nitConjunto).
 		WithNumeroFactura(5).
 		WithCuf("ABC123ZF").
 		WithCufd("XYZ789ZF").
@@ -38,7 +36,7 @@ func TestTelecomunicacionesZFBuilder(t *testing.T) {
 		WithNumeroDocumento("1234567").
 		WithCodigoCliente("CLI-ZF-001").
 		WithCodigoMetodoPago(1).
-		WithMontoTotal(500.00).
+		WithMontoAPagar(500.00).
 		WithCodigoMoneda(1).
 		WithTipoCambio(1).
 		WithMontoTotalMoneda(500.00).
@@ -53,7 +51,7 @@ func TestTelecomunicacionesZFBuilder(t *testing.T) {
 		WithDescripcion("CONEXION SATELITAL ZF").
 		WithCantidad(1).
 		WithUnidadMedida(58).
-		WithPrecioUnitario(500.00).
+		WithPrecioNetoUnitario(500.00).
 		WithSubTotal(500.00).
 		WithNumeroSerie(&nSerie).
 		Build()
@@ -78,8 +76,8 @@ func TestTelecomunicacionesZFBuilder(t *testing.T) {
 		if !strings.Contains(xmlStr, "<facturaElectronicaTelecomunicacionZF") {
 			t.Errorf("Nodo raíz incorrecto para Electronica ZF")
 		}
-		if !strings.Contains(xmlStr, "<montoTotalSujetoIva>0</montoTotalSujetoIva>") {
-			t.Errorf("montoTotalSujetoIva debe ser 0 para ZF")
+		if !strings.Contains(xmlStr, "<iva>0</iva>") {
+			t.Errorf("iva debe conservar el valor configurado para ZF")
 		}
 	})
 }
@@ -116,7 +114,7 @@ func TestTelecomunicacionesZF_Electronica(t *testing.T) {
 		WithNumeroDocumento("1234567").
 		WithCodigoCliente("ZF-001").
 		WithCodigoMetodoPago(1).
-		WithMontoTotal(200).
+		WithMontoAPagar(200).
 		WithCodigoMoneda(1).
 		WithTipoCambio(1).
 		WithMontoTotalMoneda(200).
@@ -131,7 +129,7 @@ func TestTelecomunicacionesZF_Electronica(t *testing.T) {
 		WithDescripcion("Servicio ZF").
 		WithCantidad(1).
 		WithUnidadMedida(58).
-		WithPrecioUnitario(200).
+		WithPrecioNetoUnitario(200).
 		WithSubTotal(200).
 		Build()
 

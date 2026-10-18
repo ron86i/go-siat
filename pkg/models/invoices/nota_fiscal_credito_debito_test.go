@@ -32,9 +32,9 @@ func TestNotaFiscalCreditoDebitoBuilder(t *testing.T) {
 		WithNumeroFactura(105).
 		WithNumeroAutorizacionCuf("FACT-ABC-FISCAL").
 		WithFechaEmisionFactura(fecha.Add(-72 * time.Hour)).
-		WithMontoTotalOriginal(2000.00).
-		WithMontoTotalDevuelto(1500.00).
-		WithMontoEfectivoCreditoDebito(195.00).
+		WithMontoAPagarOriginal(2000.00).
+		WithMontoAPagarDevuelto(1500.00).
+		WithIvaDevuelto(195.00).
 		WithLeyenda("Ley Nro 453 Normal").
 		WithUsuario("admin-fiscal").
 		Build()
@@ -46,7 +46,7 @@ func TestNotaFiscalCreditoDebitoBuilder(t *testing.T) {
 		WithDescripcion("Producto F A").
 		WithCantidad(20).
 		WithUnidadMedida(1).
-		WithPrecioUnitario(100).
+		WithPrecioNetoUnitario(100).
 		WithSubTotal(2000).
 		WithCodigoDetalleTransaccion(1).
 		Build()
@@ -58,7 +58,7 @@ func TestNotaFiscalCreditoDebitoBuilder(t *testing.T) {
 		WithDescripcion("Producto F B").
 		WithCantidad(15).
 		WithUnidadMedida(1).
-		WithPrecioUnitario(100).
+		WithPrecioNetoUnitario(100).
 		WithSubTotal(1500).
 		WithCodigoDetalleTransaccion(2).
 		Build()
@@ -117,9 +117,9 @@ func TestNotaFiscalCreditoDebitoIntegration_Computarizada(t *testing.T) {
 			WithNumeroFactura(105).
 			WithNumeroAutorizacionCuf("DUMMY_AUT_CUF-FISCAL").
 			WithFechaEmisionFactura(fecha.Add(-72 * time.Hour)).
-			WithMontoTotalOriginal(2000.00).
-			WithMontoTotalDevuelto(1500.00).
-			WithMontoEfectivoCreditoDebito(195.00).
+			WithMontoAPagarOriginal(2000.00).
+			WithMontoAPagarDevuelto(1500.00).
+			WithIvaDevuelto(195.00).
 			WithLeyenda("Ley Nro 453 Normal").
 			WithUsuario("admin-fiscal").
 			Build()).
@@ -130,7 +130,7 @@ func TestNotaFiscalCreditoDebitoIntegration_Computarizada(t *testing.T) {
 			WithDescripcion("Producto F A").
 			WithCantidad(20).
 			WithUnidadMedida(1).
-			WithPrecioUnitario(100).
+			WithPrecioNetoUnitario(100).
 			WithSubTotal(2000).
 			WithCodigoDetalleTransaccion(1).
 			Build()).
@@ -141,7 +141,7 @@ func TestNotaFiscalCreditoDebitoIntegration_Computarizada(t *testing.T) {
 			WithDescripcion("Producto F B").
 			WithCantidad(15).
 			WithUnidadMedida(1).
-			WithPrecioUnitario(100).
+			WithPrecioNetoUnitario(100).
 			WithSubTotal(1500).
 			WithCodigoDetalleTransaccion(2).
 			Build()).
@@ -213,9 +213,9 @@ func TestNotaFiscalCreditoDebitoIntegration_Electronica(t *testing.T) {
 			WithNumeroFactura(105).
 			WithNumeroAutorizacionCuf("DUMMY_AUT_CUF-FISCAL").
 			WithFechaEmisionFactura(fecha.Add(-72 * time.Hour)).
-			WithMontoTotalOriginal(2000.00).
-			WithMontoTotalDevuelto(1500.00).
-			WithMontoEfectivoCreditoDebito(195.00).
+			WithMontoAPagarOriginal(2000.00).
+			WithMontoAPagarDevuelto(1500.00).
+			WithIvaDevuelto(195.00).
 			WithLeyenda("Ley Nro 453 Normal").
 			WithUsuario("admin-fiscal").
 			Build()).
@@ -226,7 +226,7 @@ func TestNotaFiscalCreditoDebitoIntegration_Electronica(t *testing.T) {
 			WithDescripcion("Producto F A").
 			WithCantidad(20).
 			WithUnidadMedida(1).
-			WithPrecioUnitario(100).
+			WithPrecioNetoUnitario(100).
 			WithSubTotal(2000).
 			WithCodigoDetalleTransaccion(1).
 			Build()).
@@ -237,7 +237,7 @@ func TestNotaFiscalCreditoDebitoIntegration_Electronica(t *testing.T) {
 			WithDescripcion("Producto F B").
 			WithCantidad(15).
 			WithUnidadMedida(1).
-			WithPrecioUnitario(100).
+			WithPrecioNetoUnitario(100).
 			WithSubTotal(1500).
 			WithCodigoDetalleTransaccion(2).
 			Build()).

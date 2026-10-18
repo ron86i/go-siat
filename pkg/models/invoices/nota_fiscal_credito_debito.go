@@ -94,6 +94,18 @@ type notaFiscalCreditoDebitoCabeceraBuilder struct {
 	cabecera *documents.CabeceraNotaFiscalCreditoDebito
 }
 
+func (b *notaFiscalCreditoDebitoCabeceraBuilder) Build() NotaFiscalCreditoDebitoCabecera {
+	return NotaFiscalCreditoDebitoCabecera{models.NewRequestWrapper(b.cabecera)}
+}
+
+type notaDetalleFiscalCreditoDebitoBuilder struct {
+	detalle *documents.DetalleNotaFiscalCreditoDebito
+}
+
+func (b *notaDetalleFiscalCreditoDebitoBuilder) Build() NotaDetalleFiscalCreditoDebito {
+	return NotaDetalleFiscalCreditoDebito{models.NewRequestWrapper(b.detalle)}
+}
+
 func (b *notaFiscalCreditoDebitoCabeceraBuilder) WithNitEmisor(v int64) *notaFiscalCreditoDebitoCabeceraBuilder {
 	b.cabecera.NitEmisor = v
 	return b
@@ -111,11 +123,11 @@ func (b *notaFiscalCreditoDebitoCabeceraBuilder) WithMunicipio(v string) *notaFi
 
 func (b *notaFiscalCreditoDebitoCabeceraBuilder) WithTelefono(v *string) *notaFiscalCreditoDebitoCabeceraBuilder {
 	if v == nil {
-		b.cabecera.Telefono = datatype.Nilable[string]{Value: nil}
-	} else {
-		val := *v
-		b.cabecera.Telefono = datatype.Nilable[string]{Value: &val}
+		b.cabecera.Telefono = datatype.Nilable[string]{}
+		return b
 	}
+	value := *v
+	b.cabecera.Telefono = datatype.Nilable[string]{Value: &value}
 	return b
 }
 
@@ -146,11 +158,11 @@ func (b *notaFiscalCreditoDebitoCabeceraBuilder) WithDireccion(v string) *notaFi
 
 func (b *notaFiscalCreditoDebitoCabeceraBuilder) WithCodigoPuntoVenta(v *int) *notaFiscalCreditoDebitoCabeceraBuilder {
 	if v == nil {
-		b.cabecera.CodigoPuntoVenta = datatype.Nilable[int]{Value: nil}
-	} else {
-		val := *v
-		b.cabecera.CodigoPuntoVenta = datatype.Nilable[int]{Value: &val}
+		b.cabecera.CodigoPuntoVenta = datatype.Nilable[int]{}
+		return b
 	}
+	value := *v
+	b.cabecera.CodigoPuntoVenta = datatype.Nilable[int]{Value: &value}
 	return b
 }
 
@@ -161,11 +173,11 @@ func (b *notaFiscalCreditoDebitoCabeceraBuilder) WithFechaEmision(v time.Time) *
 
 func (b *notaFiscalCreditoDebitoCabeceraBuilder) WithNombreRazonSocial(v *string) *notaFiscalCreditoDebitoCabeceraBuilder {
 	if v == nil {
-		b.cabecera.NombreRazonSocial = datatype.Nilable[string]{Value: nil}
-	} else {
-		val := *v
-		b.cabecera.NombreRazonSocial = datatype.Nilable[string]{Value: &val}
+		b.cabecera.NombreRazonSocial = datatype.Nilable[string]{}
+		return b
 	}
+	value := *v
+	b.cabecera.NombreRazonSocial = datatype.Nilable[string]{Value: &value}
 	return b
 }
 
@@ -179,13 +191,8 @@ func (b *notaFiscalCreditoDebitoCabeceraBuilder) WithNumeroDocumento(v string) *
 	return b
 }
 
-func (b *notaFiscalCreditoDebitoCabeceraBuilder) WithComplemento(v *string) *notaFiscalCreditoDebitoCabeceraBuilder {
-	if v == nil {
-		b.cabecera.Complemento = datatype.Nilable[string]{Value: nil}
-	} else {
-		val := *v
-		b.cabecera.Complemento = datatype.Nilable[string]{Value: &val}
-	}
+func (b *notaFiscalCreditoDebitoCabeceraBuilder) WithComplemento(v string) *notaFiscalCreditoDebitoCabeceraBuilder {
+	b.cabecera.Complemento = v
 	return b
 }
 
@@ -209,38 +216,63 @@ func (b *notaFiscalCreditoDebitoCabeceraBuilder) WithFechaEmisionFactura(v time.
 	return b
 }
 
-func (b *notaFiscalCreditoDebitoCabeceraBuilder) WithMontoTotalOriginal(v float64) *notaFiscalCreditoDebitoCabeceraBuilder {
-	b.cabecera.MontoTotalOriginal = datatype.Float64Round(v, 2)
+func (b *notaFiscalCreditoDebitoCabeceraBuilder) WithSubTotalNetoOriginal(v float64) *notaFiscalCreditoDebitoCabeceraBuilder {
+	b.cabecera.SubTotalNetoOriginal = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
-func (b *notaFiscalCreditoDebitoCabeceraBuilder) WithMontoTotalDevuelto(v float64) *notaFiscalCreditoDebitoCabeceraBuilder {
-	b.cabecera.MontoTotalDevuelto = datatype.Float64Round(v, 2)
+func (b *notaFiscalCreditoDebitoCabeceraBuilder) WithTotalPrecioNetoOriginal(v float64) *notaFiscalCreditoDebitoCabeceraBuilder {
+	b.cabecera.TotalPrecioNetoOriginal = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
-func (b *notaFiscalCreditoDebitoCabeceraBuilder) WithMontoDescuentoCreditoDebito(v *float64) *notaFiscalCreditoDebitoCabeceraBuilder {
-	if v == nil {
-		b.cabecera.MontoDescuentoCreditoDebito = datatype.Nilable[float64]{Value: nil}
-	} else {
-		val := datatype.Float64Round(*v, 2)
-		b.cabecera.MontoDescuentoCreditoDebito = datatype.Nilable[float64]{Value: &val}
-	}
+func (b *notaFiscalCreditoDebitoCabeceraBuilder) WithIvaOriginal(v float64) *notaFiscalCreditoDebitoCabeceraBuilder {
+	b.cabecera.IvaOriginal = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
-func (b *notaFiscalCreditoDebitoCabeceraBuilder) WithMontoEfectivoCreditoDebito(v float64) *notaFiscalCreditoDebitoCabeceraBuilder {
-	b.cabecera.MontoEfectivoCreditoDebito = datatype.Float64Round(v, 2)
+func (b *notaFiscalCreditoDebitoCabeceraBuilder) WithMontoAPagarOriginal(v float64) *notaFiscalCreditoDebitoCabeceraBuilder {
+	b.cabecera.MontoAPagarOriginal = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+	return b
+}
+
+func (b *notaFiscalCreditoDebitoCabeceraBuilder) WithSubTotalNetoDevuelto(v float64) *notaFiscalCreditoDebitoCabeceraBuilder {
+	b.cabecera.SubTotalNetoDevuelto = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+	return b
+}
+
+func (b *notaFiscalCreditoDebitoCabeceraBuilder) WithTotalPrecioNetoDevuelto(v float64) *notaFiscalCreditoDebitoCabeceraBuilder {
+	b.cabecera.TotalPrecioNetoDevuelto = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+	return b
+}
+
+func (b *notaFiscalCreditoDebitoCabeceraBuilder) WithIvaDevuelto(v float64) *notaFiscalCreditoDebitoCabeceraBuilder {
+	b.cabecera.IvaDevuelto = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+	return b
+}
+
+func (b *notaFiscalCreditoDebitoCabeceraBuilder) WithMontoAPagarDevuelto(v float64) *notaFiscalCreditoDebitoCabeceraBuilder {
+	b.cabecera.MontoAPagarDevuelto = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+	return b
+}
+
+func (b *notaFiscalCreditoDebitoCabeceraBuilder) WithDescuentoAdicionalOriginal(v float64) *notaFiscalCreditoDebitoCabeceraBuilder {
+	b.cabecera.DescuentoAdicionalOriginal = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+	return b
+}
+
+func (b *notaFiscalCreditoDebitoCabeceraBuilder) WithMontoDescuentoDevuelto(v float64) *notaFiscalCreditoDebitoCabeceraBuilder {
+	b.cabecera.MontoDescuentoDevuelto = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
 func (b *notaFiscalCreditoDebitoCabeceraBuilder) WithCodigoExcepcion(v *int) *notaFiscalCreditoDebitoCabeceraBuilder {
 	if v == nil {
-		b.cabecera.CodigoExcepcion = datatype.Nilable[int]{Value: nil}
-	} else {
-		val := *v
-		b.cabecera.CodigoExcepcion = datatype.Nilable[int]{Value: &val}
+		b.cabecera.CodigoExcepcion = datatype.Nilable[int]{}
+		return b
 	}
+	value := *v
+	b.cabecera.CodigoExcepcion = datatype.Nilable[int]{Value: &value}
 	return b
 }
 
@@ -254,12 +286,19 @@ func (b *notaFiscalCreditoDebitoCabeceraBuilder) WithUsuario(v string) *notaFisc
 	return b
 }
 
-func (b *notaFiscalCreditoDebitoCabeceraBuilder) Build() NotaFiscalCreditoDebitoCabecera {
-	return NotaFiscalCreditoDebitoCabecera{models.NewRequestWrapper(b.cabecera)}
+func (b *notaFiscalCreditoDebitoCabeceraBuilder) WithCodigoInterno(v string) *notaFiscalCreditoDebitoCabeceraBuilder {
+	b.cabecera.CodigoInterno = v
+	return b
 }
 
-type notaDetalleFiscalCreditoDebitoBuilder struct {
-	detalle *documents.DetalleNotaFiscalCreditoDebito
+func (b *notaFiscalCreditoDebitoCabeceraBuilder) WithCodigoDocumentoSector(v int) *notaFiscalCreditoDebitoCabeceraBuilder {
+	b.cabecera.CodigoDocumentoSector = v
+	return b
+}
+
+func (b *notaDetalleFiscalCreditoDebitoBuilder) WithNroItem(v int) *notaDetalleFiscalCreditoDebitoBuilder {
+	b.detalle.NroItem = v
+	return b
 }
 
 func (b *notaDetalleFiscalCreditoDebitoBuilder) WithActividadEconomica(v string) *notaDetalleFiscalCreditoDebitoBuilder {
@@ -292,18 +331,19 @@ func (b *notaDetalleFiscalCreditoDebitoBuilder) WithUnidadMedida(v int) *notaDet
 	return b
 }
 
-func (b *notaDetalleFiscalCreditoDebitoBuilder) WithPrecioUnitario(v float64) *notaDetalleFiscalCreditoDebitoBuilder {
-	b.detalle.PrecioUnitario = decimal.NewFromFloat(v).Round(10).InexactFloat64()
+func (b *notaDetalleFiscalCreditoDebitoBuilder) WithPrecioNetoUnitario(v float64) *notaDetalleFiscalCreditoDebitoBuilder {
+	b.detalle.PrecioNetoUnitario = decimal.NewFromFloat(v).Round(10).InexactFloat64()
 	return b
 }
 
 func (b *notaDetalleFiscalCreditoDebitoBuilder) WithMontoDescuento(v *float64) *notaDetalleFiscalCreditoDebitoBuilder {
 	if v == nil {
-		b.detalle.MontoDescuento = datatype.Nilable[float64]{Value: nil}
-	} else {
-		val := decimal.NewFromFloat(*v).Round(10).InexactFloat64()
-		b.detalle.MontoDescuento = datatype.Nilable[float64]{Value: &val}
+		b.detalle.MontoDescuento = datatype.Nilable[float64]{}
+		return b
 	}
+	value := *v
+	value = decimal.NewFromFloat(value).Round(10).InexactFloat64()
+	b.detalle.MontoDescuento = datatype.Nilable[float64]{Value: &value}
 	return b
 }
 
@@ -315,8 +355,4 @@ func (b *notaDetalleFiscalCreditoDebitoBuilder) WithSubTotal(v float64) *notaDet
 func (b *notaDetalleFiscalCreditoDebitoBuilder) WithCodigoDetalleTransaccion(v int) *notaDetalleFiscalCreditoDebitoBuilder {
 	b.detalle.CodigoDetalleTransaccion = v
 	return b
-}
-
-func (b *notaDetalleFiscalCreditoDebitoBuilder) Build() NotaDetalleFiscalCreditoDebito {
-	return NotaDetalleFiscalCreditoDebito{models.NewRequestWrapper(b.detalle)}
 }

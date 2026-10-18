@@ -103,6 +103,21 @@ type telecomunicacionesCabeceraBuilder struct {
 	cabecera *documents.CabeceraTelecomunicaciones
 }
 
+// Build finaliza la construcción de la cabecera retornando la estructura opaca.
+func (b *telecomunicacionesCabeceraBuilder) Build() TelecomunicacionesCabecera {
+	return TelecomunicacionesCabecera{models.NewRequestWrapper(b.cabecera)}
+}
+
+// telecomunicacionesDetalleBuilder ayuda a configurar un ítem individual de detalle.
+type telecomunicacionesDetalleBuilder struct {
+	detalle *documents.DetalleTelecomunicaciones
+}
+
+// Build finaliza la construcción del detalle retornando la estructura opaca.
+func (b *telecomunicacionesDetalleBuilder) Build() TelecomunicacionesDetalle {
+	return TelecomunicacionesDetalle{models.NewRequestWrapper(b.detalle)}
+}
+
 func (b *telecomunicacionesCabeceraBuilder) WithNitEmisor(v int64) *telecomunicacionesCabeceraBuilder {
 	b.cabecera.NitEmisor = v
 	return b
@@ -120,21 +135,11 @@ func (b *telecomunicacionesCabeceraBuilder) WithMunicipio(v string) *telecomunic
 
 func (b *telecomunicacionesCabeceraBuilder) WithTelefono(v *string) *telecomunicacionesCabeceraBuilder {
 	if v == nil {
-		b.cabecera.Telefono = datatype.Nilable[string]{Value: nil}
-	} else {
-		val := *v
-		b.cabecera.Telefono = datatype.Nilable[string]{Value: &val}
+		b.cabecera.Telefono = datatype.Nilable[string]{}
+		return b
 	}
-	return b
-}
-
-func (b *telecomunicacionesCabeceraBuilder) WithNitConjunto(v *int64) *telecomunicacionesCabeceraBuilder {
-	if v == nil {
-		b.cabecera.NitConjunto = datatype.Nilable[int64]{Value: nil}
-	} else {
-		val := *v
-		b.cabecera.NitConjunto = datatype.Nilable[int64]{Value: &val}
-	}
+	value := *v
+	b.cabecera.Telefono = datatype.Nilable[string]{Value: &value}
 	return b
 }
 
@@ -165,11 +170,11 @@ func (b *telecomunicacionesCabeceraBuilder) WithDireccion(v string) *telecomunic
 
 func (b *telecomunicacionesCabeceraBuilder) WithCodigoPuntoVenta(v *int) *telecomunicacionesCabeceraBuilder {
 	if v == nil {
-		b.cabecera.CodigoPuntoVenta = datatype.Nilable[int]{Value: nil}
-	} else {
-		val := *v
-		b.cabecera.CodigoPuntoVenta = datatype.Nilable[int]{Value: &val}
+		b.cabecera.CodigoPuntoVenta = datatype.Nilable[int]{}
+		return b
 	}
+	value := *v
+	b.cabecera.CodigoPuntoVenta = datatype.Nilable[int]{Value: &value}
 	return b
 }
 
@@ -180,11 +185,21 @@ func (b *telecomunicacionesCabeceraBuilder) WithFechaEmision(v time.Time) *telec
 
 func (b *telecomunicacionesCabeceraBuilder) WithNombreRazonSocial(v *string) *telecomunicacionesCabeceraBuilder {
 	if v == nil {
-		b.cabecera.NombreRazonSocial = datatype.Nilable[string]{Value: nil}
-	} else {
-		val := *v
-		b.cabecera.NombreRazonSocial = datatype.Nilable[string]{Value: &val}
+		b.cabecera.NombreRazonSocial = datatype.Nilable[string]{}
+		return b
 	}
+	value := *v
+	b.cabecera.NombreRazonSocial = datatype.Nilable[string]{Value: &value}
+	return b
+}
+
+func (b *telecomunicacionesCabeceraBuilder) WithDireccionCliente(v *string) *telecomunicacionesCabeceraBuilder {
+	if v == nil {
+		b.cabecera.DireccionCliente = datatype.Nilable[string]{}
+		return b
+	}
+	value := *v
+	b.cabecera.DireccionCliente = datatype.Nilable[string]{Value: &value}
 	return b
 }
 
@@ -198,13 +213,8 @@ func (b *telecomunicacionesCabeceraBuilder) WithNumeroDocumento(v string) *telec
 	return b
 }
 
-func (b *telecomunicacionesCabeceraBuilder) WithComplemento(v *string) *telecomunicacionesCabeceraBuilder {
-	if v == nil {
-		b.cabecera.Complemento = datatype.Nilable[string]{Value: nil}
-	} else {
-		val := *v
-		b.cabecera.Complemento = datatype.Nilable[string]{Value: &val}
-	}
+func (b *telecomunicacionesCabeceraBuilder) WithComplemento(v string) *telecomunicacionesCabeceraBuilder {
+	b.cabecera.Complemento = v
 	return b
 }
 
@@ -220,21 +230,31 @@ func (b *telecomunicacionesCabeceraBuilder) WithCodigoMetodoPago(v int) *telecom
 
 func (b *telecomunicacionesCabeceraBuilder) WithNumeroTarjeta(v *int64) *telecomunicacionesCabeceraBuilder {
 	if v == nil {
-		b.cabecera.NumeroTarjeta = datatype.Nilable[int64]{Value: nil}
-	} else {
-		val := *v
-		b.cabecera.NumeroTarjeta = datatype.Nilable[int64]{Value: &val}
+		b.cabecera.NumeroTarjeta = datatype.Nilable[int64]{}
+		return b
 	}
+	value := *v
+	b.cabecera.NumeroTarjeta = datatype.Nilable[int64]{Value: &value}
 	return b
 }
 
-func (b *telecomunicacionesCabeceraBuilder) WithMontoTotal(v float64) *telecomunicacionesCabeceraBuilder {
-	b.cabecera.MontoTotal = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+func (b *telecomunicacionesCabeceraBuilder) WithSubTotalNeto(v float64) *telecomunicacionesCabeceraBuilder {
+	b.cabecera.SubTotalNeto = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
-func (b *telecomunicacionesCabeceraBuilder) WithMontoTotalSujetoIva(v float64) *telecomunicacionesCabeceraBuilder {
-	b.cabecera.MontoTotalSujetoIva = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+func (b *telecomunicacionesCabeceraBuilder) WithTotalPrecioNeto(v float64) *telecomunicacionesCabeceraBuilder {
+	b.cabecera.TotalPrecioNeto = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+	return b
+}
+
+func (b *telecomunicacionesCabeceraBuilder) WithIva(v float64) *telecomunicacionesCabeceraBuilder {
+	b.cabecera.Iva = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+	return b
+}
+
+func (b *telecomunicacionesCabeceraBuilder) WithMontoAPagar(v float64) *telecomunicacionesCabeceraBuilder {
+	b.cabecera.MontoAPagar = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
@@ -255,41 +275,33 @@ func (b *telecomunicacionesCabeceraBuilder) WithMontoTotalMoneda(v float64) *tel
 
 func (b *telecomunicacionesCabeceraBuilder) WithMontoGiftCard(v *float64) *telecomunicacionesCabeceraBuilder {
 	if v == nil {
-		b.cabecera.MontoGiftCard = datatype.Nilable[float64]{Value: nil}
-	} else {
-		val := decimal.NewFromFloat(*v).Round(2).InexactFloat64()
-		b.cabecera.MontoGiftCard = datatype.Nilable[float64]{Value: &val}
+		b.cabecera.MontoGiftCard = datatype.Nilable[float64]{}
+		return b
 	}
+	value := *v
+	value = decimal.NewFromFloat(value).Round(2).InexactFloat64()
+	b.cabecera.MontoGiftCard = datatype.Nilable[float64]{Value: &value}
 	return b
 }
 
 func (b *telecomunicacionesCabeceraBuilder) WithDescuentoAdicional(v *float64) *telecomunicacionesCabeceraBuilder {
 	if v == nil {
-		b.cabecera.DescuentoAdicional = datatype.Nilable[float64]{Value: nil}
-	} else {
-		val := decimal.NewFromFloat(*v).Round(2).InexactFloat64()
-		b.cabecera.DescuentoAdicional = datatype.Nilable[float64]{Value: &val}
+		b.cabecera.DescuentoAdicional = datatype.Nilable[float64]{}
+		return b
 	}
+	value := *v
+	value = decimal.NewFromFloat(value).Round(2).InexactFloat64()
+	b.cabecera.DescuentoAdicional = datatype.Nilable[float64]{Value: &value}
 	return b
 }
 
 func (b *telecomunicacionesCabeceraBuilder) WithCodigoExcepcion(v *int) *telecomunicacionesCabeceraBuilder {
 	if v == nil {
-		b.cabecera.CodigoExcepcion = datatype.Nilable[int]{Value: nil}
-	} else {
-		val := *v
-		b.cabecera.CodigoExcepcion = datatype.Nilable[int]{Value: &val}
+		b.cabecera.CodigoExcepcion = datatype.Nilable[int]{}
+		return b
 	}
-	return b
-}
-
-func (b *telecomunicacionesCabeceraBuilder) WithCafc(v *string) *telecomunicacionesCabeceraBuilder {
-	if v == nil {
-		b.cabecera.Cafc = datatype.Nilable[string]{Value: nil}
-	} else {
-		val := *v
-		b.cabecera.Cafc = datatype.Nilable[string]{Value: &val}
-	}
+	value := *v
+	b.cabecera.CodigoExcepcion = datatype.Nilable[int]{Value: &value}
 	return b
 }
 
@@ -303,14 +315,14 @@ func (b *telecomunicacionesCabeceraBuilder) WithUsuario(v string) *telecomunicac
 	return b
 }
 
-// Build finaliza la construcción de la cabecera retornando la estructura opaca.
-func (b *telecomunicacionesCabeceraBuilder) Build() TelecomunicacionesCabecera {
-	return TelecomunicacionesCabecera{models.NewRequestWrapper(b.cabecera)}
+func (b *telecomunicacionesCabeceraBuilder) WithCodigoInterno(v string) *telecomunicacionesCabeceraBuilder {
+	b.cabecera.CodigoInterno = v
+	return b
 }
 
-// telecomunicacionesDetalleBuilder ayuda a configurar un ítem individual de detalle.
-type telecomunicacionesDetalleBuilder struct {
-	detalle *documents.DetalleTelecomunicaciones
+func (b *telecomunicacionesCabeceraBuilder) WithCodigoDocumentoSector(v int) *telecomunicacionesCabeceraBuilder {
+	b.cabecera.CodigoDocumentoSector = v
+	return b
 }
 
 func (b *telecomunicacionesDetalleBuilder) WithActividadEconomica(v string) *telecomunicacionesDetalleBuilder {
@@ -334,7 +346,7 @@ func (b *telecomunicacionesDetalleBuilder) WithDescripcion(v string) *telecomuni
 }
 
 func (b *telecomunicacionesDetalleBuilder) WithCantidad(v float64) *telecomunicacionesDetalleBuilder {
-	b.detalle.Cantidad = decimal.NewFromFloat(v).Round(5).InexactFloat64()
+	b.detalle.Cantidad = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
@@ -343,47 +355,43 @@ func (b *telecomunicacionesDetalleBuilder) WithUnidadMedida(v int) *telecomunica
 	return b
 }
 
-func (b *telecomunicacionesDetalleBuilder) WithPrecioUnitario(v float64) *telecomunicacionesDetalleBuilder {
-	b.detalle.PrecioUnitario = decimal.NewFromFloat(v).Round(5).InexactFloat64()
+func (b *telecomunicacionesDetalleBuilder) WithPrecioNetoUnitario(v float64) *telecomunicacionesDetalleBuilder {
+	b.detalle.PrecioNetoUnitario = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
 func (b *telecomunicacionesDetalleBuilder) WithMontoDescuento(v *float64) *telecomunicacionesDetalleBuilder {
 	if v == nil {
-		b.detalle.MontoDescuento = datatype.Nilable[float64]{Value: nil}
-	} else {
-		val := decimal.NewFromFloat(*v).Round(5).InexactFloat64()
-		b.detalle.MontoDescuento = datatype.Nilable[float64]{Value: &val}
+		b.detalle.MontoDescuento = datatype.Nilable[float64]{}
+		return b
 	}
+	value := *v
+	value = decimal.NewFromFloat(value).Round(2).InexactFloat64()
+	b.detalle.MontoDescuento = datatype.Nilable[float64]{Value: &value}
 	return b
 }
 
 func (b *telecomunicacionesDetalleBuilder) WithSubTotal(v float64) *telecomunicacionesDetalleBuilder {
-	b.detalle.SubTotal = decimal.NewFromFloat(v).Round(5).InexactFloat64()
+	b.detalle.SubTotal = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
 func (b *telecomunicacionesDetalleBuilder) WithNumeroSerie(v *string) *telecomunicacionesDetalleBuilder {
 	if v == nil {
-		b.detalle.NumeroSerie = datatype.Nilable[string]{Value: nil}
-	} else {
-		val := *v
-		b.detalle.NumeroSerie = datatype.Nilable[string]{Value: &val}
+		b.detalle.NumeroSerie = datatype.Nilable[string]{}
+		return b
 	}
+	value := *v
+	b.detalle.NumeroSerie = datatype.Nilable[string]{Value: &value}
 	return b
 }
 
 func (b *telecomunicacionesDetalleBuilder) WithNumeroImei(v *string) *telecomunicacionesDetalleBuilder {
 	if v == nil {
-		b.detalle.NumeroImei = datatype.Nilable[string]{Value: nil}
-	} else {
-		val := *v
-		b.detalle.NumeroImei = datatype.Nilable[string]{Value: &val}
+		b.detalle.NumeroImei = datatype.Nilable[string]{}
+		return b
 	}
+	value := *v
+	b.detalle.NumeroImei = datatype.Nilable[string]{Value: &value}
 	return b
-}
-
-// Build finaliza la construcción del detalle retornando la estructura opaca.
-func (b *telecomunicacionesDetalleBuilder) Build() TelecomunicacionesDetalle {
-	return TelecomunicacionesDetalle{models.NewRequestWrapper(b.detalle)}
 }

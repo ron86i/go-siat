@@ -46,7 +46,6 @@ func NewBiodieselCabeceraBuilder() *biodieselCabeceraBuilder {
 	return &biodieselCabeceraBuilder{
 		cabecera: &documents.CabeceraBiodiesel{
 			CodigoDocumentoSector: 54, // Sector 54 para Biodiesel
-			MontoTotalSujetoIva:   0,  // Fijo 0 según XSD
 		},
 	}
 }
@@ -97,6 +96,18 @@ type biodieselCabeceraBuilder struct {
 	cabecera *documents.CabeceraBiodiesel
 }
 
+func (b *biodieselCabeceraBuilder) Build() BiodieselCabecera {
+	return BiodieselCabecera{models.NewRequestWrapper(b.cabecera)}
+}
+
+type biodieselDetalleBuilder struct {
+	detalle *documents.DetalleBiodiesel
+}
+
+func (b *biodieselDetalleBuilder) Build() BiodieselDetalle {
+	return BiodieselDetalle{models.NewRequestWrapper(b.detalle)}
+}
+
 func (b *biodieselCabeceraBuilder) WithNitEmisor(v int64) *biodieselCabeceraBuilder {
 	b.cabecera.NitEmisor = v
 	return b
@@ -112,12 +123,12 @@ func (b *biodieselCabeceraBuilder) WithMunicipio(v string) *biodieselCabeceraBui
 	return b
 }
 
-func (b *biodieselCabeceraBuilder) WithTelefono(telefono *string) *biodieselCabeceraBuilder {
-	if telefono == nil {
-		b.cabecera.Telefono = datatype.Nilable[string]{Value: nil}
+func (b *biodieselCabeceraBuilder) WithTelefono(v *string) *biodieselCabeceraBuilder {
+	if v == nil {
+		b.cabecera.Telefono = datatype.Nilable[string]{}
 		return b
 	}
-	value := *telefono
+	value := *v
 	b.cabecera.Telefono = datatype.Nilable[string]{Value: &value}
 	return b
 }
@@ -149,7 +160,7 @@ func (b *biodieselCabeceraBuilder) WithDireccion(v string) *biodieselCabeceraBui
 
 func (b *biodieselCabeceraBuilder) WithCodigoPuntoVenta(v *int) *biodieselCabeceraBuilder {
 	if v == nil {
-		b.cabecera.CodigoPuntoVenta = datatype.Nilable[int]{Value: nil}
+		b.cabecera.CodigoPuntoVenta = datatype.Nilable[int]{}
 		return b
 	}
 	value := *v
@@ -164,7 +175,7 @@ func (b *biodieselCabeceraBuilder) WithFechaEmision(v time.Time) *biodieselCabec
 
 func (b *biodieselCabeceraBuilder) WithNombreRazonSocial(v *string) *biodieselCabeceraBuilder {
 	if v == nil {
-		b.cabecera.NombreRazonSocial = datatype.Nilable[string]{Value: nil}
+		b.cabecera.NombreRazonSocial = datatype.Nilable[string]{}
 		return b
 	}
 	value := *v
@@ -182,13 +193,8 @@ func (b *biodieselCabeceraBuilder) WithNumeroDocumento(v string) *biodieselCabec
 	return b
 }
 
-func (b *biodieselCabeceraBuilder) WithComplemento(v *string) *biodieselCabeceraBuilder {
-	if v == nil {
-		b.cabecera.Complemento = datatype.Nilable[string]{Value: nil}
-		return b
-	}
-	value := *v
-	b.cabecera.Complemento = datatype.Nilable[string]{Value: &value}
+func (b *biodieselCabeceraBuilder) WithComplemento(v string) *biodieselCabeceraBuilder {
+	b.cabecera.Complemento = v
 	return b
 }
 
@@ -204,7 +210,7 @@ func (b *biodieselCabeceraBuilder) WithCodigoMetodoPago(v int) *biodieselCabecer
 
 func (b *biodieselCabeceraBuilder) WithNumeroTarjeta(v *int64) *biodieselCabeceraBuilder {
 	if v == nil {
-		b.cabecera.NumeroTarjeta = datatype.Nilable[int64]{Value: nil}
+		b.cabecera.NumeroTarjeta = datatype.Nilable[int64]{}
 		return b
 	}
 	value := *v
@@ -212,9 +218,23 @@ func (b *biodieselCabeceraBuilder) WithNumeroTarjeta(v *int64) *biodieselCabecer
 	return b
 }
 
-func (b *biodieselCabeceraBuilder) WithMontoTotal(v float64) *biodieselCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.MontoTotal = v
+func (b *biodieselCabeceraBuilder) WithSubTotalNeto(v float64) *biodieselCabeceraBuilder {
+	b.cabecera.SubTotalNeto = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+	return b
+}
+
+func (b *biodieselCabeceraBuilder) WithTotalPrecioNeto(v float64) *biodieselCabeceraBuilder {
+	b.cabecera.TotalPrecioNeto = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+	return b
+}
+
+func (b *biodieselCabeceraBuilder) WithIva(v float64) *biodieselCabeceraBuilder {
+	b.cabecera.Iva = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+	return b
+}
+
+func (b *biodieselCabeceraBuilder) WithMontoAPagar(v float64) *biodieselCabeceraBuilder {
+	b.cabecera.MontoAPagar = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
@@ -224,20 +244,18 @@ func (b *biodieselCabeceraBuilder) WithCodigoMoneda(v int) *biodieselCabeceraBui
 }
 
 func (b *biodieselCabeceraBuilder) WithTipoCambio(v float64) *biodieselCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.TipoCambio = v
+	b.cabecera.TipoCambio = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
 func (b *biodieselCabeceraBuilder) WithMontoTotalMoneda(v float64) *biodieselCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.MontoTotalMoneda = v
+	b.cabecera.MontoTotalMoneda = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
 func (b *biodieselCabeceraBuilder) WithDescuentoAdicional(v *float64) *biodieselCabeceraBuilder {
 	if v == nil {
-		b.cabecera.DescuentoAdicional = datatype.Nilable[float64]{Value: nil}
+		b.cabecera.DescuentoAdicional = datatype.Nilable[float64]{}
 		return b
 	}
 	value := *v
@@ -248,21 +266,11 @@ func (b *biodieselCabeceraBuilder) WithDescuentoAdicional(v *float64) *biodiesel
 
 func (b *biodieselCabeceraBuilder) WithCodigoExcepcion(v *int) *biodieselCabeceraBuilder {
 	if v == nil {
-		b.cabecera.CodigoExcepcion = datatype.Nilable[int]{Value: nil}
+		b.cabecera.CodigoExcepcion = datatype.Nilable[int]{}
 		return b
 	}
 	value := *v
 	b.cabecera.CodigoExcepcion = datatype.Nilable[int]{Value: &value}
-	return b
-}
-
-func (b *biodieselCabeceraBuilder) WithCafc(v *string) *biodieselCabeceraBuilder {
-	if v == nil {
-		b.cabecera.Cafc = datatype.Nilable[string]{Value: nil}
-		return b
-	}
-	value := *v
-	b.cabecera.Cafc = datatype.Nilable[string]{Value: &value}
 	return b
 }
 
@@ -276,17 +284,14 @@ func (b *biodieselCabeceraBuilder) WithUsuario(v string) *biodieselCabeceraBuild
 	return b
 }
 
-func (b *biodieselCabeceraBuilder) WithCodigoDocumentoSector(v int) *biodieselCabeceraBuilder {
-	b.cabecera.CodigoDocumentoSector = v
+func (b *biodieselCabeceraBuilder) WithCodigoInterno(v string) *biodieselCabeceraBuilder {
+	b.cabecera.CodigoInterno = v
 	return b
 }
 
-func (b *biodieselCabeceraBuilder) Build() BiodieselCabecera {
-	return BiodieselCabecera{models.NewRequestWrapper(b.cabecera)}
-}
-
-type biodieselDetalleBuilder struct {
-	detalle *documents.DetalleBiodiesel
+func (b *biodieselCabeceraBuilder) WithCodigoDocumentoSector(v int) *biodieselCabeceraBuilder {
+	b.cabecera.CodigoDocumentoSector = v
+	return b
 }
 
 func (b *biodieselDetalleBuilder) WithActividadEconomica(v string) *biodieselDetalleBuilder {
@@ -310,8 +315,7 @@ func (b *biodieselDetalleBuilder) WithDescripcion(v string) *biodieselDetalleBui
 }
 
 func (b *biodieselDetalleBuilder) WithCantidad(v float64) *biodieselDetalleBuilder {
-	v = decimal.NewFromFloat(v).Round(5).InexactFloat64()
-	b.detalle.Cantidad = v
+	b.detalle.Cantidad = decimal.NewFromFloat(v).Round(5).InexactFloat64()
 	return b
 }
 
@@ -320,15 +324,14 @@ func (b *biodieselDetalleBuilder) WithUnidadMedida(v int) *biodieselDetalleBuild
 	return b
 }
 
-func (b *biodieselDetalleBuilder) WithPrecioUnitario(v float64) *biodieselDetalleBuilder {
-	v = decimal.NewFromFloat(v).Round(5).InexactFloat64()
-	b.detalle.PrecioUnitario = v
+func (b *biodieselDetalleBuilder) WithPrecioNetoUnitario(v float64) *biodieselDetalleBuilder {
+	b.detalle.PrecioNetoUnitario = decimal.NewFromFloat(v).Round(5).InexactFloat64()
 	return b
 }
 
 func (b *biodieselDetalleBuilder) WithMontoDescuento(v *float64) *biodieselDetalleBuilder {
 	if v == nil {
-		b.detalle.MontoDescuento = datatype.Nilable[float64]{Value: nil}
+		b.detalle.MontoDescuento = datatype.Nilable[float64]{}
 		return b
 	}
 	value := *v
@@ -338,11 +341,6 @@ func (b *biodieselDetalleBuilder) WithMontoDescuento(v *float64) *biodieselDetal
 }
 
 func (b *biodieselDetalleBuilder) WithSubTotal(v float64) *biodieselDetalleBuilder {
-	v = decimal.NewFromFloat(v).Round(5).InexactFloat64()
-	b.detalle.SubTotal = v
+	b.detalle.SubTotal = decimal.NewFromFloat(v).Round(5).InexactFloat64()
 	return b
-}
-
-func (b *biodieselDetalleBuilder) Build() BiodieselDetalle {
-	return BiodieselDetalle{models.NewRequestWrapper(b.detalle)}
 }

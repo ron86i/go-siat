@@ -37,21 +37,15 @@ func TestVentaMineral_Electronica(t *testing.T) {
 		WithDireccionComprador("MAIN ST. 456, NEW YORK").
 		WithCodigoTipoDocumentoIdentidad(1).
 		WithNumeroDocumento("1234567").
-		WithConcentradoGranel("CONCENTRADO DE PLATA").
-		WithOrigen("MINA POTOSI").
-		WithIncoterm("CIF").
-		WithCodigoCliente("MIN-001").
 		WithCodigoMoneda(2). // USD
 		WithTipoCambio(6.96).
-		WithTipoCambioANB(6.96).
 		WithNumeroLote("LOTE-2024-001").
 		WithKilosNetosHumedos(1000.00).
 		WithKilosNetosSecos(1000.00).
 		WithCodigoMetodoPago(1).
-		WithMontoTotal(396000.06).
-		WithMontoTotalSujetoIva(56896.56).
+		WithMontoAPagar(396000.06).
+		WithTotalPrecioNeto(56896.56).
 		WithMontoTotalMoneda(56896.56).
-		WithSubTotal(50000.01).
 		WithGastosRealizacion(500.00).
 		WithIva(7396.55).
 		WithLeyenda("Leyenda Mineria").
@@ -69,7 +63,7 @@ func TestVentaMineral_Electronica(t *testing.T) {
 		WithCantidad(950.0).
 		WithUnidadMedidaExtraccion(1).
 		WithUnidadMedida(1).
-		WithPrecioUnitario(52.63159).
+		WithPrecioNetoUnitario(52.63159).
 		WithSubTotal(50000.0105).
 		Build()
 
@@ -130,21 +124,16 @@ func TestVentaMineral_Computarizada(t *testing.T) {
 		WithDireccionComprador("MAIN ST. 456, NEW YORK").
 		WithCodigoTipoDocumentoIdentidad(1).
 		WithNumeroDocumento("1234567").
-		WithConcentradoGranel("CONCENTRADO DE COBRE").
-		WithOrigen("MINA ORURO").
-		WithIncoterm("FOB").
-		WithCodigoCliente("MIN-002").
 		WithCodigoMoneda(1). // BOB
 		WithTipoCambio(1.0).
-		WithTipoCambioANB(1.0).
 		WithNumeroLote("LOTE-2024-002").
 		WithKilosNetosHumedos(1000.00).
 		WithKilosNetosSecos(1000.00).
 		WithCodigoMetodoPago(1).
-		WithMontoTotal(56896.56).
-		WithMontoTotalSujetoIva(56896.56).
+		WithMontoAPagar(56896.56).
+		WithTotalPrecioNeto(56896.56).
 		WithMontoTotalMoneda(56896.56).
-		WithSubTotal(50000.01). // Correspondiente al detalle
+		// Correspondiente al detalle
 		WithGastosRealizacion(500.00).
 		WithIva(7396.55).
 		WithLeyenda("Leyenda Mineria").
@@ -162,7 +151,7 @@ func TestVentaMineral_Computarizada(t *testing.T) {
 		WithCantidad(1000.0).
 		WithUnidadMedidaExtraccion(1).
 		WithUnidadMedida(1).
-		WithPrecioUnitario(50.00001).
+		WithPrecioNetoUnitario(50.00001).
 		WithSubTotal(50000.01).
 		Build()
 

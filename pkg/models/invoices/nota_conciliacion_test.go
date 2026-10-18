@@ -33,7 +33,6 @@ func TestNotaConciliacionBuilder(t *testing.T) {
 		WithNumeroFactura(100).
 		WithNumeroAutorizacionCuf("FACT-ABC").
 		WithFechaEmisionFactura(fecha.Add(-24 * time.Hour)).
-		WithMontoTotalOriginal(1000.00).
 		WithMontoTotalConciliado(900.00).
 		WithCreditoFiscalIva(0.00).
 		WithDebitoFiscalIva(13.00). // 13% de la diferencia si aplica
@@ -49,7 +48,7 @@ func TestNotaConciliacionBuilder(t *testing.T) {
 		WithDescripcion("Producto A").
 		WithCantidad(10).
 		WithUnidadMedida(1).
-		WithPrecioUnitario(100).
+		WithPrecioNetoUnitario(100).
 		WithSubTotal(1000).
 		Build()
 
@@ -58,8 +57,6 @@ func TestNotaConciliacionBuilder(t *testing.T) {
 		WithCodigoProductoSin(123).
 		WithCodigoProducto("P001").
 		WithDescripcion("Producto A").
-		WithMontoOriginal(1000).
-		WithMontoFinal(900).
 		WithMontoConciliado(100).
 		Build()
 
@@ -121,7 +118,6 @@ func TestNotaConciliacionIntegration_Computarizada(t *testing.T) {
 			WithNumeroFactura(100).
 			WithNumeroAutorizacionCuf("DUMMY_AUT_CUF").
 			WithFechaEmisionFactura(fecha.Add(-24 * time.Hour)).
-			WithMontoTotalOriginal(1000.00).
 			WithMontoTotalConciliado(10.00).
 			WithCreditoFiscalIva(0.00).
 			WithDebitoFiscalIva(13.00).
@@ -135,7 +131,7 @@ func TestNotaConciliacionIntegration_Computarizada(t *testing.T) {
 			WithDescripcion("Test Original").
 			WithCantidad(1).
 			WithUnidadMedida(1).
-			WithPrecioUnitario(100).
+			WithPrecioNetoUnitario(100).
 			WithSubTotal(100).
 			Build()).
 		AddDetalleConciliacion(invoices.NewNotaDetalleConciliacionBuilder().
@@ -143,8 +139,6 @@ func TestNotaConciliacionIntegration_Computarizada(t *testing.T) {
 			WithCodigoProductoSin(622539).
 			WithCodigoProducto("P001").
 			WithDescripcion("Test Conciliado").
-			WithMontoOriginal(100).
-			WithMontoFinal(90).
 			WithMontoConciliado(10).
 			Build()).
 		Build()
@@ -227,7 +221,6 @@ func TestNotaConciliacionIntegration_Electronica(t *testing.T) {
 			WithNumeroFactura(100).
 			WithNumeroAutorizacionCuf("DUMMY_AUT_CUF").
 			WithFechaEmisionFactura(fecha.Add(-24 * time.Hour)).
-			WithMontoTotalOriginal(1000.00).
 			WithMontoTotalConciliado(10.00).
 			WithCreditoFiscalIva(0.00).
 			WithDebitoFiscalIva(13.00).
@@ -241,7 +234,7 @@ func TestNotaConciliacionIntegration_Electronica(t *testing.T) {
 			WithDescripcion("Test Original").
 			WithCantidad(1).
 			WithUnidadMedida(1).
-			WithPrecioUnitario(100).
+			WithPrecioNetoUnitario(100).
 			WithSubTotal(100).
 			Build()).
 		AddDetalleConciliacion(invoices.NewNotaDetalleConciliacionBuilder().
@@ -249,8 +242,6 @@ func TestNotaConciliacionIntegration_Electronica(t *testing.T) {
 			WithCodigoProductoSin(622539).
 			WithCodigoProducto("P001").
 			WithDescripcion("Test Conciliado").
-			WithMontoOriginal(100).
-			WithMontoFinal(90).
 			WithMontoConciliado(10).
 			Build()).
 		Build()

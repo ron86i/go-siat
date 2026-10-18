@@ -45,14 +45,14 @@ func TestComercialExportacionPVenta_Electronica(t *testing.T) {
 		WithCodigoCliente("CLI-PVE-01").
 		WithDireccionComprador("AV. COMPRADOR INT").
 		WithIncoterm("FOB").
-		WithIncotermDetalle("FOB DETALLE").
+		WithAlcanceIncoterm("FOB DETALLE").
 		WithPuertoDestino("PUERTO ABC").
 		WithLugarDestino("DESTINO FINAL").
 		WithCodigoPais(1).
 		WithCodigoMetodoPago(1).
-		WithMontoTotal(montoTotal).
-		WithMontoTotalSujetoIva(montoTotal). // Wait, builder sets 0, but tests can inject this. Let's just use 0 here maybe if SIAT requires 0. Let's provide montoTotal.
-		WithMontoDetalle(montoTotal).
+		WithMontoAPagar(montoTotal).
+		WithTotalPrecioNeto(montoTotal). // Wait, builder sets 0, but tests can inject this. Let's just use 0 here maybe if SIAT requires 0. Let's provide montoTotal.
+		WithSubTotalNeto(montoTotal).
 		WithPrecioValorBruto(&montoTotal).
 		WithCodigoMoneda(2).
 		WithTipoCambio(6.96).
@@ -69,7 +69,7 @@ func TestComercialExportacionPVenta_Electronica(t *testing.T) {
 		WithDescripcion("PRODUCTO PARA EXPORTACION").
 		WithCantidad(cantidad).
 		WithUnidadMedida(1).
-		WithPrecioUnitario(precioUnitario).
+		WithPrecioNetoUnitario(precioUnitario).
 		WithMontoDescuento(&montoDescuento).
 		WithSubTotal(subTotalItem).
 		Build()

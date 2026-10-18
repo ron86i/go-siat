@@ -47,7 +47,6 @@ func NewComercialExportacionPVentaCabeceraBuilder() *comercialExportacionPVentaC
 	return &comercialExportacionPVentaCabeceraBuilder{
 		cabecera: &documents.CabeceraComercialExportacionPVenta{
 			CodigoDocumentoSector: 45, // Sector 45 para Comercial Exportación PVenta
-			MontoTotalSujetoIva:   0,  // Siempre 0 para exportación
 		},
 	}
 }
@@ -99,6 +98,23 @@ type comercialExportacionPVentaCabeceraBuilder struct {
 	err      error
 }
 
+func (b *comercialExportacionPVentaCabeceraBuilder) Build() ComercialExportacionPVentaCabecera {
+	return ComercialExportacionPVentaCabecera{models.NewRequestWrapper(b.cabecera)}
+}
+
+// Err devuelve el último error de serialización de un campo JSON libre.
+func (b *comercialExportacionPVentaCabeceraBuilder) Err() error {
+	return b.err
+}
+
+type comercialExportacionPVentaDetalleBuilder struct {
+	detalle *documents.DetalleComercialExportacionPVenta
+}
+
+func (b *comercialExportacionPVentaDetalleBuilder) Build() ComercialExportacionPVentaDetalle {
+	return ComercialExportacionPVentaDetalle{models.NewRequestWrapper(b.detalle)}
+}
+
 func (b *comercialExportacionPVentaCabeceraBuilder) WithNitEmisor(v int64) *comercialExportacionPVentaCabeceraBuilder {
 	b.cabecera.NitEmisor = v
 	return b
@@ -114,12 +130,12 @@ func (b *comercialExportacionPVentaCabeceraBuilder) WithMunicipio(v string) *com
 	return b
 }
 
-func (b *comercialExportacionPVentaCabeceraBuilder) WithTelefono(telefono *string) *comercialExportacionPVentaCabeceraBuilder {
-	if telefono == nil {
-		b.cabecera.Telefono = datatype.Nilable[string]{Value: nil}
+func (b *comercialExportacionPVentaCabeceraBuilder) WithTelefono(v *string) *comercialExportacionPVentaCabeceraBuilder {
+	if v == nil {
+		b.cabecera.Telefono = datatype.Nilable[string]{}
 		return b
 	}
-	value := *telefono
+	value := *v
 	b.cabecera.Telefono = datatype.Nilable[string]{Value: &value}
 	return b
 }
@@ -151,7 +167,7 @@ func (b *comercialExportacionPVentaCabeceraBuilder) WithDireccion(v string) *com
 
 func (b *comercialExportacionPVentaCabeceraBuilder) WithCodigoPuntoVenta(v *int) *comercialExportacionPVentaCabeceraBuilder {
 	if v == nil {
-		b.cabecera.CodigoPuntoVenta = datatype.Nilable[int]{Value: nil}
+		b.cabecera.CodigoPuntoVenta = datatype.Nilable[int]{}
 		return b
 	}
 	value := *v
@@ -159,14 +175,14 @@ func (b *comercialExportacionPVentaCabeceraBuilder) WithCodigoPuntoVenta(v *int)
 	return b
 }
 
-func (b *comercialExportacionPVentaCabeceraBuilder) WithFechaEmision(fechaEmision time.Time) *comercialExportacionPVentaCabeceraBuilder {
-	b.cabecera.FechaEmision = datatype.NewTimeSiat(fechaEmision)
+func (b *comercialExportacionPVentaCabeceraBuilder) WithFechaEmision(v time.Time) *comercialExportacionPVentaCabeceraBuilder {
+	b.cabecera.FechaEmision = datatype.NewTimeSiat(v)
 	return b
 }
 
 func (b *comercialExportacionPVentaCabeceraBuilder) WithNombreRazonSocial(v *string) *comercialExportacionPVentaCabeceraBuilder {
 	if v == nil {
-		b.cabecera.NombreRazonSocial = datatype.Nilable[string]{Value: nil}
+		b.cabecera.NombreRazonSocial = datatype.Nilable[string]{}
 		return b
 	}
 	value := *v
@@ -184,13 +200,8 @@ func (b *comercialExportacionPVentaCabeceraBuilder) WithNumeroDocumento(v string
 	return b
 }
 
-func (b *comercialExportacionPVentaCabeceraBuilder) WithComplemento(v *string) *comercialExportacionPVentaCabeceraBuilder {
-	if v == nil {
-		b.cabecera.Complemento = datatype.Nilable[string]{Value: nil}
-		return b
-	}
-	value := *v
-	b.cabecera.Complemento = datatype.Nilable[string]{Value: &value}
+func (b *comercialExportacionPVentaCabeceraBuilder) WithComplemento(v string) *comercialExportacionPVentaCabeceraBuilder {
+	b.cabecera.Complemento = v
 	return b
 }
 
@@ -209,8 +220,8 @@ func (b *comercialExportacionPVentaCabeceraBuilder) WithIncoterm(v string) *come
 	return b
 }
 
-func (b *comercialExportacionPVentaCabeceraBuilder) WithIncotermDetalle(v string) *comercialExportacionPVentaCabeceraBuilder {
-	b.cabecera.IncotermDetalle = v
+func (b *comercialExportacionPVentaCabeceraBuilder) WithAlcanceIncoterm(v string) *comercialExportacionPVentaCabeceraBuilder {
+	b.cabecera.AlcanceIncoterm = v
 	return b
 }
 
@@ -236,7 +247,7 @@ func (b *comercialExportacionPVentaCabeceraBuilder) WithCodigoMetodoPago(v int) 
 
 func (b *comercialExportacionPVentaCabeceraBuilder) WithNumeroTarjeta(v *int64) *comercialExportacionPVentaCabeceraBuilder {
 	if v == nil {
-		b.cabecera.NumeroTarjeta = datatype.Nilable[int64]{Value: nil}
+		b.cabecera.NumeroTarjeta = datatype.Nilable[int64]{}
 		return b
 	}
 	value := *v
@@ -244,9 +255,8 @@ func (b *comercialExportacionPVentaCabeceraBuilder) WithNumeroTarjeta(v *int64) 
 	return b
 }
 
-func (b *comercialExportacionPVentaCabeceraBuilder) WithMontoTotal(v float64) *comercialExportacionPVentaCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.MontoTotal = v
+func (b *comercialExportacionPVentaCabeceraBuilder) WithMontoAPagar(v float64) *comercialExportacionPVentaCabeceraBuilder {
+	b.cabecera.MontoAPagar = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
@@ -271,8 +281,7 @@ func (b *comercialExportacionPVentaCabeceraBuilder) WithCostosGastosNacionales(v
 }
 
 func (b *comercialExportacionPVentaCabeceraBuilder) WithTotalGastosNacionalesFob(v float64) *comercialExportacionPVentaCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.TotalGastosNacionalesFob = v
+	b.cabecera.TotalGastosNacionalesFob = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
@@ -298,7 +307,7 @@ func (b *comercialExportacionPVentaCabeceraBuilder) WithCostosGastosInternaciona
 
 func (b *comercialExportacionPVentaCabeceraBuilder) WithTotalGastosInternacionales(v *float64) *comercialExportacionPVentaCabeceraBuilder {
 	if v == nil {
-		b.cabecera.TotalGastosInternacionales = datatype.Nilable[float64]{Value: nil}
+		b.cabecera.TotalGastosInternacionales = datatype.Nilable[float64]{}
 		return b
 	}
 	value := *v
@@ -309,7 +318,7 @@ func (b *comercialExportacionPVentaCabeceraBuilder) WithTotalGastosInternacional
 
 func (b *comercialExportacionPVentaCabeceraBuilder) WithPrecioValorBruto(v *float64) *comercialExportacionPVentaCabeceraBuilder {
 	if v == nil {
-		b.cabecera.PrecioValorBruto = datatype.Nilable[float64]{Value: nil}
+		b.cabecera.PrecioValorBruto = datatype.Nilable[float64]{}
 		return b
 	}
 	value := *v
@@ -318,9 +327,18 @@ func (b *comercialExportacionPVentaCabeceraBuilder) WithPrecioValorBruto(v *floa
 	return b
 }
 
-func (b *comercialExportacionPVentaCabeceraBuilder) WithMontoDetalle(v float64) *comercialExportacionPVentaCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.MontoDetalle = v
+func (b *comercialExportacionPVentaCabeceraBuilder) WithSubTotalNeto(v float64) *comercialExportacionPVentaCabeceraBuilder {
+	b.cabecera.SubTotalNeto = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+	return b
+}
+
+func (b *comercialExportacionPVentaCabeceraBuilder) WithTotalPrecioNeto(v float64) *comercialExportacionPVentaCabeceraBuilder {
+	b.cabecera.TotalPrecioNeto = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+	return b
+}
+
+func (b *comercialExportacionPVentaCabeceraBuilder) WithIva(v float64) *comercialExportacionPVentaCabeceraBuilder {
+	b.cabecera.Iva = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
@@ -330,14 +348,12 @@ func (b *comercialExportacionPVentaCabeceraBuilder) WithCodigoMoneda(v int) *com
 }
 
 func (b *comercialExportacionPVentaCabeceraBuilder) WithTipoCambio(v float64) *comercialExportacionPVentaCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(5).InexactFloat64()
-	b.cabecera.TipoCambio = v
+	b.cabecera.TipoCambio = decimal.NewFromFloat(v).Round(5).InexactFloat64()
 	return b
 }
 
 func (b *comercialExportacionPVentaCabeceraBuilder) WithMontoTotalMoneda(v float64) *comercialExportacionPVentaCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.MontoTotalMoneda = v
+	b.cabecera.MontoTotalMoneda = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
@@ -363,7 +379,7 @@ func (b *comercialExportacionPVentaCabeceraBuilder) WithNumeroDescripcionPaquete
 
 func (b *comercialExportacionPVentaCabeceraBuilder) WithInformacionAdicional(v *string) *comercialExportacionPVentaCabeceraBuilder {
 	if v == nil {
-		b.cabecera.InformacionAdicional = datatype.Nilable[string]{Value: nil}
+		b.cabecera.InformacionAdicional = datatype.Nilable[string]{}
 		return b
 	}
 	value := *v
@@ -371,34 +387,13 @@ func (b *comercialExportacionPVentaCabeceraBuilder) WithInformacionAdicional(v *
 	return b
 }
 
-func (b *comercialExportacionPVentaCabeceraBuilder) WithDescuentoAdicional(v *float64) *comercialExportacionPVentaCabeceraBuilder {
-	if v == nil {
-		b.cabecera.DescuentoAdicional = datatype.Nilable[float64]{Value: nil}
-		return b
-	}
-	value := *v
-	value = decimal.NewFromFloat(value).Round(2).InexactFloat64()
-	b.cabecera.DescuentoAdicional = datatype.Nilable[float64]{Value: &value}
-	return b
-}
-
 func (b *comercialExportacionPVentaCabeceraBuilder) WithCodigoExcepcion(v *int) *comercialExportacionPVentaCabeceraBuilder {
 	if v == nil {
-		b.cabecera.CodigoExcepcion = datatype.Nilable[int]{Value: nil}
+		b.cabecera.CodigoExcepcion = datatype.Nilable[int]{}
 		return b
 	}
 	value := *v
 	b.cabecera.CodigoExcepcion = datatype.Nilable[int]{Value: &value}
-	return b
-}
-
-func (b *comercialExportacionPVentaCabeceraBuilder) WithCafc(v *string) *comercialExportacionPVentaCabeceraBuilder {
-	if v == nil {
-		b.cabecera.Cafc = datatype.Nilable[string]{Value: nil}
-		return b
-	}
-	value := *v
-	b.cabecera.Cafc = datatype.Nilable[string]{Value: &value}
 	return b
 }
 
@@ -412,29 +407,14 @@ func (b *comercialExportacionPVentaCabeceraBuilder) WithUsuario(v string) *comer
 	return b
 }
 
-func (b *comercialExportacionPVentaCabeceraBuilder) WithMontoTotalSujetoIva(v float64) *comercialExportacionPVentaCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.MontoTotalSujetoIva = v
+func (b *comercialExportacionPVentaCabeceraBuilder) WithCodigoInterno(v string) *comercialExportacionPVentaCabeceraBuilder {
+	b.cabecera.CodigoInterno = v
 	return b
 }
 
-// WithCodigoDocumentoSector configura el código que identifica el diseño o sector de la factura.
 func (b *comercialExportacionPVentaCabeceraBuilder) WithCodigoDocumentoSector(v int) *comercialExportacionPVentaCabeceraBuilder {
 	b.cabecera.CodigoDocumentoSector = v
 	return b
-}
-
-func (b *comercialExportacionPVentaCabeceraBuilder) Build() ComercialExportacionPVentaCabecera {
-	return ComercialExportacionPVentaCabecera{models.NewRequestWrapper(b.cabecera)}
-}
-
-// Err devuelve el último error de serialización de un campo JSON libre.
-func (b *comercialExportacionPVentaCabeceraBuilder) Err() error {
-	return b.err
-}
-
-type comercialExportacionPVentaDetalleBuilder struct {
-	detalle *documents.DetalleComercialExportacionPVenta
 }
 
 func (b *comercialExportacionPVentaDetalleBuilder) WithActividadEconomica(v string) *comercialExportacionPVentaDetalleBuilder {
@@ -463,8 +443,7 @@ func (b *comercialExportacionPVentaDetalleBuilder) WithDescripcion(v string) *co
 }
 
 func (b *comercialExportacionPVentaDetalleBuilder) WithCantidad(v float64) *comercialExportacionPVentaDetalleBuilder {
-	v = decimal.NewFromFloat(v).Round(5).InexactFloat64()
-	b.detalle.Cantidad = v
+	b.detalle.Cantidad = decimal.NewFromFloat(v).Round(5).InexactFloat64()
 	return b
 }
 
@@ -473,15 +452,14 @@ func (b *comercialExportacionPVentaDetalleBuilder) WithUnidadMedida(v int) *come
 	return b
 }
 
-func (b *comercialExportacionPVentaDetalleBuilder) WithPrecioUnitario(v float64) *comercialExportacionPVentaDetalleBuilder {
-	v = decimal.NewFromFloat(v).Round(5).InexactFloat64()
-	b.detalle.PrecioUnitario = v
+func (b *comercialExportacionPVentaDetalleBuilder) WithPrecioNetoUnitario(v float64) *comercialExportacionPVentaDetalleBuilder {
+	b.detalle.PrecioNetoUnitario = decimal.NewFromFloat(v).Round(5).InexactFloat64()
 	return b
 }
 
 func (b *comercialExportacionPVentaDetalleBuilder) WithMontoDescuento(v *float64) *comercialExportacionPVentaDetalleBuilder {
 	if v == nil {
-		b.detalle.MontoDescuento = datatype.Nilable[float64]{Value: nil}
+		b.detalle.MontoDescuento = datatype.Nilable[float64]{}
 		return b
 	}
 	value := *v
@@ -491,11 +469,6 @@ func (b *comercialExportacionPVentaDetalleBuilder) WithMontoDescuento(v *float64
 }
 
 func (b *comercialExportacionPVentaDetalleBuilder) WithSubTotal(v float64) *comercialExportacionPVentaDetalleBuilder {
-	v = decimal.NewFromFloat(v).Round(5).InexactFloat64()
-	b.detalle.SubTotal = v
+	b.detalle.SubTotal = decimal.NewFromFloat(v).Round(5).InexactFloat64()
 	return b
-}
-
-func (b *comercialExportacionPVentaDetalleBuilder) Build() ComercialExportacionPVentaDetalle {
-	return ComercialExportacionPVentaDetalle{models.NewRequestWrapper(b.detalle)}
 }

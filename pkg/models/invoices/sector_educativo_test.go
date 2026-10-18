@@ -46,8 +46,8 @@ func TestSectorEducativo_Computarizada(t *testing.T) {
 		WithNombreEstudiante("JUANITO PEREZ").
 		WithPeriodoFacturado("MARZO 2024").
 		WithCodigoMetodoPago(1).
-		WithMontoTotal(montoTotal).
-		WithMontoTotalSujetoIva(montoTotal).
+		WithMontoAPagar(montoTotal).
+		WithTotalPrecioNeto(montoTotal).
 		WithCodigoMoneda(1).
 		WithTipoCambio(1).
 		WithMontoTotalMoneda(montoTotal).
@@ -62,7 +62,7 @@ func TestSectorEducativo_Computarizada(t *testing.T) {
 		WithDescripcion("PENSION MARZO").
 		WithCantidad(cantidad).
 		WithUnidadMedida(1).
-		WithPrecioUnitario(precioUnitario).
+		WithPrecioNetoUnitario(precioUnitario).
 		WithMontoDescuento(&montoDescuento).
 		WithSubTotal(subTotalItem).
 		Build()

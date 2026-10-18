@@ -44,8 +44,8 @@ func TestServicioBasicoBuilder(t *testing.T) {
 		WithNumeroDocumento("1234567").
 		WithCodigoCliente("CLI-001").
 		WithCodigoMetodoPago(1).
-		WithMontoTotal(150.50).
-		WithMontoTotalSujetoIva(150.50).
+		WithMontoAPagar(150.50).
+		WithTotalPrecioNeto(150.50).
 		WithCodigoMoneda(1).
 		WithTipoCambio(1).
 		WithMontoTotalMoneda(150.50).
@@ -60,7 +60,7 @@ func TestServicioBasicoBuilder(t *testing.T) {
 		WithDescripcion("CONSUMO DE ENERGIA").
 		WithCantidad(1).
 		WithUnidadMedida(58).
-		WithPrecioUnitario(150.50).
+		WithPrecioNetoUnitario(150.50).
 		WithSubTotal(150.50).
 		Build()
 
@@ -105,7 +105,7 @@ func TestServicioBasicoIntegration(t *testing.T) {
 		WithDescripcion("Servicio Electrico").
 		WithCantidad(1).
 		WithUnidadMedida(58).
-		WithPrecioUnitario(100).
+		WithPrecioNetoUnitario(100).
 		WithSubTotal(100).
 		Build()
 
@@ -127,8 +127,8 @@ func TestServicioBasicoIntegration(t *testing.T) {
 			WithNumeroDocumento("1234567").
 			WithCodigoCliente("CLI-001").
 			WithCodigoMetodoPago(1).
-			WithMontoTotal(100).
-			WithMontoTotalSujetoIva(100).
+			WithMontoAPagar(100).
+			WithTotalPrecioNeto(100).
 			WithCodigoMoneda(1).
 			WithTipoCambio(1).
 			WithMontoTotalMoneda(100).

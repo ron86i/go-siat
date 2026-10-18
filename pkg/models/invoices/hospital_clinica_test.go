@@ -40,8 +40,8 @@ func TestHospitalClinica_Electronica(t *testing.T) {
 		WithCodigoCliente("PAC-001").
 		WithModalidadServicio(&modalidadServicio).
 		WithCodigoMetodoPago(1).
-		WithMontoTotal(2500.00).
-		WithMontoTotalSujetoIva(2500.00).
+		WithMontoAPagar(2500.00).
+		WithTotalPrecioNeto(2500.00).
 		WithCodigoMoneda(1).
 		WithTipoCambio(1.0).
 		WithMontoTotalMoneda(2500.00).
@@ -61,7 +61,7 @@ func TestHospitalClinica_Electronica(t *testing.T) {
 		WithNitDocumentoMedico(1234567).
 		WithCantidad(1.0).
 		WithUnidadMedida(1).
-		WithPrecioUnitario(2500.0).
+		WithPrecioNetoUnitario(2500.0).
 		WithSubTotal(2500.0).
 		Build()
 
@@ -123,8 +123,8 @@ func TestHospitalClinica_Computarizada(t *testing.T) {
 		WithNumeroDocumento("1234567").
 		WithCodigoCliente("PAC-001").
 		WithCodigoMetodoPago(1).
-		WithMontoTotal(150.00).
-		WithMontoTotalSujetoIva(150.00).
+		WithMontoAPagar(150.00).
+		WithTotalPrecioNeto(150.00).
 		WithCodigoMoneda(1).
 		WithTipoCambio(1.0).
 		WithMontoTotalMoneda(150.00).
@@ -142,7 +142,7 @@ func TestHospitalClinica_Computarizada(t *testing.T) {
 		WithNitDocumentoMedico(7654321).
 		WithCantidad(1.0).
 		WithUnidadMedida(1).
-		WithPrecioUnitario(150.0).
+		WithPrecioNetoUnitario(150.0).
 		WithSubTotal(150.0).
 		Build()
 

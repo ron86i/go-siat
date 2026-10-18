@@ -52,7 +52,7 @@ type DetallePrevaloradaSd struct {
 	Descripcion        string                    `xml:"descripcion" json:"descripcion"`
 	Cantidad           float64                   `xml:"cantidad" json:"cantidad"`
 	UnidadMedida       int                       `xml:"unidadMedida" json:"unidadMedida"`
-	PrecioUnitario     float64                   `xml:"precioUnitario" json:"precioUnitario"`
+	PrecioUnitario     float64                   `xml:"precioNetoUnitario" json:"precioNetoUnitario"`
 	MontoDescuento     datatype.Nilable[float64] `xml:"montoDescuento,omitempty" json:"montoDescuento,omitempty"`
 	SubTotal           float64                   `xml:"subTotal" json:"subTotal"`
 }

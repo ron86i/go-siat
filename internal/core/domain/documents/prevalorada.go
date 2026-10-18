@@ -34,13 +34,16 @@ type CabeceraPrevalorada struct {
 	CodigoCliente                string                   `xml:"codigoCliente" json:"codigoCliente"`
 	CodigoMetodoPago             int                      `xml:"codigoMetodoPago" json:"codigoMetodoPago"`
 	NumeroTarjeta                datatype.Nilable[int64]  `xml:"numeroTarjeta" json:"numeroTarjeta"`
-	MontoTotal                   float64                  `xml:"montoTotal" json:"montoTotal"`
-	MontoTotalSujetoIva          float64                  `xml:"montoTotalSujetoIva" json:"montoTotalSujetoIva"`
+	SubTotalNeto                 float64                  `xml:"subTotalNeto" json:"subTotalNeto"`
+	TotalPrecioNeto              float64                  `xml:"totalPrecioNeto" json:"totalPrecioNeto"`
+	Iva                          float64                  `xml:"iva" json:"iva"`
+	MontoAPagar                  float64                  `xml:"montoaPagar" json:"montoaPagar"`
 	CodigoMoneda                 int                      `xml:"codigoMoneda" json:"codigoMoneda"`
 	TipoCambio                   float64                  `xml:"tipoCambio" json:"tipoCambio"`
 	MontoTotalMoneda             float64                  `xml:"montoTotalMoneda" json:"montoTotalMoneda"`
 	Leyenda                      string                   `xml:"leyenda" json:"leyenda"`
 	Usuario                      string                   `xml:"usuario" json:"usuario"`
+	CodigoInterno                string                   `xml:"codigoInterno" json:"codigoInterno"`
 	CodigoDocumentoSector        int                      `xml:"codigoDocumentoSector" json:"codigoDocumentoSector"`
 }
 
@@ -52,7 +55,7 @@ type DetallePrevalorada struct {
 	Descripcion        string                    `xml:"descripcion" json:"descripcion"`
 	Cantidad           float64                   `xml:"cantidad" json:"cantidad"`
 	UnidadMedida       int                       `xml:"unidadMedida" json:"unidadMedida"`
-	PrecioUnitario     float64                   `xml:"precioUnitario" json:"precioUnitario"`
+	PrecioNetoUnitario float64                   `xml:"precioNetoUnitario" json:"precioNetoUnitario"`
 	MontoDescuento     datatype.Nilable[float64] `xml:"montoDescuento" json:"montoDescuento"`
 	SubTotal           float64                   `xml:"subTotal" json:"subTotal"`
 }

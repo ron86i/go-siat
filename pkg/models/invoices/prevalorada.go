@@ -100,6 +100,18 @@ type prevaloradaCabeceraBuilder struct {
 	cabecera *documents.CabeceraPrevalorada
 }
 
+func (b *prevaloradaCabeceraBuilder) Build() PrevaloradaCabecera {
+	return PrevaloradaCabecera{models.NewRequestWrapper(b.cabecera)}
+}
+
+type prevaloradaDetalleBuilder struct {
+	detalle *documents.DetallePrevalorada
+}
+
+func (b *prevaloradaDetalleBuilder) Build() PrevaloradaDetalle {
+	return PrevaloradaDetalle{models.NewRequestWrapper(b.detalle)}
+}
+
 func (b *prevaloradaCabeceraBuilder) WithNitEmisor(v int64) *prevaloradaCabeceraBuilder {
 	b.cabecera.NitEmisor = v
 	return b
@@ -115,12 +127,12 @@ func (b *prevaloradaCabeceraBuilder) WithMunicipio(v string) *prevaloradaCabecer
 	return b
 }
 
-func (b *prevaloradaCabeceraBuilder) WithTelefono(telefono *string) *prevaloradaCabeceraBuilder {
-	if telefono == nil {
-		b.cabecera.Telefono = datatype.Nilable[string]{Value: nil}
+func (b *prevaloradaCabeceraBuilder) WithTelefono(v *string) *prevaloradaCabeceraBuilder {
+	if v == nil {
+		b.cabecera.Telefono = datatype.Nilable[string]{}
 		return b
 	}
-	value := *telefono
+	value := *v
 	b.cabecera.Telefono = datatype.Nilable[string]{Value: &value}
 	return b
 }
@@ -152,7 +164,7 @@ func (b *prevaloradaCabeceraBuilder) WithDireccion(v string) *prevaloradaCabecer
 
 func (b *prevaloradaCabeceraBuilder) WithCodigoPuntoVenta(v *int) *prevaloradaCabeceraBuilder {
 	if v == nil {
-		b.cabecera.CodigoPuntoVenta = datatype.Nilable[int]{Value: nil}
+		b.cabecera.CodigoPuntoVenta = datatype.Nilable[int]{}
 		return b
 	}
 	value := *v
@@ -160,72 +172,18 @@ func (b *prevaloradaCabeceraBuilder) WithCodigoPuntoVenta(v *int) *prevaloradaCa
 	return b
 }
 
-func (b *prevaloradaCabeceraBuilder) WithFechaEmision(fechaEmision time.Time) *prevaloradaCabeceraBuilder {
-	b.cabecera.FechaEmision = datatype.NewTimeSiat(fechaEmision)
-	return b
-}
-
-func (b *prevaloradaCabeceraBuilder) WithCodigoMetodoPago(v int) *prevaloradaCabeceraBuilder {
-	b.cabecera.CodigoMetodoPago = v
-	return b
-}
-
-func (b *prevaloradaCabeceraBuilder) WithNumeroTarjeta(v *int64) *prevaloradaCabeceraBuilder {
-	if v == nil {
-		b.cabecera.NumeroTarjeta = datatype.Nilable[int64]{Value: nil}
-		return b
-	}
-	value := *v
-	b.cabecera.NumeroTarjeta = datatype.Nilable[int64]{Value: &value}
-	return b
-}
-
-func (b *prevaloradaCabeceraBuilder) WithMontoTotal(v float64) *prevaloradaCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.MontoTotal = v
-	return b
-}
-
-func (b *prevaloradaCabeceraBuilder) WithMontoTotalSujetoIva(v float64) *prevaloradaCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.MontoTotalSujetoIva = v
-	return b
-}
-
-func (b *prevaloradaCabeceraBuilder) WithCodigoMoneda(v int) *prevaloradaCabeceraBuilder {
-	b.cabecera.CodigoMoneda = v
-	return b
-}
-
-func (b *prevaloradaCabeceraBuilder) WithTipoCambio(v float64) *prevaloradaCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.TipoCambio = v
-	return b
-}
-
-func (b *prevaloradaCabeceraBuilder) WithMontoTotalMoneda(v float64) *prevaloradaCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.MontoTotalMoneda = v
-	return b
-}
-
-func (b *prevaloradaCabeceraBuilder) WithLeyenda(v string) *prevaloradaCabeceraBuilder {
-	b.cabecera.Leyenda = v
-	return b
-}
-
-func (b *prevaloradaCabeceraBuilder) WithUsuario(v string) *prevaloradaCabeceraBuilder {
-	b.cabecera.Usuario = v
-	return b
-}
-
-func (b *prevaloradaCabeceraBuilder) WithCodigoTipoDocumentoIdentidad(v int) *prevaloradaCabeceraBuilder {
-	b.cabecera.CodigoTipoDocumentoIdentidad = v
+func (b *prevaloradaCabeceraBuilder) WithFechaEmision(v time.Time) *prevaloradaCabeceraBuilder {
+	b.cabecera.FechaEmision = datatype.NewTimeSiat(v)
 	return b
 }
 
 func (b *prevaloradaCabeceraBuilder) WithNombreRazonSocial(v string) *prevaloradaCabeceraBuilder {
 	b.cabecera.NombreRazonSocial = v
+	return b
+}
+
+func (b *prevaloradaCabeceraBuilder) WithCodigoTipoDocumentoIdentidad(v int) *prevaloradaCabeceraBuilder {
+	b.cabecera.CodigoTipoDocumentoIdentidad = v
 	return b
 }
 
@@ -239,18 +197,74 @@ func (b *prevaloradaCabeceraBuilder) WithCodigoCliente(v string) *prevaloradaCab
 	return b
 }
 
-// WithCodigoDocumentoSector configura el código que identifica el diseño o sector de la factura.
-func (b *prevaloradaCabeceraBuilder) WithCodigoDocumentoSector(v int) *prevaloradaCabeceraBuilder {
-	b.cabecera.CodigoDocumentoSector = v
+func (b *prevaloradaCabeceraBuilder) WithCodigoMetodoPago(v int) *prevaloradaCabeceraBuilder {
+	b.cabecera.CodigoMetodoPago = v
 	return b
 }
 
-func (b *prevaloradaCabeceraBuilder) Build() PrevaloradaCabecera {
-	return PrevaloradaCabecera{models.NewRequestWrapper(b.cabecera)}
+func (b *prevaloradaCabeceraBuilder) WithNumeroTarjeta(v *int64) *prevaloradaCabeceraBuilder {
+	if v == nil {
+		b.cabecera.NumeroTarjeta = datatype.Nilable[int64]{}
+		return b
+	}
+	value := *v
+	b.cabecera.NumeroTarjeta = datatype.Nilable[int64]{Value: &value}
+	return b
 }
 
-type prevaloradaDetalleBuilder struct {
-	detalle *documents.DetallePrevalorada
+func (b *prevaloradaCabeceraBuilder) WithSubTotalNeto(v float64) *prevaloradaCabeceraBuilder {
+	b.cabecera.SubTotalNeto = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+	return b
+}
+
+func (b *prevaloradaCabeceraBuilder) WithTotalPrecioNeto(v float64) *prevaloradaCabeceraBuilder {
+	b.cabecera.TotalPrecioNeto = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+	return b
+}
+
+func (b *prevaloradaCabeceraBuilder) WithIva(v float64) *prevaloradaCabeceraBuilder {
+	b.cabecera.Iva = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+	return b
+}
+
+func (b *prevaloradaCabeceraBuilder) WithMontoAPagar(v float64) *prevaloradaCabeceraBuilder {
+	b.cabecera.MontoAPagar = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+	return b
+}
+
+func (b *prevaloradaCabeceraBuilder) WithCodigoMoneda(v int) *prevaloradaCabeceraBuilder {
+	b.cabecera.CodigoMoneda = v
+	return b
+}
+
+func (b *prevaloradaCabeceraBuilder) WithTipoCambio(v float64) *prevaloradaCabeceraBuilder {
+	b.cabecera.TipoCambio = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+	return b
+}
+
+func (b *prevaloradaCabeceraBuilder) WithMontoTotalMoneda(v float64) *prevaloradaCabeceraBuilder {
+	b.cabecera.MontoTotalMoneda = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+	return b
+}
+
+func (b *prevaloradaCabeceraBuilder) WithLeyenda(v string) *prevaloradaCabeceraBuilder {
+	b.cabecera.Leyenda = v
+	return b
+}
+
+func (b *prevaloradaCabeceraBuilder) WithUsuario(v string) *prevaloradaCabeceraBuilder {
+	b.cabecera.Usuario = v
+	return b
+}
+
+func (b *prevaloradaCabeceraBuilder) WithCodigoInterno(v string) *prevaloradaCabeceraBuilder {
+	b.cabecera.CodigoInterno = v
+	return b
+}
+
+func (b *prevaloradaCabeceraBuilder) WithCodigoDocumentoSector(v int) *prevaloradaCabeceraBuilder {
+	b.cabecera.CodigoDocumentoSector = v
+	return b
 }
 
 func (b *prevaloradaDetalleBuilder) WithActividadEconomica(v string) *prevaloradaDetalleBuilder {
@@ -274,8 +288,7 @@ func (b *prevaloradaDetalleBuilder) WithDescripcion(v string) *prevaloradaDetall
 }
 
 func (b *prevaloradaDetalleBuilder) WithCantidad(v float64) *prevaloradaDetalleBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.detalle.Cantidad = v
+	b.detalle.Cantidad = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
@@ -284,15 +297,14 @@ func (b *prevaloradaDetalleBuilder) WithUnidadMedida(v int) *prevaloradaDetalleB
 	return b
 }
 
-func (b *prevaloradaDetalleBuilder) WithPrecioUnitario(v float64) *prevaloradaDetalleBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.detalle.PrecioUnitario = v
+func (b *prevaloradaDetalleBuilder) WithPrecioNetoUnitario(v float64) *prevaloradaDetalleBuilder {
+	b.detalle.PrecioNetoUnitario = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
 func (b *prevaloradaDetalleBuilder) WithMontoDescuento(v *float64) *prevaloradaDetalleBuilder {
 	if v == nil {
-		b.detalle.MontoDescuento = datatype.Nilable[float64]{Value: nil}
+		b.detalle.MontoDescuento = datatype.Nilable[float64]{}
 		return b
 	}
 	value := *v
@@ -302,11 +314,6 @@ func (b *prevaloradaDetalleBuilder) WithMontoDescuento(v *float64) *prevaloradaD
 }
 
 func (b *prevaloradaDetalleBuilder) WithSubTotal(v float64) *prevaloradaDetalleBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.detalle.SubTotal = v
+	b.detalle.SubTotal = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
-}
-
-func (b *prevaloradaDetalleBuilder) Build() PrevaloradaDetalle {
-	return PrevaloradaDetalle{models.NewRequestWrapper(b.detalle)}
 }

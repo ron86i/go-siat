@@ -27,6 +27,8 @@ type sectorCase struct {
 
 func sectorCases() []sectorCase {
 	return []sectorCase{
+		{41, "Vuelo Chárter", "facturaElectronicaVueloCharter", "facturaComputarizadaVueloCharter",
+			func(m int) any { return invoices.NewVueloCharterBuilder().WithModalidad(m).Build() }},
 		{1, "Compra y Venta", "facturaElectronicaCompraVenta", "facturaComputarizadaCompraVenta",
 			func(m int) any { return invoices.NewCompraVentaBuilder().WithModalidad(m).Build() }},
 		{2, "Alquiler de Bienes Inmuebles", "facturaElectronicaAlquilerBienInmueble", "facturaComputarizadaAlquilerBienInmueble",
@@ -49,8 +51,6 @@ func sectorCases() []sectorCase {
 			func(m int) any { return invoices.NewDuttyFreeBuilder().WithModalidad(m).Build() }},
 		{11, "Sector Educativo", "facturaElectronicaSectorEducativo", "facturaComputarizadaSectorEducativo",
 			func(m int) any { return invoices.NewSectorEducativoBuilder().WithModalidad(m).Build() }},
-		{12, "Comercialización de Hidrocarburos", "facturaElectronicaComercializacionHidrocarburo", "facturaComputarizadaComercializacionHidrocarburo",
-			func(m int) any { return invoices.NewComercializacionHidroBuilder().WithModalidad(m).Build() }},
 		{13, "Servicios Básicos", "facturaElectronicaServicioBasico", "facturaComputarizadaServicioBasico",
 			func(m int) any { return invoices.NewServicioBasicoBuilder().WithModalidad(m).Build() }},
 		{14, "Alcanzada por el ICE", "facturaElectronicaAlcanzadaIce", "facturaComputarizadaAlcanzadaIce",
@@ -75,8 +75,6 @@ func sectorCases() []sectorCase {
 			func(m int) any { return invoices.NewPrevaloradaBuilder().WithModalidad(m).Build() }},
 		{24, "Nota de Crédito-Débito", "notaFiscalElectronicaCreditoDebito", "notaFiscalComputarizadaCreditoDebito",
 			func(m int) any { return invoices.NewNotaCreditoDebitoBuilder().WithModalidad(m).Build() }},
-		{24, "Nota Fiscal de Crédito-Débito", "notaFiscalElectronicaCreditoDebito", "notaFiscalComputarizadaCreditoDebito",
-			func(m int) any { return invoices.NewNotaFiscalCreditoDebitoBuilder().WithModalidad(m).Build() }},
 		{28, "Exportación de Servicios", "facturaElectronicaComercialExportacionServicio", "facturaComputarizadaComercialExportacionServicio",
 			func(m int) any { return invoices.NewComercialExportacionServicioBuilder().WithModalidad(m).Build() }},
 		{29, "Nota de Conciliación", "notaElectronicaConciliacion", "notaComputarizadaConciliacion",
@@ -101,8 +99,6 @@ func sectorCases() []sectorCase {
 			func(m int) any { return invoices.NewComercializacionGnGlpBuilder().WithModalidad(m).Build() }},
 		{40, "Servicios Básicos Zona Franca", "facturaElectronicaServicioBasicoZf", "facturaComputarizadaServicioBasicoZf",
 			func(m int) any { return invoices.NewServicioBasicoZFBuilder().WithModalidad(m).Build() }},
-		{41, "Compra Venta Tasas", "facturaElectronicaCompraVentaTasas", "facturaComputarizadaCompraVentaTasas",
-			func(m int) any { return invoices.NewCompraVentaTasasBuilder().WithModalidad(m).Build() }},
 		{42, "Alquiler Zona Franca", "facturaElectronicaAlquilerZF", "facturaComputarizadaAlquilerZF",
 			func(m int) any { return invoices.NewAlquilerZFBuilder().WithModalidad(m).Build() }},
 		{43, "Exportación de Hidrocarburos", "facturaElectronicaComercialExportacionHidro", "facturaComputarizadaComercialExportacionHidro",
@@ -115,17 +111,13 @@ func sectorCases() []sectorCase {
 			func(m int) any { return invoices.NewComercialExportacionPVentaBuilder().WithModalidad(m).Build() }},
 		{46, "Sector Educativo Zona Franca", "facturaElectronicaSectorEducativoZF", "facturaComputarizadaSectorEducativoZF",
 			func(m int) any { return invoices.NewSectorEducativoZFBuilder().WithModalidad(m).Build() }},
-		{47, "Nota Crédito Débito Descuentos", "notaElectronicaCreditoDebitoDescuento", "notaComputarizadaCreditoDebitoDescuento",
-			func(m int) any { return invoices.NewNotaCreditoDebitoDescuentoBuilder().WithModalidad(m).Build() }},
 		{48, "Nota Crédito Débito ICE", "notaElectronicaCreditoDebitoIce", "notaComputarizadaCreditoDebitoIce",
 			func(m int) any { return invoices.NewNotaCreditoDebitoIceBuilder().WithModalidad(m).Build() }},
 		{49, "Telecomunicaciones Zona Franca", "facturaElectronicaTelecomunicacionZF", "facturaComputarizadaTelecomunicacionZF",
 			func(m int) any { return invoices.NewTelecomunicacionesZFBuilder().WithModalidad(m).Build() }},
 		{50, "Hospitales / Clínicas Zona Franca", "facturaElectronicaHospitalClinicaZF", "facturaComputarizadaHospitalClinicaZF",
 			func(m int) any { return invoices.NewHospitalClinicaZFBuilder().WithModalidad(m).Build() }},
-		{51, "Engarrafadoras", "facturaElectronicaEngarrafadoras", "facturaComputarizadaEngarrafadoras",
-			func(m int) any { return invoices.NewEngarrafadorasBuilder().WithModalidad(m).Build() }},
-		{52, "Venta de Minerales al Banco Central", "facturaElectronicaVentaMineralBCB", "facturaComputarizadaVentaMineralBCB",
+		{52, "Venta de Minerales al Banco Central", "facturaElectronicaVentaMineralBCB", "",
 			func(m int) any { return invoices.NewVentaMineralBCBBuilder().WithModalidad(m).Build() }},
 		{53, "Lubricantes IEHD", "facturaElectronicaImportacionComercializacionLubricantesIEHD", "facturaComputarizadaImportacionComercializacionLubricantesIEHD",
 			func(m int) any { return invoices.NewLubricantesIehdBuilder().WithModalidad(m).Build() }},
@@ -136,25 +128,43 @@ func sectorCases() []sectorCase {
 	}
 }
 
+// sectorBuilders devuelve todos los builders asociados a una única fila del catálogo.
+// El sector 24 tiene dos builders públicos, pero sigue siendo un solo código documental.
+func sectorBuilders(c sectorCase) []func(modalidad int) any {
+	builders := []func(modalidad int) any{c.build}
+	if c.codigo == 24 {
+		builders = append(builders, func(m int) any {
+			return invoices.NewNotaFiscalCreditoDebitoBuilder().WithModalidad(m).Build()
+		})
+	}
+	return builders
+}
+
 // TestSectores_ElementoRaiz verifica que cada builder emita el elemento raíz correcto en
 // ambas modalidades. Un elemento raíz equivocado es rechazado con el código 939.
 func TestSectores_ElementoRaiz(t *testing.T) {
 	for _, c := range sectorCases() {
 		t.Run(c.nombre, func(t *testing.T) {
-			for _, m := range []struct {
-				modalidad int
-				esperado  string
-			}{
-				{siat.ModalidadElectronica, c.electronica},
-				{siat.ModalidadComputarizada, c.computarizada},
-			} {
-				raw, err := xml.Marshal(c.build(m.modalidad))
-				if err != nil {
-					t.Fatalf("sector %d: error al serializar: %v", c.codigo, err)
-				}
-				if !strings.HasPrefix(string(raw), "<"+m.esperado) {
-					t.Errorf("sector %d modalidad %d: elemento raíz es %.70s, se esperaba <%s",
-						c.codigo, m.modalidad, raw, m.esperado)
+			for numeroBuilder, build := range sectorBuilders(c) {
+				for _, m := range []struct {
+					modalidad int
+					esperado  string
+				}{
+					{siat.ModalidadElectronica, c.electronica},
+					{siat.ModalidadComputarizada, c.computarizada},
+				} {
+					if m.esperado == "" {
+						continue
+					}
+					raw, err := xml.Marshal(build(m.modalidad))
+					if err != nil {
+						t.Errorf("sector %d builder %d: error al serializar: %v", c.codigo, numeroBuilder+1, err)
+						continue
+					}
+					if !strings.HasPrefix(string(raw), "<"+m.esperado) {
+						t.Errorf("sector %d builder %d modalidad %d: elemento raíz es %.70s, se esperaba <%s",
+							c.codigo, numeroBuilder+1, m.modalidad, raw, m.esperado)
+					}
 				}
 			}
 		})
@@ -164,9 +174,6 @@ func TestSectores_ElementoRaiz(t *testing.T) {
 // TestSectores_ElementoRaizUnico verifica que dos sectores distintos no compartan elemento
 // raíz. Clonar un archivo de sector y olvidar renombrar el elemento produce documentos que
 // compilan pero llegan al SIAT identificados como otro sector.
-//
-// El código 24 es la excepción conocida: NotaCreditoDebito y NotaFiscalCreditoDebito son
-// dos diseños del mismo documento y comparten raíz a propósito.
 func TestSectores_ElementoRaizUnico(t *testing.T) {
 	vistos := map[string]int{}
 
@@ -186,13 +193,16 @@ func TestSectores_CoberturaCatalogo(t *testing.T) {
 	// Códigos del catálogo normativo del SIAT que el SDK implementa.
 	// El 33 (Tasa Cero IVA Ley N° 1613) está en el catálogo pero no tiene builder.
 	esperados := []int{
-		1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+		1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14, 15, 16, 17, 18, 19, 20,
 		21, 22, 23, 24, 28, 29, 30, 31, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43,
-		44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55,
+		44, 45, 46, 48, 49, 50, 52, 53, 54, 55,
 	}
 
 	cubiertos := map[int]bool{}
 	for _, c := range sectorCases() {
+		if cubiertos[c.codigo] {
+			t.Errorf("el sector %d aparece más de una vez en la tabla", c.codigo)
+		}
 		cubiertos[c.codigo] = true
 	}
 
@@ -215,6 +225,7 @@ func TestSectores_CoberturaCatalogo(t *testing.T) {
 func TestSectores_TipoFacturaDocumentoPredeterminado(t *testing.T) {
 	catalogo := invoices.DefinicionesTipoFactura()
 	definiciones := make(map[int]int, len(catalogo))
+	sectores := make(map[int]struct{})
 	for _, definicion := range catalogo {
 		if _, duplicado := definiciones[definicion.CodigoDocumentoSector]; duplicado {
 			t.Fatalf("el sector %d está duplicado en DefinicionesTipoFactura", definicion.CodigoDocumentoSector)
@@ -222,25 +233,30 @@ func TestSectores_TipoFacturaDocumentoPredeterminado(t *testing.T) {
 		definiciones[definicion.CodigoDocumentoSector] = definicion.TipoFacturaDocumento
 	}
 	for _, c := range sectorCases() {
+		sectores[c.codigo] = struct{}{}
 		t.Run(c.nombre, func(t *testing.T) {
-			documento, ok := c.build(siat.ModalidadElectronica).(models.FacturaConMetadatos)
-			if !ok {
-				t.Fatal("la factura no expone sus metadatos fiscales")
-			}
-			if obtenido := documento.CodigoDocumentoSector(); obtenido != c.codigo {
-				t.Fatalf("sector del metadato = %d; se esperaba %d", obtenido, c.codigo)
-			}
-			esperado, existe := definiciones[c.codigo]
-			if !existe {
-				t.Fatalf("el sector %d no está definido en DefinicionesTipoFactura", c.codigo)
-			}
-			if obtenido := documento.TipoFacturaDocumento(); obtenido != esperado {
-				t.Fatalf("tipo de factura = %d; se esperaba %d", obtenido, esperado)
+			for numeroBuilder, build := range sectorBuilders(c) {
+				documento, ok := build(siat.ModalidadElectronica).(models.FacturaConMetadatos)
+				if !ok {
+					t.Errorf("el builder %d no expone sus metadatos fiscales", numeroBuilder+1)
+					continue
+				}
+				if obtenido := documento.CodigoDocumentoSector(); obtenido != c.codigo {
+					t.Errorf("builder %d: sector del metadato = %d; se esperaba %d", numeroBuilder+1, obtenido, c.codigo)
+				}
+				esperado, existe := definiciones[c.codigo]
+				if !existe {
+					t.Errorf("el sector %d no está definido en DefinicionesTipoFactura", c.codigo)
+					continue
+				}
+				if obtenido := documento.TipoFacturaDocumento(); obtenido != esperado {
+					t.Errorf("builder %d: tipo de factura = %d; se esperaba %d", numeroBuilder+1, obtenido, esperado)
+				}
 			}
 		})
 	}
-	if len(definiciones) != len(sectorCases())-1 {
-		t.Fatalf("definiciones = %d; se esperaban %d sectores únicos", len(definiciones), len(sectorCases())-1)
+	if len(definiciones) != len(sectores) {
+		t.Fatalf("definiciones = %d; se esperaban %d sectores únicos", len(definiciones), len(sectores))
 	}
 }
 

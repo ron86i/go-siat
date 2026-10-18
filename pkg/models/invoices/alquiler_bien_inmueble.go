@@ -102,6 +102,18 @@ type alquilerBienInmuebleCabeceraBuilder struct {
 	cabecera *documents.CabeceraAlquilerBienInmueble
 }
 
+func (b *alquilerBienInmuebleCabeceraBuilder) Build() AlquilerBienInmuebleCabecera {
+	return AlquilerBienInmuebleCabecera{models.NewRequestWrapper(b.cabecera)}
+}
+
+type alquilerBienInmuebleDetalleBuilder struct {
+	detalle *documents.DetalleAlquilerBienInmueble
+}
+
+func (b *alquilerBienInmuebleDetalleBuilder) Build() AlquilerBienInmuebleDetalle {
+	return AlquilerBienInmuebleDetalle{models.NewRequestWrapper(b.detalle)}
+}
+
 func (b *alquilerBienInmuebleCabeceraBuilder) WithNitEmisor(v int64) *alquilerBienInmuebleCabeceraBuilder {
 	b.cabecera.NitEmisor = v
 	return b
@@ -117,12 +129,12 @@ func (b *alquilerBienInmuebleCabeceraBuilder) WithMunicipio(v string) *alquilerB
 	return b
 }
 
-func (b *alquilerBienInmuebleCabeceraBuilder) WithTelefono(telefono *string) *alquilerBienInmuebleCabeceraBuilder {
-	if telefono == nil {
-		b.cabecera.Telefono = datatype.Nilable[string]{Value: nil}
+func (b *alquilerBienInmuebleCabeceraBuilder) WithTelefono(v *string) *alquilerBienInmuebleCabeceraBuilder {
+	if v == nil {
+		b.cabecera.Telefono = datatype.Nilable[string]{}
 		return b
 	}
-	value := *telefono
+	value := *v
 	b.cabecera.Telefono = datatype.Nilable[string]{Value: &value}
 	return b
 }
@@ -154,7 +166,7 @@ func (b *alquilerBienInmuebleCabeceraBuilder) WithDireccion(v string) *alquilerB
 
 func (b *alquilerBienInmuebleCabeceraBuilder) WithCodigoPuntoVenta(v *int) *alquilerBienInmuebleCabeceraBuilder {
 	if v == nil {
-		b.cabecera.CodigoPuntoVenta = datatype.Nilable[int]{Value: nil}
+		b.cabecera.CodigoPuntoVenta = datatype.Nilable[int]{}
 		return b
 	}
 	value := *v
@@ -162,14 +174,14 @@ func (b *alquilerBienInmuebleCabeceraBuilder) WithCodigoPuntoVenta(v *int) *alqu
 	return b
 }
 
-func (b *alquilerBienInmuebleCabeceraBuilder) WithFechaEmision(fechaEmision time.Time) *alquilerBienInmuebleCabeceraBuilder {
-	b.cabecera.FechaEmision = datatype.NewTimeSiat(fechaEmision)
+func (b *alquilerBienInmuebleCabeceraBuilder) WithFechaEmision(v time.Time) *alquilerBienInmuebleCabeceraBuilder {
+	b.cabecera.FechaEmision = datatype.NewTimeSiat(v)
 	return b
 }
 
 func (b *alquilerBienInmuebleCabeceraBuilder) WithNombreRazonSocial(v *string) *alquilerBienInmuebleCabeceraBuilder {
 	if v == nil {
-		b.cabecera.NombreRazonSocial = datatype.Nilable[string]{Value: nil}
+		b.cabecera.NombreRazonSocial = datatype.Nilable[string]{}
 		return b
 	}
 	value := *v
@@ -187,13 +199,8 @@ func (b *alquilerBienInmuebleCabeceraBuilder) WithNumeroDocumento(v string) *alq
 	return b
 }
 
-func (b *alquilerBienInmuebleCabeceraBuilder) WithComplemento(v *string) *alquilerBienInmuebleCabeceraBuilder {
-	if v == nil {
-		b.cabecera.Complemento = datatype.Nilable[string]{Value: nil}
-		return b
-	}
-	value := *v
-	b.cabecera.Complemento = datatype.Nilable[string]{Value: &value}
+func (b *alquilerBienInmuebleCabeceraBuilder) WithComplemento(v string) *alquilerBienInmuebleCabeceraBuilder {
+	b.cabecera.Complemento = v
 	return b
 }
 
@@ -214,7 +221,7 @@ func (b *alquilerBienInmuebleCabeceraBuilder) WithCodigoMetodoPago(v int) *alqui
 
 func (b *alquilerBienInmuebleCabeceraBuilder) WithNumeroTarjeta(v *int64) *alquilerBienInmuebleCabeceraBuilder {
 	if v == nil {
-		b.cabecera.NumeroTarjeta = datatype.Nilable[int64]{Value: nil}
+		b.cabecera.NumeroTarjeta = datatype.Nilable[int64]{}
 		return b
 	}
 	value := *v
@@ -222,15 +229,23 @@ func (b *alquilerBienInmuebleCabeceraBuilder) WithNumeroTarjeta(v *int64) *alqui
 	return b
 }
 
-func (b *alquilerBienInmuebleCabeceraBuilder) WithMontoTotal(v float64) *alquilerBienInmuebleCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.MontoTotal = v
+func (b *alquilerBienInmuebleCabeceraBuilder) WithSubTotalNeto(v float64) *alquilerBienInmuebleCabeceraBuilder {
+	b.cabecera.SubTotalNeto = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
-func (b *alquilerBienInmuebleCabeceraBuilder) WithMontoTotalSujetoIva(v float64) *alquilerBienInmuebleCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.MontoTotalSujetoIva = v
+func (b *alquilerBienInmuebleCabeceraBuilder) WithTotalPrecioNeto(v float64) *alquilerBienInmuebleCabeceraBuilder {
+	b.cabecera.TotalPrecioNeto = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+	return b
+}
+
+func (b *alquilerBienInmuebleCabeceraBuilder) WithIva(v float64) *alquilerBienInmuebleCabeceraBuilder {
+	b.cabecera.Iva = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+	return b
+}
+
+func (b *alquilerBienInmuebleCabeceraBuilder) WithMontoAPagar(v float64) *alquilerBienInmuebleCabeceraBuilder {
+	b.cabecera.MontoAPagar = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
@@ -240,20 +255,18 @@ func (b *alquilerBienInmuebleCabeceraBuilder) WithCodigoMoneda(v int) *alquilerB
 }
 
 func (b *alquilerBienInmuebleCabeceraBuilder) WithTipoCambio(v float64) *alquilerBienInmuebleCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.TipoCambio = v
+	b.cabecera.TipoCambio = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
 func (b *alquilerBienInmuebleCabeceraBuilder) WithMontoTotalMoneda(v float64) *alquilerBienInmuebleCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.MontoTotalMoneda = v
+	b.cabecera.MontoTotalMoneda = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
 func (b *alquilerBienInmuebleCabeceraBuilder) WithDescuentoAdicional(v *float64) *alquilerBienInmuebleCabeceraBuilder {
 	if v == nil {
-		b.cabecera.DescuentoAdicional = datatype.Nilable[float64]{Value: nil}
+		b.cabecera.DescuentoAdicional = datatype.Nilable[float64]{}
 		return b
 	}
 	value := *v
@@ -264,21 +277,11 @@ func (b *alquilerBienInmuebleCabeceraBuilder) WithDescuentoAdicional(v *float64)
 
 func (b *alquilerBienInmuebleCabeceraBuilder) WithCodigoExcepcion(v *int) *alquilerBienInmuebleCabeceraBuilder {
 	if v == nil {
-		b.cabecera.CodigoExcepcion = datatype.Nilable[int]{Value: nil}
+		b.cabecera.CodigoExcepcion = datatype.Nilable[int]{}
 		return b
 	}
 	value := *v
 	b.cabecera.CodigoExcepcion = datatype.Nilable[int]{Value: &value}
-	return b
-}
-
-func (b *alquilerBienInmuebleCabeceraBuilder) WithCafc(v *string) *alquilerBienInmuebleCabeceraBuilder {
-	if v == nil {
-		b.cabecera.Cafc = datatype.Nilable[string]{Value: nil}
-		return b
-	}
-	value := *v
-	b.cabecera.Cafc = datatype.Nilable[string]{Value: &value}
 	return b
 }
 
@@ -292,18 +295,14 @@ func (b *alquilerBienInmuebleCabeceraBuilder) WithUsuario(v string) *alquilerBie
 	return b
 }
 
-// WithCodigoDocumentoSector configura el código que identifica el diseño o sector de la factura.
-func (b *alquilerBienInmuebleCabeceraBuilder) WithCodigoDocumentoSector(v int) *alquilerBienInmuebleCabeceraBuilder {
-	b.cabecera.CodigoDocumentoSector = v
+func (b *alquilerBienInmuebleCabeceraBuilder) WithCodigoInterno(v string) *alquilerBienInmuebleCabeceraBuilder {
+	b.cabecera.CodigoInterno = v
 	return b
 }
 
-func (b *alquilerBienInmuebleCabeceraBuilder) Build() AlquilerBienInmuebleCabecera {
-	return AlquilerBienInmuebleCabecera{models.NewRequestWrapper(b.cabecera)}
-}
-
-type alquilerBienInmuebleDetalleBuilder struct {
-	detalle *documents.DetalleAlquilerBienInmueble
+func (b *alquilerBienInmuebleCabeceraBuilder) WithCodigoDocumentoSector(v int) *alquilerBienInmuebleCabeceraBuilder {
+	b.cabecera.CodigoDocumentoSector = v
+	return b
 }
 
 func (b *alquilerBienInmuebleDetalleBuilder) WithActividadEconomica(v string) *alquilerBienInmuebleDetalleBuilder {
@@ -327,8 +326,7 @@ func (b *alquilerBienInmuebleDetalleBuilder) WithDescripcion(v string) *alquiler
 }
 
 func (b *alquilerBienInmuebleDetalleBuilder) WithCantidad(v float64) *alquilerBienInmuebleDetalleBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.detalle.Cantidad = v
+	b.detalle.Cantidad = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
@@ -337,15 +335,14 @@ func (b *alquilerBienInmuebleDetalleBuilder) WithUnidadMedida(v int) *alquilerBi
 	return b
 }
 
-func (b *alquilerBienInmuebleDetalleBuilder) WithPrecioUnitario(v float64) *alquilerBienInmuebleDetalleBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.detalle.PrecioUnitario = v
+func (b *alquilerBienInmuebleDetalleBuilder) WithPrecioNetoUnitario(v float64) *alquilerBienInmuebleDetalleBuilder {
+	b.detalle.PrecioNetoUnitario = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
 func (b *alquilerBienInmuebleDetalleBuilder) WithMontoDescuento(v *float64) *alquilerBienInmuebleDetalleBuilder {
 	if v == nil {
-		b.detalle.MontoDescuento = datatype.Nilable[float64]{Value: nil}
+		b.detalle.MontoDescuento = datatype.Nilable[float64]{}
 		return b
 	}
 	value := *v
@@ -355,11 +352,6 @@ func (b *alquilerBienInmuebleDetalleBuilder) WithMontoDescuento(v *float64) *alq
 }
 
 func (b *alquilerBienInmuebleDetalleBuilder) WithSubTotal(v float64) *alquilerBienInmuebleDetalleBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.detalle.SubTotal = v
+	b.detalle.SubTotal = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
-}
-
-func (b *alquilerBienInmuebleDetalleBuilder) Build() AlquilerBienInmuebleDetalle {
-	return AlquilerBienInmuebleDetalle{models.NewRequestWrapper(b.detalle)}
 }

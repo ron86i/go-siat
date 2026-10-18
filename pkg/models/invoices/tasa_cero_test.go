@@ -37,12 +37,16 @@ func TestTasaCero_Electronica(t *testing.T) {
 		WithNumeroDocumento("1234567").
 		WithCodigoCliente("CLI-LIBRO-01").
 		WithCodigoMetodoPago(1).
-		WithMontoTotal(50.00).
+		WithSubTotalNeto(50.00).
+		WithTotalPrecioNeto(50.00).
+		WithIva(0.00).
+		WithMontoAPagar(50.00).
 		WithCodigoMoneda(1).
 		WithTipoCambio(1.0).
 		WithMontoTotalMoneda(50.00).
 		WithLeyenda("Leyenda Tasa Cero").
 		WithUsuario("operador01").
+		WithCodigoInterno("LIBRO-001").
 		Build()
 
 	detalle := invoices.NewTasaCeroDetalleBuilder().
@@ -52,7 +56,7 @@ func TestTasaCero_Electronica(t *testing.T) {
 		WithDescripcion("LIBRO DE PRUEBA").
 		WithCantidad(1.0).
 		WithUnidadMedida(1).
-		WithPrecioUnitario(50.0).
+		WithPrecioNetoUnitario(50.0).
 		WithSubTotal(50.00).
 		Build()
 

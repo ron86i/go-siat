@@ -34,7 +34,7 @@ func TestLibreConsignacion_Computarizada(t *testing.T) {
 		WithFechaEmision(fechaEmision).
 		WithCodigoPuntoVenta(&codigoPuntoVenta).
 		WithCodigoMetodoPago(1).
-		WithMontoTotal(1000.00).
+		WithMontoAPagar(1000.00).
 		WithCodigoMoneda(1).
 		WithTipoCambio(1.0).
 		WithMontoTotalMoneda(1000.00).
@@ -43,7 +43,6 @@ func TestLibreConsignacion_Computarizada(t *testing.T) {
 		WithCodigoTipoDocumentoIdentidad(5).
 		WithCodigoPais(1).
 		WithPuertoDestino("PUERTO 1").
-		WithCodigoCliente("123456789").
 		Build()
 
 	detalle := invoices.NewLibreConsignacionDetalleBuilder().
@@ -54,7 +53,7 @@ func TestLibreConsignacion_Computarizada(t *testing.T) {
 		WithCodigoNandina("12345678").
 		WithCantidad(1.0).
 		WithUnidadMedida(1).
-		WithPrecioUnitario(1000.0).
+		WithPrecioNetoUnitario(1000.0).
 		WithSubTotal(1000.00).
 		Build()
 

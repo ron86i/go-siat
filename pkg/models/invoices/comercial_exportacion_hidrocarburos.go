@@ -98,6 +98,23 @@ type comercialExportacionHidroCabeceraBuilder struct {
 	err      error
 }
 
+func (b *comercialExportacionHidroCabeceraBuilder) Build() ComercialExportacionHidroCabecera {
+	return ComercialExportacionHidroCabecera{models.NewRequestWrapper(b.cabecera)}
+}
+
+// Err devuelve el último error de serialización de un campo JSON libre.
+func (b *comercialExportacionHidroCabeceraBuilder) Err() error {
+	return b.err
+}
+
+type comercialExportacionHidroDetalleBuilder struct {
+	detalle *documents.DetalleComercialExportacionHidro
+}
+
+func (b *comercialExportacionHidroDetalleBuilder) Build() ComercialExportacionHidroDetalle {
+	return ComercialExportacionHidroDetalle{models.NewRequestWrapper(b.detalle)}
+}
+
 func (b *comercialExportacionHidroCabeceraBuilder) WithNitEmisor(v int64) *comercialExportacionHidroCabeceraBuilder {
 	b.cabecera.NitEmisor = v
 	return b
@@ -113,12 +130,12 @@ func (b *comercialExportacionHidroCabeceraBuilder) WithMunicipio(v string) *come
 	return b
 }
 
-func (b *comercialExportacionHidroCabeceraBuilder) WithTelefono(telefono *string) *comercialExportacionHidroCabeceraBuilder {
-	if telefono == nil {
-		b.cabecera.Telefono = datatype.Nilable[string]{Value: nil}
+func (b *comercialExportacionHidroCabeceraBuilder) WithTelefono(v *string) *comercialExportacionHidroCabeceraBuilder {
+	if v == nil {
+		b.cabecera.Telefono = datatype.Nilable[string]{}
 		return b
 	}
-	value := *telefono
+	value := *v
 	b.cabecera.Telefono = datatype.Nilable[string]{Value: &value}
 	return b
 }
@@ -150,7 +167,7 @@ func (b *comercialExportacionHidroCabeceraBuilder) WithDireccion(v string) *come
 
 func (b *comercialExportacionHidroCabeceraBuilder) WithCodigoPuntoVenta(v *int) *comercialExportacionHidroCabeceraBuilder {
 	if v == nil {
-		b.cabecera.CodigoPuntoVenta = datatype.Nilable[int]{Value: nil}
+		b.cabecera.CodigoPuntoVenta = datatype.Nilable[int]{}
 		return b
 	}
 	value := *v
@@ -158,14 +175,14 @@ func (b *comercialExportacionHidroCabeceraBuilder) WithCodigoPuntoVenta(v *int) 
 	return b
 }
 
-func (b *comercialExportacionHidroCabeceraBuilder) WithFechaEmision(fechaEmision time.Time) *comercialExportacionHidroCabeceraBuilder {
-	b.cabecera.FechaEmision = datatype.NewTimeSiat(fechaEmision)
+func (b *comercialExportacionHidroCabeceraBuilder) WithFechaEmision(v time.Time) *comercialExportacionHidroCabeceraBuilder {
+	b.cabecera.FechaEmision = datatype.NewTimeSiat(v)
 	return b
 }
 
 func (b *comercialExportacionHidroCabeceraBuilder) WithNombreRazonSocial(v *string) *comercialExportacionHidroCabeceraBuilder {
 	if v == nil {
-		b.cabecera.NombreRazonSocial = datatype.Nilable[string]{Value: nil}
+		b.cabecera.NombreRazonSocial = datatype.Nilable[string]{}
 		return b
 	}
 	value := *v
@@ -183,13 +200,8 @@ func (b *comercialExportacionHidroCabeceraBuilder) WithNumeroDocumento(v string)
 	return b
 }
 
-func (b *comercialExportacionHidroCabeceraBuilder) WithComplemento(v *string) *comercialExportacionHidroCabeceraBuilder {
-	if v == nil {
-		b.cabecera.Complemento = datatype.Nilable[string]{Value: nil}
-		return b
-	}
-	value := *v
-	b.cabecera.Complemento = datatype.Nilable[string]{Value: &value}
+func (b *comercialExportacionHidroCabeceraBuilder) WithComplemento(v string) *comercialExportacionHidroCabeceraBuilder {
+	b.cabecera.Complemento = v
 	return b
 }
 
@@ -208,8 +220,8 @@ func (b *comercialExportacionHidroCabeceraBuilder) WithIncoterm(v string) *comer
 	return b
 }
 
-func (b *comercialExportacionHidroCabeceraBuilder) WithIncotermDetalle(v string) *comercialExportacionHidroCabeceraBuilder {
-	b.cabecera.IncotermDetalle = v
+func (b *comercialExportacionHidroCabeceraBuilder) WithAlcanceIncoterm(v string) *comercialExportacionHidroCabeceraBuilder {
+	b.cabecera.AlcanceIncoterm = v
 	return b
 }
 
@@ -235,7 +247,7 @@ func (b *comercialExportacionHidroCabeceraBuilder) WithCodigoMetodoPago(v int) *
 
 func (b *comercialExportacionHidroCabeceraBuilder) WithNumeroTarjeta(v *int64) *comercialExportacionHidroCabeceraBuilder {
 	if v == nil {
-		b.cabecera.NumeroTarjeta = datatype.Nilable[int64]{Value: nil}
+		b.cabecera.NumeroTarjeta = datatype.Nilable[int64]{}
 		return b
 	}
 	value := *v
@@ -243,9 +255,8 @@ func (b *comercialExportacionHidroCabeceraBuilder) WithNumeroTarjeta(v *int64) *
 	return b
 }
 
-func (b *comercialExportacionHidroCabeceraBuilder) WithMontoTotal(v float64) *comercialExportacionHidroCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.MontoTotal = v
+func (b *comercialExportacionHidroCabeceraBuilder) WithMontoAPagar(v float64) *comercialExportacionHidroCabeceraBuilder {
+	b.cabecera.MontoAPagar = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
@@ -275,8 +286,7 @@ func (b *comercialExportacionHidroCabeceraBuilder) WithCostosGastosNacionales(v 
 }
 
 func (b *comercialExportacionHidroCabeceraBuilder) WithTotalGastosNacionalesFob(v float64) *comercialExportacionHidroCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.TotalGastosNacionalesFob = v
+	b.cabecera.TotalGastosNacionalesFob = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
@@ -307,7 +317,7 @@ func (b *comercialExportacionHidroCabeceraBuilder) WithCostosGastosInternacional
 
 func (b *comercialExportacionHidroCabeceraBuilder) WithTotalGastosInternacionales(v *float64) *comercialExportacionHidroCabeceraBuilder {
 	if v == nil {
-		b.cabecera.TotalGastosInternacionales = datatype.Nilable[float64]{Value: nil}
+		b.cabecera.TotalGastosInternacionales = datatype.Nilable[float64]{}
 		return b
 	}
 	value := *v
@@ -316,9 +326,18 @@ func (b *comercialExportacionHidroCabeceraBuilder) WithTotalGastosInternacionale
 	return b
 }
 
-func (b *comercialExportacionHidroCabeceraBuilder) WithMontoDetalle(v float64) *comercialExportacionHidroCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.MontoDetalle = v
+func (b *comercialExportacionHidroCabeceraBuilder) WithSubTotalNeto(v float64) *comercialExportacionHidroCabeceraBuilder {
+	b.cabecera.SubTotalNeto = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+	return b
+}
+
+func (b *comercialExportacionHidroCabeceraBuilder) WithTotalPrecioNeto(v float64) *comercialExportacionHidroCabeceraBuilder {
+	b.cabecera.TotalPrecioNeto = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+	return b
+}
+
+func (b *comercialExportacionHidroCabeceraBuilder) WithIva(v float64) *comercialExportacionHidroCabeceraBuilder {
+	b.cabecera.Iva = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
@@ -328,45 +347,18 @@ func (b *comercialExportacionHidroCabeceraBuilder) WithCodigoMoneda(v int) *come
 }
 
 func (b *comercialExportacionHidroCabeceraBuilder) WithTipoCambio(v float64) *comercialExportacionHidroCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(5).InexactFloat64()
-	b.cabecera.TipoCambio = v
+	b.cabecera.TipoCambio = decimal.NewFromFloat(v).Round(5).InexactFloat64()
 	return b
 }
 
 func (b *comercialExportacionHidroCabeceraBuilder) WithMontoTotalMoneda(v float64) *comercialExportacionHidroCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.MontoTotalMoneda = v
-	return b
-}
-
-func (b *comercialExportacionHidroCabeceraBuilder) WithNumeroDescripcionPaquetesBultos(v any) *comercialExportacionHidroCabeceraBuilder {
-	if v == nil {
-		b.cabecera.NumeroDescripcionPaquetesBultos = datatype.Nilable[string]{Value: nil}
-		return b
-	}
-	var value string
-	switch val := v.(type) {
-	case string:
-		value = val
-	case *string:
-		if val != nil {
-			value = *val
-		}
-	default:
-		jsonData, err := json.Marshal(v)
-		if err != nil {
-			b.err = err
-			return b
-		}
-		value = string(jsonData)
-	}
-	b.cabecera.NumeroDescripcionPaquetesBultos = datatype.Nilable[string]{Value: &value}
+	b.cabecera.MontoTotalMoneda = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
 func (b *comercialExportacionHidroCabeceraBuilder) WithInformacionAdicional(v *string) *comercialExportacionHidroCabeceraBuilder {
 	if v == nil {
-		b.cabecera.InformacionAdicional = datatype.Nilable[string]{Value: nil}
+		b.cabecera.InformacionAdicional = datatype.Nilable[string]{}
 		return b
 	}
 	value := *v
@@ -376,7 +368,7 @@ func (b *comercialExportacionHidroCabeceraBuilder) WithInformacionAdicional(v *s
 
 func (b *comercialExportacionHidroCabeceraBuilder) WithDescuentoAdicional(v *float64) *comercialExportacionHidroCabeceraBuilder {
 	if v == nil {
-		b.cabecera.DescuentoAdicional = datatype.Nilable[float64]{Value: nil}
+		b.cabecera.DescuentoAdicional = datatype.Nilable[float64]{}
 		return b
 	}
 	value := *v
@@ -387,21 +379,11 @@ func (b *comercialExportacionHidroCabeceraBuilder) WithDescuentoAdicional(v *flo
 
 func (b *comercialExportacionHidroCabeceraBuilder) WithCodigoExcepcion(v *int) *comercialExportacionHidroCabeceraBuilder {
 	if v == nil {
-		b.cabecera.CodigoExcepcion = datatype.Nilable[int]{Value: nil}
+		b.cabecera.CodigoExcepcion = datatype.Nilable[int]{}
 		return b
 	}
 	value := *v
 	b.cabecera.CodigoExcepcion = datatype.Nilable[int]{Value: &value}
-	return b
-}
-
-func (b *comercialExportacionHidroCabeceraBuilder) WithCafc(v *string) *comercialExportacionHidroCabeceraBuilder {
-	if v == nil {
-		b.cabecera.Cafc = datatype.Nilable[string]{Value: nil}
-		return b
-	}
-	value := *v
-	b.cabecera.Cafc = datatype.Nilable[string]{Value: &value}
 	return b
 }
 
@@ -415,29 +397,14 @@ func (b *comercialExportacionHidroCabeceraBuilder) WithUsuario(v string) *comerc
 	return b
 }
 
-func (b *comercialExportacionHidroCabeceraBuilder) WithMontoTotalSujetoIva(v float64) *comercialExportacionHidroCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.MontoTotalSujetoIva = v
+func (b *comercialExportacionHidroCabeceraBuilder) WithCodigoInterno(v string) *comercialExportacionHidroCabeceraBuilder {
+	b.cabecera.CodigoInterno = v
 	return b
 }
 
-// WithCodigoDocumentoSector configura el código que identifica el diseño o sector de la factura.
 func (b *comercialExportacionHidroCabeceraBuilder) WithCodigoDocumentoSector(v int) *comercialExportacionHidroCabeceraBuilder {
 	b.cabecera.CodigoDocumentoSector = v
 	return b
-}
-
-func (b *comercialExportacionHidroCabeceraBuilder) Build() ComercialExportacionHidroCabecera {
-	return ComercialExportacionHidroCabecera{models.NewRequestWrapper(b.cabecera)}
-}
-
-// Err devuelve el último error de serialización de un campo JSON libre.
-func (b *comercialExportacionHidroCabeceraBuilder) Err() error {
-	return b.err
-}
-
-type comercialExportacionHidroDetalleBuilder struct {
-	detalle *documents.DetalleComercialExportacionHidro
 }
 
 func (b *comercialExportacionHidroDetalleBuilder) WithActividadEconomica(v string) *comercialExportacionHidroDetalleBuilder {
@@ -466,8 +433,7 @@ func (b *comercialExportacionHidroDetalleBuilder) WithDescripcion(v string) *com
 }
 
 func (b *comercialExportacionHidroDetalleBuilder) WithCantidad(v float64) *comercialExportacionHidroDetalleBuilder {
-	v = decimal.NewFromFloat(v).Round(6).InexactFloat64()
-	b.detalle.Cantidad = v
+	b.detalle.Cantidad = decimal.NewFromFloat(v).Round(6).InexactFloat64()
 	return b
 }
 
@@ -476,15 +442,14 @@ func (b *comercialExportacionHidroDetalleBuilder) WithUnidadMedida(v int) *comer
 	return b
 }
 
-func (b *comercialExportacionHidroDetalleBuilder) WithPrecioUnitario(v float64) *comercialExportacionHidroDetalleBuilder {
-	v = decimal.NewFromFloat(v).Round(6).InexactFloat64()
-	b.detalle.PrecioUnitario = v
+func (b *comercialExportacionHidroDetalleBuilder) WithPrecioNetoUnitario(v float64) *comercialExportacionHidroDetalleBuilder {
+	b.detalle.PrecioNetoUnitario = decimal.NewFromFloat(v).Round(6).InexactFloat64()
 	return b
 }
 
 func (b *comercialExportacionHidroDetalleBuilder) WithMontoDescuento(v *float64) *comercialExportacionHidroDetalleBuilder {
 	if v == nil {
-		b.detalle.MontoDescuento = datatype.Nilable[float64]{Value: nil}
+		b.detalle.MontoDescuento = datatype.Nilable[float64]{}
 		return b
 	}
 	value := *v
@@ -494,11 +459,6 @@ func (b *comercialExportacionHidroDetalleBuilder) WithMontoDescuento(v *float64)
 }
 
 func (b *comercialExportacionHidroDetalleBuilder) WithSubTotal(v float64) *comercialExportacionHidroDetalleBuilder {
-	v = decimal.NewFromFloat(v).Round(6).InexactFloat64()
-	b.detalle.SubTotal = v
+	b.detalle.SubTotal = decimal.NewFromFloat(v).Round(6).InexactFloat64()
 	return b
-}
-
-func (b *comercialExportacionHidroDetalleBuilder) Build() ComercialExportacionHidroDetalle {
-	return ComercialExportacionHidroDetalle{models.NewRequestWrapper(b.detalle)}
 }

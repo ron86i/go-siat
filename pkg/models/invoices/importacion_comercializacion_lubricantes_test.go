@@ -50,9 +50,9 @@ func TestImportacionLubricantes_Electronica(t *testing.T) {
 		WithNumeroDocumento("5115889").
 		WithCodigoCliente("1").
 		WithCodigoMetodoPago(1).
-		WithMontoTotal(montoTotal).
+		WithMontoAPagar(montoTotal).
 		WithMontoDeduccionIehdDS25530(&montoDeduccion).
-		WithMontoTotalSujetoIva(montoTotalSujetoIva).
+		WithTotalPrecioNeto(montoTotalSujetoIva).
 		WithCodigoMoneda(1).
 		WithTipoCambio(1).
 		WithMontoTotalMoneda(montoTotal).
@@ -67,7 +67,7 @@ func TestImportacionLubricantes_Electronica(t *testing.T) {
 		WithDescripcion("LUBRICANTE SINTETICO").
 		WithCantidad(cantidad).
 		WithUnidadMedida(1).
-		WithPrecioUnitario(precioUnitario).
+		WithPrecioNetoUnitario(precioUnitario).
 		WithMontoDescuento(&montoDescuento).
 		WithSubTotal(subTotalItem).
 		WithCantidadLitros(0.0).
@@ -144,9 +144,9 @@ func TestImportacionLubricantes_Computarizada(t *testing.T) {
 		WithNumeroDocumento("5115889").
 		WithCodigoCliente("1").
 		WithCodigoMetodoPago(1).
-		WithMontoTotal(montoTotal).
+		WithMontoAPagar(montoTotal).
 		WithMontoDeduccionIehdDS25530(&montoDeduccion).
-		WithMontoTotalSujetoIva(montoTotalSujetoIva).
+		WithTotalPrecioNeto(montoTotalSujetoIva).
 		WithCodigoMoneda(1).
 		WithTipoCambio(1).
 		WithMontoTotalMoneda(montoTotal).
@@ -161,7 +161,7 @@ func TestImportacionLubricantes_Computarizada(t *testing.T) {
 		WithDescripcion("LUBRICANTE SINTETICO").
 		WithCantidad(cantidad).
 		WithUnidadMedida(1).
-		WithPrecioUnitario(precioUnitario).
+		WithPrecioNetoUnitario(precioUnitario).
 		WithMontoDescuento(&montoDescuento).
 		WithSubTotal(subTotalItem).
 		WithCantidadLitros(0.0).

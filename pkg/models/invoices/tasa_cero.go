@@ -46,7 +46,6 @@ func NewTasaCeroCabeceraBuilder() *tasaCeroCabeceraBuilder {
 	return &tasaCeroCabeceraBuilder{
 		cabecera: &documents.CabeceraTasaCero{
 			CodigoDocumentoSector: 8, // Sector 8 para Tasa Cero
-			MontoTotalSujetoIva:   0, // Siempre 0 para Tasa Cero
 		},
 	}
 }
@@ -103,6 +102,18 @@ type tasaCeroCabeceraBuilder struct {
 	cabecera *documents.CabeceraTasaCero
 }
 
+func (b *tasaCeroCabeceraBuilder) Build() TasaCeroCabecera {
+	return TasaCeroCabecera{models.NewRequestWrapper(b.cabecera)}
+}
+
+type tasaCeroDetalleBuilder struct {
+	detalle *documents.DetalleTasaCero
+}
+
+func (b *tasaCeroDetalleBuilder) Build() TasaCeroDetalle {
+	return TasaCeroDetalle{models.NewRequestWrapper(b.detalle)}
+}
+
 func (b *tasaCeroCabeceraBuilder) WithNitEmisor(v int64) *tasaCeroCabeceraBuilder {
 	b.cabecera.NitEmisor = v
 	return b
@@ -118,12 +129,12 @@ func (b *tasaCeroCabeceraBuilder) WithMunicipio(v string) *tasaCeroCabeceraBuild
 	return b
 }
 
-func (b *tasaCeroCabeceraBuilder) WithTelefono(telefono *string) *tasaCeroCabeceraBuilder {
-	if telefono == nil {
-		b.cabecera.Telefono = datatype.Nilable[string]{Value: nil}
+func (b *tasaCeroCabeceraBuilder) WithTelefono(v *string) *tasaCeroCabeceraBuilder {
+	if v == nil {
+		b.cabecera.Telefono = datatype.Nilable[string]{}
 		return b
 	}
-	value := *telefono
+	value := *v
 	b.cabecera.Telefono = datatype.Nilable[string]{Value: &value}
 	return b
 }
@@ -155,7 +166,7 @@ func (b *tasaCeroCabeceraBuilder) WithDireccion(v string) *tasaCeroCabeceraBuild
 
 func (b *tasaCeroCabeceraBuilder) WithCodigoPuntoVenta(v *int) *tasaCeroCabeceraBuilder {
 	if v == nil {
-		b.cabecera.CodigoPuntoVenta = datatype.Nilable[int]{Value: nil}
+		b.cabecera.CodigoPuntoVenta = datatype.Nilable[int]{}
 		return b
 	}
 	value := *v
@@ -163,14 +174,14 @@ func (b *tasaCeroCabeceraBuilder) WithCodigoPuntoVenta(v *int) *tasaCeroCabecera
 	return b
 }
 
-func (b *tasaCeroCabeceraBuilder) WithFechaEmision(fechaEmision time.Time) *tasaCeroCabeceraBuilder {
-	b.cabecera.FechaEmision = datatype.NewTimeSiat(fechaEmision)
+func (b *tasaCeroCabeceraBuilder) WithFechaEmision(v time.Time) *tasaCeroCabeceraBuilder {
+	b.cabecera.FechaEmision = datatype.NewTimeSiat(v)
 	return b
 }
 
 func (b *tasaCeroCabeceraBuilder) WithNombreRazonSocial(v *string) *tasaCeroCabeceraBuilder {
 	if v == nil {
-		b.cabecera.NombreRazonSocial = datatype.Nilable[string]{Value: nil}
+		b.cabecera.NombreRazonSocial = datatype.Nilable[string]{}
 		return b
 	}
 	value := *v
@@ -188,13 +199,8 @@ func (b *tasaCeroCabeceraBuilder) WithNumeroDocumento(v string) *tasaCeroCabecer
 	return b
 }
 
-func (b *tasaCeroCabeceraBuilder) WithComplemento(v *string) *tasaCeroCabeceraBuilder {
-	if v == nil {
-		b.cabecera.Complemento = datatype.Nilable[string]{Value: nil}
-		return b
-	}
-	value := *v
-	b.cabecera.Complemento = datatype.Nilable[string]{Value: &value}
+func (b *tasaCeroCabeceraBuilder) WithComplemento(v string) *tasaCeroCabeceraBuilder {
+	b.cabecera.Complemento = v
 	return b
 }
 
@@ -210,7 +216,7 @@ func (b *tasaCeroCabeceraBuilder) WithCodigoMetodoPago(v int) *tasaCeroCabeceraB
 
 func (b *tasaCeroCabeceraBuilder) WithNumeroTarjeta(v *int64) *tasaCeroCabeceraBuilder {
 	if v == nil {
-		b.cabecera.NumeroTarjeta = datatype.Nilable[int64]{Value: nil}
+		b.cabecera.NumeroTarjeta = datatype.Nilable[int64]{}
 		return b
 	}
 	value := *v
@@ -218,9 +224,23 @@ func (b *tasaCeroCabeceraBuilder) WithNumeroTarjeta(v *int64) *tasaCeroCabeceraB
 	return b
 }
 
-func (b *tasaCeroCabeceraBuilder) WithMontoTotal(v float64) *tasaCeroCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.MontoTotal = v
+func (b *tasaCeroCabeceraBuilder) WithSubTotalNeto(v float64) *tasaCeroCabeceraBuilder {
+	b.cabecera.SubTotalNeto = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+	return b
+}
+
+func (b *tasaCeroCabeceraBuilder) WithTotalPrecioNeto(v float64) *tasaCeroCabeceraBuilder {
+	b.cabecera.TotalPrecioNeto = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+	return b
+}
+
+func (b *tasaCeroCabeceraBuilder) WithIva(v float64) *tasaCeroCabeceraBuilder {
+	b.cabecera.Iva = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+	return b
+}
+
+func (b *tasaCeroCabeceraBuilder) WithMontoAPagar(v float64) *tasaCeroCabeceraBuilder {
+	b.cabecera.MontoAPagar = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
@@ -230,20 +250,18 @@ func (b *tasaCeroCabeceraBuilder) WithCodigoMoneda(v int) *tasaCeroCabeceraBuild
 }
 
 func (b *tasaCeroCabeceraBuilder) WithTipoCambio(v float64) *tasaCeroCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.TipoCambio = v
+	b.cabecera.TipoCambio = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
 func (b *tasaCeroCabeceraBuilder) WithMontoTotalMoneda(v float64) *tasaCeroCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.MontoTotalMoneda = v
+	b.cabecera.MontoTotalMoneda = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
 func (b *tasaCeroCabeceraBuilder) WithMontoGiftCard(v *float64) *tasaCeroCabeceraBuilder {
 	if v == nil {
-		b.cabecera.MontoGiftCard = datatype.Nilable[float64]{Value: nil}
+		b.cabecera.MontoGiftCard = datatype.Nilable[float64]{}
 		return b
 	}
 	value := *v
@@ -254,7 +272,7 @@ func (b *tasaCeroCabeceraBuilder) WithMontoGiftCard(v *float64) *tasaCeroCabecer
 
 func (b *tasaCeroCabeceraBuilder) WithDescuentoAdicional(v *float64) *tasaCeroCabeceraBuilder {
 	if v == nil {
-		b.cabecera.DescuentoAdicional = datatype.Nilable[float64]{Value: nil}
+		b.cabecera.DescuentoAdicional = datatype.Nilable[float64]{}
 		return b
 	}
 	value := *v
@@ -265,21 +283,11 @@ func (b *tasaCeroCabeceraBuilder) WithDescuentoAdicional(v *float64) *tasaCeroCa
 
 func (b *tasaCeroCabeceraBuilder) WithCodigoExcepcion(v *int) *tasaCeroCabeceraBuilder {
 	if v == nil {
-		b.cabecera.CodigoExcepcion = datatype.Nilable[int]{Value: nil}
+		b.cabecera.CodigoExcepcion = datatype.Nilable[int]{}
 		return b
 	}
 	value := *v
 	b.cabecera.CodigoExcepcion = datatype.Nilable[int]{Value: &value}
-	return b
-}
-
-func (b *tasaCeroCabeceraBuilder) WithCafc(v *string) *tasaCeroCabeceraBuilder {
-	if v == nil {
-		b.cabecera.Cafc = datatype.Nilable[string]{Value: nil}
-		return b
-	}
-	value := *v
-	b.cabecera.Cafc = datatype.Nilable[string]{Value: &value}
 	return b
 }
 
@@ -293,24 +301,14 @@ func (b *tasaCeroCabeceraBuilder) WithUsuario(v string) *tasaCeroCabeceraBuilder
 	return b
 }
 
-func (b *tasaCeroCabeceraBuilder) WithMontoTotalSujetoIva(v float64) *tasaCeroCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.MontoTotalSujetoIva = v
+func (b *tasaCeroCabeceraBuilder) WithCodigoInterno(v string) *tasaCeroCabeceraBuilder {
+	b.cabecera.CodigoInterno = v
 	return b
 }
 
-// WithCodigoDocumentoSector configura el código que identifica el diseño o sector de la factura.
 func (b *tasaCeroCabeceraBuilder) WithCodigoDocumentoSector(v int) *tasaCeroCabeceraBuilder {
 	b.cabecera.CodigoDocumentoSector = v
 	return b
-}
-
-func (b *tasaCeroCabeceraBuilder) Build() TasaCeroCabecera {
-	return TasaCeroCabecera{models.NewRequestWrapper(b.cabecera)}
-}
-
-type tasaCeroDetalleBuilder struct {
-	detalle *documents.DetalleTasaCero
 }
 
 func (b *tasaCeroDetalleBuilder) WithActividadEconomica(v string) *tasaCeroDetalleBuilder {
@@ -334,8 +332,7 @@ func (b *tasaCeroDetalleBuilder) WithDescripcion(v string) *tasaCeroDetalleBuild
 }
 
 func (b *tasaCeroDetalleBuilder) WithCantidad(v float64) *tasaCeroDetalleBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.detalle.Cantidad = v
+	b.detalle.Cantidad = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
@@ -344,15 +341,14 @@ func (b *tasaCeroDetalleBuilder) WithUnidadMedida(v int) *tasaCeroDetalleBuilder
 	return b
 }
 
-func (b *tasaCeroDetalleBuilder) WithPrecioUnitario(v float64) *tasaCeroDetalleBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.detalle.PrecioUnitario = v
+func (b *tasaCeroDetalleBuilder) WithPrecioNetoUnitario(v float64) *tasaCeroDetalleBuilder {
+	b.detalle.PrecioNetoUnitario = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
 func (b *tasaCeroDetalleBuilder) WithMontoDescuento(v *float64) *tasaCeroDetalleBuilder {
 	if v == nil {
-		b.detalle.MontoDescuento = datatype.Nilable[float64]{Value: nil}
+		b.detalle.MontoDescuento = datatype.Nilable[float64]{}
 		return b
 	}
 	value := *v
@@ -362,11 +358,6 @@ func (b *tasaCeroDetalleBuilder) WithMontoDescuento(v *float64) *tasaCeroDetalle
 }
 
 func (b *tasaCeroDetalleBuilder) WithSubTotal(v float64) *tasaCeroDetalleBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.detalle.SubTotal = v
+	b.detalle.SubTotal = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
-}
-
-func (b *tasaCeroDetalleBuilder) Build() TasaCeroDetalle {
-	return TasaCeroDetalle{models.NewRequestWrapper(b.detalle)}
 }

@@ -48,7 +48,7 @@ func TestComercialExportacionServicios_Computarizada(t *testing.T) {
 		WithCodigoPais(1).
 		WithCodigoCliente("EXP-SERV-001").
 		WithCodigoMetodoPago(1).
-		WithMontoTotal(montoTotal).
+		WithMontoAPagar(montoTotal).
 		WithCodigoMoneda(1).
 		WithTipoCambio(1.0).
 		WithMontoTotalMoneda(montoTotal).
@@ -61,9 +61,9 @@ func TestComercialExportacionServicios_Computarizada(t *testing.T) {
 		WithCodigoProductoSin(622539).
 		WithCodigoProducto("EXP-SERV").
 		WithDescripcion("ASISTENCIA TECNICA").
-		WithCantidad(cantidad).
+		WithCantidad(int(cantidad)).
 		WithUnidadMedida(58).
-		WithPrecioUnitario(precioUnitario).
+		WithPrecioNetoUnitario(precioUnitario).
 		WithMontoDescuento(&montoDescuento).
 		WithSubTotal(subTotalItem).
 		Build()

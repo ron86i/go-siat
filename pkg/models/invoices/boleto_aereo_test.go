@@ -36,8 +36,8 @@ func TestBoletoAereoBuilder(t *testing.T) {
 		WithCodigoOrigenServicio("VVI").
 		WithCodigoMetodoPago(1).
 		WithMontoTarifa(500.00).
-		WithMontoTotal(550.00).
-		WithMontoTotalSujetoIva(500.00).
+		WithMontoAPagar(550.00).
+		WithTotalPrecioNeto(500.00).
 		WithCodigoMoneda(1).
 		WithTipoCambio(1).
 		WithMontoTotalMoneda(550.00).
@@ -102,8 +102,8 @@ func TestBoletoAereoIntegration(t *testing.T) {
 					WithCodigoOrigenServicio("VVI").
 					WithCodigoMetodoPago(1).
 					WithMontoTarifa(500.00).
-					WithMontoTotal(500.00).
-					WithMontoTotalSujetoIva(500.00).
+					WithMontoAPagar(500.00).
+					WithTotalPrecioNeto(500.00).
 					WithCodigoMoneda(1).
 					WithTipoCambio(1).
 					WithMontoTotalMoneda(500.00).

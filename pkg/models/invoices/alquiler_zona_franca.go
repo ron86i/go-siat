@@ -46,7 +46,6 @@ func NewAlquilerZFCabeceraBuilder() *alquilerZFCabeceraBuilder {
 	return &alquilerZFCabeceraBuilder{
 		cabecera: &documents.CabeceraAlquilerZF{
 			CodigoDocumentoSector: 42, // Sector 42 para Alquiler ZF
-			MontoTotalSujetoIva:   0,  // Fijo 0 según XSD
 		},
 	}
 }
@@ -97,6 +96,18 @@ type alquilerZFCabeceraBuilder struct {
 	cabecera *documents.CabeceraAlquilerZF
 }
 
+func (b *alquilerZFCabeceraBuilder) Build() AlquilerZFCabecera {
+	return AlquilerZFCabecera{models.NewRequestWrapper(b.cabecera)}
+}
+
+type alquilerZFDetalleBuilder struct {
+	detalle *documents.DetalleAlquilerZF
+}
+
+func (b *alquilerZFDetalleBuilder) Build() AlquilerZFDetalle {
+	return AlquilerZFDetalle{models.NewRequestWrapper(b.detalle)}
+}
+
 func (b *alquilerZFCabeceraBuilder) WithNitEmisor(v int64) *alquilerZFCabeceraBuilder {
 	b.cabecera.NitEmisor = v
 	return b
@@ -112,12 +123,12 @@ func (b *alquilerZFCabeceraBuilder) WithMunicipio(v string) *alquilerZFCabeceraB
 	return b
 }
 
-func (b *alquilerZFCabeceraBuilder) WithTelefono(telefono *string) *alquilerZFCabeceraBuilder {
-	if telefono == nil {
-		b.cabecera.Telefono = datatype.Nilable[string]{Value: nil}
+func (b *alquilerZFCabeceraBuilder) WithTelefono(v *string) *alquilerZFCabeceraBuilder {
+	if v == nil {
+		b.cabecera.Telefono = datatype.Nilable[string]{}
 		return b
 	}
-	value := *telefono
+	value := *v
 	b.cabecera.Telefono = datatype.Nilable[string]{Value: &value}
 	return b
 }
@@ -149,7 +160,7 @@ func (b *alquilerZFCabeceraBuilder) WithDireccion(v string) *alquilerZFCabeceraB
 
 func (b *alquilerZFCabeceraBuilder) WithCodigoPuntoVenta(v *int) *alquilerZFCabeceraBuilder {
 	if v == nil {
-		b.cabecera.CodigoPuntoVenta = datatype.Nilable[int]{Value: nil}
+		b.cabecera.CodigoPuntoVenta = datatype.Nilable[int]{}
 		return b
 	}
 	value := *v
@@ -157,14 +168,14 @@ func (b *alquilerZFCabeceraBuilder) WithCodigoPuntoVenta(v *int) *alquilerZFCabe
 	return b
 }
 
-func (b *alquilerZFCabeceraBuilder) WithFechaEmision(fechaEmision time.Time) *alquilerZFCabeceraBuilder {
-	b.cabecera.FechaEmision = datatype.NewTimeSiat(fechaEmision)
+func (b *alquilerZFCabeceraBuilder) WithFechaEmision(v time.Time) *alquilerZFCabeceraBuilder {
+	b.cabecera.FechaEmision = datatype.NewTimeSiat(v)
 	return b
 }
 
 func (b *alquilerZFCabeceraBuilder) WithNombreRazonSocial(v *string) *alquilerZFCabeceraBuilder {
 	if v == nil {
-		b.cabecera.NombreRazonSocial = datatype.Nilable[string]{Value: nil}
+		b.cabecera.NombreRazonSocial = datatype.Nilable[string]{}
 		return b
 	}
 	value := *v
@@ -182,13 +193,8 @@ func (b *alquilerZFCabeceraBuilder) WithNumeroDocumento(v string) *alquilerZFCab
 	return b
 }
 
-func (b *alquilerZFCabeceraBuilder) WithComplemento(v *string) *alquilerZFCabeceraBuilder {
-	if v == nil {
-		b.cabecera.Complemento = datatype.Nilable[string]{Value: nil}
-		return b
-	}
-	value := *v
-	b.cabecera.Complemento = datatype.Nilable[string]{Value: &value}
+func (b *alquilerZFCabeceraBuilder) WithComplemento(v string) *alquilerZFCabeceraBuilder {
+	b.cabecera.Complemento = v
 	return b
 }
 
@@ -209,7 +215,7 @@ func (b *alquilerZFCabeceraBuilder) WithCodigoMetodoPago(v int) *alquilerZFCabec
 
 func (b *alquilerZFCabeceraBuilder) WithNumeroTarjeta(v *int64) *alquilerZFCabeceraBuilder {
 	if v == nil {
-		b.cabecera.NumeroTarjeta = datatype.Nilable[int64]{Value: nil}
+		b.cabecera.NumeroTarjeta = datatype.Nilable[int64]{}
 		return b
 	}
 	value := *v
@@ -217,9 +223,23 @@ func (b *alquilerZFCabeceraBuilder) WithNumeroTarjeta(v *int64) *alquilerZFCabec
 	return b
 }
 
-func (b *alquilerZFCabeceraBuilder) WithMontoTotal(v float64) *alquilerZFCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.MontoTotal = v
+func (b *alquilerZFCabeceraBuilder) WithSubTotalNeto(v float64) *alquilerZFCabeceraBuilder {
+	b.cabecera.SubTotalNeto = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+	return b
+}
+
+func (b *alquilerZFCabeceraBuilder) WithTotalPrecioNeto(v float64) *alquilerZFCabeceraBuilder {
+	b.cabecera.TotalPrecioNeto = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+	return b
+}
+
+func (b *alquilerZFCabeceraBuilder) WithIva(v float64) *alquilerZFCabeceraBuilder {
+	b.cabecera.Iva = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+	return b
+}
+
+func (b *alquilerZFCabeceraBuilder) WithMontoAPagar(v float64) *alquilerZFCabeceraBuilder {
+	b.cabecera.MontoAPagar = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
@@ -228,21 +248,19 @@ func (b *alquilerZFCabeceraBuilder) WithCodigoMoneda(v int) *alquilerZFCabeceraB
 	return b
 }
 
-func (b *alquilerZFCabeceraBuilder) WithTipoCambio(v float64) *alquilerZFCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+func (b *alquilerZFCabeceraBuilder) WithTipoCambio(v int) *alquilerZFCabeceraBuilder {
 	b.cabecera.TipoCambio = v
 	return b
 }
 
 func (b *alquilerZFCabeceraBuilder) WithMontoTotalMoneda(v float64) *alquilerZFCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.MontoTotalMoneda = v
+	b.cabecera.MontoTotalMoneda = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
 func (b *alquilerZFCabeceraBuilder) WithDescuentoAdicional(v *float64) *alquilerZFCabeceraBuilder {
 	if v == nil {
-		b.cabecera.DescuentoAdicional = datatype.Nilable[float64]{Value: nil}
+		b.cabecera.DescuentoAdicional = datatype.Nilable[float64]{}
 		return b
 	}
 	value := *v
@@ -253,21 +271,11 @@ func (b *alquilerZFCabeceraBuilder) WithDescuentoAdicional(v *float64) *alquiler
 
 func (b *alquilerZFCabeceraBuilder) WithCodigoExcepcion(v *int) *alquilerZFCabeceraBuilder {
 	if v == nil {
-		b.cabecera.CodigoExcepcion = datatype.Nilable[int]{Value: nil}
+		b.cabecera.CodigoExcepcion = datatype.Nilable[int]{}
 		return b
 	}
 	value := *v
 	b.cabecera.CodigoExcepcion = datatype.Nilable[int]{Value: &value}
-	return b
-}
-
-func (b *alquilerZFCabeceraBuilder) WithCafc(v *string) *alquilerZFCabeceraBuilder {
-	if v == nil {
-		b.cabecera.Cafc = datatype.Nilable[string]{Value: nil}
-		return b
-	}
-	value := *v
-	b.cabecera.Cafc = datatype.Nilable[string]{Value: &value}
 	return b
 }
 
@@ -281,24 +289,14 @@ func (b *alquilerZFCabeceraBuilder) WithUsuario(v string) *alquilerZFCabeceraBui
 	return b
 }
 
-func (b *alquilerZFCabeceraBuilder) WithMontoTotalSujetoIva(v float64) *alquilerZFCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.MontoTotalSujetoIva = v
+func (b *alquilerZFCabeceraBuilder) WithCodigoInterno(v string) *alquilerZFCabeceraBuilder {
+	b.cabecera.CodigoInterno = v
 	return b
 }
 
-// WithCodigoDocumentoSector configura el código que identifica el diseño o sector de la factura.
 func (b *alquilerZFCabeceraBuilder) WithCodigoDocumentoSector(v int) *alquilerZFCabeceraBuilder {
 	b.cabecera.CodigoDocumentoSector = v
 	return b
-}
-
-func (b *alquilerZFCabeceraBuilder) Build() AlquilerZFCabecera {
-	return AlquilerZFCabecera{models.NewRequestWrapper(b.cabecera)}
-}
-
-type alquilerZFDetalleBuilder struct {
-	detalle *documents.DetalleAlquilerZF
 }
 
 func (b *alquilerZFDetalleBuilder) WithActividadEconomica(v string) *alquilerZFDetalleBuilder {
@@ -322,8 +320,7 @@ func (b *alquilerZFDetalleBuilder) WithDescripcion(v string) *alquilerZFDetalleB
 }
 
 func (b *alquilerZFDetalleBuilder) WithCantidad(v float64) *alquilerZFDetalleBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.detalle.Cantidad = v
+	b.detalle.Cantidad = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
@@ -332,15 +329,14 @@ func (b *alquilerZFDetalleBuilder) WithUnidadMedida(v int) *alquilerZFDetalleBui
 	return b
 }
 
-func (b *alquilerZFDetalleBuilder) WithPrecioUnitario(v float64) *alquilerZFDetalleBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.detalle.PrecioUnitario = v
+func (b *alquilerZFDetalleBuilder) WithPrecioNetoUnitario(v float64) *alquilerZFDetalleBuilder {
+	b.detalle.PrecioNetoUnitario = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
 func (b *alquilerZFDetalleBuilder) WithMontoDescuento(v *float64) *alquilerZFDetalleBuilder {
 	if v == nil {
-		b.detalle.MontoDescuento = datatype.Nilable[float64]{Value: nil}
+		b.detalle.MontoDescuento = datatype.Nilable[float64]{}
 		return b
 	}
 	value := *v
@@ -350,11 +346,6 @@ func (b *alquilerZFDetalleBuilder) WithMontoDescuento(v *float64) *alquilerZFDet
 }
 
 func (b *alquilerZFDetalleBuilder) WithSubTotal(v float64) *alquilerZFDetalleBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.detalle.SubTotal = v
+	b.detalle.SubTotal = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
-}
-
-func (b *alquilerZFDetalleBuilder) Build() AlquilerZFDetalle {
-	return AlquilerZFDetalle{models.NewRequestWrapper(b.detalle)}
 }

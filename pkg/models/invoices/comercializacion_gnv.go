@@ -96,6 +96,18 @@ type comercializacionGnvCabeceraBuilder struct {
 	cabecera *documents.CabeceraComercializacionGnv
 }
 
+func (b *comercializacionGnvCabeceraBuilder) Build() ComercializacionGnvCabecera {
+	return ComercializacionGnvCabecera{models.NewRequestWrapper(b.cabecera)}
+}
+
+type comercializacionGnvDetalleBuilder struct {
+	detalle *documents.DetalleComercializacionGnv
+}
+
+func (b *comercializacionGnvDetalleBuilder) Build() ComercializacionGnvDetalle {
+	return ComercializacionGnvDetalle{models.NewRequestWrapper(b.detalle)}
+}
+
 func (b *comercializacionGnvCabeceraBuilder) WithNitEmisor(v int64) *comercializacionGnvCabeceraBuilder {
 	b.cabecera.NitEmisor = v
 	return b
@@ -111,12 +123,12 @@ func (b *comercializacionGnvCabeceraBuilder) WithMunicipio(v string) *comerciali
 	return b
 }
 
-func (b *comercializacionGnvCabeceraBuilder) WithTelefono(telefono *string) *comercializacionGnvCabeceraBuilder {
-	if telefono == nil {
-		b.cabecera.Telefono = datatype.Nilable[string]{Value: nil}
+func (b *comercializacionGnvCabeceraBuilder) WithTelefono(v *string) *comercializacionGnvCabeceraBuilder {
+	if v == nil {
+		b.cabecera.Telefono = datatype.Nilable[string]{}
 		return b
 	}
-	value := *telefono
+	value := *v
 	b.cabecera.Telefono = datatype.Nilable[string]{Value: &value}
 	return b
 }
@@ -148,7 +160,7 @@ func (b *comercializacionGnvCabeceraBuilder) WithDireccion(v string) *comerciali
 
 func (b *comercializacionGnvCabeceraBuilder) WithCodigoPuntoVenta(v *int) *comercializacionGnvCabeceraBuilder {
 	if v == nil {
-		b.cabecera.CodigoPuntoVenta = datatype.Nilable[int]{Value: nil}
+		b.cabecera.CodigoPuntoVenta = datatype.Nilable[int]{}
 		return b
 	}
 	value := *v
@@ -156,14 +168,14 @@ func (b *comercializacionGnvCabeceraBuilder) WithCodigoPuntoVenta(v *int) *comer
 	return b
 }
 
-func (b *comercializacionGnvCabeceraBuilder) WithFechaEmision(fechaEmision time.Time) *comercializacionGnvCabeceraBuilder {
-	b.cabecera.FechaEmision = datatype.NewTimeSiat(fechaEmision)
+func (b *comercializacionGnvCabeceraBuilder) WithFechaEmision(v time.Time) *comercializacionGnvCabeceraBuilder {
+	b.cabecera.FechaEmision = datatype.NewTimeSiat(v)
 	return b
 }
 
 func (b *comercializacionGnvCabeceraBuilder) WithNombreRazonSocial(v *string) *comercializacionGnvCabeceraBuilder {
 	if v == nil {
-		b.cabecera.NombreRazonSocial = datatype.Nilable[string]{Value: nil}
+		b.cabecera.NombreRazonSocial = datatype.Nilable[string]{}
 		return b
 	}
 	value := *v
@@ -181,13 +193,8 @@ func (b *comercializacionGnvCabeceraBuilder) WithNumeroDocumento(v string) *come
 	return b
 }
 
-func (b *comercializacionGnvCabeceraBuilder) WithComplemento(v *string) *comercializacionGnvCabeceraBuilder {
-	if v == nil {
-		b.cabecera.Complemento = datatype.Nilable[string]{Value: nil}
-		return b
-	}
-	value := *v
-	b.cabecera.Complemento = datatype.Nilable[string]{Value: &value}
+func (b *comercializacionGnvCabeceraBuilder) WithComplemento(v string) *comercializacionGnvCabeceraBuilder {
+	b.cabecera.Complemento = v
 	return b
 }
 
@@ -198,7 +205,7 @@ func (b *comercializacionGnvCabeceraBuilder) WithCodigoCliente(v string) *comerc
 
 func (b *comercializacionGnvCabeceraBuilder) WithCodigoPais(v *int) *comercializacionGnvCabeceraBuilder {
 	if v == nil {
-		b.cabecera.CodigoPais = datatype.Nilable[int]{Value: nil}
+		b.cabecera.CodigoPais = datatype.Nilable[int]{}
 		return b
 	}
 	value := *v
@@ -213,7 +220,7 @@ func (b *comercializacionGnvCabeceraBuilder) WithPlacaVehiculo(v string) *comerc
 
 func (b *comercializacionGnvCabeceraBuilder) WithTipoEnvase(v *string) *comercializacionGnvCabeceraBuilder {
 	if v == nil {
-		b.cabecera.TipoEnvase = datatype.Nilable[string]{Value: nil}
+		b.cabecera.TipoEnvase = datatype.Nilable[string]{}
 		return b
 	}
 	value := *v
@@ -228,7 +235,7 @@ func (b *comercializacionGnvCabeceraBuilder) WithCodigoMetodoPago(v int) *comerc
 
 func (b *comercializacionGnvCabeceraBuilder) WithNumeroTarjeta(v *int64) *comercializacionGnvCabeceraBuilder {
 	if v == nil {
-		b.cabecera.NumeroTarjeta = datatype.Nilable[int64]{Value: nil}
+		b.cabecera.NumeroTarjeta = datatype.Nilable[int64]{}
 		return b
 	}
 	value := *v
@@ -236,15 +243,23 @@ func (b *comercializacionGnvCabeceraBuilder) WithNumeroTarjeta(v *int64) *comerc
 	return b
 }
 
-func (b *comercializacionGnvCabeceraBuilder) WithMontoTotal(v float64) *comercializacionGnvCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.MontoTotal = v
+func (b *comercializacionGnvCabeceraBuilder) WithSubTotalNeto(v float64) *comercializacionGnvCabeceraBuilder {
+	b.cabecera.SubTotalNeto = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
-func (b *comercializacionGnvCabeceraBuilder) WithMontoTotalSujetoIva(v float64) *comercializacionGnvCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.MontoTotalSujetoIva = v
+func (b *comercializacionGnvCabeceraBuilder) WithTotalPrecioNeto(v float64) *comercializacionGnvCabeceraBuilder {
+	b.cabecera.TotalPrecioNeto = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+	return b
+}
+
+func (b *comercializacionGnvCabeceraBuilder) WithIva(v float64) *comercializacionGnvCabeceraBuilder {
+	b.cabecera.Iva = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+	return b
+}
+
+func (b *comercializacionGnvCabeceraBuilder) WithMontoAPagar(v float64) *comercializacionGnvCabeceraBuilder {
+	b.cabecera.MontoAPagar = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
@@ -254,20 +269,18 @@ func (b *comercializacionGnvCabeceraBuilder) WithCodigoMoneda(v int) *comerciali
 }
 
 func (b *comercializacionGnvCabeceraBuilder) WithTipoCambio(v float64) *comercializacionGnvCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.TipoCambio = v
+	b.cabecera.TipoCambio = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
 func (b *comercializacionGnvCabeceraBuilder) WithMontoTotalMoneda(v float64) *comercializacionGnvCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.MontoTotalMoneda = v
+	b.cabecera.MontoTotalMoneda = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
 func (b *comercializacionGnvCabeceraBuilder) WithMontoVale(v *float64) *comercializacionGnvCabeceraBuilder {
 	if v == nil {
-		b.cabecera.MontoVale = datatype.Nilable[float64]{Value: nil}
+		b.cabecera.MontoVale = datatype.Nilable[float64]{}
 		return b
 	}
 	value := *v
@@ -278,7 +291,7 @@ func (b *comercializacionGnvCabeceraBuilder) WithMontoVale(v *float64) *comercia
 
 func (b *comercializacionGnvCabeceraBuilder) WithDescuentoAdicional(v *float64) *comercializacionGnvCabeceraBuilder {
 	if v == nil {
-		b.cabecera.DescuentoAdicional = datatype.Nilable[float64]{Value: nil}
+		b.cabecera.DescuentoAdicional = datatype.Nilable[float64]{}
 		return b
 	}
 	value := *v
@@ -289,21 +302,11 @@ func (b *comercializacionGnvCabeceraBuilder) WithDescuentoAdicional(v *float64) 
 
 func (b *comercializacionGnvCabeceraBuilder) WithCodigoExcepcion(v *int) *comercializacionGnvCabeceraBuilder {
 	if v == nil {
-		b.cabecera.CodigoExcepcion = datatype.Nilable[int]{Value: nil}
+		b.cabecera.CodigoExcepcion = datatype.Nilable[int]{}
 		return b
 	}
 	value := *v
 	b.cabecera.CodigoExcepcion = datatype.Nilable[int]{Value: &value}
-	return b
-}
-
-func (b *comercializacionGnvCabeceraBuilder) WithCafc(v *string) *comercializacionGnvCabeceraBuilder {
-	if v == nil {
-		b.cabecera.Cafc = datatype.Nilable[string]{Value: nil}
-		return b
-	}
-	value := *v
-	b.cabecera.Cafc = datatype.Nilable[string]{Value: &value}
 	return b
 }
 
@@ -317,18 +320,14 @@ func (b *comercializacionGnvCabeceraBuilder) WithUsuario(v string) *comercializa
 	return b
 }
 
-// WithCodigoDocumentoSector configura el código que identifica el diseño o sector de la factura.
-func (b *comercializacionGnvCabeceraBuilder) WithCodigoDocumentoSector(v int) *comercializacionGnvCabeceraBuilder {
-	b.cabecera.CodigoDocumentoSector = v
+func (b *comercializacionGnvCabeceraBuilder) WithCodigoInterno(v string) *comercializacionGnvCabeceraBuilder {
+	b.cabecera.CodigoInterno = v
 	return b
 }
 
-func (b *comercializacionGnvCabeceraBuilder) Build() ComercializacionGnvCabecera {
-	return ComercializacionGnvCabecera{models.NewRequestWrapper(b.cabecera)}
-}
-
-type comercializacionGnvDetalleBuilder struct {
-	detalle *documents.DetalleComercializacionGnv
+func (b *comercializacionGnvCabeceraBuilder) WithCodigoDocumentoSector(v int) *comercializacionGnvCabeceraBuilder {
+	b.cabecera.CodigoDocumentoSector = v
+	return b
 }
 
 func (b *comercializacionGnvDetalleBuilder) WithActividadEconomica(v string) *comercializacionGnvDetalleBuilder {
@@ -352,9 +351,7 @@ func (b *comercializacionGnvDetalleBuilder) WithDescripcion(v string) *comercial
 }
 
 func (b *comercializacionGnvDetalleBuilder) WithCantidad(v float64) *comercializacionGnvDetalleBuilder {
-	// GNV usa 5 decimales para cantidad
-	v = decimal.NewFromFloat(v).Round(5).InexactFloat64()
-	b.detalle.Cantidad = v
+	b.detalle.Cantidad = decimal.NewFromFloat(v).Round(5).InexactFloat64()
 	return b
 }
 
@@ -363,15 +360,14 @@ func (b *comercializacionGnvDetalleBuilder) WithUnidadMedida(v int) *comercializ
 	return b
 }
 
-func (b *comercializacionGnvDetalleBuilder) WithPrecioUnitario(v float64) *comercializacionGnvDetalleBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.detalle.PrecioUnitario = v
+func (b *comercializacionGnvDetalleBuilder) WithPrecioNetoUnitario(v float64) *comercializacionGnvDetalleBuilder {
+	b.detalle.PrecioNetoUnitario = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
 func (b *comercializacionGnvDetalleBuilder) WithMontoDescuento(v *float64) *comercializacionGnvDetalleBuilder {
 	if v == nil {
-		b.detalle.MontoDescuento = datatype.Nilable[float64]{Value: nil}
+		b.detalle.MontoDescuento = datatype.Nilable[float64]{}
 		return b
 	}
 	value := *v
@@ -381,11 +377,6 @@ func (b *comercializacionGnvDetalleBuilder) WithMontoDescuento(v *float64) *come
 }
 
 func (b *comercializacionGnvDetalleBuilder) WithSubTotal(v float64) *comercializacionGnvDetalleBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.detalle.SubTotal = v
+	b.detalle.SubTotal = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
-}
-
-func (b *comercializacionGnvDetalleBuilder) Build() ComercializacionGnvDetalle {
-	return ComercializacionGnvDetalle{models.NewRequestWrapper(b.detalle)}
 }

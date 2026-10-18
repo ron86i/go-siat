@@ -39,7 +39,7 @@ func TestSeguridadAlimentaria_Electronica(t *testing.T) {
 		WithNumeroDocumento("1234567").
 		WithCodigoCliente("EMAPA-001").
 		WithCodigoMetodoPago(1).
-		WithMontoTotal(100.00).
+		WithMontoAPagar(100.00).
 		WithCodigoMoneda(1).
 		WithTipoCambio(1.0).
 		WithMontoTotalMoneda(100.00).
@@ -54,7 +54,7 @@ func TestSeguridadAlimentaria_Electronica(t *testing.T) {
 		WithDescripcion("ARROZ DE PRIMERA").
 		WithCantidad(2.0).
 		WithUnidadMedida(1).
-		WithPrecioUnitario(50.0).
+		WithPrecioNetoUnitario(50.0).
 		WithSubTotal(100.0).
 		Build()
 
@@ -117,7 +117,7 @@ func TestSeguridadAlimentaria_Computarizada(t *testing.T) {
 		WithNumeroDocumento("1234567").
 		WithCodigoCliente("EMAPA-001").
 		WithCodigoMetodoPago(1).
-		WithMontoTotal(200.00).
+		WithMontoAPagar(200.00).
 		WithCodigoMoneda(1).
 		WithTipoCambio(1.0).
 		WithMontoTotalMoneda(200.00).
@@ -132,7 +132,7 @@ func TestSeguridadAlimentaria_Computarizada(t *testing.T) {
 		WithDescripcion("HARINA DE TRIGO").
 		WithCantidad(4.0).
 		WithUnidadMedida(1).
-		WithPrecioUnitario(50.0).
+		WithPrecioNetoUnitario(50.0).
 		WithSubTotal(200.0).
 		Build()
 

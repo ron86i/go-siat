@@ -83,13 +83,12 @@ func NewBoletoAereoCabeceraBuilder() *boletoAereoCabeceraBuilder {
 	}
 }
 
-func (b *boletoAereoCabeceraBuilder) WithNitEmisor(v int64) *boletoAereoCabeceraBuilder {
-	b.cabecera.NitEmisor = v
-	return b
+func (b *boletoAereoCabeceraBuilder) Build() BoletoAereoCabecera {
+	return BoletoAereoCabecera{models.NewRequestWrapper(b.cabecera)}
 }
 
-func (b *boletoAereoCabeceraBuilder) WithRazonSocialEmisor(v string) *boletoAereoCabeceraBuilder {
-	b.cabecera.RazonSocialEmisor = v
+func (b *boletoAereoCabeceraBuilder) WithNitEmisor(v int64) *boletoAereoCabeceraBuilder {
+	b.cabecera.NitEmisor = v
 	return b
 }
 
@@ -98,13 +97,13 @@ func (b *boletoAereoCabeceraBuilder) WithNumeroFactura(v int64) *boletoAereoCabe
 	return b
 }
 
-func (b *boletoAereoCabeceraBuilder) WithCuf(v string) *boletoAereoCabeceraBuilder {
-	b.cabecera.Cuf = v
+func (b *boletoAereoCabeceraBuilder) WithCufd(v string) *boletoAereoCabeceraBuilder {
+	b.cabecera.Cufd = v
 	return b
 }
 
-func (b *boletoAereoCabeceraBuilder) WithCufd(v string) *boletoAereoCabeceraBuilder {
-	b.cabecera.Cufd = v
+func (b *boletoAereoCabeceraBuilder) WithCuf(v string) *boletoAereoCabeceraBuilder {
+	b.cabecera.Cuf = v
 	return b
 }
 
@@ -113,18 +112,18 @@ func (b *boletoAereoCabeceraBuilder) WithCodigoSucursal(v int) *boletoAereoCabec
 	return b
 }
 
-func (b *boletoAereoCabeceraBuilder) WithDireccion(v string) *boletoAereoCabeceraBuilder {
-	b.cabecera.Direccion = v
+func (b *boletoAereoCabeceraBuilder) WithCodigoPuntoVenta(v *int) *boletoAereoCabeceraBuilder {
+	if v == nil {
+		b.cabecera.CodigoPuntoVenta = datatype.Nilable[int]{}
+		return b
+	}
+	value := *v
+	b.cabecera.CodigoPuntoVenta = datatype.Nilable[int]{Value: &value}
 	return b
 }
 
-func (b *boletoAereoCabeceraBuilder) WithCodigoPuntoVenta(v *int) *boletoAereoCabeceraBuilder {
-	if v == nil {
-		b.cabecera.CodigoPuntoVenta = datatype.Nilable[int]{Value: nil}
-	} else {
-		val := *v
-		b.cabecera.CodigoPuntoVenta = datatype.Nilable[int]{Value: &val}
-	}
+func (b *boletoAereoCabeceraBuilder) WithDireccion(v string) *boletoAereoCabeceraBuilder {
+	b.cabecera.Direccion = v
 	return b
 }
 
@@ -133,23 +132,28 @@ func (b *boletoAereoCabeceraBuilder) WithFechaEmision(v time.Time) *boletoAereoC
 	return b
 }
 
-func (b *boletoAereoCabeceraBuilder) WithNombreRazonSocial(v *string) *boletoAereoCabeceraBuilder {
-	if v == nil {
-		b.cabecera.NombreRazonSocial = datatype.Nilable[string]{Value: nil}
-	} else {
-		val := *v
-		b.cabecera.NombreRazonSocial = datatype.Nilable[string]{Value: &val}
-	}
+func (b *boletoAereoCabeceraBuilder) WithRazonSocialEmisor(v string) *boletoAereoCabeceraBuilder {
+	b.cabecera.RazonSocialEmisor = v
 	return b
 }
 
-func (b *boletoAereoCabeceraBuilder) WithCodigoTipoDocumentoIdentidad(v int) *boletoAereoCabeceraBuilder {
-	b.cabecera.CodigoTipoDocumentoIdentidad = v
+func (b *boletoAereoCabeceraBuilder) WithNombreRazonSocial(v *string) *boletoAereoCabeceraBuilder {
+	if v == nil {
+		b.cabecera.NombreRazonSocial = datatype.Nilable[string]{}
+		return b
+	}
+	value := *v
+	b.cabecera.NombreRazonSocial = datatype.Nilable[string]{Value: &value}
 	return b
 }
 
 func (b *boletoAereoCabeceraBuilder) WithNumeroDocumento(v string) *boletoAereoCabeceraBuilder {
 	b.cabecera.NumeroDocumento = v
+	return b
+}
+
+func (b *boletoAereoCabeceraBuilder) WithCodigoTipoDocumentoIdentidad(v int) *boletoAereoCabeceraBuilder {
+	b.cabecera.CodigoTipoDocumentoIdentidad = v
 	return b
 }
 
@@ -160,11 +164,11 @@ func (b *boletoAereoCabeceraBuilder) WithNombrePasajero(v string) *boletoAereoCa
 
 func (b *boletoAereoCabeceraBuilder) WithNumeroDocumentoPasajero(v *string) *boletoAereoCabeceraBuilder {
 	if v == nil {
-		b.cabecera.NumeroDocumentoPasajero = datatype.Nilable[string]{Value: nil}
-	} else {
-		val := *v
-		b.cabecera.NumeroDocumentoPasajero = datatype.Nilable[string]{Value: &val}
+		b.cabecera.NumeroDocumentoPasajero = datatype.Nilable[string]{}
+		return b
 	}
+	value := *v
+	b.cabecera.NumeroDocumentoPasajero = datatype.Nilable[string]{Value: &value}
 	return b
 }
 
@@ -175,46 +179,26 @@ func (b *boletoAereoCabeceraBuilder) WithCodigoIataLineaAerea(v int) *boletoAere
 
 func (b *boletoAereoCabeceraBuilder) WithCodigoIataAgenteViajes(v *string) *boletoAereoCabeceraBuilder {
 	if v == nil {
-		b.cabecera.CodigoIataAgenteViajes = datatype.Nilable[string]{Value: nil}
-	} else {
-		val := *v
-		b.cabecera.CodigoIataAgenteViajes = datatype.Nilable[string]{Value: &val}
+		b.cabecera.CodigoIataAgenteViajes = datatype.Nilable[string]{}
+		return b
 	}
+	value := *v
+	b.cabecera.CodigoIataAgenteViajes = datatype.Nilable[string]{Value: &value}
 	return b
 }
 
 func (b *boletoAereoCabeceraBuilder) WithNitAgenteViajes(v *int64) *boletoAereoCabeceraBuilder {
 	if v == nil {
-		b.cabecera.NitAgenteViajes = datatype.Nilable[int64]{Value: nil}
-	} else {
-		val := *v
-		b.cabecera.NitAgenteViajes = datatype.Nilable[int64]{Value: &val}
+		b.cabecera.NitAgenteViajes = datatype.Nilable[int64]{}
+		return b
 	}
+	value := *v
+	b.cabecera.NitAgenteViajes = datatype.Nilable[int64]{Value: &value}
 	return b
 }
 
 func (b *boletoAereoCabeceraBuilder) WithCodigoOrigenServicio(v string) *boletoAereoCabeceraBuilder {
 	b.cabecera.CodigoOrigenServicio = v
-	return b
-}
-
-func (b *boletoAereoCabeceraBuilder) WithCodigoMetodoPago(v int) *boletoAereoCabeceraBuilder {
-	b.cabecera.CodigoMetodoPago = v
-	return b
-}
-
-func (b *boletoAereoCabeceraBuilder) WithMontoTarifa(v float64) *boletoAereoCabeceraBuilder {
-	b.cabecera.MontoTarifa = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	return b
-}
-
-func (b *boletoAereoCabeceraBuilder) WithMontoTotal(v float64) *boletoAereoCabeceraBuilder {
-	b.cabecera.MontoTotal = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	return b
-}
-
-func (b *boletoAereoCabeceraBuilder) WithMontoTotalSujetoIva(v float64) *boletoAereoCabeceraBuilder {
-	b.cabecera.MontoTotalSujetoIva = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
@@ -228,8 +212,33 @@ func (b *boletoAereoCabeceraBuilder) WithTipoCambio(v float64) *boletoAereoCabec
 	return b
 }
 
+func (b *boletoAereoCabeceraBuilder) WithMontoTarifa(v float64) *boletoAereoCabeceraBuilder {
+	b.cabecera.MontoTarifa = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+	return b
+}
+
+func (b *boletoAereoCabeceraBuilder) WithTotalPrecioNeto(v float64) *boletoAereoCabeceraBuilder {
+	b.cabecera.TotalPrecioNeto = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+	return b
+}
+
+func (b *boletoAereoCabeceraBuilder) WithIva(v float64) *boletoAereoCabeceraBuilder {
+	b.cabecera.Iva = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+	return b
+}
+
+func (b *boletoAereoCabeceraBuilder) WithMontoAPagar(v float64) *boletoAereoCabeceraBuilder {
+	b.cabecera.MontoAPagar = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+	return b
+}
+
 func (b *boletoAereoCabeceraBuilder) WithMontoTotalMoneda(v float64) *boletoAereoCabeceraBuilder {
 	b.cabecera.MontoTotalMoneda = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+	return b
+}
+
+func (b *boletoAereoCabeceraBuilder) WithCodigoMetodoPago(v int) *boletoAereoCabeceraBuilder {
+	b.cabecera.CodigoMetodoPago = v
 	return b
 }
 
@@ -238,21 +247,22 @@ func (b *boletoAereoCabeceraBuilder) WithCodigoTipoTransaccion(v string) *boleto
 	return b
 }
 
+func (b *boletoAereoCabeceraBuilder) WithUsuario(v string) *boletoAereoCabeceraBuilder {
+	b.cabecera.Usuario = v
+	return b
+}
+
 func (b *boletoAereoCabeceraBuilder) WithLeyenda(v string) *boletoAereoCabeceraBuilder {
 	b.cabecera.Leyenda = v
 	return b
 }
 
-func (b *boletoAereoCabeceraBuilder) WithUsuario(v string) *boletoAereoCabeceraBuilder {
-	b.cabecera.Usuario = v
+func (b *boletoAereoCabeceraBuilder) WithCodigoInterno(v string) *boletoAereoCabeceraBuilder {
+	b.cabecera.CodigoInterno = v
 	return b
 }
 
 func (b *boletoAereoCabeceraBuilder) WithCodigoDocumentoSector(v int) *boletoAereoCabeceraBuilder {
 	b.cabecera.CodigoDocumentoSector = v
 	return b
-}
-
-func (b *boletoAereoCabeceraBuilder) Build() BoletoAereoCabecera {
-	return BoletoAereoCabecera{models.NewRequestWrapper(b.cabecera)}
 }

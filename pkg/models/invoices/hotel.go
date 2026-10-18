@@ -104,6 +104,24 @@ type hotelCabeceraBuilder struct {
 	cabecera *documents.CabeceraHotel
 }
 
+func (b *hotelCabeceraBuilder) Build() HotelCabecera {
+	return HotelCabecera{models.NewRequestWrapper(b.cabecera)}
+}
+
+type hotelDetalleBuilder struct {
+	detalle *documents.DetalleHotel
+	err     error
+}
+
+func (b *hotelDetalleBuilder) Build() HotelDetalle {
+	return HotelDetalle{models.NewRequestWrapper(b.detalle)}
+}
+
+// Err devuelve el último error de serialización de un campo JSON libre.
+func (b *hotelDetalleBuilder) Err() error {
+	return b.err
+}
+
 func (b *hotelCabeceraBuilder) WithNitEmisor(v int64) *hotelCabeceraBuilder {
 	b.cabecera.NitEmisor = v
 	return b
@@ -121,11 +139,11 @@ func (b *hotelCabeceraBuilder) WithMunicipio(v string) *hotelCabeceraBuilder {
 
 func (b *hotelCabeceraBuilder) WithTelefono(v *string) *hotelCabeceraBuilder {
 	if v == nil {
-		b.cabecera.Telefono = datatype.Nilable[string]{Value: nil}
+		b.cabecera.Telefono = datatype.Nilable[string]{}
 		return b
 	}
-	val := *v
-	b.cabecera.Telefono = datatype.Nilable[string]{Value: &val}
+	value := *v
+	b.cabecera.Telefono = datatype.Nilable[string]{Value: &value}
 	return b
 }
 
@@ -156,26 +174,26 @@ func (b *hotelCabeceraBuilder) WithDireccion(v string) *hotelCabeceraBuilder {
 
 func (b *hotelCabeceraBuilder) WithCodigoPuntoVenta(v *int) *hotelCabeceraBuilder {
 	if v == nil {
-		b.cabecera.CodigoPuntoVenta = datatype.Nilable[int]{Value: nil}
+		b.cabecera.CodigoPuntoVenta = datatype.Nilable[int]{}
 		return b
 	}
-	val := *v
-	b.cabecera.CodigoPuntoVenta = datatype.Nilable[int]{Value: &val}
+	value := *v
+	b.cabecera.CodigoPuntoVenta = datatype.Nilable[int]{Value: &value}
 	return b
 }
 
 func (b *hotelCabeceraBuilder) WithFechaEmision(v time.Time) *hotelCabeceraBuilder {
-	b.cabecera.FechaEmision = datatype.TimeSiat(v)
+	b.cabecera.FechaEmision = datatype.NewTimeSiat(v)
 	return b
 }
 
 func (b *hotelCabeceraBuilder) WithNombreRazonSocial(v *string) *hotelCabeceraBuilder {
 	if v == nil {
-		b.cabecera.NombreRazonSocial = datatype.Nilable[string]{Value: nil}
+		b.cabecera.NombreRazonSocial = datatype.Nilable[string]{}
 		return b
 	}
-	val := *v
-	b.cabecera.NombreRazonSocial = datatype.Nilable[string]{Value: &val}
+	value := *v
+	b.cabecera.NombreRazonSocial = datatype.Nilable[string]{Value: &value}
 	return b
 }
 
@@ -189,13 +207,8 @@ func (b *hotelCabeceraBuilder) WithNumeroDocumento(v string) *hotelCabeceraBuild
 	return b
 }
 
-func (b *hotelCabeceraBuilder) WithComplemento(v *string) *hotelCabeceraBuilder {
-	if v == nil {
-		b.cabecera.Complemento = datatype.Nilable[string]{Value: nil}
-		return b
-	}
-	val := *v
-	b.cabecera.Complemento = datatype.Nilable[string]{Value: &val}
+func (b *hotelCabeceraBuilder) WithComplemento(v string) *hotelCabeceraBuilder {
+	b.cabecera.Complemento = v
 	return b
 }
 
@@ -206,46 +219,46 @@ func (b *hotelCabeceraBuilder) WithCodigoCliente(v string) *hotelCabeceraBuilder
 
 func (b *hotelCabeceraBuilder) WithCantidadHuespedes(v *int) *hotelCabeceraBuilder {
 	if v == nil {
-		b.cabecera.CantidadHuespedes = datatype.Nilable[int]{Value: nil}
+		b.cabecera.CantidadHuespedes = datatype.Nilable[int]{}
 		return b
 	}
-	val := *v
-	b.cabecera.CantidadHuespedes = datatype.Nilable[int]{Value: &val}
+	value := *v
+	b.cabecera.CantidadHuespedes = datatype.Nilable[int]{Value: &value}
 	return b
 }
 
 func (b *hotelCabeceraBuilder) WithCantidadHabitaciones(v *int) *hotelCabeceraBuilder {
 	if v == nil {
-		b.cabecera.CantidadHabitaciones = datatype.Nilable[int]{Value: nil}
+		b.cabecera.CantidadHabitaciones = datatype.Nilable[int]{}
 		return b
 	}
-	val := *v
-	b.cabecera.CantidadHabitaciones = datatype.Nilable[int]{Value: &val}
+	value := *v
+	b.cabecera.CantidadHabitaciones = datatype.Nilable[int]{Value: &value}
 	return b
 }
 
 func (b *hotelCabeceraBuilder) WithCantidadMayores(v *int) *hotelCabeceraBuilder {
 	if v == nil {
-		b.cabecera.CantidadMayores = datatype.Nilable[int]{Value: nil}
+		b.cabecera.CantidadMayores = datatype.Nilable[int]{}
 		return b
 	}
-	val := *v
-	b.cabecera.CantidadMayores = datatype.Nilable[int]{Value: &val}
+	value := *v
+	b.cabecera.CantidadMayores = datatype.Nilable[int]{Value: &value}
 	return b
 }
 
 func (b *hotelCabeceraBuilder) WithCantidadMenores(v *int) *hotelCabeceraBuilder {
 	if v == nil {
-		b.cabecera.CantidadMenores = datatype.Nilable[int]{Value: nil}
+		b.cabecera.CantidadMenores = datatype.Nilable[int]{}
 		return b
 	}
-	val := *v
-	b.cabecera.CantidadMenores = datatype.Nilable[int]{Value: &val}
+	value := *v
+	b.cabecera.CantidadMenores = datatype.Nilable[int]{Value: &value}
 	return b
 }
 
 func (b *hotelCabeceraBuilder) WithFechaIngresoHospedaje(v time.Time) *hotelCabeceraBuilder {
-	b.cabecera.FechaIngresoHospedaje = datatype.TimeSiat(v)
+	b.cabecera.FechaIngresoHospedaje = datatype.NewTimeSiat(v)
 	return b
 }
 
@@ -256,23 +269,31 @@ func (b *hotelCabeceraBuilder) WithCodigoMetodoPago(v int) *hotelCabeceraBuilder
 
 func (b *hotelCabeceraBuilder) WithNumeroTarjeta(v *int64) *hotelCabeceraBuilder {
 	if v == nil {
-		b.cabecera.NumeroTarjeta = datatype.Nilable[int64]{Value: nil}
+		b.cabecera.NumeroTarjeta = datatype.Nilable[int64]{}
 		return b
 	}
-	val := *v
-	b.cabecera.NumeroTarjeta = datatype.Nilable[int64]{Value: &val}
+	value := *v
+	b.cabecera.NumeroTarjeta = datatype.Nilable[int64]{Value: &value}
 	return b
 }
 
-func (b *hotelCabeceraBuilder) WithMontoTotal(v float64) *hotelCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.MontoTotal = v
+func (b *hotelCabeceraBuilder) WithSubTotalNeto(v float64) *hotelCabeceraBuilder {
+	b.cabecera.SubTotalNeto = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
-func (b *hotelCabeceraBuilder) WithMontoTotalSujetoIva(v float64) *hotelCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.MontoTotalSujetoIva = v
+func (b *hotelCabeceraBuilder) WithTotalPrecioNeto(v float64) *hotelCabeceraBuilder {
+	b.cabecera.TotalPrecioNeto = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+	return b
+}
+
+func (b *hotelCabeceraBuilder) WithIva(v float64) *hotelCabeceraBuilder {
+	b.cabecera.Iva = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+	return b
+}
+
+func (b *hotelCabeceraBuilder) WithMontoAPagar(v float64) *hotelCabeceraBuilder {
+	b.cabecera.MontoAPagar = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
@@ -282,56 +303,44 @@ func (b *hotelCabeceraBuilder) WithCodigoMoneda(v int) *hotelCabeceraBuilder {
 }
 
 func (b *hotelCabeceraBuilder) WithTipoCambio(v float64) *hotelCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.TipoCambio = v
+	b.cabecera.TipoCambio = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
 func (b *hotelCabeceraBuilder) WithMontoTotalMoneda(v float64) *hotelCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.MontoTotalMoneda = v
+	b.cabecera.MontoTotalMoneda = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
 func (b *hotelCabeceraBuilder) WithMontoGiftCard(v *float64) *hotelCabeceraBuilder {
 	if v == nil {
-		b.cabecera.MontoGiftCard = datatype.Nilable[float64]{Value: nil}
+		b.cabecera.MontoGiftCard = datatype.Nilable[float64]{}
 		return b
 	}
-	val := *v
-	val = decimal.NewFromFloat(val).Round(2).InexactFloat64()
-	b.cabecera.MontoGiftCard = datatype.Nilable[float64]{Value: &val}
+	value := *v
+	value = decimal.NewFromFloat(value).Round(2).InexactFloat64()
+	b.cabecera.MontoGiftCard = datatype.Nilable[float64]{Value: &value}
 	return b
 }
 
 func (b *hotelCabeceraBuilder) WithDescuentoAdicional(v *float64) *hotelCabeceraBuilder {
 	if v == nil {
-		b.cabecera.DescuentoAdicional = datatype.Nilable[float64]{Value: nil}
+		b.cabecera.DescuentoAdicional = datatype.Nilable[float64]{}
 		return b
 	}
-	val := *v
-	val = decimal.NewFromFloat(val).Round(2).InexactFloat64()
-	b.cabecera.DescuentoAdicional = datatype.Nilable[float64]{Value: &val}
+	value := *v
+	value = decimal.NewFromFloat(value).Round(2).InexactFloat64()
+	b.cabecera.DescuentoAdicional = datatype.Nilable[float64]{Value: &value}
 	return b
 }
 
 func (b *hotelCabeceraBuilder) WithCodigoExcepcion(v *int) *hotelCabeceraBuilder {
 	if v == nil {
-		b.cabecera.CodigoExcepcion = datatype.Nilable[int]{Value: nil}
+		b.cabecera.CodigoExcepcion = datatype.Nilable[int]{}
 		return b
 	}
-	val := *v
-	b.cabecera.CodigoExcepcion = datatype.Nilable[int]{Value: &val}
-	return b
-}
-
-func (b *hotelCabeceraBuilder) WithCafc(v *string) *hotelCabeceraBuilder {
-	if v == nil {
-		b.cabecera.Cafc = datatype.Nilable[string]{Value: nil}
-		return b
-	}
-	val := *v
-	b.cabecera.Cafc = datatype.Nilable[string]{Value: &val}
+	value := *v
+	b.cabecera.CodigoExcepcion = datatype.Nilable[int]{Value: &value}
 	return b
 }
 
@@ -345,19 +354,14 @@ func (b *hotelCabeceraBuilder) WithUsuario(v string) *hotelCabeceraBuilder {
 	return b
 }
 
-// WithCodigoDocumentoSector configura el código que identifica el diseño o sector de la factura.
-func (b *hotelCabeceraBuilder) WithCodigoDocumentoSector(v int) *hotelCabeceraBuilder {
-	b.cabecera.CodigoDocumentoSector = v
+func (b *hotelCabeceraBuilder) WithCodigoInterno(v string) *hotelCabeceraBuilder {
+	b.cabecera.CodigoInterno = v
 	return b
 }
 
-func (b *hotelCabeceraBuilder) Build() HotelCabecera {
-	return HotelCabecera{models.NewRequestWrapper(b.cabecera)}
-}
-
-type hotelDetalleBuilder struct {
-	detalle *documents.DetalleHotel
-	err     error
+func (b *hotelCabeceraBuilder) WithCodigoDocumentoSector(v int) *hotelCabeceraBuilder {
+	b.cabecera.CodigoDocumentoSector = v
+	return b
 }
 
 func (b *hotelDetalleBuilder) WithActividadEconomica(v string) *hotelDetalleBuilder {
@@ -377,11 +381,11 @@ func (b *hotelDetalleBuilder) WithCodigoProducto(v string) *hotelDetalleBuilder 
 
 func (b *hotelDetalleBuilder) WithCodigoTipoHabitacion(v *int) *hotelDetalleBuilder {
 	if v == nil {
-		b.detalle.CodigoTipoHabitacion = datatype.Nilable[int]{Value: nil}
+		b.detalle.CodigoTipoHabitacion = datatype.Nilable[int]{}
 		return b
 	}
-	val := *v
-	b.detalle.CodigoTipoHabitacion = datatype.Nilable[int]{Value: &val}
+	value := *v
+	b.detalle.CodigoTipoHabitacion = datatype.Nilable[int]{Value: &value}
 	return b
 }
 
@@ -391,8 +395,7 @@ func (b *hotelDetalleBuilder) WithDescripcion(v string) *hotelDetalleBuilder {
 }
 
 func (b *hotelDetalleBuilder) WithCantidad(v float64) *hotelDetalleBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.detalle.Cantidad = v
+	b.detalle.Cantidad = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
@@ -401,26 +404,24 @@ func (b *hotelDetalleBuilder) WithUnidadMedida(v int) *hotelDetalleBuilder {
 	return b
 }
 
-func (b *hotelDetalleBuilder) WithPrecioUnitario(v float64) *hotelDetalleBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.detalle.PrecioUnitario = v
+func (b *hotelDetalleBuilder) WithPrecioNetoUnitario(v float64) *hotelDetalleBuilder {
+	b.detalle.PrecioNetoUnitario = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
 func (b *hotelDetalleBuilder) WithMontoDescuento(v *float64) *hotelDetalleBuilder {
 	if v == nil {
-		b.detalle.MontoDescuento = datatype.Nilable[float64]{Value: nil}
+		b.detalle.MontoDescuento = datatype.Nilable[float64]{}
 		return b
 	}
-	val := *v
-	val = decimal.NewFromFloat(val).Round(2).InexactFloat64()
-	b.detalle.MontoDescuento = datatype.Nilable[float64]{Value: &val}
+	value := *v
+	value = decimal.NewFromFloat(value).Round(2).InexactFloat64()
+	b.detalle.MontoDescuento = datatype.Nilable[float64]{Value: &value}
 	return b
 }
 
 func (b *hotelDetalleBuilder) WithSubTotal(v float64) *hotelDetalleBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.detalle.SubTotal = v
+	b.detalle.SubTotal = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
@@ -442,13 +443,4 @@ func (b *hotelDetalleBuilder) WithDetalleHuespedes(v any) *hotelDetalleBuilder {
 		b.detalle.DetalleHuespedes = datatype.Nilable[string]{Value: &val}
 	}
 	return b
-}
-
-func (b *hotelDetalleBuilder) Build() HotelDetalle {
-	return HotelDetalle{models.NewRequestWrapper(b.detalle)}
-}
-
-// Err devuelve el último error de serialización de un campo JSON libre.
-func (b *hotelDetalleBuilder) Err() error {
-	return b.err
 }

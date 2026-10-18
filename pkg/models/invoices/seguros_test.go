@@ -64,9 +64,9 @@ func emitirSegurosIndividual(t *testing.T, tc *TestContext, cuis, cufd, cufdCont
 		WithNumeroDocumento("1234567").
 		WithCodigoCliente("CLI-034").
 		WithCodigoMetodoPago(1).
-		WithMontoTotal(1000.00).
+		WithMontoAPagar(1000.00).
 		WithAjusteAfectacionIva(0.00).
-		WithMontoTotalSujetoIva(1000.00).
+		WithTotalPrecioNeto(1000.00).
 		WithCodigoMoneda(1).
 		WithTipoCambio(1.0).
 		WithMontoTotalMoneda(1000.00).
@@ -81,7 +81,7 @@ func emitirSegurosIndividual(t *testing.T, tc *TestContext, cuis, cufd, cufdCont
 		WithDescripcion("SEGURO DE VIDA INDIVIDUAL").
 		WithCantidad(1.0).
 		WithUnidadMedida(58).
-		WithPrecioUnitario(1000.00).
+		WithPrecioNetoUnitario(1000.00).
 		WithSubTotal(1000.00).
 		Build()
 

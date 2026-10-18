@@ -38,12 +38,16 @@ func TestBiodiesel_Electronica(t *testing.T) {
 		WithNumeroDocumento("1234567").
 		WithCodigoCliente("CLI-BIO-01").
 		WithCodigoMetodoPago(1).
-		WithMontoTotal(10000.00).
+		WithSubTotalNeto(10000.00).
+		WithTotalPrecioNeto(10000.00).
+		WithIva(0).
+		WithMontoAPagar(10000.00).
 		WithCodigoMoneda(1).
 		WithTipoCambio(1.0).
 		WithMontoTotalMoneda(10000.00).
 		WithLeyenda("Leyenda Biodiesel").
 		WithUsuario("operador").
+		WithCodigoInterno("BIO-001").
 		Build()
 
 	detalle := invoices.NewBiodieselDetalleBuilder().
@@ -53,7 +57,7 @@ func TestBiodiesel_Electronica(t *testing.T) {
 		WithDescripcion("SUMINISTRO DE BIODIESEL").
 		WithCantidad(1000.0).
 		WithUnidadMedida(1).
-		WithPrecioUnitario(10.0).
+		WithPrecioNetoUnitario(10.0).
 		WithSubTotal(10000.0).
 		Build()
 
@@ -114,12 +118,16 @@ func TestBiodiesel_Computarizada(t *testing.T) {
 		WithNumeroDocumento("1234567").
 		WithCodigoCliente("CLI-BIO-01").
 		WithCodigoMetodoPago(1).
-		WithMontoTotal(5000.00).
+		WithSubTotalNeto(5000.00).
+		WithTotalPrecioNeto(5000.00).
+		WithIva(0).
+		WithMontoAPagar(5000.00).
 		WithCodigoMoneda(1).
 		WithTipoCambio(1.0).
 		WithMontoTotalMoneda(5000.00).
 		WithLeyenda("Leyenda Biodiesel").
 		WithUsuario("operador").
+		WithCodigoInterno("BIO-002").
 		Build()
 
 	detalle := invoices.NewBiodieselDetalleBuilder().
@@ -129,7 +137,7 @@ func TestBiodiesel_Computarizada(t *testing.T) {
 		WithDescripcion("SUMINISTRO DE BIODIESEL B100").
 		WithCantidad(500.0).
 		WithUnidadMedida(1).
-		WithPrecioUnitario(10.0).
+		WithPrecioNetoUnitario(10.0).
 		WithSubTotal(5000.0).
 		Build()
 

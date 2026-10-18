@@ -39,8 +39,10 @@ func TestSuministroEnergia_Electronica(t *testing.T) {
 		WithCodigoCliente("CLI-ELEC-01").
 		WithPlacaVehiculo("000000").
 		WithCodigoMetodoPago(1).
-		WithMontoTotal(150.50).
-		WithMontoTotalSujetoIva(150.50).
+		WithSubTotalNeto(150.50).
+		WithTotalPrecioNeto(150.50).
+		WithIva(19.57).
+		WithMontoAPagar(150.50).
 		WithCodigoMoneda(1).
 		WithTipoCambio(1.0).
 		WithMontoTotalMoneda(150.50).
@@ -55,7 +57,7 @@ func TestSuministroEnergia_Electronica(t *testing.T) {
 		WithDescripcion("CONSUMO DE ENERGIA ELECTRICA").
 		WithCantidad(1.0).
 		WithUnidadMedida(58).
-		WithPrecioUnitario(150.5).
+		WithPrecioNetoUnitario(150.5).
 		WithSubTotal(150.50).
 		Build()
 

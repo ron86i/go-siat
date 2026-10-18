@@ -40,11 +40,11 @@ func TestCompraVenta_Electronica(t *testing.T) {
 		WithNumeroDocumento("5115889").
 		WithCodigoCliente("1").
 		WithCodigoMetodoPago(1).
-		WithMontoTotal(100).
-		WithMontoTotalSujetoIva(100).
+		WithSubTotalNeto(100).
+		WithTotalPrecioNeto(100).WithIva((100) * 0.13).WithMontoAPagar((100) * 1.13).WithCodigoInterno("A").
 		WithCodigoMoneda(1).
 		WithTipoCambio(1).
-		WithMontoTotalMoneda(100).
+		WithMontoTotalMoneda((100) * 1.13).
 		WithLeyenda("Ley N° 453: Tienes derecho a recibir información...").
 		WithUsuario("usuario").
 		WithCodigoDocumentoSector(1).
@@ -57,7 +57,7 @@ func TestCompraVenta_Electronica(t *testing.T) {
 		WithDescripcion("GASA").
 		WithCantidad(1).
 		WithUnidadMedida(1).
-		WithPrecioUnitario(100).
+		WithPrecioNetoUnitario(100).
 		WithSubTotal(100).
 		Build()
 
@@ -120,11 +120,11 @@ func TestCompraVenta_Computarizada(t *testing.T) {
 		WithNumeroDocumento("5115889").
 		WithCodigoCliente("1").
 		WithCodigoMetodoPago(1).
-		WithMontoTotal(100).
-		WithMontoTotalSujetoIva(100).
+		WithSubTotalNeto(100).
+		WithTotalPrecioNeto(100).WithIva((100) * 0.13).WithMontoAPagar((100) * 1.13).WithCodigoInterno("A").
 		WithCodigoMoneda(1).
 		WithTipoCambio(1).
-		WithMontoTotalMoneda(100).
+		WithMontoTotalMoneda((100) * 1.13).
 		WithLeyenda("Ley N° 453: Tienes derecho a recibir información...").
 		WithUsuario("usuario").
 		WithCodigoDocumentoSector(1).
@@ -137,7 +137,7 @@ func TestCompraVenta_Computarizada(t *testing.T) {
 		WithDescripcion("GASA").
 		WithCantidad(1).
 		WithUnidadMedida(1).
-		WithPrecioUnitario(100).
+		WithPrecioNetoUnitario(100).
 		WithSubTotal(100).
 		Build()
 
@@ -199,11 +199,11 @@ func TestCompraVenta_Masiva(t *testing.T) {
 			WithNumeroDocumento("5115889").
 			WithCodigoCliente(strconv.Itoa(i)).
 			WithCodigoMetodoPago(1).
-			WithMontoTotal(100).
-			WithMontoTotalSujetoIva(100).
+			WithSubTotalNeto(100).
+			WithTotalPrecioNeto(100).WithIva((100) * 0.13).WithMontoAPagar((100) * 1.13).WithCodigoInterno("A").
 			WithCodigoMoneda(1).
 			WithTipoCambio(1).
-			WithMontoTotalMoneda(100).
+			WithMontoTotalMoneda((100) * 1.13).
 			WithLeyenda("Ley N° 453").
 			WithUsuario("usuario").
 			WithCodigoDocumentoSector(1).
@@ -216,7 +216,7 @@ func TestCompraVenta_Masiva(t *testing.T) {
 			WithDescripcion("GASA").
 			WithCantidad(1).
 			WithUnidadMedida(1).
-			WithPrecioUnitario(100).
+			WithPrecioNetoUnitario(100).
 			WithSubTotal(100).
 			Build()
 

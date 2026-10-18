@@ -47,7 +47,7 @@ func TestDuttyFree_Electronica(t *testing.T) {
 		WithNumeroDocumento("5115889").
 		WithCodigoCliente("1").
 		WithCodigoMetodoPago(1).
-		WithMontoTotal(montoTotal).
+		WithMontoAPagar(montoTotal).
 		WithCodigoMoneda(1).
 		WithTipoCambio(1).
 		WithMontoTotalMoneda(montoTotal).
@@ -62,7 +62,7 @@ func TestDuttyFree_Electronica(t *testing.T) {
 		WithDescripcion("GASA").
 		WithCantidad(cantidad).
 		WithUnidadMedida(1).
-		WithPrecioUnitario(precioUnitario).
+		WithPrecioNetoUnitario(precioUnitario).
 		WithMontoDescuento(&montoDescuento).
 		WithSubTotal(subTotalItem).
 		Build()
@@ -133,7 +133,7 @@ func TestDuttyFree_Computarizada(t *testing.T) {
 		WithNumeroDocumento("5115889").
 		WithCodigoCliente("1").
 		WithCodigoMetodoPago(1).
-		WithMontoTotal(montoTotal).
+		WithMontoAPagar(montoTotal).
 		WithCodigoMoneda(1).
 		WithTipoCambio(1).
 		WithMontoTotalMoneda(montoTotal).
@@ -148,7 +148,7 @@ func TestDuttyFree_Computarizada(t *testing.T) {
 		WithDescripcion("GASA").
 		WithCantidad(cantidad).
 		WithUnidadMedida(1).
-		WithPrecioUnitario(precioUnitario).
+		WithPrecioNetoUnitario(precioUnitario).
 		WithMontoDescuento(&montoDescuento).
 		WithSubTotal(subTotalItem).
 		Build()

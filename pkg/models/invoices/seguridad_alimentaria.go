@@ -46,7 +46,6 @@ func NewSeguridadAlimentariaCabeceraBuilder() *seguridadAlimentariaCabeceraBuild
 	return &seguridadAlimentariaCabeceraBuilder{
 		cabecera: &documents.CabeceraSeguridadAlimentaria{
 			CodigoDocumentoSector: 7, // Sector 7
-			MontoTotalSujetoIva:   0, // Fijo 0 según XSD
 		},
 	}
 }
@@ -66,7 +65,6 @@ type seguridadAlimentariaBuilder struct {
 func (b *seguridadAlimentariaBuilder) WithCabecera(req SeguridadAlimentariaCabecera) *seguridadAlimentariaBuilder {
 	if internal := models.UnwrapInternalRequest[documents.CabeceraSeguridadAlimentaria](req); internal != nil {
 		b.factura.Cabecera = *internal
-		b.factura.Cabecera.MontoTotalSujetoIva = 0 // Garantizamos que sea 0
 	}
 	return b
 }
@@ -98,6 +96,18 @@ type seguridadAlimentariaCabeceraBuilder struct {
 	cabecera *documents.CabeceraSeguridadAlimentaria
 }
 
+func (b *seguridadAlimentariaCabeceraBuilder) Build() SeguridadAlimentariaCabecera {
+	return SeguridadAlimentariaCabecera{models.NewRequestWrapper(b.cabecera)}
+}
+
+type seguridadAlimentariaDetalleBuilder struct {
+	detalle *documents.DetalleSeguridadAlimentaria
+}
+
+func (b *seguridadAlimentariaDetalleBuilder) Build() SeguridadAlimentariaDetalle {
+	return SeguridadAlimentariaDetalle{models.NewRequestWrapper(b.detalle)}
+}
+
 func (b *seguridadAlimentariaCabeceraBuilder) WithNitEmisor(v int64) *seguridadAlimentariaCabeceraBuilder {
 	b.cabecera.NitEmisor = v
 	return b
@@ -113,12 +123,12 @@ func (b *seguridadAlimentariaCabeceraBuilder) WithMunicipio(v string) *seguridad
 	return b
 }
 
-func (b *seguridadAlimentariaCabeceraBuilder) WithTelefono(telefono *string) *seguridadAlimentariaCabeceraBuilder {
-	if telefono == nil {
-		b.cabecera.Telefono = datatype.Nilable[string]{Value: nil}
+func (b *seguridadAlimentariaCabeceraBuilder) WithTelefono(v *string) *seguridadAlimentariaCabeceraBuilder {
+	if v == nil {
+		b.cabecera.Telefono = datatype.Nilable[string]{}
 		return b
 	}
-	value := *telefono
+	value := *v
 	b.cabecera.Telefono = datatype.Nilable[string]{Value: &value}
 	return b
 }
@@ -150,7 +160,7 @@ func (b *seguridadAlimentariaCabeceraBuilder) WithDireccion(v string) *seguridad
 
 func (b *seguridadAlimentariaCabeceraBuilder) WithCodigoPuntoVenta(v *int) *seguridadAlimentariaCabeceraBuilder {
 	if v == nil {
-		b.cabecera.CodigoPuntoVenta = datatype.Nilable[int]{Value: nil}
+		b.cabecera.CodigoPuntoVenta = datatype.Nilable[int]{}
 		return b
 	}
 	value := *v
@@ -165,7 +175,7 @@ func (b *seguridadAlimentariaCabeceraBuilder) WithFechaEmision(v time.Time) *seg
 
 func (b *seguridadAlimentariaCabeceraBuilder) WithNombreRazonSocial(v *string) *seguridadAlimentariaCabeceraBuilder {
 	if v == nil {
-		b.cabecera.NombreRazonSocial = datatype.Nilable[string]{Value: nil}
+		b.cabecera.NombreRazonSocial = datatype.Nilable[string]{}
 		return b
 	}
 	value := *v
@@ -183,13 +193,8 @@ func (b *seguridadAlimentariaCabeceraBuilder) WithNumeroDocumento(v string) *seg
 	return b
 }
 
-func (b *seguridadAlimentariaCabeceraBuilder) WithComplemento(v *string) *seguridadAlimentariaCabeceraBuilder {
-	if v == nil {
-		b.cabecera.Complemento = datatype.Nilable[string]{Value: nil}
-		return b
-	}
-	value := *v
-	b.cabecera.Complemento = datatype.Nilable[string]{Value: &value}
+func (b *seguridadAlimentariaCabeceraBuilder) WithComplemento(v string) *seguridadAlimentariaCabeceraBuilder {
+	b.cabecera.Complemento = v
 	return b
 }
 
@@ -205,7 +210,7 @@ func (b *seguridadAlimentariaCabeceraBuilder) WithCodigoMetodoPago(v int) *segur
 
 func (b *seguridadAlimentariaCabeceraBuilder) WithNumeroTarjeta(v *int64) *seguridadAlimentariaCabeceraBuilder {
 	if v == nil {
-		b.cabecera.NumeroTarjeta = datatype.Nilable[int64]{Value: nil}
+		b.cabecera.NumeroTarjeta = datatype.Nilable[int64]{}
 		return b
 	}
 	value := *v
@@ -213,9 +218,23 @@ func (b *seguridadAlimentariaCabeceraBuilder) WithNumeroTarjeta(v *int64) *segur
 	return b
 }
 
-func (b *seguridadAlimentariaCabeceraBuilder) WithMontoTotal(v float64) *seguridadAlimentariaCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.MontoTotal = v
+func (b *seguridadAlimentariaCabeceraBuilder) WithSubTotalNeto(v float64) *seguridadAlimentariaCabeceraBuilder {
+	b.cabecera.SubTotalNeto = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+	return b
+}
+
+func (b *seguridadAlimentariaCabeceraBuilder) WithTotalPrecioNeto(v float64) *seguridadAlimentariaCabeceraBuilder {
+	b.cabecera.TotalPrecioNeto = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+	return b
+}
+
+func (b *seguridadAlimentariaCabeceraBuilder) WithIva(v float64) *seguridadAlimentariaCabeceraBuilder {
+	b.cabecera.Iva = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+	return b
+}
+
+func (b *seguridadAlimentariaCabeceraBuilder) WithMontoAPagar(v float64) *seguridadAlimentariaCabeceraBuilder {
+	b.cabecera.MontoAPagar = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
@@ -225,20 +244,18 @@ func (b *seguridadAlimentariaCabeceraBuilder) WithCodigoMoneda(v int) *seguridad
 }
 
 func (b *seguridadAlimentariaCabeceraBuilder) WithTipoCambio(v float64) *seguridadAlimentariaCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.TipoCambio = v
+	b.cabecera.TipoCambio = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
 func (b *seguridadAlimentariaCabeceraBuilder) WithMontoTotalMoneda(v float64) *seguridadAlimentariaCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.MontoTotalMoneda = v
+	b.cabecera.MontoTotalMoneda = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
 func (b *seguridadAlimentariaCabeceraBuilder) WithMontoGiftCard(v *float64) *seguridadAlimentariaCabeceraBuilder {
 	if v == nil {
-		b.cabecera.MontoGiftCard = datatype.Nilable[float64]{Value: nil}
+		b.cabecera.MontoGiftCard = datatype.Nilable[float64]{}
 		return b
 	}
 	value := *v
@@ -249,7 +266,7 @@ func (b *seguridadAlimentariaCabeceraBuilder) WithMontoGiftCard(v *float64) *seg
 
 func (b *seguridadAlimentariaCabeceraBuilder) WithDescuentoAdicional(v *float64) *seguridadAlimentariaCabeceraBuilder {
 	if v == nil {
-		b.cabecera.DescuentoAdicional = datatype.Nilable[float64]{Value: nil}
+		b.cabecera.DescuentoAdicional = datatype.Nilable[float64]{}
 		return b
 	}
 	value := *v
@@ -260,21 +277,11 @@ func (b *seguridadAlimentariaCabeceraBuilder) WithDescuentoAdicional(v *float64)
 
 func (b *seguridadAlimentariaCabeceraBuilder) WithCodigoExcepcion(v *int) *seguridadAlimentariaCabeceraBuilder {
 	if v == nil {
-		b.cabecera.CodigoExcepcion = datatype.Nilable[int]{Value: nil}
+		b.cabecera.CodigoExcepcion = datatype.Nilable[int]{}
 		return b
 	}
 	value := *v
 	b.cabecera.CodigoExcepcion = datatype.Nilable[int]{Value: &value}
-	return b
-}
-
-func (b *seguridadAlimentariaCabeceraBuilder) WithCafc(v *string) *seguridadAlimentariaCabeceraBuilder {
-	if v == nil {
-		b.cabecera.Cafc = datatype.Nilable[string]{Value: nil}
-		return b
-	}
-	value := *v
-	b.cabecera.Cafc = datatype.Nilable[string]{Value: &value}
 	return b
 }
 
@@ -288,17 +295,14 @@ func (b *seguridadAlimentariaCabeceraBuilder) WithUsuario(v string) *seguridadAl
 	return b
 }
 
-func (b *seguridadAlimentariaCabeceraBuilder) WithCodigoDocumentoSector(v int) *seguridadAlimentariaCabeceraBuilder {
-	b.cabecera.CodigoDocumentoSector = v
+func (b *seguridadAlimentariaCabeceraBuilder) WithCodigoInterno(v string) *seguridadAlimentariaCabeceraBuilder {
+	b.cabecera.CodigoInterno = v
 	return b
 }
 
-func (b *seguridadAlimentariaCabeceraBuilder) Build() SeguridadAlimentariaCabecera {
-	return SeguridadAlimentariaCabecera{models.NewRequestWrapper(b.cabecera)}
-}
-
-type seguridadAlimentariaDetalleBuilder struct {
-	detalle *documents.DetalleSeguridadAlimentaria
+func (b *seguridadAlimentariaCabeceraBuilder) WithCodigoDocumentoSector(v int) *seguridadAlimentariaCabeceraBuilder {
+	b.cabecera.CodigoDocumentoSector = v
+	return b
 }
 
 func (b *seguridadAlimentariaDetalleBuilder) WithActividadEconomica(v string) *seguridadAlimentariaDetalleBuilder {
@@ -322,8 +326,7 @@ func (b *seguridadAlimentariaDetalleBuilder) WithDescripcion(v string) *segurida
 }
 
 func (b *seguridadAlimentariaDetalleBuilder) WithCantidad(v float64) *seguridadAlimentariaDetalleBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.detalle.Cantidad = v
+	b.detalle.Cantidad = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
@@ -332,15 +335,14 @@ func (b *seguridadAlimentariaDetalleBuilder) WithUnidadMedida(v int) *seguridadA
 	return b
 }
 
-func (b *seguridadAlimentariaDetalleBuilder) WithPrecioUnitario(v float64) *seguridadAlimentariaDetalleBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.detalle.PrecioUnitario = v
+func (b *seguridadAlimentariaDetalleBuilder) WithPrecioNetoUnitario(v float64) *seguridadAlimentariaDetalleBuilder {
+	b.detalle.PrecioNetoUnitario = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
 func (b *seguridadAlimentariaDetalleBuilder) WithMontoDescuento(v *float64) *seguridadAlimentariaDetalleBuilder {
 	if v == nil {
-		b.detalle.MontoDescuento = datatype.Nilable[float64]{Value: nil}
+		b.detalle.MontoDescuento = datatype.Nilable[float64]{}
 		return b
 	}
 	value := *v
@@ -350,11 +352,6 @@ func (b *seguridadAlimentariaDetalleBuilder) WithMontoDescuento(v *float64) *seg
 }
 
 func (b *seguridadAlimentariaDetalleBuilder) WithSubTotal(v float64) *seguridadAlimentariaDetalleBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.detalle.SubTotal = v
+	b.detalle.SubTotal = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
-}
-
-func (b *seguridadAlimentariaDetalleBuilder) Build() SeguridadAlimentariaDetalle {
-	return SeguridadAlimentariaDetalle{models.NewRequestWrapper(b.detalle)}
 }

@@ -55,10 +55,10 @@ func TestComercialExportacion_Computarizada(t *testing.T) {
 		WithLugarDestino("CHILE").
 		WithCodigoPais(14).
 		WithCodigoMetodoPago(1).
-		WithMontoTotal(montoTotal).
+		WithMontoAPagar(montoTotal).
 		WithCostosGastosNacionales(costosNacionalesMap).
 		WithTotalGastosNacionalesFob(totalGastosNacionalesFob).
-		WithMontoDetalle(montoDetalle).
+		WithSubTotalNeto(montoDetalle).
 		WithCodigoMoneda(1).
 		WithTipoCambio(1).
 		WithMontoTotalMoneda(montoTotal).
@@ -74,7 +74,7 @@ func TestComercialExportacion_Computarizada(t *testing.T) {
 		WithDescripcion("PRODUCTO EXPORTACION").
 		WithCantidad(cantidad).
 		WithUnidadMedida(1).
-		WithPrecioUnitario(precioUnitario).
+		WithPrecioNetoUnitario(precioUnitario).
 		WithMontoDescuento(&montoDescuento).
 		WithSubTotal(subTotalItem).
 		Build()

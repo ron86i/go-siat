@@ -32,22 +32,24 @@ type CabeceraAlcanzadaIce struct {
 	NombreRazonSocial            datatype.Nilable[string]  `xml:"nombreRazonSocial" json:"nombreRazonSocial"`
 	CodigoTipoDocumentoIdentidad int                       `xml:"codigoTipoDocumentoIdentidad" json:"codigoTipoDocumentoIdentidad"`
 	NumeroDocumento              string                    `xml:"numeroDocumento" json:"numeroDocumento"`
-	Complemento                  datatype.Nilable[string]  `xml:"complemento" json:"complemento"`
+	Complemento                  string                    `xml:"complemento" json:"complemento"`
 	CodigoCliente                string                    `xml:"codigoCliente" json:"codigoCliente"`
 	CodigoMetodoPago             int                       `xml:"codigoMetodoPago" json:"codigoMetodoPago"`
 	NumeroTarjeta                datatype.Nilable[int64]   `xml:"numeroTarjeta" json:"numeroTarjeta"`
-	MontoTotal                   float64                   `xml:"montoTotal" json:"montoTotal"`
-	MontoIceEspecifico           datatype.Nilable[float64] `xml:"montoIceEspecifico" json:"montoIceEspecifico"`
-	MontoIcePorcentual           datatype.Nilable[float64] `xml:"montoIcePorcentual" json:"montoIcePorcentual"`
-	MontoTotalSujetoIva          float64                   `xml:"montoTotalSujetoIva" json:"montoTotalSujetoIva"`
+	SubTotalNeto                 float64                   `xml:"subTotalNeto" json:"subTotalNeto"`
+	TotalPrecioNeto              float64                   `xml:"totalPrecioNeto" json:"totalPrecioNeto"`
+	Iva                          float64                   `xml:"iva" json:"iva"`
+	MontoAPagar                  float64                   `xml:"montoaPagar" json:"montoaPagar"`
+	TotalIceEspecifico           datatype.Nilable[float64] `xml:"totalIceEspecifico" json:"totalIceEspecifico"`
+	TotalIcePorcentual           datatype.Nilable[float64] `xml:"totalIcePorcentual" json:"totalIcePorcentual"`
 	CodigoMoneda                 int                       `xml:"codigoMoneda" json:"codigoMoneda"`
 	TipoCambio                   float64                   `xml:"tipoCambio" json:"tipoCambio"`
 	MontoTotalMoneda             float64                   `xml:"montoTotalMoneda" json:"montoTotalMoneda"`
 	DescuentoAdicional           datatype.Nilable[float64] `xml:"descuentoAdicional" json:"descuentoAdicional"`
 	CodigoExcepcion              datatype.Nilable[int]     `xml:"codigoExcepcion" json:"codigoExcepcion"`
-	Cafc                         datatype.Nilable[string]  `xml:"cafc" json:"cafc"`
 	Leyenda                      string                    `xml:"leyenda" json:"leyenda"`
 	Usuario                      string                    `xml:"usuario" json:"usuario"`
+	CodigoInterno                string                    `xml:"codigoInterno" json:"codigoInterno"`
 	CodigoDocumentoSector        int                       `xml:"codigoDocumentoSector" json:"codigoDocumentoSector"`
 }
 
@@ -59,11 +61,10 @@ type DetalleAlcanzadaIce struct {
 	Descripcion        string                    `xml:"descripcion" json:"descripcion"`
 	Cantidad           float64                   `xml:"cantidad" json:"cantidad"`
 	UnidadMedida       int                       `xml:"unidadMedida" json:"unidadMedida"`
-	PrecioUnitario     float64                   `xml:"precioUnitario" json:"precioUnitario"`
+	PrecioNetoUnitario float64                   `xml:"precioNetoUnitario" json:"precioNetoUnitario"`
 	MontoDescuento     datatype.Nilable[float64] `xml:"montoDescuento" json:"montoDescuento"`
 	SubTotal           float64                   `xml:"subTotal" json:"subTotal"`
 	MarcaIce           int                       `xml:"marcaIce" json:"marcaIce"`
-	AlicuotaIva        datatype.Nilable[float64] `xml:"alicuotaIva" json:"alicuotaIva"`
 	PrecioNetoVentaIce datatype.Nilable[float64] `xml:"precioNetoVentaIce" json:"precioNetoVentaIce"`
 	AlicuotaEspecifica datatype.Nilable[float64] `xml:"alicuotaEspecifica" json:"alicuotaEspecifica"`
 	AlicuotaPorcentual datatype.Nilable[float64] `xml:"alicuotaPorcentual" json:"alicuotaPorcentual"`

@@ -18,7 +18,6 @@ func TestTelecomunicacionesBuilder(t *testing.T) {
 	fechaEmision := time.Date(2024, 1, 1, 10, 0, 0, 0, time.UTC)
 	telefono := "2222222"
 	nombre := "JUAN PEREZ"
-	nitConjunto := int64(123456789)
 	nSerie := "SN123456"
 	nImei := "IMEI987654"
 
@@ -27,7 +26,6 @@ func TestTelecomunicacionesBuilder(t *testing.T) {
 		WithRazonSocialEmisor("EMPRESA TELECOM").
 		WithMunicipio("LA PAZ").
 		WithTelefono(&telefono).
-		WithNitConjunto(&nitConjunto).
 		WithNumeroFactura(1).
 		WithCuf("ABC123CUF").
 		WithCufd("XYZ789CUFD").
@@ -39,8 +37,8 @@ func TestTelecomunicacionesBuilder(t *testing.T) {
 		WithNumeroDocumento("1234567").
 		WithCodigoCliente("CLI-001").
 		WithCodigoMetodoPago(1).
-		WithMontoTotal(100.50).
-		WithMontoTotalSujetoIva(100.50).
+		WithMontoAPagar(100.50).
+		WithTotalPrecioNeto(100.50).
 		WithCodigoMoneda(1).
 		WithTipoCambio(1).
 		WithMontoTotalMoneda(100.50).
@@ -55,7 +53,7 @@ func TestTelecomunicacionesBuilder(t *testing.T) {
 		WithDescripcion("SERVICIO DE INTERNET").
 		WithCantidad(1).
 		WithUnidadMedida(58).
-		WithPrecioUnitario(100.50).
+		WithPrecioNetoUnitario(100.50).
 		WithSubTotal(100.50).
 		WithNumeroSerie(&nSerie).
 		WithNumeroImei(&nImei).
@@ -81,8 +79,8 @@ func TestTelecomunicacionesBuilder(t *testing.T) {
 		if !strings.Contains(xmlStr, "<facturaElectronicaTelecomunicacion") {
 			t.Errorf("Nodo raíz incorrecto para Electronica")
 		}
-		if !strings.Contains(xmlStr, "<nitConjunto>123456789</nitConjunto>") {
-			t.Errorf("nitConjunto no encontrado")
+		if strings.Contains(xmlStr, "<nitConjunto>") {
+			t.Errorf("nitConjunto no pertenece al contrato v3")
 		}
 		if !strings.Contains(xmlStr, "<numeroSerie>SN123456</numeroSerie>") {
 			t.Errorf("numeroSerie no encontrado")
@@ -150,8 +148,8 @@ func TestTelecomunicaciones_Electronica(t *testing.T) {
 		WithNumeroDocumento("1234567").
 		WithCodigoCliente("1").
 		WithCodigoMetodoPago(1).
-		WithMontoTotal(100).
-		WithMontoTotalSujetoIva(100).
+		WithMontoAPagar(100).
+		WithTotalPrecioNeto(100).
 		WithCodigoMoneda(1).
 		WithTipoCambio(1).
 		WithMontoTotalMoneda(100).
@@ -166,7 +164,7 @@ func TestTelecomunicaciones_Electronica(t *testing.T) {
 		WithDescripcion("Internet").
 		WithCantidad(1).
 		WithUnidadMedida(58).
-		WithPrecioUnitario(100).
+		WithPrecioNetoUnitario(100).
 		WithSubTotal(100).
 		Build()
 

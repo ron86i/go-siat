@@ -36,12 +36,16 @@ func TestPrevaloradaSinDerechoCreditoFiscal_Computarizada(t *testing.T) {
 		WithCodigoPuntoVenta(&codigoPuntoVenta).
 		WithFechaEmision(fechaEmision).
 		WithCodigoMetodoPago(1).
-		WithMontoTotal(montoTotal).
+		WithSubTotalNeto(montoTotal).
+		WithTotalPrecioNeto(montoTotal).
+		WithIva(0).
+		WithMontoAPagar(montoTotal).
 		WithCodigoMoneda(1).
 		WithTipoCambio(1).
 		WithMontoTotalMoneda(montoTotal).
 		WithLeyenda("Ley N° 453: Tienes derecho a recibir información...").
 		WithUsuario("admin").
+		WithCodigoInterno("ENTRADA-01").
 		Build()
 
 	detalle := invoices.NewPrevaloradaSinDerechoCreditoFiscalDetalleBuilder().
@@ -51,7 +55,7 @@ func TestPrevaloradaSinDerechoCreditoFiscal_Computarizada(t *testing.T) {
 		WithDescripcion("ENTRADA ESPECTACULO PUBLICO").
 		WithCantidad(1.0).
 		WithUnidadMedida(1).
-		WithPrecioUnitario(montoTotal).
+		WithPrecioNetoUnitario(montoTotal).
 		WithSubTotal(montoTotal).
 		Build()
 

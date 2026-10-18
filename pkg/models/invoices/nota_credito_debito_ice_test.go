@@ -32,15 +32,14 @@ func TestNotaCreditoDebitoIceBuilder(t *testing.T) {
 		WithNumeroFactura(101).
 		WithNumeroAutorizacionCuf("FACT-ABC-ICE").
 		WithFechaEmisionFactura(fecha.Add(-48 * time.Hour)).
-		WithMontoTotalOriginal(2000.00).
-		WithMontoTotalDevuelto(1000.00).
-		WithMontoEfectivoCreditoDebito(130.00).
+		WithMontoAPagarOriginal(2000.00).
+		WithMontoAPagarDevuelto(1000.00).
+		WithIvaDevuelto(130.00).
 		WithLeyenda("Ley Nro 453 ICE").
 		WithUsuario("admin-ice").
 		Build()
 
 	precioNeto := 90.0
-	alicuotaIva := 13.0
 	detalle1 := invoices.NewNotaDetalleCreditoDebitoIceBuilder().
 		WithNroItem(1).
 		WithActividadEconomica("Venta").
@@ -49,10 +48,9 @@ func TestNotaCreditoDebitoIceBuilder(t *testing.T) {
 		WithDescripcion("Producto ICE A").
 		WithCantidad(20).
 		WithUnidadMedida(1).
-		WithPrecioUnitario(100).
+		WithPrecioNetoUnitario(100).
 		WithSubTotal(2000).
 		WithMarcaIce(1).
-		WithAlicuotaIva(&alicuotaIva).
 		WithPrecioNetoVentaIce(&precioNeto).
 		WithCodigoDetalleTransaccion(1).
 		Build()
@@ -65,10 +63,9 @@ func TestNotaCreditoDebitoIceBuilder(t *testing.T) {
 		WithDescripcion("Producto ICE B devuelto").
 		WithCantidad(10).
 		WithUnidadMedida(1).
-		WithPrecioUnitario(100).
+		WithPrecioNetoUnitario(100).
 		WithSubTotal(1000).
 		WithMarcaIce(1).
-		WithAlicuotaIva(&alicuotaIva).
 		WithPrecioNetoVentaIce(&precioNeto).
 		WithCodigoDetalleTransaccion(2).
 		Build()
@@ -127,9 +124,9 @@ func TestNotaCreditoDebitoIceIntegration_Computarizada(t *testing.T) {
 			WithNumeroFactura(101).
 			WithNumeroAutorizacionCuf("DUMMY_AUT_CUF-ICE").
 			WithFechaEmisionFactura(fecha.Add(-48 * time.Hour)).
-			WithMontoTotalOriginal(2000.00).
-			WithMontoTotalDevuelto(1000.00).
-			WithMontoEfectivoCreditoDebito(130.00).
+			WithMontoAPagarOriginal(2000.00).
+			WithMontoAPagarDevuelto(1000.00).
+			WithIvaDevuelto(130.00).
 			WithLeyenda("Ley Nro 453 ICE").
 			WithUsuario("admin-ice").
 			Build()).
@@ -141,7 +138,7 @@ func TestNotaCreditoDebitoIceIntegration_Computarizada(t *testing.T) {
 			WithDescripcion("Producto ICE A").
 			WithCantidad(20).
 			WithUnidadMedida(1).
-			WithPrecioUnitario(100).
+			WithPrecioNetoUnitario(100).
 			WithSubTotal(2000).
 			WithMarcaIce(1).
 			WithCodigoDetalleTransaccion(1).
@@ -154,7 +151,7 @@ func TestNotaCreditoDebitoIceIntegration_Computarizada(t *testing.T) {
 			WithDescripcion("Producto ICE B devuelto").
 			WithCantidad(10).
 			WithUnidadMedida(1).
-			WithPrecioUnitario(100).
+			WithPrecioNetoUnitario(100).
 			WithSubTotal(1000).
 			WithMarcaIce(1).
 			WithCodigoDetalleTransaccion(2).
@@ -236,9 +233,9 @@ func TestNotaCreditoDebitoIceIntegration_Electronica(t *testing.T) {
 			WithNumeroFactura(101).
 			WithNumeroAutorizacionCuf("DUMMY_AUT_CUF-ICE").
 			WithFechaEmisionFactura(fecha.Add(-48 * time.Hour)).
-			WithMontoTotalOriginal(2000.00).
-			WithMontoTotalDevuelto(1000.00).
-			WithMontoEfectivoCreditoDebito(130.00).
+			WithMontoAPagarOriginal(2000.00).
+			WithMontoAPagarDevuelto(1000.00).
+			WithIvaDevuelto(130.00).
 			WithLeyenda("Ley Nro 453 ICE").
 			WithUsuario("admin-ice").
 			Build()).
@@ -250,7 +247,7 @@ func TestNotaCreditoDebitoIceIntegration_Electronica(t *testing.T) {
 			WithDescripcion("Producto ICE A").
 			WithCantidad(20).
 			WithUnidadMedida(1).
-			WithPrecioUnitario(100).
+			WithPrecioNetoUnitario(100).
 			WithSubTotal(2000).
 			WithMarcaIce(1).
 			WithCodigoDetalleTransaccion(1).
@@ -263,7 +260,7 @@ func TestNotaCreditoDebitoIceIntegration_Electronica(t *testing.T) {
 			WithDescripcion("Producto ICE B devuelto").
 			WithCantidad(10).
 			WithUnidadMedida(1).
-			WithPrecioUnitario(100).
+			WithPrecioNetoUnitario(100).
 			WithSubTotal(1000).
 			WithMarcaIce(1).
 			WithCodigoDetalleTransaccion(2).

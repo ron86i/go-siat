@@ -16,7 +16,7 @@ type FacturaBoletoAereo struct {
 }
 
 // CabeceraBoletoAereo contiene la información técnica y comercial para la emisión de boletos aéreos.
-// El orden de los campos es EXTREMADAMENTE CRÍTICO y sigue el XSD ver.23/08/2021.
+// El orden de los campos sigue la secuencia del XSD v3 suministrado.
 type CabeceraBoletoAereo struct {
 	NitEmisor                    int64                    `xml:"nitEmisor" json:"nitEmisor"`
 	NumeroFactura                int64                    `xml:"numeroFactura" json:"numeroFactura"`
@@ -39,12 +39,14 @@ type CabeceraBoletoAereo struct {
 	CodigoMoneda                 int                      `xml:"codigoMoneda" json:"codigoMoneda"`
 	TipoCambio                   float64                  `xml:"tipoCambio" json:"tipoCambio"`
 	MontoTarifa                  float64                  `xml:"montoTarifa" json:"montoTarifa"`
-	MontoTotal                   float64                  `xml:"montoTotal" json:"montoTotal"`
+	TotalPrecioNeto              float64                  `xml:"totalPrecioNeto" json:"totalPrecioNeto"`
+	Iva                          float64                  `xml:"iva" json:"iva"`
+	MontoAPagar                  float64                  `xml:"montoaPagar" json:"montoaPagar"`
 	MontoTotalMoneda             float64                  `xml:"montoTotalMoneda" json:"montoTotalMoneda"`
-	MontoTotalSujetoIva          float64                  `xml:"montoTotalSujetoIva" json:"montoTotalSujetoIva"`
 	CodigoMetodoPago             int                      `xml:"codigoMetodoPago" json:"codigoMetodoPago"`
 	CodigoTipoTransaccion        string                   `xml:"codigoTipoTransaccion" json:"codigoTipoTransaccion"`
 	Usuario                      string                   `xml:"usuario" json:"usuario"`
 	Leyenda                      string                   `xml:"leyenda" json:"leyenda"`
+	CodigoInterno                string                   `xml:"codigoInterno" json:"codigoInterno"`
 	CodigoDocumentoSector        int                      `xml:"codigoDocumentoSector" json:"codigoDocumentoSector"`
 }

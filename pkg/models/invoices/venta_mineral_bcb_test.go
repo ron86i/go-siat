@@ -46,9 +46,8 @@ func TestVentaMineralBCB_Electronica(t *testing.T) {
 		WithKilosNetosHumedos(10.00).
 		WithKilosNetosSecos(10.00).
 		WithCodigoMetodoPago(1).
-		WithMontoTotal(50000.00).
+		WithMontoAPagar(50000.00).
 		WithMontoTotalMoneda(50000.00).
-		WithSubTotal(50000.00).
 		WithGastosRealizacion(0.00).
 		WithIva(0.00).
 		WithLeyenda("Leyenda Mineria BCB").
@@ -66,7 +65,7 @@ func TestVentaMineralBCB_Electronica(t *testing.T) {
 		WithCantidad(10.0).
 		WithUnidadMedidaExtraccion(1).
 		WithUnidadMedida(1).
-		WithPrecioUnitario(5000.0).
+		WithPrecioNetoUnitario(5000.0).
 		WithSubTotal(50000.0).
 		Build()
 

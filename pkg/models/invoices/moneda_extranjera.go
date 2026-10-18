@@ -34,8 +34,9 @@ func NewMonedaExtranjeraBuilder() *monedaExtranjeraBuilder {
 	return &monedaExtranjeraBuilder{
 		metadatos: models.NuevosMetadatosFactura(9),
 		factura: &documents.FacturaMonedaExtranjera{
-			XMLName:  xml.Name{Local: "facturaElectronicaMonedaExtranjera"},
-			XmlnsXsi: "http://www.w3.org/2001/XMLSchema-instance",
+			XMLName:           xml.Name{Local: "facturaElectronicaMonedaExtranjera"},
+			XmlnsXsi:          "http://www.w3.org/2001/XMLSchema-instance",
+			XsiSchemaLocation: "facturaElectronicaMonedaExtranjera.xsd",
 		},
 	}
 }
@@ -79,8 +80,10 @@ func (b *monedaExtranjeraBuilder) WithModalidad(tipo int) *monedaExtranjeraBuild
 	switch tipo {
 	case siat.ModalidadElectronica:
 		b.factura.XMLName = xml.Name{Local: "facturaElectronicaMonedaExtranjera"}
+		b.factura.XsiSchemaLocation = "facturaElectronicaMonedaExtranjera.xsd"
 	case siat.ModalidadComputarizada:
 		b.factura.XMLName = xml.Name{Local: "facturaComputarizadaMonedaExtranjera"}
+		b.factura.XsiSchemaLocation = "facturaComputarizadaMonedaExtranjera.xsd"
 	}
 	return b
 }
@@ -91,6 +94,18 @@ func (b *monedaExtranjeraBuilder) Build() MonedaExtranjera {
 
 type monedaExtranjeraCabeceraBuilder struct {
 	cabecera *documents.CabeceraMonedaExtranjera
+}
+
+func (b *monedaExtranjeraCabeceraBuilder) Build() MonedaExtranjeraCabecera {
+	return MonedaExtranjeraCabecera{models.NewRequestWrapper(b.cabecera)}
+}
+
+type monedaExtranjeraDetalleBuilder struct {
+	detalle *documents.DetalleMonedaExtranjera
+}
+
+func (b *monedaExtranjeraDetalleBuilder) Build() MonedaExtranjeraDetalle {
+	return MonedaExtranjeraDetalle{models.NewRequestWrapper(b.detalle)}
 }
 
 func (b *monedaExtranjeraCabeceraBuilder) WithNitEmisor(v int64) *monedaExtranjeraCabeceraBuilder {
@@ -108,13 +123,13 @@ func (b *monedaExtranjeraCabeceraBuilder) WithMunicipio(v string) *monedaExtranj
 	return b
 }
 
-func (b *monedaExtranjeraCabeceraBuilder) WithTelefono(telefono *string) *monedaExtranjeraCabeceraBuilder {
-	if telefono == nil {
-		b.cabecera.Telefono = datatype.Nilable[string]{Value: nil}
-	} else {
-		val := *telefono
-		b.cabecera.Telefono = datatype.Nilable[string]{Value: &val}
+func (b *monedaExtranjeraCabeceraBuilder) WithTelefono(v *string) *monedaExtranjeraCabeceraBuilder {
+	if v == nil {
+		b.cabecera.Telefono = datatype.Nilable[string]{}
+		return b
 	}
+	value := *v
+	b.cabecera.Telefono = datatype.Nilable[string]{Value: &value}
 	return b
 }
 
@@ -145,11 +160,11 @@ func (b *monedaExtranjeraCabeceraBuilder) WithDireccion(v string) *monedaExtranj
 
 func (b *monedaExtranjeraCabeceraBuilder) WithCodigoPuntoVenta(v *int) *monedaExtranjeraCabeceraBuilder {
 	if v == nil {
-		b.cabecera.CodigoPuntoVenta = datatype.Nilable[int]{Value: nil}
-	} else {
-		val := *v
-		b.cabecera.CodigoPuntoVenta = datatype.Nilable[int]{Value: &val}
+		b.cabecera.CodigoPuntoVenta = datatype.Nilable[int]{}
+		return b
 	}
+	value := *v
+	b.cabecera.CodigoPuntoVenta = datatype.Nilable[int]{Value: &value}
 	return b
 }
 
@@ -160,11 +175,11 @@ func (b *monedaExtranjeraCabeceraBuilder) WithFechaEmision(v time.Time) *monedaE
 
 func (b *monedaExtranjeraCabeceraBuilder) WithNombreRazonSocial(v *string) *monedaExtranjeraCabeceraBuilder {
 	if v == nil {
-		b.cabecera.NombreRazonSocial = datatype.Nilable[string]{Value: nil}
-	} else {
-		val := *v
-		b.cabecera.NombreRazonSocial = datatype.Nilable[string]{Value: &val}
+		b.cabecera.NombreRazonSocial = datatype.Nilable[string]{}
+		return b
 	}
+	value := *v
+	b.cabecera.NombreRazonSocial = datatype.Nilable[string]{Value: &value}
 	return b
 }
 
@@ -178,13 +193,8 @@ func (b *monedaExtranjeraCabeceraBuilder) WithNumeroDocumento(v string) *monedaE
 	return b
 }
 
-func (b *monedaExtranjeraCabeceraBuilder) WithComplemento(v *string) *monedaExtranjeraCabeceraBuilder {
-	if v == nil {
-		b.cabecera.Complemento = datatype.Nilable[string]{Value: nil}
-	} else {
-		val := *v
-		b.cabecera.Complemento = datatype.Nilable[string]{Value: &val}
-	}
+func (b *monedaExtranjeraCabeceraBuilder) WithComplemento(v string) *monedaExtranjeraCabeceraBuilder {
+	b.cabecera.Complemento = v
 	return b
 }
 
@@ -205,29 +215,36 @@ func (b *monedaExtranjeraCabeceraBuilder) WithCodigoMetodoPago(v int) *monedaExt
 
 func (b *monedaExtranjeraCabeceraBuilder) WithNumeroTarjeta(v *int64) *monedaExtranjeraCabeceraBuilder {
 	if v == nil {
-		b.cabecera.NumeroTarjeta = datatype.Nilable[int64]{Value: nil}
-	} else {
-		val := *v
-		b.cabecera.NumeroTarjeta = datatype.Nilable[int64]{Value: &val}
+		b.cabecera.NumeroTarjeta = datatype.Nilable[int64]{}
+		return b
 	}
+	value := *v
+	b.cabecera.NumeroTarjeta = datatype.Nilable[int64]{Value: &value}
 	return b
 }
 
-func (b *monedaExtranjeraCabeceraBuilder) WithMontoTotal(v float64) *monedaExtranjeraCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.MontoTotal = v
+func (b *monedaExtranjeraCabeceraBuilder) WithSubTotalNeto(v float64) *monedaExtranjeraCabeceraBuilder {
+	b.cabecera.SubTotalNeto = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
-func (b *monedaExtranjeraCabeceraBuilder) WithMontoTotalSujetoIva(v float64) *monedaExtranjeraCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.MontoTotalSujetoIva = v
+func (b *monedaExtranjeraCabeceraBuilder) WithTotalPrecioNeto(v float64) *monedaExtranjeraCabeceraBuilder {
+	b.cabecera.TotalPrecioNeto = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+	return b
+}
+
+func (b *monedaExtranjeraCabeceraBuilder) WithIva(v float64) *monedaExtranjeraCabeceraBuilder {
+	b.cabecera.Iva = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+	return b
+}
+
+func (b *monedaExtranjeraCabeceraBuilder) WithMontoAPagar(v float64) *monedaExtranjeraCabeceraBuilder {
+	b.cabecera.MontoAPagar = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
 func (b *monedaExtranjeraCabeceraBuilder) WithIngresoDiferenciaCambio(v float64) *monedaExtranjeraCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.IngresoDiferenciaCambio = v
+	b.cabecera.IngresoDiferenciaCambio = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
@@ -237,45 +254,33 @@ func (b *monedaExtranjeraCabeceraBuilder) WithCodigoMoneda(v int) *monedaExtranj
 }
 
 func (b *monedaExtranjeraCabeceraBuilder) WithTipoCambio(v float64) *monedaExtranjeraCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(5).InexactFloat64()
-	b.cabecera.TipoCambio = v
+	b.cabecera.TipoCambio = decimal.NewFromFloat(v).Round(5).InexactFloat64()
 	return b
 }
 
 func (b *monedaExtranjeraCabeceraBuilder) WithMontoTotalMoneda(v float64) *monedaExtranjeraCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.MontoTotalMoneda = v
+	b.cabecera.MontoTotalMoneda = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
 func (b *monedaExtranjeraCabeceraBuilder) WithDescuentoAdicional(v *float64) *monedaExtranjeraCabeceraBuilder {
 	if v == nil {
-		b.cabecera.DescuentoAdicional = datatype.Nilable[float64]{Value: nil}
-	} else {
-		val := *v
-		val = decimal.NewFromFloat(val).Round(2).InexactFloat64()
-		b.cabecera.DescuentoAdicional = datatype.Nilable[float64]{Value: &val}
+		b.cabecera.DescuentoAdicional = datatype.Nilable[float64]{}
+		return b
 	}
+	value := *v
+	value = decimal.NewFromFloat(value).Round(2).InexactFloat64()
+	b.cabecera.DescuentoAdicional = datatype.Nilable[float64]{Value: &value}
 	return b
 }
 
 func (b *monedaExtranjeraCabeceraBuilder) WithCodigoExcepcion(v *int) *monedaExtranjeraCabeceraBuilder {
 	if v == nil {
-		b.cabecera.CodigoExcepcion = datatype.Nilable[int]{Value: nil}
-	} else {
-		val := *v
-		b.cabecera.CodigoExcepcion = datatype.Nilable[int]{Value: &val}
+		b.cabecera.CodigoExcepcion = datatype.Nilable[int]{}
+		return b
 	}
-	return b
-}
-
-func (b *monedaExtranjeraCabeceraBuilder) WithCafc(v *string) *monedaExtranjeraCabeceraBuilder {
-	if v == nil {
-		b.cabecera.Cafc = datatype.Nilable[string]{Value: nil}
-	} else {
-		val := *v
-		b.cabecera.Cafc = datatype.Nilable[string]{Value: &val}
-	}
+	value := *v
+	b.cabecera.CodigoExcepcion = datatype.Nilable[int]{Value: &value}
 	return b
 }
 
@@ -290,23 +295,18 @@ func (b *monedaExtranjeraCabeceraBuilder) WithUsuario(v string) *monedaExtranjer
 }
 
 func (b *monedaExtranjeraCabeceraBuilder) WithTipoCambioOficial(v float64) *monedaExtranjeraCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(5).InexactFloat64()
-	b.cabecera.TipoCambioOficial = v
+	b.cabecera.TipoCambioOficial = decimal.NewFromFloat(v).Round(5).InexactFloat64()
 	return b
 }
 
-// WithCodigoDocumentoSector configura el código que identifica el diseño o sector de la factura.
+func (b *monedaExtranjeraCabeceraBuilder) WithCodigoInterno(v string) *monedaExtranjeraCabeceraBuilder {
+	b.cabecera.CodigoInterno = v
+	return b
+}
+
 func (b *monedaExtranjeraCabeceraBuilder) WithCodigoDocumentoSector(v int) *monedaExtranjeraCabeceraBuilder {
 	b.cabecera.CodigoDocumentoSector = v
 	return b
-}
-
-func (b *monedaExtranjeraCabeceraBuilder) Build() MonedaExtranjeraCabecera {
-	return MonedaExtranjeraCabecera{models.NewRequestWrapper(b.cabecera)}
-}
-
-type monedaExtranjeraDetalleBuilder struct {
-	detalle *documents.DetalleMonedaExtranjera
 }
 
 func (b *monedaExtranjeraDetalleBuilder) WithActividadEconomica(v string) *monedaExtranjeraDetalleBuilder {
@@ -330,8 +330,7 @@ func (b *monedaExtranjeraDetalleBuilder) WithDescripcion(v string) *monedaExtran
 }
 
 func (b *monedaExtranjeraDetalleBuilder) WithCantidad(v float64) *monedaExtranjeraDetalleBuilder {
-	v = decimal.NewFromFloat(v).Round(5).InexactFloat64()
-	b.detalle.Cantidad = v
+	b.detalle.Cantidad = decimal.NewFromFloat(v).Round(5).InexactFloat64()
 	return b
 }
 
@@ -340,29 +339,23 @@ func (b *monedaExtranjeraDetalleBuilder) WithUnidadMedida(v int) *monedaExtranje
 	return b
 }
 
-func (b *monedaExtranjeraDetalleBuilder) WithPrecioUnitario(v float64) *monedaExtranjeraDetalleBuilder {
-	v = decimal.NewFromFloat(v).Round(5).InexactFloat64()
-	b.detalle.PrecioUnitario = v
+func (b *monedaExtranjeraDetalleBuilder) WithPrecioNetoUnitario(v float64) *monedaExtranjeraDetalleBuilder {
+	b.detalle.PrecioNetoUnitario = decimal.NewFromFloat(v).Round(5).InexactFloat64()
 	return b
 }
 
 func (b *monedaExtranjeraDetalleBuilder) WithMontoDescuento(v *float64) *monedaExtranjeraDetalleBuilder {
 	if v == nil {
-		b.detalle.MontoDescuento = datatype.Nilable[float64]{Value: nil}
-	} else {
-		val := *v
-		val = decimal.NewFromFloat(val).Round(5).InexactFloat64()
-		b.detalle.MontoDescuento = datatype.Nilable[float64]{Value: &val}
+		b.detalle.MontoDescuento = datatype.Nilable[float64]{}
+		return b
 	}
+	value := *v
+	value = decimal.NewFromFloat(value).Round(5).InexactFloat64()
+	b.detalle.MontoDescuento = datatype.Nilable[float64]{Value: &value}
 	return b
 }
 
 func (b *monedaExtranjeraDetalleBuilder) WithSubTotal(v float64) *monedaExtranjeraDetalleBuilder {
-	v = decimal.NewFromFloat(v).Round(5).InexactFloat64()
-	b.detalle.SubTotal = v
+	b.detalle.SubTotal = decimal.NewFromFloat(v).Round(5).InexactFloat64()
 	return b
-}
-
-func (b *monedaExtranjeraDetalleBuilder) Build() MonedaExtranjeraDetalle {
-	return MonedaExtranjeraDetalle{models.NewRequestWrapper(b.detalle)}
 }

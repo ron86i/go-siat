@@ -38,13 +38,16 @@ func TestAlquilerBienInmueble_Electronica(t *testing.T) {
 		WithCodigoCliente("CLI-001").
 		WithPeriodoFacturado("ENERO 2024").
 		WithCodigoMetodoPago(1).
-		WithMontoTotal(100.00).
-		WithMontoTotalSujetoIva(100.00).
+		WithSubTotalNeto(100.00).
+		WithTotalPrecioNeto(100.00).
+		WithIva(0).
+		WithMontoAPagar(100.00).
 		WithCodigoMoneda(1).
 		WithTipoCambio(1.0).
 		WithMontoTotalMoneda(100.00).
 		WithLeyenda("Leyenda Factura").
 		WithUsuario("operador01").
+		WithCodigoInterno("ALQ-001").
 		Build()
 
 	detalle := invoices.NewAlquilerBienInmuebleDetalleBuilder().
@@ -54,7 +57,7 @@ func TestAlquilerBienInmueble_Electronica(t *testing.T) {
 		WithDescripcion("ALQUILER DE OFICINA CENTRAL").
 		WithCantidad(1.0).
 		WithUnidadMedida(58).
-		WithPrecioUnitario(100.00).
+		WithPrecioNetoUnitario(100.00).
 		WithSubTotal(100.00).
 		Build()
 

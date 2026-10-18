@@ -56,9 +56,9 @@ func TestLubricantesIehd_Electronica(t *testing.T) {
 		WithCondicionPago(&condicion).
 		WithPeriodoEntrega(&periodo).
 		WithCodigoMetodoPago(1).
-		WithMontoTotal(montoTotal).
+		WithMontoAPagar(montoTotal).
 		WithMontoDeduccionIehdDS25530(&zero).
-		WithMontoTotalSujetoIva(montoTotal).
+		WithTotalPrecioNeto(montoTotal).
 		WithCodigoMoneda(1).
 		WithTipoCambio(1).
 		WithMontoTotalMoneda(montoTotal).
@@ -73,7 +73,7 @@ func TestLubricantesIehd_Electronica(t *testing.T) {
 		WithDescripcion("LUBRICANTE IEHD").
 		WithCantidad(cantidad).
 		WithUnidadMedida(1).
-		WithPrecioUnitario(precioUnitario).
+		WithPrecioNetoUnitario(precioUnitario).
 		WithMontoDescuento(&montoDescuento).
 		WithSubTotal(subTotalItem).
 		WithCantidadLitros(1.0).

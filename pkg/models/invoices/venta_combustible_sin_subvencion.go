@@ -96,6 +96,18 @@ type ventaCombustibleSinSubvencionCabeceraBuilder struct {
 	cabecera *documents.CabeceraVentaCombustibleSinSubvencion
 }
 
+func (b *ventaCombustibleSinSubvencionCabeceraBuilder) Build() VentaCombustibleSinSubvencionCabecera {
+	return VentaCombustibleSinSubvencionCabecera{models.NewRequestWrapper(b.cabecera)}
+}
+
+type ventaCombustibleSinSubvencionDetalleBuilder struct {
+	detalle *documents.DetalleVentaCombustibleSinSubvencion
+}
+
+func (b *ventaCombustibleSinSubvencionDetalleBuilder) Build() VentaCombustibleSinSubvencionDetalle {
+	return VentaCombustibleSinSubvencionDetalle{models.NewRequestWrapper(b.detalle)}
+}
+
 func (b *ventaCombustibleSinSubvencionCabeceraBuilder) WithNitEmisor(v int64) *ventaCombustibleSinSubvencionCabeceraBuilder {
 	b.cabecera.NitEmisor = v
 	return b
@@ -111,12 +123,12 @@ func (b *ventaCombustibleSinSubvencionCabeceraBuilder) WithMunicipio(v string) *
 	return b
 }
 
-func (b *ventaCombustibleSinSubvencionCabeceraBuilder) WithTelefono(telefono *string) *ventaCombustibleSinSubvencionCabeceraBuilder {
-	if telefono == nil {
-		b.cabecera.Telefono = datatype.Nilable[string]{Value: nil}
+func (b *ventaCombustibleSinSubvencionCabeceraBuilder) WithTelefono(v *string) *ventaCombustibleSinSubvencionCabeceraBuilder {
+	if v == nil {
+		b.cabecera.Telefono = datatype.Nilable[string]{}
 		return b
 	}
-	value := *telefono
+	value := *v
 	b.cabecera.Telefono = datatype.Nilable[string]{Value: &value}
 	return b
 }
@@ -148,7 +160,7 @@ func (b *ventaCombustibleSinSubvencionCabeceraBuilder) WithDireccion(v string) *
 
 func (b *ventaCombustibleSinSubvencionCabeceraBuilder) WithCodigoPuntoVenta(v *int) *ventaCombustibleSinSubvencionCabeceraBuilder {
 	if v == nil {
-		b.cabecera.CodigoPuntoVenta = datatype.Nilable[int]{Value: nil}
+		b.cabecera.CodigoPuntoVenta = datatype.Nilable[int]{}
 		return b
 	}
 	value := *v
@@ -156,14 +168,19 @@ func (b *ventaCombustibleSinSubvencionCabeceraBuilder) WithCodigoPuntoVenta(v *i
 	return b
 }
 
-func (b *ventaCombustibleSinSubvencionCabeceraBuilder) WithFechaEmision(fechaEmision time.Time) *ventaCombustibleSinSubvencionCabeceraBuilder {
-	b.cabecera.FechaEmision = datatype.NewTimeSiat(fechaEmision)
+func (b *ventaCombustibleSinSubvencionCabeceraBuilder) WithNitEmisorEeSs(v int64) *ventaCombustibleSinSubvencionCabeceraBuilder {
+	b.cabecera.NitEmisorEeSs = v
+	return b
+}
+
+func (b *ventaCombustibleSinSubvencionCabeceraBuilder) WithFechaEmision(v time.Time) *ventaCombustibleSinSubvencionCabeceraBuilder {
+	b.cabecera.FechaEmision = datatype.NewTimeSiat(v)
 	return b
 }
 
 func (b *ventaCombustibleSinSubvencionCabeceraBuilder) WithNombreRazonSocial(v *string) *ventaCombustibleSinSubvencionCabeceraBuilder {
 	if v == nil {
-		b.cabecera.NombreRazonSocial = datatype.Nilable[string]{Value: nil}
+		b.cabecera.NombreRazonSocial = datatype.Nilable[string]{}
 		return b
 	}
 	value := *v
@@ -181,13 +198,8 @@ func (b *ventaCombustibleSinSubvencionCabeceraBuilder) WithNumeroDocumento(v str
 	return b
 }
 
-func (b *ventaCombustibleSinSubvencionCabeceraBuilder) WithComplemento(v *string) *ventaCombustibleSinSubvencionCabeceraBuilder {
-	if v == nil {
-		b.cabecera.Complemento = datatype.Nilable[string]{Value: nil}
-		return b
-	}
-	value := *v
-	b.cabecera.Complemento = datatype.Nilable[string]{Value: &value}
+func (b *ventaCombustibleSinSubvencionCabeceraBuilder) WithComplemento(v string) *ventaCombustibleSinSubvencionCabeceraBuilder {
+	b.cabecera.Complemento = v
 	return b
 }
 
@@ -198,7 +210,7 @@ func (b *ventaCombustibleSinSubvencionCabeceraBuilder) WithCodigoCliente(v strin
 
 func (b *ventaCombustibleSinSubvencionCabeceraBuilder) WithCodigoPais(v *int) *ventaCombustibleSinSubvencionCabeceraBuilder {
 	if v == nil {
-		b.cabecera.CodigoPais = datatype.Nilable[int]{Value: nil}
+		b.cabecera.CodigoPais = datatype.Nilable[int]{}
 		return b
 	}
 	value := *v
@@ -213,7 +225,7 @@ func (b *ventaCombustibleSinSubvencionCabeceraBuilder) WithPlacaVehiculo(v strin
 
 func (b *ventaCombustibleSinSubvencionCabeceraBuilder) WithTipoEnvase(v *string) *ventaCombustibleSinSubvencionCabeceraBuilder {
 	if v == nil {
-		b.cabecera.TipoEnvase = datatype.Nilable[string]{Value: nil}
+		b.cabecera.TipoEnvase = datatype.Nilable[string]{}
 		return b
 	}
 	value := *v
@@ -228,7 +240,7 @@ func (b *ventaCombustibleSinSubvencionCabeceraBuilder) WithCodigoMetodoPago(v in
 
 func (b *ventaCombustibleSinSubvencionCabeceraBuilder) WithNumeroTarjeta(v *int64) *ventaCombustibleSinSubvencionCabeceraBuilder {
 	if v == nil {
-		b.cabecera.NumeroTarjeta = datatype.Nilable[int64]{Value: nil}
+		b.cabecera.NumeroTarjeta = datatype.Nilable[int64]{}
 		return b
 	}
 	value := *v
@@ -236,21 +248,29 @@ func (b *ventaCombustibleSinSubvencionCabeceraBuilder) WithNumeroTarjeta(v *int6
 	return b
 }
 
-func (b *ventaCombustibleSinSubvencionCabeceraBuilder) WithMontoTotal(v float64) *ventaCombustibleSinSubvencionCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.MontoTotal = v
+func (b *ventaCombustibleSinSubvencionCabeceraBuilder) WithSubTotalNeto(v float64) *ventaCombustibleSinSubvencionCabeceraBuilder {
+	b.cabecera.SubTotalNeto = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
-func (b *ventaCombustibleSinSubvencionCabeceraBuilder) WithMontoTotalSujetoIva(v float64) *ventaCombustibleSinSubvencionCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.MontoTotalSujetoIva = v
+func (b *ventaCombustibleSinSubvencionCabeceraBuilder) WithTotalPrecioNeto(v float64) *ventaCombustibleSinSubvencionCabeceraBuilder {
+	b.cabecera.TotalPrecioNeto = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+	return b
+}
+
+func (b *ventaCombustibleSinSubvencionCabeceraBuilder) WithIva(v float64) *ventaCombustibleSinSubvencionCabeceraBuilder {
+	b.cabecera.Iva = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+	return b
+}
+
+func (b *ventaCombustibleSinSubvencionCabeceraBuilder) WithMontoAPagar(v float64) *ventaCombustibleSinSubvencionCabeceraBuilder {
+	b.cabecera.MontoAPagar = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
 func (b *ventaCombustibleSinSubvencionCabeceraBuilder) WithCodigoAutorizacionSC(v *string) *ventaCombustibleSinSubvencionCabeceraBuilder {
 	if v == nil {
-		b.cabecera.CodigoAutorizacionSC = datatype.Nilable[string]{Value: nil}
+		b.cabecera.CodigoAutorizacionSC = datatype.Nilable[string]{}
 		return b
 	}
 	value := *v
@@ -260,7 +280,7 @@ func (b *ventaCombustibleSinSubvencionCabeceraBuilder) WithCodigoAutorizacionSC(
 
 func (b *ventaCombustibleSinSubvencionCabeceraBuilder) WithObservacion(v *string) *ventaCombustibleSinSubvencionCabeceraBuilder {
 	if v == nil {
-		b.cabecera.Observacion = datatype.Nilable[string]{Value: nil}
+		b.cabecera.Observacion = datatype.Nilable[string]{}
 		return b
 	}
 	value := *v
@@ -274,20 +294,18 @@ func (b *ventaCombustibleSinSubvencionCabeceraBuilder) WithCodigoMoneda(v int) *
 }
 
 func (b *ventaCombustibleSinSubvencionCabeceraBuilder) WithTipoCambio(v float64) *ventaCombustibleSinSubvencionCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.TipoCambio = v
+	b.cabecera.TipoCambio = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
 func (b *ventaCombustibleSinSubvencionCabeceraBuilder) WithMontoTotalMoneda(v float64) *ventaCombustibleSinSubvencionCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.MontoTotalMoneda = v
+	b.cabecera.MontoTotalMoneda = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
 func (b *ventaCombustibleSinSubvencionCabeceraBuilder) WithDescuentoAdicional(v *float64) *ventaCombustibleSinSubvencionCabeceraBuilder {
 	if v == nil {
-		b.cabecera.DescuentoAdicional = datatype.Nilable[float64]{Value: nil}
+		b.cabecera.DescuentoAdicional = datatype.Nilable[float64]{}
 		return b
 	}
 	value := *v
@@ -298,21 +316,11 @@ func (b *ventaCombustibleSinSubvencionCabeceraBuilder) WithDescuentoAdicional(v 
 
 func (b *ventaCombustibleSinSubvencionCabeceraBuilder) WithCodigoExcepcion(v *int) *ventaCombustibleSinSubvencionCabeceraBuilder {
 	if v == nil {
-		b.cabecera.CodigoExcepcion = datatype.Nilable[int]{Value: nil}
+		b.cabecera.CodigoExcepcion = datatype.Nilable[int]{}
 		return b
 	}
 	value := *v
 	b.cabecera.CodigoExcepcion = datatype.Nilable[int]{Value: &value}
-	return b
-}
-
-func (b *ventaCombustibleSinSubvencionCabeceraBuilder) WithCafc(v *string) *ventaCombustibleSinSubvencionCabeceraBuilder {
-	if v == nil {
-		b.cabecera.Cafc = datatype.Nilable[string]{Value: nil}
-		return b
-	}
-	value := *v
-	b.cabecera.Cafc = datatype.Nilable[string]{Value: &value}
 	return b
 }
 
@@ -326,18 +334,14 @@ func (b *ventaCombustibleSinSubvencionCabeceraBuilder) WithUsuario(v string) *ve
 	return b
 }
 
-// WithCodigoDocumentoSector configura el código que identifica el diseño o sector de la factura.
-func (b *ventaCombustibleSinSubvencionCabeceraBuilder) WithCodigoDocumentoSector(v int) *ventaCombustibleSinSubvencionCabeceraBuilder {
-	b.cabecera.CodigoDocumentoSector = v
+func (b *ventaCombustibleSinSubvencionCabeceraBuilder) WithCodigoInterno(v string) *ventaCombustibleSinSubvencionCabeceraBuilder {
+	b.cabecera.CodigoInterno = v
 	return b
 }
 
-func (b *ventaCombustibleSinSubvencionCabeceraBuilder) Build() VentaCombustibleSinSubvencionCabecera {
-	return VentaCombustibleSinSubvencionCabecera{models.NewRequestWrapper(b.cabecera)}
-}
-
-type ventaCombustibleSinSubvencionDetalleBuilder struct {
-	detalle *documents.DetalleVentaCombustibleSinSubvencion
+func (b *ventaCombustibleSinSubvencionCabeceraBuilder) WithCodigoDocumentoSector(v int) *ventaCombustibleSinSubvencionCabeceraBuilder {
+	b.cabecera.CodigoDocumentoSector = v
+	return b
 }
 
 func (b *ventaCombustibleSinSubvencionDetalleBuilder) WithActividadEconomica(v string) *ventaCombustibleSinSubvencionDetalleBuilder {
@@ -361,8 +365,7 @@ func (b *ventaCombustibleSinSubvencionDetalleBuilder) WithDescripcion(v string) 
 }
 
 func (b *ventaCombustibleSinSubvencionDetalleBuilder) WithCantidad(v float64) *ventaCombustibleSinSubvencionDetalleBuilder {
-	v = decimal.NewFromFloat(v).Round(5).InexactFloat64()
-	b.detalle.Cantidad = v
+	b.detalle.Cantidad = decimal.NewFromFloat(v).Round(5).InexactFloat64()
 	return b
 }
 
@@ -371,15 +374,14 @@ func (b *ventaCombustibleSinSubvencionDetalleBuilder) WithUnidadMedida(v int) *v
 	return b
 }
 
-func (b *ventaCombustibleSinSubvencionDetalleBuilder) WithPrecioUnitario(v float64) *ventaCombustibleSinSubvencionDetalleBuilder {
-	v = decimal.NewFromFloat(v).Round(5).InexactFloat64()
-	b.detalle.PrecioUnitario = v
+func (b *ventaCombustibleSinSubvencionDetalleBuilder) WithPrecioNetoUnitario(v float64) *ventaCombustibleSinSubvencionDetalleBuilder {
+	b.detalle.PrecioNetoUnitario = decimal.NewFromFloat(v).Round(5).InexactFloat64()
 	return b
 }
 
 func (b *ventaCombustibleSinSubvencionDetalleBuilder) WithMontoDescuento(v *float64) *ventaCombustibleSinSubvencionDetalleBuilder {
 	if v == nil {
-		b.detalle.MontoDescuento = datatype.Nilable[float64]{Value: nil}
+		b.detalle.MontoDescuento = datatype.Nilable[float64]{}
 		return b
 	}
 	value := *v
@@ -389,11 +391,6 @@ func (b *ventaCombustibleSinSubvencionDetalleBuilder) WithMontoDescuento(v *floa
 }
 
 func (b *ventaCombustibleSinSubvencionDetalleBuilder) WithSubTotal(v float64) *ventaCombustibleSinSubvencionDetalleBuilder {
-	v = decimal.NewFromFloat(v).Round(5).InexactFloat64()
-	b.detalle.SubTotal = v
+	b.detalle.SubTotal = decimal.NewFromFloat(v).Round(5).InexactFloat64()
 	return b
-}
-
-func (b *ventaCombustibleSinSubvencionDetalleBuilder) Build() VentaCombustibleSinSubvencionDetalle {
-	return VentaCombustibleSinSubvencionDetalle{models.NewRequestWrapper(b.detalle)}
 }

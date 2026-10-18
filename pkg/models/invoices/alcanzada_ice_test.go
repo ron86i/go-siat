@@ -46,15 +46,18 @@ func TestAlcanzadaIce_Computarizada(t *testing.T) {
 		WithNumeroDocumento("1234567").
 		WithCodigoCliente("CLI-ICE-01").
 		WithCodigoMetodoPago(1).
-		WithMontoTotal(montoTotal).
-		WithMontoTotalSujetoIva(montoTotal).
-		WithMontoIceEspecifico(&iceEspecifico).
-		WithMontoIcePorcentual(&icePorcentual).
+		WithSubTotalNeto(montoTotal).
+		WithTotalPrecioNeto(montoTotal).
+		WithIva(0).
+		WithMontoAPagar(montoTotal).
+		WithTotalIceEspecifico(&iceEspecifico).
+		WithTotalIcePorcentual(&icePorcentual).
 		WithCodigoMoneda(1).
 		WithTipoCambio(1).
 		WithMontoTotalMoneda(montoTotal).
 		WithLeyenda("Leyenda ICE").
 		WithUsuario("usuario").
+		WithCodigoInterno("ICE-01").
 		Build()
 
 	detalle := invoices.NewAlcanzadaIceDetalleBuilder().
@@ -64,11 +67,10 @@ func TestAlcanzadaIce_Computarizada(t *testing.T) {
 		WithDescripcion("CERVEZA PRUEBA").
 		WithCantidad(cantidad).
 		WithUnidadMedida(1).
-		WithPrecioUnitario(precioUnitario).
+		WithPrecioNetoUnitario(precioUnitario).
 		WithMontoDescuento(&montoDescuento).
 		WithSubTotal(subTotalItem).
 		WithMarcaIce(1).
-		WithAlicuotaIva(&montoDescuento).
 		WithAlicuotaEspecifica(&iceEspecifico).
 		WithAlicuotaPorcentual(&icePorcentual).
 		WithCantidadIce(&cantidad).

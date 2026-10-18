@@ -53,18 +53,18 @@ func TestComercialExportacionHidro_Electronica(t *testing.T) {
 		WithCodigoCliente("CLI-HIDRO").
 		WithDireccionComprador("AV. BRASIL").
 		WithIncoterm("FOB").
-		WithIncotermDetalle("CIUDAD BOLIVIA").
+		WithAlcanceIncoterm("CIUDAD BOLIVIA").
 		WithPuertoDestino("SANTOS").
 		WithLugarDestino("BRASIL").
 		WithCodigoPais(1).
 		WithCodigoMetodoPago(1).
-		WithMontoTotal(montoTotalBs).
+		WithMontoAPagar(montoTotalBs).
 		WithCostosGastosNacionales(costosNacionales).
 		WithTotalGastosNacionalesFob(totalGastosNacionalesFob).
 		WithCostosGastosInternacionales(nil).
 		WithTotalGastosInternacionales(utils.Float64Ptr(totalGastosInternacionales)).
-		WithMontoDetalle(montoDetalle).
-		WithMontoTotalSujetoIva(0).
+		WithSubTotalNeto(montoDetalle).
+		WithTotalPrecioNeto(0).
 		WithCodigoMoneda(2). // USD
 		WithTipoCambio(tipoCambio).
 		WithMontoTotalMoneda(montoTotal).
@@ -80,7 +80,7 @@ func TestComercialExportacionHidro_Electronica(t *testing.T) {
 		WithDescripcion("GAS NATURAL").
 		WithCantidad(100.0).
 		WithUnidadMedida(1).
-		WithPrecioUnitario(995.0003).
+		WithPrecioNetoUnitario(995.0003).
 		WithSubTotal(montoDetalle).
 		Build()
 

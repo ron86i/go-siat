@@ -38,8 +38,8 @@ func TestComercializacionGnv_Electronica(t *testing.T) {
 		WithCodigoCliente("CLI-GNV-01").
 		WithPlacaVehiculo("1234ABC").
 		WithCodigoMetodoPago(1).
-		WithMontoTotal(100.00).
-		WithMontoTotalSujetoIva(100.00).
+		WithMontoAPagar(100.00).
+		WithTotalPrecioNeto(100.00).
 		WithCodigoMoneda(1).
 		WithTipoCambio(1.0).
 		WithMontoTotalMoneda(100.00).
@@ -54,7 +54,7 @@ func TestComercializacionGnv_Electronica(t *testing.T) {
 		WithDescripcion("GAS NATURAL VEHICULAR").
 		WithCantidad(66.66667). // 5 decimales
 		WithUnidadMedida(58).
-		WithPrecioUnitario(1.5).
+		WithPrecioNetoUnitario(1.5).
 		WithSubTotal(100.00).
 		Build()
 

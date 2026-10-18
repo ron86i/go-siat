@@ -71,8 +71,8 @@ func emitirPrevaloradaIndividual(t *testing.T, tc *TestContext, cuis, cufd, cufd
 		WithCodigoPuntoVenta(&tc.PuntoVenta).
 		WithFechaEmision(fechaEmision).
 		WithCodigoMetodoPago(1).
-		WithMontoTotal(montoTotal).
-		WithMontoTotalSujetoIva(montoTotal).
+		WithMontoAPagar(montoTotal).
+		WithTotalPrecioNeto(montoTotal).
 		WithCodigoMoneda(1).
 		WithTipoCambio(1).
 		WithMontoTotalMoneda(montoTotal).
@@ -87,7 +87,7 @@ func emitirPrevaloradaIndividual(t *testing.T, tc *TestContext, cuis, cufd, cufd
 		WithDescripcion("PRODUCTO").
 		WithCantidad(cantidad).
 		WithUnidadMedida(1).
-		WithPrecioUnitario(precioUnitario).
+		WithPrecioNetoUnitario(precioUnitario).
 		WithMontoDescuento(&montoDescuento).
 		WithSubTotal(subTotalItem).
 		Build()

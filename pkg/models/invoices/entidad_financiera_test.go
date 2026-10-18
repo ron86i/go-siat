@@ -38,8 +38,8 @@ func TestEntidadFinancieraBuilder(t *testing.T) {
 		WithCodigoCliente("CLI-001").
 		WithCodigoMetodoPago(1).
 		WithMontoTotalArrendamientoFinanciero(&montoArrendamiento).
-		WithMontoTotal(5000.50).
-		WithMontoTotalSujetoIva(5000.50).
+		WithMontoAPagar(5000.50).
+		WithTotalPrecioNeto(5000.50).
 		WithCodigoMoneda(1).
 		WithTipoCambio(1).
 		WithMontoTotalMoneda(5000.50).
@@ -54,7 +54,7 @@ func TestEntidadFinancieraBuilder(t *testing.T) {
 		WithDescripcion("INTERESES PRESTAMO").
 		WithCantidad(1).
 		WithUnidadMedida(58).
-		WithPrecioUnitario(5000.50).
+		WithPrecioNetoUnitario(5000.50).
 		WithSubTotal(5000.50).
 		Build()
 
@@ -104,7 +104,7 @@ func TestEntidadFinanciera_Electronica(t *testing.T) {
 				WithDescripcion("Comision Bancaria").
 				WithCantidad(1).
 				WithUnidadMedida(58).
-				WithPrecioUnitario(100).
+				WithPrecioNetoUnitario(100).
 				WithSubTotal(100).
 				Build()
 
@@ -128,8 +128,8 @@ func TestEntidadFinanciera_Electronica(t *testing.T) {
 					WithCodigoCliente("CLI-001").
 					WithCodigoMetodoPago(1).
 					WithMontoTotalArrendamientoFinanciero(&montoArrendamiento).
-					WithMontoTotal(montoTotal).
-					WithMontoTotalSujetoIva(100).
+					WithMontoAPagar(montoTotal).
+					WithTotalPrecioNeto(100).
 					WithCodigoMoneda(1).
 					WithTipoCambio(1).
 					WithMontoTotalMoneda(montoTotal).

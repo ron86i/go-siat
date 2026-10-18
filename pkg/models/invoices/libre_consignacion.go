@@ -49,7 +49,6 @@ func NewLibreConsignacionCabeceraBuilder() *libreConsignacionCabeceraBuilder {
 			NombreRazonSocial:            "SIN RAZON SOCIAL", // Fijo según XSD
 			CodigoTipoDocumentoIdentidad: 5,                  // Fijo según XSD (NIT/Extranjero)
 			NumeroDocumento:              "0",                // Fijo según XSD
-			MontoTotalSujetoIva:          0,                  // Fijo según XSD
 		},
 	}
 }
@@ -102,6 +101,18 @@ type libreConsignacionCabeceraBuilder struct {
 	cabecera *documents.CabeceraLibreConsignacion
 }
 
+func (b *libreConsignacionCabeceraBuilder) Build() LibreConsignacionCabecera {
+	return LibreConsignacionCabecera{models.NewRequestWrapper(b.cabecera)}
+}
+
+type libreConsignacionDetalleBuilder struct {
+	detalle *documents.DetalleLibreConsignacion
+}
+
+func (b *libreConsignacionDetalleBuilder) Build() LibreConsignacionDetalle {
+	return LibreConsignacionDetalle{models.NewRequestWrapper(b.detalle)}
+}
+
 func (b *libreConsignacionCabeceraBuilder) WithNitEmisor(v int64) *libreConsignacionCabeceraBuilder {
 	b.cabecera.NitEmisor = v
 	return b
@@ -117,12 +128,12 @@ func (b *libreConsignacionCabeceraBuilder) WithMunicipio(v string) *libreConsign
 	return b
 }
 
-func (b *libreConsignacionCabeceraBuilder) WithTelefono(telefono *string) *libreConsignacionCabeceraBuilder {
-	if telefono == nil {
-		b.cabecera.Telefono = datatype.Nilable[string]{Value: nil}
+func (b *libreConsignacionCabeceraBuilder) WithTelefono(v *string) *libreConsignacionCabeceraBuilder {
+	if v == nil {
+		b.cabecera.Telefono = datatype.Nilable[string]{}
 		return b
 	}
-	value := *telefono
+	value := *v
 	b.cabecera.Telefono = datatype.Nilable[string]{Value: &value}
 	return b
 }
@@ -154,7 +165,7 @@ func (b *libreConsignacionCabeceraBuilder) WithDireccion(v string) *libreConsign
 
 func (b *libreConsignacionCabeceraBuilder) WithCodigoPuntoVenta(v *int) *libreConsignacionCabeceraBuilder {
 	if v == nil {
-		b.cabecera.CodigoPuntoVenta = datatype.Nilable[int]{Value: nil}
+		b.cabecera.CodigoPuntoVenta = datatype.Nilable[int]{}
 		return b
 	}
 	value := *v
@@ -162,13 +173,23 @@ func (b *libreConsignacionCabeceraBuilder) WithCodigoPuntoVenta(v *int) *libreCo
 	return b
 }
 
-func (b *libreConsignacionCabeceraBuilder) WithFechaEmision(fechaEmision time.Time) *libreConsignacionCabeceraBuilder {
-	b.cabecera.FechaEmision = datatype.NewTimeSiat(fechaEmision)
+func (b *libreConsignacionCabeceraBuilder) WithFechaEmision(v time.Time) *libreConsignacionCabeceraBuilder {
+	b.cabecera.FechaEmision = datatype.NewTimeSiat(v)
 	return b
 }
 
-func (b *libreConsignacionCabeceraBuilder) WithCodigoCliente(v string) *libreConsignacionCabeceraBuilder {
-	b.cabecera.CodigoCliente = v
+func (b *libreConsignacionCabeceraBuilder) WithNombreRazonSocial(v string) *libreConsignacionCabeceraBuilder {
+	b.cabecera.NombreRazonSocial = v
+	return b
+}
+
+func (b *libreConsignacionCabeceraBuilder) WithCodigoTipoDocumentoIdentidad(v int) *libreConsignacionCabeceraBuilder {
+	b.cabecera.CodigoTipoDocumentoIdentidad = v
+	return b
+}
+
+func (b *libreConsignacionCabeceraBuilder) WithNumeroDocumento(v string) *libreConsignacionCabeceraBuilder {
+	b.cabecera.NumeroDocumento = v
 	return b
 }
 
@@ -189,7 +210,7 @@ func (b *libreConsignacionCabeceraBuilder) WithCodigoMetodoPago(v int) *libreCon
 
 func (b *libreConsignacionCabeceraBuilder) WithNumeroTarjeta(v *int64) *libreConsignacionCabeceraBuilder {
 	if v == nil {
-		b.cabecera.NumeroTarjeta = datatype.Nilable[int64]{Value: nil}
+		b.cabecera.NumeroTarjeta = datatype.Nilable[int64]{}
 		return b
 	}
 	value := *v
@@ -197,9 +218,23 @@ func (b *libreConsignacionCabeceraBuilder) WithNumeroTarjeta(v *int64) *libreCon
 	return b
 }
 
-func (b *libreConsignacionCabeceraBuilder) WithMontoTotal(v float64) *libreConsignacionCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.MontoTotal = v
+func (b *libreConsignacionCabeceraBuilder) WithSubTotalNeto(v float64) *libreConsignacionCabeceraBuilder {
+	b.cabecera.SubTotalNeto = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+	return b
+}
+
+func (b *libreConsignacionCabeceraBuilder) WithTotalPrecioNeto(v float64) *libreConsignacionCabeceraBuilder {
+	b.cabecera.TotalPrecioNeto = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+	return b
+}
+
+func (b *libreConsignacionCabeceraBuilder) WithIva(v float64) *libreConsignacionCabeceraBuilder {
+	b.cabecera.Iva = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+	return b
+}
+
+func (b *libreConsignacionCabeceraBuilder) WithMontoAPagar(v float64) *libreConsignacionCabeceraBuilder {
+	b.cabecera.MontoAPagar = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
@@ -209,34 +244,22 @@ func (b *libreConsignacionCabeceraBuilder) WithCodigoMoneda(v int) *libreConsign
 }
 
 func (b *libreConsignacionCabeceraBuilder) WithTipoCambio(v float64) *libreConsignacionCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(5).InexactFloat64()
-	b.cabecera.TipoCambio = v
+	b.cabecera.TipoCambio = decimal.NewFromFloat(v).Round(5).InexactFloat64()
 	return b
 }
 
 func (b *libreConsignacionCabeceraBuilder) WithMontoTotalMoneda(v float64) *libreConsignacionCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.MontoTotalMoneda = v
+	b.cabecera.MontoTotalMoneda = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
 func (b *libreConsignacionCabeceraBuilder) WithCodigoExcepcion(v *int) *libreConsignacionCabeceraBuilder {
 	if v == nil {
-		b.cabecera.CodigoExcepcion = datatype.Nilable[int]{Value: nil}
+		b.cabecera.CodigoExcepcion = datatype.Nilable[int]{}
 		return b
 	}
 	value := *v
 	b.cabecera.CodigoExcepcion = datatype.Nilable[int]{Value: &value}
-	return b
-}
-
-func (b *libreConsignacionCabeceraBuilder) WithCafc(v *string) *libreConsignacionCabeceraBuilder {
-	if v == nil {
-		b.cabecera.Cafc = datatype.Nilable[string]{Value: nil}
-		return b
-	}
-	value := *v
-	b.cabecera.Cafc = datatype.Nilable[string]{Value: &value}
 	return b
 }
 
@@ -250,39 +273,14 @@ func (b *libreConsignacionCabeceraBuilder) WithUsuario(v string) *libreConsignac
 	return b
 }
 
-func (b *libreConsignacionCabeceraBuilder) WithMontoTotalSujetoIva(v float64) *libreConsignacionCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.MontoTotalSujetoIva = v
+func (b *libreConsignacionCabeceraBuilder) WithCodigoInterno(v string) *libreConsignacionCabeceraBuilder {
+	b.cabecera.CodigoInterno = v
 	return b
 }
 
-func (b *libreConsignacionCabeceraBuilder) WithNumeroDocumento(v string) *libreConsignacionCabeceraBuilder {
-	b.cabecera.NumeroDocumento = v
-	return b
-}
-
-func (b *libreConsignacionCabeceraBuilder) WithNombreRazonSocial(v string) *libreConsignacionCabeceraBuilder {
-	b.cabecera.NombreRazonSocial = v
-	return b
-}
-
-func (b *libreConsignacionCabeceraBuilder) WithCodigoTipoDocumentoIdentidad(v int) *libreConsignacionCabeceraBuilder {
-	b.cabecera.CodigoTipoDocumentoIdentidad = v
-	return b
-}
-
-// WithCodigoDocumentoSector configura el código que identifica el diseño o sector de la factura.
 func (b *libreConsignacionCabeceraBuilder) WithCodigoDocumentoSector(v int) *libreConsignacionCabeceraBuilder {
 	b.cabecera.CodigoDocumentoSector = v
 	return b
-}
-
-func (b *libreConsignacionCabeceraBuilder) Build() LibreConsignacionCabecera {
-	return LibreConsignacionCabecera{models.NewRequestWrapper(b.cabecera)}
-}
-
-type libreConsignacionDetalleBuilder struct {
-	detalle *documents.DetalleLibreConsignacion
 }
 
 func (b *libreConsignacionDetalleBuilder) WithActividadEconomica(v string) *libreConsignacionDetalleBuilder {
@@ -316,29 +314,21 @@ func (b *libreConsignacionDetalleBuilder) WithUnidadMedida(v int) *libreConsigna
 }
 
 func (b *libreConsignacionDetalleBuilder) WithCantidad(v float64) *libreConsignacionDetalleBuilder {
-	v = decimal.NewFromFloat(v).Round(5).InexactFloat64()
-	b.detalle.Cantidad = v
+	b.detalle.Cantidad = decimal.NewFromFloat(v).Round(5).InexactFloat64()
 	return b
 }
 
-func (b *libreConsignacionDetalleBuilder) WithPrecioUnitario(v float64) *libreConsignacionDetalleBuilder {
-	v = decimal.NewFromFloat(v).Round(5).InexactFloat64()
-	b.detalle.PrecioUnitario = v
-	return b
-}
-
-func (b *libreConsignacionDetalleBuilder) WithSubTotal(v float64) *libreConsignacionDetalleBuilder {
-	v = decimal.NewFromFloat(v).Round(5).InexactFloat64()
-	b.detalle.SubTotal = v
+func (b *libreConsignacionDetalleBuilder) WithPrecioNetoUnitario(v float64) *libreConsignacionDetalleBuilder {
+	b.detalle.PrecioNetoUnitario = decimal.NewFromFloat(v).Round(5).InexactFloat64()
 	return b
 }
 
 func (b *libreConsignacionDetalleBuilder) WithMontoDescuento(v float64) *libreConsignacionDetalleBuilder {
-	v = decimal.NewFromFloat(v).Round(5).InexactFloat64()
-	b.detalle.MontoDescuento = v
+	b.detalle.MontoDescuento = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
-func (b *libreConsignacionDetalleBuilder) Build() LibreConsignacionDetalle {
-	return LibreConsignacionDetalle{models.NewRequestWrapper(b.detalle)}
+func (b *libreConsignacionDetalleBuilder) WithSubTotal(v float64) *libreConsignacionDetalleBuilder {
+	b.detalle.SubTotal = decimal.NewFromFloat(v).Round(5).InexactFloat64()
+	return b
 }

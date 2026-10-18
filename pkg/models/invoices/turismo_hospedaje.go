@@ -46,7 +46,6 @@ func NewTurismoHospedajeCabeceraBuilder() *turismoHospedajeCabeceraBuilder {
 	return &turismoHospedajeCabeceraBuilder{
 		cabecera: &documents.CabeceraTurismoHospedaje{
 			CodigoDocumentoSector: 6, // Sector 6 para Turismo y Hospedaje
-			MontoTotalSujetoIva:   0, // Siempre 0 para este sector
 		},
 	}
 }
@@ -103,6 +102,18 @@ type turismoHospedajeCabeceraBuilder struct {
 	cabecera *documents.CabeceraTurismoHospedaje
 }
 
+func (b *turismoHospedajeCabeceraBuilder) Build() TurismoHospedajeCabecera {
+	return TurismoHospedajeCabecera{models.NewRequestWrapper(b.cabecera)}
+}
+
+type turismoHospedajeDetalleBuilder struct {
+	detalle *documents.DetalleTurismoHospedaje
+}
+
+func (b *turismoHospedajeDetalleBuilder) Build() TurismoHospedajeDetalle {
+	return TurismoHospedajeDetalle{models.NewRequestWrapper(b.detalle)}
+}
+
 func (b *turismoHospedajeCabeceraBuilder) WithNitEmisor(v int64) *turismoHospedajeCabeceraBuilder {
 	b.cabecera.NitEmisor = v
 	return b
@@ -118,12 +129,12 @@ func (b *turismoHospedajeCabeceraBuilder) WithMunicipio(v string) *turismoHosped
 	return b
 }
 
-func (b *turismoHospedajeCabeceraBuilder) WithTelefono(telefono *string) *turismoHospedajeCabeceraBuilder {
-	if telefono == nil {
-		b.cabecera.Telefono = datatype.Nilable[string]{Value: nil}
+func (b *turismoHospedajeCabeceraBuilder) WithTelefono(v *string) *turismoHospedajeCabeceraBuilder {
+	if v == nil {
+		b.cabecera.Telefono = datatype.Nilable[string]{}
 		return b
 	}
-	value := *telefono
+	value := *v
 	b.cabecera.Telefono = datatype.Nilable[string]{Value: &value}
 	return b
 }
@@ -155,7 +166,7 @@ func (b *turismoHospedajeCabeceraBuilder) WithDireccion(v string) *turismoHosped
 
 func (b *turismoHospedajeCabeceraBuilder) WithCodigoPuntoVenta(v *int) *turismoHospedajeCabeceraBuilder {
 	if v == nil {
-		b.cabecera.CodigoPuntoVenta = datatype.Nilable[int]{Value: nil}
+		b.cabecera.CodigoPuntoVenta = datatype.Nilable[int]{}
 		return b
 	}
 	value := *v
@@ -163,14 +174,14 @@ func (b *turismoHospedajeCabeceraBuilder) WithCodigoPuntoVenta(v *int) *turismoH
 	return b
 }
 
-func (b *turismoHospedajeCabeceraBuilder) WithFechaEmision(fechaEmision time.Time) *turismoHospedajeCabeceraBuilder {
-	b.cabecera.FechaEmision = datatype.NewTimeSiat(fechaEmision)
+func (b *turismoHospedajeCabeceraBuilder) WithFechaEmision(v time.Time) *turismoHospedajeCabeceraBuilder {
+	b.cabecera.FechaEmision = datatype.NewTimeSiat(v)
 	return b
 }
 
 func (b *turismoHospedajeCabeceraBuilder) WithNombreRazonSocial(v *string) *turismoHospedajeCabeceraBuilder {
 	if v == nil {
-		b.cabecera.NombreRazonSocial = datatype.Nilable[string]{Value: nil}
+		b.cabecera.NombreRazonSocial = datatype.Nilable[string]{}
 		return b
 	}
 	value := *v
@@ -188,13 +199,8 @@ func (b *turismoHospedajeCabeceraBuilder) WithNumeroDocumento(v string) *turismo
 	return b
 }
 
-func (b *turismoHospedajeCabeceraBuilder) WithComplemento(v *string) *turismoHospedajeCabeceraBuilder {
-	if v == nil {
-		b.cabecera.Complemento = datatype.Nilable[string]{Value: nil}
-		return b
-	}
-	value := *v
-	b.cabecera.Complemento = datatype.Nilable[string]{Value: &value}
+func (b *turismoHospedajeCabeceraBuilder) WithComplemento(v string) *turismoHospedajeCabeceraBuilder {
+	b.cabecera.Complemento = v
 	return b
 }
 
@@ -205,7 +211,7 @@ func (b *turismoHospedajeCabeceraBuilder) WithCodigoCliente(v string) *turismoHo
 
 func (b *turismoHospedajeCabeceraBuilder) WithRazonSocialOperadorTurismo(v *string) *turismoHospedajeCabeceraBuilder {
 	if v == nil {
-		b.cabecera.RazonSocialOperadorTurismo = datatype.Nilable[string]{Value: nil}
+		b.cabecera.RazonSocialOperadorTurismo = datatype.Nilable[string]{}
 		return b
 	}
 	value := *v
@@ -215,7 +221,7 @@ func (b *turismoHospedajeCabeceraBuilder) WithRazonSocialOperadorTurismo(v *stri
 
 func (b *turismoHospedajeCabeceraBuilder) WithCantidadHuespedes(v *int) *turismoHospedajeCabeceraBuilder {
 	if v == nil {
-		b.cabecera.CantidadHuespedes = datatype.Nilable[int]{Value: nil}
+		b.cabecera.CantidadHuespedes = datatype.Nilable[int]{}
 		return b
 	}
 	value := *v
@@ -225,7 +231,7 @@ func (b *turismoHospedajeCabeceraBuilder) WithCantidadHuespedes(v *int) *turismo
 
 func (b *turismoHospedajeCabeceraBuilder) WithCantidadHabitaciones(v *int) *turismoHospedajeCabeceraBuilder {
 	if v == nil {
-		b.cabecera.CantidadHabitaciones = datatype.Nilable[int]{Value: nil}
+		b.cabecera.CantidadHabitaciones = datatype.Nilable[int]{}
 		return b
 	}
 	value := *v
@@ -235,7 +241,7 @@ func (b *turismoHospedajeCabeceraBuilder) WithCantidadHabitaciones(v *int) *turi
 
 func (b *turismoHospedajeCabeceraBuilder) WithCantidadMayores(v *int) *turismoHospedajeCabeceraBuilder {
 	if v == nil {
-		b.cabecera.CantidadMayores = datatype.Nilable[int]{Value: nil}
+		b.cabecera.CantidadMayores = datatype.Nilable[int]{}
 		return b
 	}
 	value := *v
@@ -245,7 +251,7 @@ func (b *turismoHospedajeCabeceraBuilder) WithCantidadMayores(v *int) *turismoHo
 
 func (b *turismoHospedajeCabeceraBuilder) WithCantidadMenores(v *int) *turismoHospedajeCabeceraBuilder {
 	if v == nil {
-		b.cabecera.CantidadMenores = datatype.Nilable[int]{Value: nil}
+		b.cabecera.CantidadMenores = datatype.Nilable[int]{}
 		return b
 	}
 	value := *v
@@ -255,10 +261,10 @@ func (b *turismoHospedajeCabeceraBuilder) WithCantidadMenores(v *int) *turismoHo
 
 func (b *turismoHospedajeCabeceraBuilder) WithFechaIngresoHospedaje(v *time.Time) *turismoHospedajeCabeceraBuilder {
 	if v == nil {
-		b.cabecera.FechaIngresoHospedaje = datatype.Nilable[datatype.TimeSiat]{Value: nil}
+		b.cabecera.FechaIngresoHospedaje = datatype.Nilable[datatype.TimeSiat]{}
 		return b
 	}
-	value := datatype.NewTimeSiat(*v)
+	value := *v
 	b.cabecera.FechaIngresoHospedaje = datatype.Nilable[datatype.TimeSiat]{Value: &value}
 	return b
 }
@@ -270,7 +276,7 @@ func (b *turismoHospedajeCabeceraBuilder) WithCodigoMetodoPago(v int) *turismoHo
 
 func (b *turismoHospedajeCabeceraBuilder) WithNumeroTarjeta(v *int64) *turismoHospedajeCabeceraBuilder {
 	if v == nil {
-		b.cabecera.NumeroTarjeta = datatype.Nilable[int64]{Value: nil}
+		b.cabecera.NumeroTarjeta = datatype.Nilable[int64]{}
 		return b
 	}
 	value := *v
@@ -278,9 +284,23 @@ func (b *turismoHospedajeCabeceraBuilder) WithNumeroTarjeta(v *int64) *turismoHo
 	return b
 }
 
-func (b *turismoHospedajeCabeceraBuilder) WithMontoTotal(v float64) *turismoHospedajeCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.MontoTotal = v
+func (b *turismoHospedajeCabeceraBuilder) WithSubTotalNeto(v float64) *turismoHospedajeCabeceraBuilder {
+	b.cabecera.SubTotalNeto = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+	return b
+}
+
+func (b *turismoHospedajeCabeceraBuilder) WithTotalPrecioNeto(v float64) *turismoHospedajeCabeceraBuilder {
+	b.cabecera.TotalPrecioNeto = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+	return b
+}
+
+func (b *turismoHospedajeCabeceraBuilder) WithIva(v float64) *turismoHospedajeCabeceraBuilder {
+	b.cabecera.Iva = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+	return b
+}
+
+func (b *turismoHospedajeCabeceraBuilder) WithMontoAPagar(v float64) *turismoHospedajeCabeceraBuilder {
+	b.cabecera.MontoAPagar = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
@@ -290,20 +310,18 @@ func (b *turismoHospedajeCabeceraBuilder) WithCodigoMoneda(v int) *turismoHosped
 }
 
 func (b *turismoHospedajeCabeceraBuilder) WithTipoCambio(v float64) *turismoHospedajeCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.TipoCambio = v
+	b.cabecera.TipoCambio = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
 func (b *turismoHospedajeCabeceraBuilder) WithMontoTotalMoneda(v float64) *turismoHospedajeCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.MontoTotalMoneda = v
+	b.cabecera.MontoTotalMoneda = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
 func (b *turismoHospedajeCabeceraBuilder) WithMontoGiftCard(v *float64) *turismoHospedajeCabeceraBuilder {
 	if v == nil {
-		b.cabecera.MontoGiftCard = datatype.Nilable[float64]{Value: nil}
+		b.cabecera.MontoGiftCard = datatype.Nilable[float64]{}
 		return b
 	}
 	value := *v
@@ -314,7 +332,7 @@ func (b *turismoHospedajeCabeceraBuilder) WithMontoGiftCard(v *float64) *turismo
 
 func (b *turismoHospedajeCabeceraBuilder) WithDescuentoAdicional(v *float64) *turismoHospedajeCabeceraBuilder {
 	if v == nil {
-		b.cabecera.DescuentoAdicional = datatype.Nilable[float64]{Value: nil}
+		b.cabecera.DescuentoAdicional = datatype.Nilable[float64]{}
 		return b
 	}
 	value := *v
@@ -325,21 +343,11 @@ func (b *turismoHospedajeCabeceraBuilder) WithDescuentoAdicional(v *float64) *tu
 
 func (b *turismoHospedajeCabeceraBuilder) WithCodigoExcepcion(v *int) *turismoHospedajeCabeceraBuilder {
 	if v == nil {
-		b.cabecera.CodigoExcepcion = datatype.Nilable[int]{Value: nil}
+		b.cabecera.CodigoExcepcion = datatype.Nilable[int]{}
 		return b
 	}
 	value := *v
 	b.cabecera.CodigoExcepcion = datatype.Nilable[int]{Value: &value}
-	return b
-}
-
-func (b *turismoHospedajeCabeceraBuilder) WithCafc(v *string) *turismoHospedajeCabeceraBuilder {
-	if v == nil {
-		b.cabecera.Cafc = datatype.Nilable[string]{Value: nil}
-		return b
-	}
-	value := *v
-	b.cabecera.Cafc = datatype.Nilable[string]{Value: &value}
 	return b
 }
 
@@ -353,24 +361,14 @@ func (b *turismoHospedajeCabeceraBuilder) WithUsuario(v string) *turismoHospedaj
 	return b
 }
 
-func (b *turismoHospedajeCabeceraBuilder) WithMontoTotalSujetoIva(v float64) *turismoHospedajeCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.MontoTotalSujetoIva = v
+func (b *turismoHospedajeCabeceraBuilder) WithCodigoInterno(v string) *turismoHospedajeCabeceraBuilder {
+	b.cabecera.CodigoInterno = v
 	return b
 }
 
-// WithCodigoDocumentoSector configura el código que identifica el diseño o sector de la factura.
 func (b *turismoHospedajeCabeceraBuilder) WithCodigoDocumentoSector(v int) *turismoHospedajeCabeceraBuilder {
 	b.cabecera.CodigoDocumentoSector = v
 	return b
-}
-
-func (b *turismoHospedajeCabeceraBuilder) Build() TurismoHospedajeCabecera {
-	return TurismoHospedajeCabecera{models.NewRequestWrapper(b.cabecera)}
-}
-
-type turismoHospedajeDetalleBuilder struct {
-	detalle *documents.DetalleTurismoHospedaje
 }
 
 func (b *turismoHospedajeDetalleBuilder) WithActividadEconomica(v string) *turismoHospedajeDetalleBuilder {
@@ -395,7 +393,7 @@ func (b *turismoHospedajeDetalleBuilder) WithDescripcion(v string) *turismoHospe
 
 func (b *turismoHospedajeDetalleBuilder) WithCodigoTipoHabitacion(v *int) *turismoHospedajeDetalleBuilder {
 	if v == nil {
-		b.detalle.CodigoTipoHabitacion = datatype.Nilable[int]{Value: nil}
+		b.detalle.CodigoTipoHabitacion = datatype.Nilable[int]{}
 		return b
 	}
 	value := *v
@@ -404,8 +402,7 @@ func (b *turismoHospedajeDetalleBuilder) WithCodigoTipoHabitacion(v *int) *turis
 }
 
 func (b *turismoHospedajeDetalleBuilder) WithCantidad(v float64) *turismoHospedajeDetalleBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.detalle.Cantidad = v
+	b.detalle.Cantidad = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
@@ -414,15 +411,14 @@ func (b *turismoHospedajeDetalleBuilder) WithUnidadMedida(v int) *turismoHospeda
 	return b
 }
 
-func (b *turismoHospedajeDetalleBuilder) WithPrecioUnitario(v float64) *turismoHospedajeDetalleBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.detalle.PrecioUnitario = v
+func (b *turismoHospedajeDetalleBuilder) WithPrecioNetoUnitario(v float64) *turismoHospedajeDetalleBuilder {
+	b.detalle.PrecioNetoUnitario = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
 func (b *turismoHospedajeDetalleBuilder) WithMontoDescuento(v *float64) *turismoHospedajeDetalleBuilder {
 	if v == nil {
-		b.detalle.MontoDescuento = datatype.Nilable[float64]{Value: nil}
+		b.detalle.MontoDescuento = datatype.Nilable[float64]{}
 		return b
 	}
 	value := *v
@@ -432,21 +428,16 @@ func (b *turismoHospedajeDetalleBuilder) WithMontoDescuento(v *float64) *turismo
 }
 
 func (b *turismoHospedajeDetalleBuilder) WithSubTotal(v float64) *turismoHospedajeDetalleBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.detalle.SubTotal = v
+	b.detalle.SubTotal = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
 func (b *turismoHospedajeDetalleBuilder) WithDetalleHuespedes(v *string) *turismoHospedajeDetalleBuilder {
 	if v == nil {
-		b.detalle.DetalleHuespedes = datatype.Nilable[string]{Value: nil}
+		b.detalle.DetalleHuespedes = datatype.Nilable[string]{}
 		return b
 	}
 	value := *v
 	b.detalle.DetalleHuespedes = datatype.Nilable[string]{Value: &value}
 	return b
-}
-
-func (b *turismoHospedajeDetalleBuilder) Build() TurismoHospedajeDetalle {
-	return TurismoHospedajeDetalle{models.NewRequestWrapper(b.detalle)}
 }

@@ -31,34 +31,34 @@ type CabeceraComercialExportacionPVenta struct {
 	NombreRazonSocial               datatype.Nilable[string]  `xml:"nombreRazonSocial" json:"nombreRazonSocial"`
 	CodigoTipoDocumentoIdentidad    int                       `xml:"codigoTipoDocumentoIdentidad" json:"codigoTipoDocumentoIdentidad"`
 	NumeroDocumento                 string                    `xml:"numeroDocumento" json:"numeroDocumento"`
-	Complemento                     datatype.Nilable[string]  `xml:"complemento" json:"complemento"`
+	Complemento                     string                    `xml:"complemento" json:"complemento"`
 	DireccionComprador              string                    `xml:"direccionComprador" json:"direccionComprador"`
 	CodigoCliente                   string                    `xml:"codigoCliente" json:"codigoCliente"`
 	Incoterm                        string                    `xml:"incoterm" json:"incoterm"`
-	IncotermDetalle                 string                    `xml:"incotermDetalle" json:"incotermDetalle"`
+	AlcanceIncoterm                 string                    `xml:"alcanceIncoterm" json:"alcanceIncoterm"`
 	PuertoDestino                   string                    `xml:"puertoDestino" json:"puertoDestino"`
 	LugarDestino                    string                    `xml:"lugarDestino" json:"lugarDestino"`
 	CodigoPais                      int                       `xml:"codigoPais" json:"codigoPais"`
 	CodigoMetodoPago                int                       `xml:"codigoMetodoPago" json:"codigoMetodoPago"`
 	NumeroTarjeta                   datatype.Nilable[int64]   `xml:"numeroTarjeta" json:"numeroTarjeta"`
-	MontoTotal                      float64                   `xml:"montoTotal" json:"montoTotal"`
+	MontoAPagar                     float64                   `xml:"montoaPagar" json:"montoaPagar"`
 	CostosGastosNacionales          datatype.Nilable[string]  `xml:"costosGastosNacionales" json:"costosGastosNacionales"`
 	TotalGastosNacionalesFob        float64                   `xml:"totalGastosNacionalesFob" json:"totalGastosNacionalesFob"`
 	CostosGastosInternacionales     datatype.Nilable[string]  `xml:"costosGastosInternacionales" json:"costosGastosInternacionales"`
 	TotalGastosInternacionales      datatype.Nilable[float64] `xml:"totalGastosInternacionales" json:"totalGastosInternacionales"`
 	PrecioValorBruto                datatype.Nilable[float64] `xml:"precioValorBruto" json:"precioValorBruto"`
-	MontoDetalle                    float64                   `xml:"montoDetalle" json:"montoDetalle"`
-	MontoTotalSujetoIva             float64                   `xml:"montoTotalSujetoIva" json:"montoTotalSujetoIva"`
+	SubTotalNeto                    float64                   `xml:"subTotalNeto" json:"subTotalNeto"`
+	TotalPrecioNeto                 float64                   `xml:"totalPrecioNeto" json:"totalPrecioNeto"`
+	Iva                             float64                   `xml:"iva" json:"iva"`
 	CodigoMoneda                    int                       `xml:"codigoMoneda" json:"codigoMoneda"`
 	TipoCambio                      float64                   `xml:"tipoCambio" json:"tipoCambio"`
 	MontoTotalMoneda                float64                   `xml:"montoTotalMoneda" json:"montoTotalMoneda"`
 	NumeroDescripcionPaquetesBultos datatype.Nilable[string]  `xml:"numeroDescripcionPaquetesBultos" json:"numeroDescripcionPaquetesBultos"`
 	InformacionAdicional            datatype.Nilable[string]  `xml:"informacionAdicional" json:"informacionAdicional"`
-	DescuentoAdicional              datatype.Nilable[float64] `xml:"descuentoAdicional" json:"descuentoAdicional"`
 	CodigoExcepcion                 datatype.Nilable[int]     `xml:"codigoExcepcion" json:"codigoExcepcion"`
-	Cafc                            datatype.Nilable[string]  `xml:"cafc" json:"cafc"`
 	Leyenda                         string                    `xml:"leyenda" json:"leyenda"`
 	Usuario                         string                    `xml:"usuario" json:"usuario"`
+	CodigoInterno                   string                    `xml:"codigoInterno" json:"codigoInterno"`
 	CodigoDocumentoSector           int                       `xml:"codigoDocumentoSector" json:"codigoDocumentoSector"`
 }
 
@@ -71,7 +71,7 @@ type DetalleComercialExportacionPVenta struct {
 	Descripcion        string                    `xml:"descripcion" json:"descripcion"`
 	Cantidad           float64                   `xml:"cantidad" json:"cantidad"`
 	UnidadMedida       int                       `xml:"unidadMedida" json:"unidadMedida"`
-	PrecioUnitario     float64                   `xml:"precioUnitario" json:"precioUnitario"`
+	PrecioNetoUnitario float64                   `xml:"precioNetoUnitario" json:"precioNetoUnitario"`
 	MontoDescuento     datatype.Nilable[float64] `xml:"montoDescuento" json:"montoDescuento"`
 	SubTotal           float64                   `xml:"subTotal" json:"subTotal"`
 }

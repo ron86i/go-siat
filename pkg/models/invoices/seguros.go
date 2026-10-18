@@ -96,6 +96,18 @@ type segurosCabeceraBuilder struct {
 	cabecera *documents.CabeceraSeguros
 }
 
+func (b *segurosCabeceraBuilder) Build() SegurosCabecera {
+	return SegurosCabecera{models.NewRequestWrapper(b.cabecera)}
+}
+
+type segurosDetalleBuilder struct {
+	detalle *documents.DetalleSeguros
+}
+
+func (b *segurosDetalleBuilder) Build() SegurosDetalle {
+	return SegurosDetalle{models.NewRequestWrapper(b.detalle)}
+}
+
 func (b *segurosCabeceraBuilder) WithNitEmisor(v int64) *segurosCabeceraBuilder {
 	b.cabecera.NitEmisor = v
 	return b
@@ -111,12 +123,12 @@ func (b *segurosCabeceraBuilder) WithMunicipio(v string) *segurosCabeceraBuilder
 	return b
 }
 
-func (b *segurosCabeceraBuilder) WithTelefono(telefono *string) *segurosCabeceraBuilder {
-	if telefono == nil {
-		b.cabecera.Telefono = datatype.Nilable[string]{Value: nil}
+func (b *segurosCabeceraBuilder) WithTelefono(v *string) *segurosCabeceraBuilder {
+	if v == nil {
+		b.cabecera.Telefono = datatype.Nilable[string]{}
 		return b
 	}
-	value := *telefono
+	value := *v
 	b.cabecera.Telefono = datatype.Nilable[string]{Value: &value}
 	return b
 }
@@ -148,7 +160,7 @@ func (b *segurosCabeceraBuilder) WithDireccion(v string) *segurosCabeceraBuilder
 
 func (b *segurosCabeceraBuilder) WithCodigoPuntoVenta(v *int) *segurosCabeceraBuilder {
 	if v == nil {
-		b.cabecera.CodigoPuntoVenta = datatype.Nilable[int]{Value: nil}
+		b.cabecera.CodigoPuntoVenta = datatype.Nilable[int]{}
 		return b
 	}
 	value := *v
@@ -156,14 +168,14 @@ func (b *segurosCabeceraBuilder) WithCodigoPuntoVenta(v *int) *segurosCabeceraBu
 	return b
 }
 
-func (b *segurosCabeceraBuilder) WithFechaEmision(fechaEmision time.Time) *segurosCabeceraBuilder {
-	b.cabecera.FechaEmision = datatype.NewTimeSiat(fechaEmision)
+func (b *segurosCabeceraBuilder) WithFechaEmision(v time.Time) *segurosCabeceraBuilder {
+	b.cabecera.FechaEmision = datatype.NewTimeSiat(v)
 	return b
 }
 
 func (b *segurosCabeceraBuilder) WithNombreRazonSocial(v *string) *segurosCabeceraBuilder {
 	if v == nil {
-		b.cabecera.NombreRazonSocial = datatype.Nilable[string]{Value: nil}
+		b.cabecera.NombreRazonSocial = datatype.Nilable[string]{}
 		return b
 	}
 	value := *v
@@ -181,13 +193,8 @@ func (b *segurosCabeceraBuilder) WithNumeroDocumento(v string) *segurosCabeceraB
 	return b
 }
 
-func (b *segurosCabeceraBuilder) WithComplemento(v *string) *segurosCabeceraBuilder {
-	if v == nil {
-		b.cabecera.Complemento = datatype.Nilable[string]{Value: nil}
-		return b
-	}
-	value := *v
-	b.cabecera.Complemento = datatype.Nilable[string]{Value: &value}
+func (b *segurosCabeceraBuilder) WithComplemento(v string) *segurosCabeceraBuilder {
+	b.cabecera.Complemento = v
 	return b
 }
 
@@ -203,7 +210,7 @@ func (b *segurosCabeceraBuilder) WithCodigoMetodoPago(v int) *segurosCabeceraBui
 
 func (b *segurosCabeceraBuilder) WithNumeroTarjeta(v *int64) *segurosCabeceraBuilder {
 	if v == nil {
-		b.cabecera.NumeroTarjeta = datatype.Nilable[int64]{Value: nil}
+		b.cabecera.NumeroTarjeta = datatype.Nilable[int64]{}
 		return b
 	}
 	value := *v
@@ -211,21 +218,28 @@ func (b *segurosCabeceraBuilder) WithNumeroTarjeta(v *int64) *segurosCabeceraBui
 	return b
 }
 
-func (b *segurosCabeceraBuilder) WithMontoTotal(v float64) *segurosCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.MontoTotal = v
+func (b *segurosCabeceraBuilder) WithSubTotalNeto(v float64) *segurosCabeceraBuilder {
+	b.cabecera.SubTotalNeto = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+	return b
+}
+
+func (b *segurosCabeceraBuilder) WithTotalPrecioNeto(v float64) *segurosCabeceraBuilder {
+	b.cabecera.TotalPrecioNeto = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+	return b
+}
+
+func (b *segurosCabeceraBuilder) WithIva(v float64) *segurosCabeceraBuilder {
+	b.cabecera.Iva = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+	return b
+}
+
+func (b *segurosCabeceraBuilder) WithMontoAPagar(v float64) *segurosCabeceraBuilder {
+	b.cabecera.MontoAPagar = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
 func (b *segurosCabeceraBuilder) WithAjusteAfectacionIva(v float64) *segurosCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.AjusteAfectacionIva = v
-	return b
-}
-
-func (b *segurosCabeceraBuilder) WithMontoTotalSujetoIva(v float64) *segurosCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.MontoTotalSujetoIva = v
+	b.cabecera.AjusteAfectacionIva = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
@@ -235,20 +249,18 @@ func (b *segurosCabeceraBuilder) WithCodigoMoneda(v int) *segurosCabeceraBuilder
 }
 
 func (b *segurosCabeceraBuilder) WithTipoCambio(v float64) *segurosCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.TipoCambio = v
+	b.cabecera.TipoCambio = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
 func (b *segurosCabeceraBuilder) WithMontoTotalMoneda(v float64) *segurosCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.MontoTotalMoneda = v
+	b.cabecera.MontoTotalMoneda = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
 func (b *segurosCabeceraBuilder) WithMontoGiftCard(v *float64) *segurosCabeceraBuilder {
 	if v == nil {
-		b.cabecera.MontoGiftCard = datatype.Nilable[float64]{Value: nil}
+		b.cabecera.MontoGiftCard = datatype.Nilable[float64]{}
 		return b
 	}
 	value := *v
@@ -259,7 +271,7 @@ func (b *segurosCabeceraBuilder) WithMontoGiftCard(v *float64) *segurosCabeceraB
 
 func (b *segurosCabeceraBuilder) WithDescuentoAdicional(v *float64) *segurosCabeceraBuilder {
 	if v == nil {
-		b.cabecera.DescuentoAdicional = datatype.Nilable[float64]{Value: nil}
+		b.cabecera.DescuentoAdicional = datatype.Nilable[float64]{}
 		return b
 	}
 	value := *v
@@ -270,21 +282,11 @@ func (b *segurosCabeceraBuilder) WithDescuentoAdicional(v *float64) *segurosCabe
 
 func (b *segurosCabeceraBuilder) WithCodigoExcepcion(v *int) *segurosCabeceraBuilder {
 	if v == nil {
-		b.cabecera.CodigoExcepcion = datatype.Nilable[int]{Value: nil}
+		b.cabecera.CodigoExcepcion = datatype.Nilable[int]{}
 		return b
 	}
 	value := *v
 	b.cabecera.CodigoExcepcion = datatype.Nilable[int]{Value: &value}
-	return b
-}
-
-func (b *segurosCabeceraBuilder) WithCafc(v *string) *segurosCabeceraBuilder {
-	if v == nil {
-		b.cabecera.Cafc = datatype.Nilable[string]{Value: nil}
-		return b
-	}
-	value := *v
-	b.cabecera.Cafc = datatype.Nilable[string]{Value: &value}
 	return b
 }
 
@@ -298,18 +300,14 @@ func (b *segurosCabeceraBuilder) WithUsuario(v string) *segurosCabeceraBuilder {
 	return b
 }
 
-// WithCodigoDocumentoSector configura el código que identifica el diseño o sector de la factura.
-func (b *segurosCabeceraBuilder) WithCodigoDocumentoSector(v int) *segurosCabeceraBuilder {
-	b.cabecera.CodigoDocumentoSector = v
+func (b *segurosCabeceraBuilder) WithCodigoInterno(v string) *segurosCabeceraBuilder {
+	b.cabecera.CodigoInterno = v
 	return b
 }
 
-func (b *segurosCabeceraBuilder) Build() SegurosCabecera {
-	return SegurosCabecera{models.NewRequestWrapper(b.cabecera)}
-}
-
-type segurosDetalleBuilder struct {
-	detalle *documents.DetalleSeguros
+func (b *segurosCabeceraBuilder) WithCodigoDocumentoSector(v int) *segurosCabeceraBuilder {
+	b.cabecera.CodigoDocumentoSector = v
+	return b
 }
 
 func (b *segurosDetalleBuilder) WithActividadEconomica(v string) *segurosDetalleBuilder {
@@ -333,8 +331,7 @@ func (b *segurosDetalleBuilder) WithDescripcion(v string) *segurosDetalleBuilder
 }
 
 func (b *segurosDetalleBuilder) WithCantidad(v float64) *segurosDetalleBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.detalle.Cantidad = v
+	b.detalle.Cantidad = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
@@ -343,15 +340,14 @@ func (b *segurosDetalleBuilder) WithUnidadMedida(v int) *segurosDetalleBuilder {
 	return b
 }
 
-func (b *segurosDetalleBuilder) WithPrecioUnitario(v float64) *segurosDetalleBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.detalle.PrecioUnitario = v
+func (b *segurosDetalleBuilder) WithPrecioNetoUnitario(v float64) *segurosDetalleBuilder {
+	b.detalle.PrecioNetoUnitario = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
 func (b *segurosDetalleBuilder) WithMontoDescuento(v *float64) *segurosDetalleBuilder {
 	if v == nil {
-		b.detalle.MontoDescuento = datatype.Nilable[float64]{Value: nil}
+		b.detalle.MontoDescuento = datatype.Nilable[float64]{}
 		return b
 	}
 	value := *v
@@ -361,11 +357,6 @@ func (b *segurosDetalleBuilder) WithMontoDescuento(v *float64) *segurosDetalleBu
 }
 
 func (b *segurosDetalleBuilder) WithSubTotal(v float64) *segurosDetalleBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.detalle.SubTotal = v
+	b.detalle.SubTotal = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
-}
-
-func (b *segurosDetalleBuilder) Build() SegurosDetalle {
-	return SegurosDetalle{models.NewRequestWrapper(b.detalle)}
 }

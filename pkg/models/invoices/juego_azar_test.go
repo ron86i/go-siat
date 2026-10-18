@@ -38,10 +38,8 @@ func TestJuegoAzar_Electronica(t *testing.T) {
 		WithNumeroDocumento("1234567").
 		WithCodigoCliente("CLI-18-01").
 		WithCodigoMetodoPago(1).
-		WithMontoTotal(1130.50).
-		WithMontoTotalIj(130.50).
-		WithMontoTotalSujetoIpj(870.00).
-		WithMontoTotalSujetoIva(1000.00).
+		WithMontoAPagar(1130.50).
+		WithTotalPrecioNeto(1000.00).
 		WithCodigoMoneda(1).
 		WithTipoCambio(1.0).
 		WithMontoTotalMoneda(1130.50).
@@ -56,7 +54,7 @@ func TestJuegoAzar_Electronica(t *testing.T) {
 		WithDescripcion("FICHAS DE JUEGO").
 		WithCantidad(1.0).
 		WithUnidadMedida(1).
-		WithPrecioUnitario(1000.0).
+		WithPrecioNetoUnitario(1000.0).
 		WithSubTotal(1000.0).
 		Build()
 
@@ -118,10 +116,8 @@ func TestJuegoAzar_Computarizada(t *testing.T) {
 		WithNumeroDocumento("1234567").
 		WithCodigoCliente("CLI-18-01").
 		WithCodigoMetodoPago(1).
-		WithMontoTotal(1130.50).
-		WithMontoTotalIj(130.50).
-		WithMontoTotalSujetoIpj(870.00).
-		WithMontoTotalSujetoIva(1000.00).
+		WithMontoAPagar(1130.50).
+		WithTotalPrecioNeto(1000.00).
 		WithCodigoMoneda(1).
 		WithTipoCambio(1.0).
 		WithMontoTotalMoneda(1130.50).
@@ -136,7 +132,7 @@ func TestJuegoAzar_Computarizada(t *testing.T) {
 		WithDescripcion("DERECHO DE JUEGO").
 		WithCantidad(1.0).
 		WithUnidadMedida(1).
-		WithPrecioUnitario(1000.0).
+		WithPrecioNetoUnitario(1000.0).
 		WithSubTotal(1000.0).
 		Build()
 

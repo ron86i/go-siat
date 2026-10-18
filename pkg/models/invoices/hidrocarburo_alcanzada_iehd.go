@@ -98,6 +98,18 @@ type hidrocarburoAlcanzadaIehdCabeceraBuilder struct {
 	cabecera *documents.CabeceraHidrocarburoAlcanzadaIehd
 }
 
+func (b *hidrocarburoAlcanzadaIehdCabeceraBuilder) Build() HidrocarburoAlcanzadaIehdCabecera {
+	return HidrocarburoAlcanzadaIehdCabecera{models.NewRequestWrapper(b.cabecera)}
+}
+
+type hidrocarburoAlcanzadaIehdDetalleBuilder struct {
+	detalle *documents.DetalleHidrocarburoAlcanzadaIehd
+}
+
+func (b *hidrocarburoAlcanzadaIehdDetalleBuilder) Build() HidrocarburoAlcanzadaIehdDetalle {
+	return HidrocarburoAlcanzadaIehdDetalle{models.NewRequestWrapper(b.detalle)}
+}
+
 func (b *hidrocarburoAlcanzadaIehdCabeceraBuilder) WithNitEmisor(v int64) *hidrocarburoAlcanzadaIehdCabeceraBuilder {
 	b.cabecera.NitEmisor = v
 	return b
@@ -115,7 +127,7 @@ func (b *hidrocarburoAlcanzadaIehdCabeceraBuilder) WithMunicipio(v string) *hidr
 
 func (b *hidrocarburoAlcanzadaIehdCabeceraBuilder) WithTelefono(v *string) *hidrocarburoAlcanzadaIehdCabeceraBuilder {
 	if v == nil {
-		b.cabecera.Telefono = datatype.Nilable[string]{Value: nil}
+		b.cabecera.Telefono = datatype.Nilable[string]{}
 		return b
 	}
 	value := *v
@@ -150,7 +162,7 @@ func (b *hidrocarburoAlcanzadaIehdCabeceraBuilder) WithDireccion(v string) *hidr
 
 func (b *hidrocarburoAlcanzadaIehdCabeceraBuilder) WithCodigoPuntoVenta(v *int) *hidrocarburoAlcanzadaIehdCabeceraBuilder {
 	if v == nil {
-		b.cabecera.CodigoPuntoVenta = datatype.Nilable[int]{Value: nil}
+		b.cabecera.CodigoPuntoVenta = datatype.Nilable[int]{}
 		return b
 	}
 	value := *v
@@ -158,14 +170,14 @@ func (b *hidrocarburoAlcanzadaIehdCabeceraBuilder) WithCodigoPuntoVenta(v *int) 
 	return b
 }
 
-func (b *hidrocarburoAlcanzadaIehdCabeceraBuilder) WithFechaEmision(fechaEmision time.Time) *hidrocarburoAlcanzadaIehdCabeceraBuilder {
-	b.cabecera.FechaEmision = datatype.NewTimeSiat(fechaEmision)
+func (b *hidrocarburoAlcanzadaIehdCabeceraBuilder) WithFechaEmision(v time.Time) *hidrocarburoAlcanzadaIehdCabeceraBuilder {
+	b.cabecera.FechaEmision = datatype.NewTimeSiat(v)
 	return b
 }
 
 func (b *hidrocarburoAlcanzadaIehdCabeceraBuilder) WithNombreRazonSocial(v *string) *hidrocarburoAlcanzadaIehdCabeceraBuilder {
 	if v == nil {
-		b.cabecera.NombreRazonSocial = datatype.Nilable[string]{Value: nil}
+		b.cabecera.NombreRazonSocial = datatype.Nilable[string]{}
 		return b
 	}
 	value := *v
@@ -183,13 +195,8 @@ func (b *hidrocarburoAlcanzadaIehdCabeceraBuilder) WithNumeroDocumento(v string)
 	return b
 }
 
-func (b *hidrocarburoAlcanzadaIehdCabeceraBuilder) WithComplemento(v *string) *hidrocarburoAlcanzadaIehdCabeceraBuilder {
-	if v == nil {
-		b.cabecera.Complemento = datatype.Nilable[string]{Value: nil}
-		return b
-	}
-	value := *v
-	b.cabecera.Complemento = datatype.Nilable[string]{Value: &value}
+func (b *hidrocarburoAlcanzadaIehdCabeceraBuilder) WithComplemento(v string) *hidrocarburoAlcanzadaIehdCabeceraBuilder {
+	b.cabecera.Complemento = v
 	return b
 }
 
@@ -200,7 +207,7 @@ func (b *hidrocarburoAlcanzadaIehdCabeceraBuilder) WithCodigoCliente(v string) *
 
 func (b *hidrocarburoAlcanzadaIehdCabeceraBuilder) WithCiudad(v *string) *hidrocarburoAlcanzadaIehdCabeceraBuilder {
 	if v == nil {
-		b.cabecera.Ciudad = datatype.Nilable[string]{Value: nil}
+		b.cabecera.Ciudad = datatype.Nilable[string]{}
 		return b
 	}
 	value := *v
@@ -210,7 +217,7 @@ func (b *hidrocarburoAlcanzadaIehdCabeceraBuilder) WithCiudad(v *string) *hidroc
 
 func (b *hidrocarburoAlcanzadaIehdCabeceraBuilder) WithNombrePropietario(v *string) *hidrocarburoAlcanzadaIehdCabeceraBuilder {
 	if v == nil {
-		b.cabecera.NombrePropietario = datatype.Nilable[string]{Value: nil}
+		b.cabecera.NombrePropietario = datatype.Nilable[string]{}
 		return b
 	}
 	value := *v
@@ -220,7 +227,7 @@ func (b *hidrocarburoAlcanzadaIehdCabeceraBuilder) WithNombrePropietario(v *stri
 
 func (b *hidrocarburoAlcanzadaIehdCabeceraBuilder) WithNombreRepresentanteLegal(v *string) *hidrocarburoAlcanzadaIehdCabeceraBuilder {
 	if v == nil {
-		b.cabecera.NombreRepresentanteLegal = datatype.Nilable[string]{Value: nil}
+		b.cabecera.NombreRepresentanteLegal = datatype.Nilable[string]{}
 		return b
 	}
 	value := *v
@@ -230,7 +237,7 @@ func (b *hidrocarburoAlcanzadaIehdCabeceraBuilder) WithNombreRepresentanteLegal(
 
 func (b *hidrocarburoAlcanzadaIehdCabeceraBuilder) WithCondicionPago(v *string) *hidrocarburoAlcanzadaIehdCabeceraBuilder {
 	if v == nil {
-		b.cabecera.CondicionPago = datatype.Nilable[string]{Value: nil}
+		b.cabecera.CondicionPago = datatype.Nilable[string]{}
 		return b
 	}
 	value := *v
@@ -240,7 +247,7 @@ func (b *hidrocarburoAlcanzadaIehdCabeceraBuilder) WithCondicionPago(v *string) 
 
 func (b *hidrocarburoAlcanzadaIehdCabeceraBuilder) WithPeriodoEntrega(v *string) *hidrocarburoAlcanzadaIehdCabeceraBuilder {
 	if v == nil {
-		b.cabecera.PeriodoEntrega = datatype.Nilable[string]{Value: nil}
+		b.cabecera.PeriodoEntrega = datatype.Nilable[string]{}
 		return b
 	}
 	value := *v
@@ -255,7 +262,7 @@ func (b *hidrocarburoAlcanzadaIehdCabeceraBuilder) WithCodigoMetodoPago(v int) *
 
 func (b *hidrocarburoAlcanzadaIehdCabeceraBuilder) WithNumeroTarjeta(v *int64) *hidrocarburoAlcanzadaIehdCabeceraBuilder {
 	if v == nil {
-		b.cabecera.NumeroTarjeta = datatype.Nilable[int64]{Value: nil}
+		b.cabecera.NumeroTarjeta = datatype.Nilable[int64]{}
 		return b
 	}
 	value := *v
@@ -263,17 +270,9 @@ func (b *hidrocarburoAlcanzadaIehdCabeceraBuilder) WithNumeroTarjeta(v *int64) *
 	return b
 }
 
-func (b *hidrocarburoAlcanzadaIehdCabeceraBuilder) WithMontoTotal(v float64) *hidrocarburoAlcanzadaIehdCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.MontoTotal = v
-	return b
-}
-
-// WithMontoIehd configura el monto correspondiente al Impuesto Especial a los
-// Hidrocarburos y sus Derivados. Exclusivo del Sector 19.
 func (b *hidrocarburoAlcanzadaIehdCabeceraBuilder) WithMontoIehd(v *float64) *hidrocarburoAlcanzadaIehdCabeceraBuilder {
 	if v == nil {
-		b.cabecera.MontoIehd = datatype.Nilable[float64]{Value: nil}
+		b.cabecera.MontoIehd = datatype.Nilable[float64]{}
 		return b
 	}
 	value := *v
@@ -282,9 +281,28 @@ func (b *hidrocarburoAlcanzadaIehdCabeceraBuilder) WithMontoIehd(v *float64) *hi
 	return b
 }
 
-func (b *hidrocarburoAlcanzadaIehdCabeceraBuilder) WithMontoTotalSujetoIva(v float64) *hidrocarburoAlcanzadaIehdCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.MontoTotalSujetoIva = v
+func (b *hidrocarburoAlcanzadaIehdCabeceraBuilder) WithSubTotalNeto(v float64) *hidrocarburoAlcanzadaIehdCabeceraBuilder {
+	b.cabecera.SubTotalNeto = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+	return b
+}
+
+func (b *hidrocarburoAlcanzadaIehdCabeceraBuilder) WithTotalPrecioNeto(v float64) *hidrocarburoAlcanzadaIehdCabeceraBuilder {
+	b.cabecera.TotalPrecioNeto = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+	return b
+}
+
+func (b *hidrocarburoAlcanzadaIehdCabeceraBuilder) WithIva(v float64) *hidrocarburoAlcanzadaIehdCabeceraBuilder {
+	b.cabecera.Iva = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+	return b
+}
+
+func (b *hidrocarburoAlcanzadaIehdCabeceraBuilder) WithIvad(v float64) *hidrocarburoAlcanzadaIehdCabeceraBuilder {
+	b.cabecera.Ivad = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+	return b
+}
+
+func (b *hidrocarburoAlcanzadaIehdCabeceraBuilder) WithMontoAPagar(v float64) *hidrocarburoAlcanzadaIehdCabeceraBuilder {
+	b.cabecera.MontoAPagar = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
@@ -294,20 +312,18 @@ func (b *hidrocarburoAlcanzadaIehdCabeceraBuilder) WithCodigoMoneda(v int) *hidr
 }
 
 func (b *hidrocarburoAlcanzadaIehdCabeceraBuilder) WithTipoCambio(v float64) *hidrocarburoAlcanzadaIehdCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.TipoCambio = v
+	b.cabecera.TipoCambio = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
 func (b *hidrocarburoAlcanzadaIehdCabeceraBuilder) WithMontoTotalMoneda(v float64) *hidrocarburoAlcanzadaIehdCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.MontoTotalMoneda = v
+	b.cabecera.MontoTotalMoneda = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
 func (b *hidrocarburoAlcanzadaIehdCabeceraBuilder) WithDescuentoAdicional(v *float64) *hidrocarburoAlcanzadaIehdCabeceraBuilder {
 	if v == nil {
-		b.cabecera.DescuentoAdicional = datatype.Nilable[float64]{Value: nil}
+		b.cabecera.DescuentoAdicional = datatype.Nilable[float64]{}
 		return b
 	}
 	value := *v
@@ -318,21 +334,11 @@ func (b *hidrocarburoAlcanzadaIehdCabeceraBuilder) WithDescuentoAdicional(v *flo
 
 func (b *hidrocarburoAlcanzadaIehdCabeceraBuilder) WithCodigoExcepcion(v *int) *hidrocarburoAlcanzadaIehdCabeceraBuilder {
 	if v == nil {
-		b.cabecera.CodigoExcepcion = datatype.Nilable[int]{Value: nil}
+		b.cabecera.CodigoExcepcion = datatype.Nilable[int]{}
 		return b
 	}
 	value := *v
 	b.cabecera.CodigoExcepcion = datatype.Nilable[int]{Value: &value}
-	return b
-}
-
-func (b *hidrocarburoAlcanzadaIehdCabeceraBuilder) WithCafc(v *string) *hidrocarburoAlcanzadaIehdCabeceraBuilder {
-	if v == nil {
-		b.cabecera.Cafc = datatype.Nilable[string]{Value: nil}
-		return b
-	}
-	value := *v
-	b.cabecera.Cafc = datatype.Nilable[string]{Value: &value}
 	return b
 }
 
@@ -346,18 +352,14 @@ func (b *hidrocarburoAlcanzadaIehdCabeceraBuilder) WithUsuario(v string) *hidroc
 	return b
 }
 
-// WithCodigoDocumentoSector configura el código que identifica el diseño o sector de la factura.
-func (b *hidrocarburoAlcanzadaIehdCabeceraBuilder) WithCodigoDocumentoSector(v int) *hidrocarburoAlcanzadaIehdCabeceraBuilder {
-	b.cabecera.CodigoDocumentoSector = v
+func (b *hidrocarburoAlcanzadaIehdCabeceraBuilder) WithCodigoInterno(v string) *hidrocarburoAlcanzadaIehdCabeceraBuilder {
+	b.cabecera.CodigoInterno = v
 	return b
 }
 
-func (b *hidrocarburoAlcanzadaIehdCabeceraBuilder) Build() HidrocarburoAlcanzadaIehdCabecera {
-	return HidrocarburoAlcanzadaIehdCabecera{models.NewRequestWrapper(b.cabecera)}
-}
-
-type hidrocarburoAlcanzadaIehdDetalleBuilder struct {
-	detalle *documents.DetalleHidrocarburoAlcanzadaIehd
+func (b *hidrocarburoAlcanzadaIehdCabeceraBuilder) WithCodigoDocumentoSector(v int) *hidrocarburoAlcanzadaIehdCabeceraBuilder {
+	b.cabecera.CodigoDocumentoSector = v
+	return b
 }
 
 func (b *hidrocarburoAlcanzadaIehdDetalleBuilder) WithActividadEconomica(v string) *hidrocarburoAlcanzadaIehdDetalleBuilder {
@@ -381,8 +383,7 @@ func (b *hidrocarburoAlcanzadaIehdDetalleBuilder) WithDescripcion(v string) *hid
 }
 
 func (b *hidrocarburoAlcanzadaIehdDetalleBuilder) WithCantidad(v float64) *hidrocarburoAlcanzadaIehdDetalleBuilder {
-	v = decimal.NewFromFloat(v).Round(5).InexactFloat64()
-	b.detalle.Cantidad = v
+	b.detalle.Cantidad = decimal.NewFromFloat(v).Round(10).InexactFloat64()
 	return b
 }
 
@@ -391,41 +392,34 @@ func (b *hidrocarburoAlcanzadaIehdDetalleBuilder) WithUnidadMedida(v int) *hidro
 	return b
 }
 
-func (b *hidrocarburoAlcanzadaIehdDetalleBuilder) WithPrecioUnitario(v float64) *hidrocarburoAlcanzadaIehdDetalleBuilder {
-	v = decimal.NewFromFloat(v).Round(5).InexactFloat64()
-	b.detalle.PrecioUnitario = v
+func (b *hidrocarburoAlcanzadaIehdDetalleBuilder) WithPrecioNetoUnitario(v float64) *hidrocarburoAlcanzadaIehdDetalleBuilder {
+	b.detalle.PrecioNetoUnitario = decimal.NewFromFloat(v).Round(10).InexactFloat64()
 	return b
 }
 
 func (b *hidrocarburoAlcanzadaIehdDetalleBuilder) WithMontoDescuento(v *float64) *hidrocarburoAlcanzadaIehdDetalleBuilder {
 	if v == nil {
-		b.detalle.MontoDescuento = datatype.Nilable[float64]{Value: nil}
+		b.detalle.MontoDescuento = datatype.Nilable[float64]{}
 		return b
 	}
 	value := *v
-	value = decimal.NewFromFloat(value).Round(5).InexactFloat64()
+	value = decimal.NewFromFloat(value).Round(10).InexactFloat64()
 	b.detalle.MontoDescuento = datatype.Nilable[float64]{Value: &value}
 	return b
 }
 
 func (b *hidrocarburoAlcanzadaIehdDetalleBuilder) WithSubTotal(v float64) *hidrocarburoAlcanzadaIehdDetalleBuilder {
-	v = decimal.NewFromFloat(v).Round(5).InexactFloat64()
-	b.detalle.SubTotal = v
+	b.detalle.SubTotal = decimal.NewFromFloat(v).Round(10).InexactFloat64()
 	return b
 }
 
-// WithPorcentajeIehd configura el porcentaje del IEHD aplicado al ítem. Exclusivo del Sector 19.
 func (b *hidrocarburoAlcanzadaIehdDetalleBuilder) WithPorcentajeIehd(v *float64) *hidrocarburoAlcanzadaIehdDetalleBuilder {
 	if v == nil {
-		b.detalle.PorcentajeIehd = datatype.Nilable[float64]{Value: nil}
+		b.detalle.PorcentajeIehd = datatype.Nilable[float64]{}
 		return b
 	}
 	value := *v
-	value = decimal.NewFromFloat(value).Round(5).InexactFloat64()
+	value = decimal.NewFromFloat(value).Round(10).InexactFloat64()
 	b.detalle.PorcentajeIehd = datatype.Nilable[float64]{Value: &value}
 	return b
-}
-
-func (b *hidrocarburoAlcanzadaIehdDetalleBuilder) Build() HidrocarburoAlcanzadaIehdDetalle {
-	return HidrocarburoAlcanzadaIehdDetalle{models.NewRequestWrapper(b.detalle)}
 }

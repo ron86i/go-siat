@@ -37,22 +37,23 @@ type CabeceraServicioBasicoZF struct {
 	DomicilioCliente             datatype.Nilable[string]  `xml:"domicilioCliente" json:"domicilioCliente"`
 	CodigoTipoDocumentoIdentidad int                       `xml:"codigoTipoDocumentoIdentidad" json:"codigoTipoDocumentoIdentidad"`
 	NumeroDocumento              string                    `xml:"numeroDocumento" json:"numeroDocumento"`
-	Complemento                  datatype.Nilable[string]  `xml:"complemento" json:"complemento"`
+	Complemento                  string                    `xml:"complemento" json:"complemento"`
 	CodigoCliente                string                    `xml:"codigoCliente" json:"codigoCliente"`
 	CodigoMetodoPago             int                       `xml:"codigoMetodoPago" json:"codigoMetodoPago"`
 	NumeroTarjeta                datatype.Nilable[int64]   `xml:"numeroTarjeta" json:"numeroTarjeta"`
-	MontoTotal                   float64                   `xml:"montoTotal" json:"montoTotal"`
-	MontoTotalSujetoIva          float64                   `xml:"montoTotalSujetoIva" json:"montoTotalSujetoIva"`
+	SubTotalNeto                 float64                   `xml:"subTotalNeto" json:"subTotalNeto"`
+	TotalPrecioNeto              float64                   `xml:"totalPrecioNeto" json:"totalPrecioNeto"`
+	Iva                          float64                   `xml:"iva" json:"iva"`
+	MontoAPagar                  float64                   `xml:"montoaPagar" json:"montoaPagar"`
 	ConsumoPeriodo               datatype.Nilable[float64] `xml:"consumoPeriodo" json:"consumoPeriodo"`
 	BeneficiarioLey1886          datatype.Nilable[int64]   `xml:"beneficiarioLey1886" json:"beneficiarioLey1886"`
+	ComplementoBeneficiario      string                    `xml:"complementoBeneficiario" json:"complementoBeneficiario"`
 	MontoDescuentoLey1886        datatype.Nilable[float64] `xml:"montoDescuentoLey1886" json:"montoDescuentoLey1886"`
-	MontoDescuentoTarifaDignidad datatype.Nilable[float64] `xml:"montoDescuentoTarifaDignidad" json:"montoDescuentoTarifaDignidad"`
+	MontoDescuentoSocial         datatype.Nilable[float64] `xml:"montoDescuentoSocial" json:"montoDescuentoSocial"`
 	TasaAseo                     datatype.Nilable[float64] `xml:"tasaAseo" json:"tasaAseo"`
 	TasaAlumbrado                datatype.Nilable[float64] `xml:"tasaAlumbrado" json:"tasaAlumbrado"`
 	AjusteNoSujetoIva            datatype.Nilable[float64] `xml:"ajusteNoSujetoIva" json:"ajusteNoSujetoIva"`
 	DetalleAjusteNoSujetoIva     datatype.Nilable[string]  `xml:"detalleAjusteNoSujetoIva" json:"detalleAjusteNoSujetoIva"`
-	AjusteSujetoIva              datatype.Nilable[float64] `xml:"ajusteSujetoIva" json:"ajusteSujetoIva"`
-	DetalleAjusteSujetoIva       datatype.Nilable[string]  `xml:"detalleAjusteSujetoIva" json:"detalleAjusteSujetoIva"`
 	OtrosPagosNoSujetoIva        datatype.Nilable[float64] `xml:"otrosPagosNoSujetoIva" json:"otrosPagosNoSujetoIva"`
 	DetalleOtrosPagosNoSujetoIva datatype.Nilable[string]  `xml:"detalleOtrosPagosNoSujetoIva" json:"detalleOtrosPagosNoSujetoIva"`
 	OtrasTasas                   datatype.Nilable[float64] `xml:"otrasTasas" json:"otrasTasas"`
@@ -61,8 +62,8 @@ type CabeceraServicioBasicoZF struct {
 	MontoTotalMoneda             float64                   `xml:"montoTotalMoneda" json:"montoTotalMoneda"`
 	DescuentoAdicional           datatype.Nilable[float64] `xml:"descuentoAdicional" json:"descuentoAdicional"`
 	CodigoExcepcion              datatype.Nilable[int]     `xml:"codigoExcepcion" json:"codigoExcepcion"`
-	Cafc                         datatype.Nilable[string]  `xml:"cafc" json:"cafc"`
 	Leyenda                      string                    `xml:"leyenda" json:"leyenda"`
 	Usuario                      string                    `xml:"usuario" json:"usuario"`
+	CodigoInterno                string                    `xml:"codigoInterno" json:"codigoInterno"`
 	CodigoDocumentoSector        int                       `xml:"codigoDocumentoSector" json:"codigoDocumentoSector"`
 }

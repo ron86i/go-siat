@@ -32,19 +32,24 @@ type CabeceraConciliacion struct {
 	NombreRazonSocial            datatype.Nilable[string] `xml:"nombreRazonSocial" json:"nombreRazonSocial"`
 	CodigoTipoDocumentoIdentidad int                      `xml:"codigoTipoDocumentoIdentidad" json:"codigoTipoDocumentoIdentidad"`
 	NumeroDocumento              string                   `xml:"numeroDocumento" json:"numeroDocumento"`
-	Complemento                  datatype.Nilable[string] `xml:"complemento" json:"complemento"`
+	Complemento                  string                   `xml:"complemento" json:"complemento"`
 	CodigoCliente                string                   `xml:"codigoCliente" json:"codigoCliente"`
 	NumeroFactura                int64                    `xml:"numeroFactura" json:"numeroFactura"`
 	NumeroAutorizacionCuf        string                   `xml:"numeroAutorizacionCuf" json:"numeroAutorizacionCuf"`
 	CodigoControl                datatype.Nilable[string] `xml:"codigoControl" json:"codigoControl"`
 	FechaEmisionFactura          datatype.TimeSiat        `xml:"fechaEmisionFactura" json:"fechaEmisionFactura"`
-	MontoTotalOriginal           float64                  `xml:"montoTotalOriginal" json:"montoTotalOriginal"`
+	TotalPrecioNetoOriginal      float64                  `xml:"totalPrecioNetoOriginal" json:"totalPrecioNetoOriginal"`
 	MontoTotalConciliado         float64                  `xml:"montoTotalConciliado" json:"montoTotalConciliado"`
+	IvaConciliado                float64                  `xml:"ivaConciliado" json:"ivaConciliado"`
+	MontoActualizacion           float64                  `xml:"montoActualizacion" json:"montoActualizacion"`
 	CreditoFiscalIva             float64                  `xml:"creditoFiscalIva" json:"creditoFiscalIva"`
 	DebitoFiscalIva              float64                  `xml:"debitoFiscalIva" json:"debitoFiscalIva"`
+	UfvFactura                   float64                  `xml:"ufvFactura" json:"ufvFactura"`
+	UfvConciliacion              float64                  `xml:"ufvConciliacion" json:"ufvConciliacion"`
 	CodigoExcepcion              datatype.Nilable[int]    `xml:"codigoExcepcion" json:"codigoExcepcion"`
 	Leyenda                      string                   `xml:"leyenda" json:"leyenda"`
 	Usuario                      string                   `xml:"usuario" json:"usuario"`
+	CodigoInterno                string                   `xml:"codigoInterno" json:"codigoInterno"`
 	CodigoDocumentoSector        int                      `xml:"codigoDocumentoSector" json:"codigoDocumentoSector"`
 }
 
@@ -56,18 +61,18 @@ type DetalleOriginal struct {
 	Descripcion        string                    `xml:"descripcion" json:"descripcion"`
 	Cantidad           float64                   `xml:"cantidad" json:"cantidad"`
 	UnidadMedida       int                       `xml:"unidadMedida" json:"unidadMedida"`
-	PrecioUnitario     float64                   `xml:"precioUnitario" json:"precioUnitario"`
+	PrecioNetoUnitario float64                   `xml:"precioNetoUnitario" json:"precioNetoUnitario"`
 	MontoDescuento     datatype.Nilable[float64] `xml:"montoDescuento" json:"montoDescuento"`
 	SubTotal           float64                   `xml:"subTotal" json:"subTotal"`
 }
 
 // DetalleConciliacion representa un ítem conciliado.
 type DetalleConciliacion struct {
-	ActividadEconomica string  `xml:"actividadEconomica" json:"actividadEconomica"`
-	CodigoProductoSin  int64   `xml:"codigoProductoSin" json:"codigoProductoSin"`
-	CodigoProducto     string  `xml:"codigoProducto" json:"codigoProducto"`
-	Descripcion        string  `xml:"descripcion" json:"descripcion"`
-	MontoOriginal      float64 `xml:"montoOriginal" json:"montoOriginal"`
-	MontoFinal         float64 `xml:"montoFinal" json:"montoFinal"`
-	MontoConciliado    float64 `xml:"montoConciliado" json:"montoConciliado"`
+	ActividadEconomica   string  `xml:"actividadEconomica" json:"actividadEconomica"`
+	CodigoProductoSin    int64   `xml:"codigoProductoSin" json:"codigoProductoSin"`
+	CodigoProducto       string  `xml:"codigoProducto" json:"codigoProducto"`
+	Descripcion          string  `xml:"descripcion" json:"descripcion"`
+	TotalPrecioNeto      float64 `xml:"totalPrecioNeto" json:"totalPrecioNeto"`
+	TotalPrecioNetoFinal float64 `xml:"totalPrecioNetoFinal" json:"totalPrecioNetoFinal"`
+	MontoConciliado      float64 `xml:"montoConciliado" json:"montoConciliado"`
 }

@@ -96,6 +96,18 @@ type suministroEnergiaCabeceraBuilder struct {
 	cabecera *documents.CabeceraSuministroEnergia
 }
 
+func (b *suministroEnergiaCabeceraBuilder) Build() SuministroEnergiaCabecera {
+	return SuministroEnergiaCabecera{models.NewRequestWrapper(b.cabecera)}
+}
+
+type suministroEnergiaDetalleBuilder struct {
+	detalle *documents.DetalleSuministroEnergia
+}
+
+func (b *suministroEnergiaDetalleBuilder) Build() SuministroEnergiaDetalle {
+	return SuministroEnergiaDetalle{models.NewRequestWrapper(b.detalle)}
+}
+
 func (b *suministroEnergiaCabeceraBuilder) WithNitEmisor(v int64) *suministroEnergiaCabeceraBuilder {
 	b.cabecera.NitEmisor = v
 	return b
@@ -111,12 +123,12 @@ func (b *suministroEnergiaCabeceraBuilder) WithMunicipio(v string) *suministroEn
 	return b
 }
 
-func (b *suministroEnergiaCabeceraBuilder) WithTelefono(telefono *string) *suministroEnergiaCabeceraBuilder {
-	if telefono == nil {
-		b.cabecera.Telefono = datatype.Nilable[string]{Value: nil}
+func (b *suministroEnergiaCabeceraBuilder) WithTelefono(v *string) *suministroEnergiaCabeceraBuilder {
+	if v == nil {
+		b.cabecera.Telefono = datatype.Nilable[string]{}
 		return b
 	}
-	value := *telefono
+	value := *v
 	b.cabecera.Telefono = datatype.Nilable[string]{Value: &value}
 	return b
 }
@@ -148,7 +160,7 @@ func (b *suministroEnergiaCabeceraBuilder) WithDireccion(v string) *suministroEn
 
 func (b *suministroEnergiaCabeceraBuilder) WithCodigoPuntoVenta(v *int) *suministroEnergiaCabeceraBuilder {
 	if v == nil {
-		b.cabecera.CodigoPuntoVenta = datatype.Nilable[int]{Value: nil}
+		b.cabecera.CodigoPuntoVenta = datatype.Nilable[int]{}
 		return b
 	}
 	value := *v
@@ -156,14 +168,14 @@ func (b *suministroEnergiaCabeceraBuilder) WithCodigoPuntoVenta(v *int) *suminis
 	return b
 }
 
-func (b *suministroEnergiaCabeceraBuilder) WithFechaEmision(fechaEmision time.Time) *suministroEnergiaCabeceraBuilder {
-	b.cabecera.FechaEmision = datatype.NewTimeSiat(fechaEmision)
+func (b *suministroEnergiaCabeceraBuilder) WithFechaEmision(v time.Time) *suministroEnergiaCabeceraBuilder {
+	b.cabecera.FechaEmision = datatype.NewTimeSiat(v)
 	return b
 }
 
 func (b *suministroEnergiaCabeceraBuilder) WithNombreRazonSocial(v *string) *suministroEnergiaCabeceraBuilder {
 	if v == nil {
-		b.cabecera.NombreRazonSocial = datatype.Nilable[string]{Value: nil}
+		b.cabecera.NombreRazonSocial = datatype.Nilable[string]{}
 		return b
 	}
 	value := *v
@@ -181,13 +193,8 @@ func (b *suministroEnergiaCabeceraBuilder) WithNumeroDocumento(v string) *sumini
 	return b
 }
 
-func (b *suministroEnergiaCabeceraBuilder) WithComplemento(v *string) *suministroEnergiaCabeceraBuilder {
-	if v == nil {
-		b.cabecera.Complemento = datatype.Nilable[string]{Value: nil}
-		return b
-	}
-	value := *v
-	b.cabecera.Complemento = datatype.Nilable[string]{Value: &value}
+func (b *suministroEnergiaCabeceraBuilder) WithComplemento(v string) *suministroEnergiaCabeceraBuilder {
+	b.cabecera.Complemento = v
 	return b
 }
 
@@ -198,7 +205,7 @@ func (b *suministroEnergiaCabeceraBuilder) WithCodigoCliente(v string) *suminist
 
 func (b *suministroEnergiaCabeceraBuilder) WithCodigoPais(v *int) *suministroEnergiaCabeceraBuilder {
 	if v == nil {
-		b.cabecera.CodigoPais = datatype.Nilable[int]{Value: nil}
+		b.cabecera.CodigoPais = datatype.Nilable[int]{}
 		return b
 	}
 	value := *v
@@ -218,7 +225,7 @@ func (b *suministroEnergiaCabeceraBuilder) WithCodigoMetodoPago(v int) *suminist
 
 func (b *suministroEnergiaCabeceraBuilder) WithNumeroTarjeta(v *int64) *suministroEnergiaCabeceraBuilder {
 	if v == nil {
-		b.cabecera.NumeroTarjeta = datatype.Nilable[int64]{Value: nil}
+		b.cabecera.NumeroTarjeta = datatype.Nilable[int64]{}
 		return b
 	}
 	value := *v
@@ -226,21 +233,29 @@ func (b *suministroEnergiaCabeceraBuilder) WithNumeroTarjeta(v *int64) *suminist
 	return b
 }
 
-func (b *suministroEnergiaCabeceraBuilder) WithMontoTotal(v float64) *suministroEnergiaCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.MontoTotal = v
+func (b *suministroEnergiaCabeceraBuilder) WithSubTotalNeto(v float64) *suministroEnergiaCabeceraBuilder {
+	b.cabecera.SubTotalNeto = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
-func (b *suministroEnergiaCabeceraBuilder) WithMontoTotalSujetoIva(v float64) *suministroEnergiaCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.MontoTotalSujetoIva = v
+func (b *suministroEnergiaCabeceraBuilder) WithTotalPrecioNeto(v float64) *suministroEnergiaCabeceraBuilder {
+	b.cabecera.TotalPrecioNeto = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+	return b
+}
+
+func (b *suministroEnergiaCabeceraBuilder) WithIva(v float64) *suministroEnergiaCabeceraBuilder {
+	b.cabecera.Iva = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+	return b
+}
+
+func (b *suministroEnergiaCabeceraBuilder) WithMontoAPagar(v float64) *suministroEnergiaCabeceraBuilder {
+	b.cabecera.MontoAPagar = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
 func (b *suministroEnergiaCabeceraBuilder) WithMontoGiftCard(v *float64) *suministroEnergiaCabeceraBuilder {
 	if v == nil {
-		b.cabecera.MontoGiftCard = datatype.Nilable[float64]{Value: nil}
+		b.cabecera.MontoGiftCard = datatype.Nilable[float64]{}
 		return b
 	}
 	value := *v
@@ -251,7 +266,7 @@ func (b *suministroEnergiaCabeceraBuilder) WithMontoGiftCard(v *float64) *sumini
 
 func (b *suministroEnergiaCabeceraBuilder) WithDescuentoAdicional(v *float64) *suministroEnergiaCabeceraBuilder {
 	if v == nil {
-		b.cabecera.DescuentoAdicional = datatype.Nilable[float64]{Value: nil}
+		b.cabecera.DescuentoAdicional = datatype.Nilable[float64]{}
 		return b
 	}
 	value := *v
@@ -262,21 +277,11 @@ func (b *suministroEnergiaCabeceraBuilder) WithDescuentoAdicional(v *float64) *s
 
 func (b *suministroEnergiaCabeceraBuilder) WithCodigoExcepcion(v *int) *suministroEnergiaCabeceraBuilder {
 	if v == nil {
-		b.cabecera.CodigoExcepcion = datatype.Nilable[int]{Value: nil}
+		b.cabecera.CodigoExcepcion = datatype.Nilable[int]{}
 		return b
 	}
 	value := *v
 	b.cabecera.CodigoExcepcion = datatype.Nilable[int]{Value: &value}
-	return b
-}
-
-func (b *suministroEnergiaCabeceraBuilder) WithCafc(v *string) *suministroEnergiaCabeceraBuilder {
-	if v == nil {
-		b.cabecera.Cafc = datatype.Nilable[string]{Value: nil}
-		return b
-	}
-	value := *v
-	b.cabecera.Cafc = datatype.Nilable[string]{Value: &value}
 	return b
 }
 
@@ -286,14 +291,12 @@ func (b *suministroEnergiaCabeceraBuilder) WithCodigoMoneda(v int) *suministroEn
 }
 
 func (b *suministroEnergiaCabeceraBuilder) WithTipoCambio(v float64) *suministroEnergiaCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.TipoCambio = v
+	b.cabecera.TipoCambio = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
 func (b *suministroEnergiaCabeceraBuilder) WithMontoTotalMoneda(v float64) *suministroEnergiaCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.MontoTotalMoneda = v
+	b.cabecera.MontoTotalMoneda = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
@@ -307,18 +310,14 @@ func (b *suministroEnergiaCabeceraBuilder) WithUsuario(v string) *suministroEner
 	return b
 }
 
-// WithCodigoDocumentoSector configura el código que identifica el diseño o sector de la factura.
-func (b *suministroEnergiaCabeceraBuilder) WithCodigoDocumentoSector(v int) *suministroEnergiaCabeceraBuilder {
-	b.cabecera.CodigoDocumentoSector = v
+func (b *suministroEnergiaCabeceraBuilder) WithCodigoInterno(v string) *suministroEnergiaCabeceraBuilder {
+	b.cabecera.CodigoInterno = v
 	return b
 }
 
-func (b *suministroEnergiaCabeceraBuilder) Build() SuministroEnergiaCabecera {
-	return SuministroEnergiaCabecera{models.NewRequestWrapper(b.cabecera)}
-}
-
-type suministroEnergiaDetalleBuilder struct {
-	detalle *documents.DetalleSuministroEnergia
+func (b *suministroEnergiaCabeceraBuilder) WithCodigoDocumentoSector(v int) *suministroEnergiaCabeceraBuilder {
+	b.cabecera.CodigoDocumentoSector = v
+	return b
 }
 
 func (b *suministroEnergiaDetalleBuilder) WithActividadEconomica(v string) *suministroEnergiaDetalleBuilder {
@@ -342,9 +341,7 @@ func (b *suministroEnergiaDetalleBuilder) WithDescripcion(v string) *suministroE
 }
 
 func (b *suministroEnergiaDetalleBuilder) WithCantidad(v float64) *suministroEnergiaDetalleBuilder {
-	// Sector 31 usa 4 decimales
-	v = decimal.NewFromFloat(v).Round(4).InexactFloat64()
-	b.detalle.Cantidad = v
+	b.detalle.Cantidad = decimal.NewFromFloat(v).Round(4).InexactFloat64()
 	return b
 }
 
@@ -353,32 +350,23 @@ func (b *suministroEnergiaDetalleBuilder) WithUnidadMedida(v int) *suministroEne
 	return b
 }
 
-func (b *suministroEnergiaDetalleBuilder) WithPrecioUnitario(v float64) *suministroEnergiaDetalleBuilder {
-	// Sector 31 usa 4 decimales
-	v = decimal.NewFromFloat(v).Round(4).InexactFloat64()
-	b.detalle.PrecioUnitario = v
+func (b *suministroEnergiaDetalleBuilder) WithPrecioNetoUnitario(v float64) *suministroEnergiaDetalleBuilder {
+	b.detalle.PrecioNetoUnitario = decimal.NewFromFloat(v).Round(4).InexactFloat64()
 	return b
 }
 
 func (b *suministroEnergiaDetalleBuilder) WithMontoDescuento(v *float64) *suministroEnergiaDetalleBuilder {
 	if v == nil {
-		b.detalle.MontoDescuento = datatype.Nilable[float64]{Value: nil}
+		b.detalle.MontoDescuento = datatype.Nilable[float64]{}
 		return b
 	}
 	value := *v
-	// Sector 31 usa 4 decimales
 	value = decimal.NewFromFloat(value).Round(4).InexactFloat64()
 	b.detalle.MontoDescuento = datatype.Nilable[float64]{Value: &value}
 	return b
 }
 
 func (b *suministroEnergiaDetalleBuilder) WithSubTotal(v float64) *suministroEnergiaDetalleBuilder {
-	// Sector 31 usa 4 decimales
-	v = decimal.NewFromFloat(v).Round(4).InexactFloat64()
-	b.detalle.SubTotal = v
+	b.detalle.SubTotal = decimal.NewFromFloat(v).Round(4).InexactFloat64()
 	return b
-}
-
-func (b *suministroEnergiaDetalleBuilder) Build() SuministroEnergiaDetalle {
-	return SuministroEnergiaDetalle{models.NewRequestWrapper(b.detalle)}
 }

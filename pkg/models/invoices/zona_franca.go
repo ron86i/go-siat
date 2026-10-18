@@ -46,7 +46,6 @@ func NewZonaFrancaCabeceraBuilder() *zonaFrancaCabeceraBuilder {
 	return &zonaFrancaCabeceraBuilder{
 		cabecera: &documents.CabeceraZonaFranca{
 			CodigoDocumentoSector: 5, // Sector 5 para Zona Franca
-			MontoTotalSujetoIva:   0, // Siempre 0 para Zona Franca
 		},
 	}
 }
@@ -97,6 +96,18 @@ type zonaFrancaCabeceraBuilder struct {
 	cabecera *documents.CabeceraZonaFranca
 }
 
+func (b *zonaFrancaCabeceraBuilder) Build() ZonaFrancaCabecera {
+	return ZonaFrancaCabecera{models.NewRequestWrapper(b.cabecera)}
+}
+
+type zonaFrancaDetalleBuilder struct {
+	detalle *documents.DetalleZonaFranca
+}
+
+func (b *zonaFrancaDetalleBuilder) Build() ZonaFrancaDetalle {
+	return ZonaFrancaDetalle{models.NewRequestWrapper(b.detalle)}
+}
+
 func (b *zonaFrancaCabeceraBuilder) WithNitEmisor(v int64) *zonaFrancaCabeceraBuilder {
 	b.cabecera.NitEmisor = v
 	return b
@@ -112,12 +123,12 @@ func (b *zonaFrancaCabeceraBuilder) WithMunicipio(v string) *zonaFrancaCabeceraB
 	return b
 }
 
-func (b *zonaFrancaCabeceraBuilder) WithTelefono(telefono *string) *zonaFrancaCabeceraBuilder {
-	if telefono == nil {
-		b.cabecera.Telefono = datatype.Nilable[string]{Value: nil}
+func (b *zonaFrancaCabeceraBuilder) WithTelefono(v *string) *zonaFrancaCabeceraBuilder {
+	if v == nil {
+		b.cabecera.Telefono = datatype.Nilable[string]{}
 		return b
 	}
-	value := *telefono
+	value := *v
 	b.cabecera.Telefono = datatype.Nilable[string]{Value: &value}
 	return b
 }
@@ -149,7 +160,7 @@ func (b *zonaFrancaCabeceraBuilder) WithDireccion(v string) *zonaFrancaCabeceraB
 
 func (b *zonaFrancaCabeceraBuilder) WithCodigoPuntoVenta(v *int) *zonaFrancaCabeceraBuilder {
 	if v == nil {
-		b.cabecera.CodigoPuntoVenta = datatype.Nilable[int]{Value: nil}
+		b.cabecera.CodigoPuntoVenta = datatype.Nilable[int]{}
 		return b
 	}
 	value := *v
@@ -157,14 +168,14 @@ func (b *zonaFrancaCabeceraBuilder) WithCodigoPuntoVenta(v *int) *zonaFrancaCabe
 	return b
 }
 
-func (b *zonaFrancaCabeceraBuilder) WithFechaEmision(fechaEmision time.Time) *zonaFrancaCabeceraBuilder {
-	b.cabecera.FechaEmision = datatype.NewTimeSiat(fechaEmision)
+func (b *zonaFrancaCabeceraBuilder) WithFechaEmision(v time.Time) *zonaFrancaCabeceraBuilder {
+	b.cabecera.FechaEmision = datatype.NewTimeSiat(v)
 	return b
 }
 
 func (b *zonaFrancaCabeceraBuilder) WithNombreRazonSocial(v *string) *zonaFrancaCabeceraBuilder {
 	if v == nil {
-		b.cabecera.NombreRazonSocial = datatype.Nilable[string]{Value: nil}
+		b.cabecera.NombreRazonSocial = datatype.Nilable[string]{}
 		return b
 	}
 	value := *v
@@ -182,13 +193,8 @@ func (b *zonaFrancaCabeceraBuilder) WithNumeroDocumento(v string) *zonaFrancaCab
 	return b
 }
 
-func (b *zonaFrancaCabeceraBuilder) WithComplemento(v *string) *zonaFrancaCabeceraBuilder {
-	if v == nil {
-		b.cabecera.Complemento = datatype.Nilable[string]{Value: nil}
-		return b
-	}
-	value := *v
-	b.cabecera.Complemento = datatype.Nilable[string]{Value: &value}
+func (b *zonaFrancaCabeceraBuilder) WithComplemento(v string) *zonaFrancaCabeceraBuilder {
+	b.cabecera.Complemento = v
 	return b
 }
 
@@ -204,7 +210,7 @@ func (b *zonaFrancaCabeceraBuilder) WithCodigoMetodoPago(v int) *zonaFrancaCabec
 
 func (b *zonaFrancaCabeceraBuilder) WithNumeroTarjeta(v *int64) *zonaFrancaCabeceraBuilder {
 	if v == nil {
-		b.cabecera.NumeroTarjeta = datatype.Nilable[int64]{Value: nil}
+		b.cabecera.NumeroTarjeta = datatype.Nilable[int64]{}
 		return b
 	}
 	value := *v
@@ -212,9 +218,23 @@ func (b *zonaFrancaCabeceraBuilder) WithNumeroTarjeta(v *int64) *zonaFrancaCabec
 	return b
 }
 
-func (b *zonaFrancaCabeceraBuilder) WithMontoTotal(v float64) *zonaFrancaCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.MontoTotal = v
+func (b *zonaFrancaCabeceraBuilder) WithSubTotalNeto(v float64) *zonaFrancaCabeceraBuilder {
+	b.cabecera.SubTotalNeto = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+	return b
+}
+
+func (b *zonaFrancaCabeceraBuilder) WithTotalPrecioNeto(v float64) *zonaFrancaCabeceraBuilder {
+	b.cabecera.TotalPrecioNeto = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+	return b
+}
+
+func (b *zonaFrancaCabeceraBuilder) WithIva(v float64) *zonaFrancaCabeceraBuilder {
+	b.cabecera.Iva = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+	return b
+}
+
+func (b *zonaFrancaCabeceraBuilder) WithMontoAPagar(v float64) *zonaFrancaCabeceraBuilder {
+	b.cabecera.MontoAPagar = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
@@ -224,20 +244,18 @@ func (b *zonaFrancaCabeceraBuilder) WithCodigoMoneda(v int) *zonaFrancaCabeceraB
 }
 
 func (b *zonaFrancaCabeceraBuilder) WithTipoCambio(v float64) *zonaFrancaCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.TipoCambio = v
+	b.cabecera.TipoCambio = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
 func (b *zonaFrancaCabeceraBuilder) WithMontoTotalMoneda(v float64) *zonaFrancaCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.MontoTotalMoneda = v
+	b.cabecera.MontoTotalMoneda = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
 func (b *zonaFrancaCabeceraBuilder) WithNumeroParteRecepcion(v *string) *zonaFrancaCabeceraBuilder {
 	if v == nil {
-		b.cabecera.NumeroParteRecepcion = datatype.Nilable[string]{Value: nil}
+		b.cabecera.NumeroParteRecepcion = datatype.Nilable[string]{}
 		return b
 	}
 	value := *v
@@ -247,7 +265,7 @@ func (b *zonaFrancaCabeceraBuilder) WithNumeroParteRecepcion(v *string) *zonaFra
 
 func (b *zonaFrancaCabeceraBuilder) WithMontoGiftCard(v *float64) *zonaFrancaCabeceraBuilder {
 	if v == nil {
-		b.cabecera.MontoGiftCard = datatype.Nilable[float64]{Value: nil}
+		b.cabecera.MontoGiftCard = datatype.Nilable[float64]{}
 		return b
 	}
 	value := *v
@@ -258,7 +276,7 @@ func (b *zonaFrancaCabeceraBuilder) WithMontoGiftCard(v *float64) *zonaFrancaCab
 
 func (b *zonaFrancaCabeceraBuilder) WithDescuentoAdicional(v *float64) *zonaFrancaCabeceraBuilder {
 	if v == nil {
-		b.cabecera.DescuentoAdicional = datatype.Nilable[float64]{Value: nil}
+		b.cabecera.DescuentoAdicional = datatype.Nilable[float64]{}
 		return b
 	}
 	value := *v
@@ -269,21 +287,11 @@ func (b *zonaFrancaCabeceraBuilder) WithDescuentoAdicional(v *float64) *zonaFran
 
 func (b *zonaFrancaCabeceraBuilder) WithCodigoExcepcion(v *int) *zonaFrancaCabeceraBuilder {
 	if v == nil {
-		b.cabecera.CodigoExcepcion = datatype.Nilable[int]{Value: nil}
+		b.cabecera.CodigoExcepcion = datatype.Nilable[int]{}
 		return b
 	}
 	value := *v
 	b.cabecera.CodigoExcepcion = datatype.Nilable[int]{Value: &value}
-	return b
-}
-
-func (b *zonaFrancaCabeceraBuilder) WithCafc(v *string) *zonaFrancaCabeceraBuilder {
-	if v == nil {
-		b.cabecera.Cafc = datatype.Nilable[string]{Value: nil}
-		return b
-	}
-	value := *v
-	b.cabecera.Cafc = datatype.Nilable[string]{Value: &value}
 	return b
 }
 
@@ -297,24 +305,14 @@ func (b *zonaFrancaCabeceraBuilder) WithUsuario(v string) *zonaFrancaCabeceraBui
 	return b
 }
 
-func (b *zonaFrancaCabeceraBuilder) WithMontoTotalSujetoIva(v float64) *zonaFrancaCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.MontoTotalSujetoIva = v
+func (b *zonaFrancaCabeceraBuilder) WithCodigoInterno(v string) *zonaFrancaCabeceraBuilder {
+	b.cabecera.CodigoInterno = v
 	return b
 }
 
-// WithCodigoDocumentoSector configura el código que identifica el diseño o sector de la factura.
 func (b *zonaFrancaCabeceraBuilder) WithCodigoDocumentoSector(v int) *zonaFrancaCabeceraBuilder {
 	b.cabecera.CodigoDocumentoSector = v
 	return b
-}
-
-func (b *zonaFrancaCabeceraBuilder) Build() ZonaFrancaCabecera {
-	return ZonaFrancaCabecera{models.NewRequestWrapper(b.cabecera)}
-}
-
-type zonaFrancaDetalleBuilder struct {
-	detalle *documents.DetalleZonaFranca
 }
 
 func (b *zonaFrancaDetalleBuilder) WithActividadEconomica(v string) *zonaFrancaDetalleBuilder {
@@ -338,8 +336,7 @@ func (b *zonaFrancaDetalleBuilder) WithDescripcion(v string) *zonaFrancaDetalleB
 }
 
 func (b *zonaFrancaDetalleBuilder) WithCantidad(v float64) *zonaFrancaDetalleBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.detalle.Cantidad = v
+	b.detalle.Cantidad = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
@@ -348,15 +345,14 @@ func (b *zonaFrancaDetalleBuilder) WithUnidadMedida(v int) *zonaFrancaDetalleBui
 	return b
 }
 
-func (b *zonaFrancaDetalleBuilder) WithPrecioUnitario(v float64) *zonaFrancaDetalleBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.detalle.PrecioUnitario = v
+func (b *zonaFrancaDetalleBuilder) WithPrecioNetoUnitario(v float64) *zonaFrancaDetalleBuilder {
+	b.detalle.PrecioNetoUnitario = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
 func (b *zonaFrancaDetalleBuilder) WithMontoDescuento(v *float64) *zonaFrancaDetalleBuilder {
 	if v == nil {
-		b.detalle.MontoDescuento = datatype.Nilable[float64]{Value: nil}
+		b.detalle.MontoDescuento = datatype.Nilable[float64]{}
 		return b
 	}
 	value := *v
@@ -366,11 +362,26 @@ func (b *zonaFrancaDetalleBuilder) WithMontoDescuento(v *float64) *zonaFrancaDet
 }
 
 func (b *zonaFrancaDetalleBuilder) WithSubTotal(v float64) *zonaFrancaDetalleBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.detalle.SubTotal = v
+	b.detalle.SubTotal = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
-func (b *zonaFrancaDetalleBuilder) Build() ZonaFrancaDetalle {
-	return ZonaFrancaDetalle{models.NewRequestWrapper(b.detalle)}
+func (b *zonaFrancaDetalleBuilder) WithNumeroSerie(v *string) *zonaFrancaDetalleBuilder {
+	if v == nil {
+		b.detalle.NumeroSerie = datatype.Nilable[string]{}
+		return b
+	}
+	value := *v
+	b.detalle.NumeroSerie = datatype.Nilable[string]{Value: &value}
+	return b
+}
+
+func (b *zonaFrancaDetalleBuilder) WithNumeroImei(v *string) *zonaFrancaDetalleBuilder {
+	if v == nil {
+		b.detalle.NumeroImei = datatype.Nilable[string]{}
+		return b
+	}
+	value := *v
+	b.detalle.NumeroImei = datatype.Nilable[string]{Value: &value}
+	return b
 }

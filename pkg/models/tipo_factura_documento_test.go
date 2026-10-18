@@ -29,7 +29,8 @@ func TestTipoFacturaDocumentoPredeterminado(t *testing.T) {
 		13: siat.TipoFacturaConDerechoCreditoFiscal,
 		24: siat.TipoNotaCreditoDebito,
 		30: siat.TipoBoletoAereo,
-		47: siat.TipoNotaCreditoDebito,
+		41: siat.TipoFacturaConDerechoCreditoFiscal,
+		48: siat.TipoNotaCreditoDebito,
 		52: siat.TipoFacturaSinDerechoCreditoFiscal,
 	}
 	for sector, esperado := range casos {

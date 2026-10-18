@@ -40,11 +40,6 @@ func (b *duttyFreeBuilder) WithTipoFacturaDocumento(tipo int) *duttyFreeBuilder 
 	return b
 }
 
-func (b *comercializacionHidroBuilder) WithTipoFacturaDocumento(tipo int) *comercializacionHidroBuilder {
-	b.metadatos.WithTipoFacturaDocumento(tipo)
-	return b
-}
-
 func (b *servicioBasicoBuilder) WithTipoFacturaDocumento(tipo int) *servicioBasicoBuilder {
 	b.metadatos.WithTipoFacturaDocumento(tipo)
 	return b
@@ -175,11 +170,6 @@ func (b *sectorEducativoZFBuilder) WithTipoFacturaDocumento(tipo int) *sectorEdu
 	return b
 }
 
-func (b *notaCreditoDebitoDescuentoBuilder) WithTipoFacturaDocumento(tipo int) *notaCreditoDebitoDescuentoBuilder {
-	b.metadatos.WithTipoFacturaDocumento(tipo)
-	return b
-}
-
 func (b *notaCreditoDebitoIceBuilder) WithTipoFacturaDocumento(tipo int) *notaCreditoDebitoIceBuilder {
 	b.metadatos.WithTipoFacturaDocumento(tipo)
 	return b
@@ -191,11 +181,6 @@ func (b *telecomunicacionesZFBuilder) WithTipoFacturaDocumento(tipo int) *teleco
 }
 
 func (b *hospitalClinicaZFBuilder) WithTipoFacturaDocumento(tipo int) *hospitalClinicaZFBuilder {
-	b.metadatos.WithTipoFacturaDocumento(tipo)
-	return b
-}
-
-func (b *engarrafadorasBuilder) WithTipoFacturaDocumento(tipo int) *engarrafadorasBuilder {
 	b.metadatos.WithTipoFacturaDocumento(tipo)
 	return b
 }

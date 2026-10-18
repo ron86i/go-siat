@@ -40,20 +40,17 @@ func TestComercialExportacionMinera_Electronica(t *testing.T) {
 		WithNumeroDocumento("99887766").
 		WithRuex(&ruex).
 		WithNim(&nim).
-		WithConcentradoGranel("CONCENTRADO DE ZINC").
 		WithOrigen("POTOSI - BOLIVIA").
 		WithPuertoDestino("ANTOFAGASTA").
 		WithPaisDestino(41).
 		WithIncoterm("CIF").
-		WithCodigoCliente("EXP-MIN-001").
 		WithCodigoMoneda(2).
 		WithTipoCambio(6.96).
-		WithTipoCambioANB(6.96).
 		WithNumeroLote("LOT-2024-001").
 		WithKilosNetosHumedos(10000.00).
 		WithKilosNetosSecos(9500.00).
 		WithCodigoMetodoPago(1).
-		WithMontoTotal(50000.00).
+		WithMontoAPagar(50000.00).
 		WithMontoTotalMoneda(7183.91).
 		WithGastosRealizacion(500.00).
 		WithLeyenda("Leyenda Minera").
@@ -71,7 +68,7 @@ func TestComercialExportacionMinera_Electronica(t *testing.T) {
 		WithCantidad(10.0).
 		WithUnidadMedidaExtraccion(1).
 		WithUnidadMedida(1).
-		WithPrecioUnitario(5000.00).
+		WithPrecioNetoUnitario(5000.00).
 		WithSubTotal(50000.00).
 		Build()
 

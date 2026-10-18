@@ -39,7 +39,7 @@ func TestSectorEducativoZF_Electronica(t *testing.T) {
 		WithNombreEstudiante("JUANITO PEREZ").
 		WithPeriodoFacturado("MARZO 2024").
 		WithCodigoMetodoPago(1).
-		WithMontoTotal(1500.00).
+		WithMontoAPagar(1500.00).
 		WithCodigoMoneda(1).
 		WithTipoCambio(1.0).
 		WithMontoTotalMoneda(1500.00).
@@ -54,7 +54,7 @@ func TestSectorEducativoZF_Electronica(t *testing.T) {
 		WithDescripcion("MENSULIDAD MARZO").
 		WithCantidad(1.0).
 		WithUnidadMedida(1).
-		WithPrecioUnitario(1500.00).
+		WithPrecioNetoUnitario(1500.00).
 		WithSubTotal(1500.00).
 		Build()
 

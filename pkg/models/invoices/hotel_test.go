@@ -45,13 +45,16 @@ func TestHotel_Computarizada(t *testing.T) {
 		WithCodigoCliente("CLI-HOTEL-01").
 		WithFechaIngresoHospedaje(fechaEmision). // Added mandatory field
 		WithCodigoMetodoPago(1).
-		WithMontoTotal(montoTotal).
-		WithMontoTotalSujetoIva(montoTotal).
+		WithSubTotalNeto(montoTotal).
+		WithTotalPrecioNeto(montoTotal).
+		WithIva(0).
+		WithMontoAPagar(montoTotal).
 		WithCodigoMoneda(1).
 		WithTipoCambio(1).
 		WithMontoTotalMoneda(montoTotal).
 		WithLeyenda("Leyenda Hotel").
 		WithUsuario("usuario").
+		WithCodigoInterno("HOTEL-01").
 		Build()
 
 	detalle := invoices.NewHotelDetalleBuilder().
@@ -61,7 +64,7 @@ func TestHotel_Computarizada(t *testing.T) {
 		WithDescripcion("HOSPEDAJE").
 		WithCantidad(cantidad).
 		WithUnidadMedida(1).
-		WithPrecioUnitario(precioUnitario).
+		WithPrecioNetoUnitario(precioUnitario).
 		WithMontoDescuento(&montoDescuento).
 		WithSubTotal(subTotalItem).
 		Build()

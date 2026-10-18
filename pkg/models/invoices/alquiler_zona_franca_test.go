@@ -40,7 +40,7 @@ func TestAlquilerZonaFranca_Computarizada(t *testing.T) {
 		WithCodigoCliente("ALQ-ZF-01").
 		WithPeriodoFacturado("MARZO 2024").
 		WithCodigoMetodoPago(1).
-		WithMontoTotal(2000.00).
+		WithMontoAPagar(2000.00).
 		WithCodigoMoneda(1).
 		WithTipoCambio(1.0).
 		WithMontoTotalMoneda(2000.00).
@@ -55,7 +55,7 @@ func TestAlquilerZonaFranca_Computarizada(t *testing.T) {
 		WithDescripcion("ALQUILER DE GALPON").
 		WithCantidad(1.0).
 		WithUnidadMedida(1).
-		WithPrecioUnitario(2000.0).
+		WithPrecioNetoUnitario(2000.0).
 		WithSubTotal(2000.00).
 		Build()
 

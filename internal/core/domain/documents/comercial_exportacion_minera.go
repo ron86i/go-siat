@@ -32,21 +32,23 @@ type CabeceraComercialExportacionMinera struct {
 	DireccionComprador           string                    `xml:"direccionComprador" json:"direccionComprador"`
 	CodigoTipoDocumentoIdentidad int                       `xml:"codigoTipoDocumentoIdentidad" json:"codigoTipoDocumentoIdentidad"`
 	NumeroDocumento              string                    `xml:"numeroDocumento" json:"numeroDocumento"`
-	Complemento                  datatype.Nilable[string]  `xml:"complemento" json:"complemento"`
 	Ruex                         datatype.Nilable[string]  `xml:"ruex" json:"ruex"`
 	Nim                          datatype.Nilable[string]  `xml:"nim" json:"nim"`
-	ConcentradoGranel            string                    `xml:"concentradoGranel" json:"concentradoGranel"`
+	DescripcionProducto          string                    `xml:"descripcionProducto" json:"descripcionProducto"`
 	Origen                       string                    `xml:"origen" json:"origen"`
 	PuertoTransito               datatype.Nilable[string]  `xml:"puertoTransito" json:"puertoTransito"`
 	PuertoDestino                string                    `xml:"puertoDestino" json:"puertoDestino"`
 	PaisDestino                  int                       `xml:"paisDestino" json:"paisDestino"`
 	Incoterm                     string                    `xml:"incoterm" json:"incoterm"`
-	CodigoCliente                string                    `xml:"codigoCliente" json:"codigoCliente"`
-	MontoTotalSujetoIva          float64                   `xml:"montoTotalSujetoIva" json:"montoTotalSujetoIva"`
+	AlcanceIncoterm              string                    `xml:"alcanceIncoterm" json:"alcanceIncoterm"`
+	SubTotalNeto                 float64                   `xml:"subTotalNeto" json:"subTotalNeto"`
+	TotalPrecioNeto              float64                   `xml:"totalPrecioNeto" json:"totalPrecioNeto"`
+	Iva                          float64                   `xml:"iva" json:"iva"`
+	MontoAPagar                  float64                   `xml:"montoaPagar" json:"montoaPagar"`
 	CodigoMoneda                 int                       `xml:"codigoMoneda" json:"codigoMoneda"`
 	TipoCambio                   float64                   `xml:"tipoCambio" json:"tipoCambio"`
-	TipoCambioANB                float64                   `xml:"tipoCambioANB" json:"tipoCambioANB"`
 	NumeroLote                   string                    `xml:"numeroLote" json:"numeroLote"`
+	NumeroContrato               string                    `xml:"numeroContrato" json:"numeroContrato"`
 	KilosNetosHumedos            float64                   `xml:"kilosNetosHumedos" json:"kilosNetosHumedos"`
 	HumedadPorcentaje            datatype.Nilable[float64] `xml:"humedadPorcentaje" json:"humedadPorcentaje"`
 	HumedadValor                 datatype.Nilable[float64] `xml:"humedadValor" json:"humedadValor"`
@@ -55,15 +57,14 @@ type CabeceraComercialExportacionMinera struct {
 	KilosNetosSecos              float64                   `xml:"kilosNetosSecos" json:"kilosNetosSecos"`
 	CodigoMetodoPago             int                       `xml:"codigoMetodoPago" json:"codigoMetodoPago"`
 	NumeroTarjeta                datatype.Nilable[int64]   `xml:"numeroTarjeta" json:"numeroTarjeta"`
-	MontoTotal                   float64                   `xml:"montoTotal" json:"montoTotal"`
 	MontoTotalMoneda             float64                   `xml:"montoTotalMoneda" json:"montoTotalMoneda"`
 	GastosRealizacion            float64                   `xml:"gastosRealizacion" json:"gastosRealizacion"`
 	OtrosDatos                   datatype.Nilable[string]  `xml:"otrosDatos" json:"otrosDatos"`
 	DescuentoAdicional           datatype.Nilable[float64] `xml:"descuentoAdicional" json:"descuentoAdicional"`
 	CodigoExcepcion              datatype.Nilable[int]     `xml:"codigoExcepcion" json:"codigoExcepcion"`
-	Cafc                         datatype.Nilable[string]  `xml:"cafc" json:"cafc"`
 	Leyenda                      string                    `xml:"leyenda" json:"leyenda"`
 	Usuario                      string                    `xml:"usuario" json:"usuario"`
+	CodigoInterno                string                    `xml:"codigoInterno" json:"codigoInterno"`
 	CodigoDocumentoSector        int                       `xml:"codigoDocumentoSector" json:"codigoDocumentoSector"`
 }
 
@@ -79,7 +80,7 @@ type DetalleComercialExportacionMinera struct {
 	Cantidad               float64                   `xml:"cantidad" json:"cantidad"`
 	UnidadMedidaExtraccion int                       `xml:"unidadMedidaExtraccion" json:"unidadMedidaExtraccion"`
 	UnidadMedida           int                       `xml:"unidadMedida" json:"unidadMedida"`
-	PrecioUnitario         float64                   `xml:"precioUnitario" json:"precioUnitario"`
+	PrecioNetoUnitario     float64                   `xml:"precioNetoUnitario" json:"precioNetoUnitario"`
 	MontoDescuento         datatype.Nilable[float64] `xml:"montoDescuento" json:"montoDescuento"`
 	SubTotal               float64                   `xml:"subTotal" json:"subTotal"`
 }

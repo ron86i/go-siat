@@ -38,8 +38,8 @@ func TestVentaCombustibleSinSubvencion_Electronica(t *testing.T) {
 		WithCodigoCliente("CLI-055").
 		WithPlacaVehiculo("1234ABC").
 		WithCodigoMetodoPago(1).
-		WithMontoTotal(200.00).
-		WithMontoTotalSujetoIva(200.00).
+		WithMontoAPagar(200.00).
+		WithTotalPrecioNeto(200.00).
 		WithCodigoMoneda(1).
 		WithTipoCambio(1.0).
 		WithMontoTotalMoneda(200.00).
@@ -54,7 +54,7 @@ func TestVentaCombustibleSinSubvencion_Electronica(t *testing.T) {
 		WithDescripcion("GASOLINA ESPECIAL").
 		WithCantidad(53.47594).
 		WithUnidadMedida(58).
-		WithPrecioUnitario(3.74).
+		WithPrecioNetoUnitario(3.74).
 		WithSubTotal(200.00).
 		Build()
 

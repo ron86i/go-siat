@@ -114,6 +114,26 @@ type notaConciliacionCabeceraBuilder struct {
 	cabecera *documents.CabeceraConciliacion
 }
 
+func (b *notaConciliacionCabeceraBuilder) Build() NotaConciliacionCabecera {
+	return NotaConciliacionCabecera{models.NewRequestWrapper(b.cabecera)}
+}
+
+type notaDetalleOriginalBuilder struct {
+	detalle *documents.DetalleOriginal
+}
+
+func (b *notaDetalleOriginalBuilder) Build() NotaDetalleOriginal {
+	return NotaDetalleOriginal{models.NewRequestWrapper(b.detalle)}
+}
+
+type notaDetalleConciliacionBuilder struct {
+	detalle *documents.DetalleConciliacion
+}
+
+func (b *notaDetalleConciliacionBuilder) Build() NotaDetalleConciliacion {
+	return NotaDetalleConciliacion{models.NewRequestWrapper(b.detalle)}
+}
+
 func (b *notaConciliacionCabeceraBuilder) WithNitEmisor(v int64) *notaConciliacionCabeceraBuilder {
 	b.cabecera.NitEmisor = v
 	return b
@@ -131,11 +151,11 @@ func (b *notaConciliacionCabeceraBuilder) WithMunicipio(v string) *notaConciliac
 
 func (b *notaConciliacionCabeceraBuilder) WithTelefono(v *string) *notaConciliacionCabeceraBuilder {
 	if v == nil {
-		b.cabecera.Telefono = datatype.Nilable[string]{Value: nil}
-	} else {
-		val := *v
-		b.cabecera.Telefono = datatype.Nilable[string]{Value: &val}
+		b.cabecera.Telefono = datatype.Nilable[string]{}
+		return b
 	}
+	value := *v
+	b.cabecera.Telefono = datatype.Nilable[string]{Value: &value}
 	return b
 }
 
@@ -166,11 +186,11 @@ func (b *notaConciliacionCabeceraBuilder) WithDireccion(v string) *notaConciliac
 
 func (b *notaConciliacionCabeceraBuilder) WithCodigoPuntoVenta(v *int) *notaConciliacionCabeceraBuilder {
 	if v == nil {
-		b.cabecera.CodigoPuntoVenta = datatype.Nilable[int]{Value: nil}
-	} else {
-		val := *v
-		b.cabecera.CodigoPuntoVenta = datatype.Nilable[int]{Value: &val}
+		b.cabecera.CodigoPuntoVenta = datatype.Nilable[int]{}
+		return b
 	}
+	value := *v
+	b.cabecera.CodigoPuntoVenta = datatype.Nilable[int]{Value: &value}
 	return b
 }
 
@@ -181,11 +201,11 @@ func (b *notaConciliacionCabeceraBuilder) WithFechaEmision(v time.Time) *notaCon
 
 func (b *notaConciliacionCabeceraBuilder) WithNombreRazonSocial(v *string) *notaConciliacionCabeceraBuilder {
 	if v == nil {
-		b.cabecera.NombreRazonSocial = datatype.Nilable[string]{Value: nil}
-	} else {
-		val := *v
-		b.cabecera.NombreRazonSocial = datatype.Nilable[string]{Value: &val}
+		b.cabecera.NombreRazonSocial = datatype.Nilable[string]{}
+		return b
 	}
+	value := *v
+	b.cabecera.NombreRazonSocial = datatype.Nilable[string]{Value: &value}
 	return b
 }
 
@@ -199,13 +219,8 @@ func (b *notaConciliacionCabeceraBuilder) WithNumeroDocumento(v string) *notaCon
 	return b
 }
 
-func (b *notaConciliacionCabeceraBuilder) WithComplemento(v *string) *notaConciliacionCabeceraBuilder {
-	if v == nil {
-		b.cabecera.Complemento = datatype.Nilable[string]{Value: nil}
-	} else {
-		val := *v
-		b.cabecera.Complemento = datatype.Nilable[string]{Value: &val}
-	}
+func (b *notaConciliacionCabeceraBuilder) WithComplemento(v string) *notaConciliacionCabeceraBuilder {
+	b.cabecera.Complemento = v
 	return b
 }
 
@@ -226,11 +241,11 @@ func (b *notaConciliacionCabeceraBuilder) WithNumeroAutorizacionCuf(v string) *n
 
 func (b *notaConciliacionCabeceraBuilder) WithCodigoControl(v *string) *notaConciliacionCabeceraBuilder {
 	if v == nil {
-		b.cabecera.CodigoControl = datatype.Nilable[string]{Value: nil}
-	} else {
-		val := *v
-		b.cabecera.CodigoControl = datatype.Nilable[string]{Value: &val}
+		b.cabecera.CodigoControl = datatype.Nilable[string]{}
+		return b
 	}
+	value := *v
+	b.cabecera.CodigoControl = datatype.Nilable[string]{Value: &value}
 	return b
 }
 
@@ -239,33 +254,53 @@ func (b *notaConciliacionCabeceraBuilder) WithFechaEmisionFactura(v time.Time) *
 	return b
 }
 
-func (b *notaConciliacionCabeceraBuilder) WithMontoTotalOriginal(v float64) *notaConciliacionCabeceraBuilder {
-	b.cabecera.MontoTotalOriginal = datatype.Float64Round(v, 2)
+func (b *notaConciliacionCabeceraBuilder) WithTotalPrecioNetoOriginal(v float64) *notaConciliacionCabeceraBuilder {
+	b.cabecera.TotalPrecioNetoOriginal = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
 func (b *notaConciliacionCabeceraBuilder) WithMontoTotalConciliado(v float64) *notaConciliacionCabeceraBuilder {
-	b.cabecera.MontoTotalConciliado = datatype.Float64Round(v, 2)
+	b.cabecera.MontoTotalConciliado = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+	return b
+}
+
+func (b *notaConciliacionCabeceraBuilder) WithIvaConciliado(v float64) *notaConciliacionCabeceraBuilder {
+	b.cabecera.IvaConciliado = decimal.NewFromFloat(v).Round(10).InexactFloat64()
+	return b
+}
+
+func (b *notaConciliacionCabeceraBuilder) WithMontoActualizacion(v float64) *notaConciliacionCabeceraBuilder {
+	b.cabecera.MontoActualizacion = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
 func (b *notaConciliacionCabeceraBuilder) WithCreditoFiscalIva(v float64) *notaConciliacionCabeceraBuilder {
-	b.cabecera.CreditoFiscalIva = datatype.Float64Round(v, 2)
+	b.cabecera.CreditoFiscalIva = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
 func (b *notaConciliacionCabeceraBuilder) WithDebitoFiscalIva(v float64) *notaConciliacionCabeceraBuilder {
-	b.cabecera.DebitoFiscalIva = datatype.Float64Round(v, 2)
+	b.cabecera.DebitoFiscalIva = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+	return b
+}
+
+func (b *notaConciliacionCabeceraBuilder) WithUfvFactura(v float64) *notaConciliacionCabeceraBuilder {
+	b.cabecera.UfvFactura = decimal.NewFromFloat(v).Round(10).InexactFloat64()
+	return b
+}
+
+func (b *notaConciliacionCabeceraBuilder) WithUfvConciliacion(v float64) *notaConciliacionCabeceraBuilder {
+	b.cabecera.UfvConciliacion = decimal.NewFromFloat(v).Round(10).InexactFloat64()
 	return b
 }
 
 func (b *notaConciliacionCabeceraBuilder) WithCodigoExcepcion(v *int) *notaConciliacionCabeceraBuilder {
 	if v == nil {
-		b.cabecera.CodigoExcepcion = datatype.Nilable[int]{Value: nil}
-	} else {
-		val := *v
-		b.cabecera.CodigoExcepcion = datatype.Nilable[int]{Value: &val}
+		b.cabecera.CodigoExcepcion = datatype.Nilable[int]{}
+		return b
 	}
+	value := *v
+	b.cabecera.CodigoExcepcion = datatype.Nilable[int]{Value: &value}
 	return b
 }
 
@@ -279,12 +314,14 @@ func (b *notaConciliacionCabeceraBuilder) WithUsuario(v string) *notaConciliacio
 	return b
 }
 
-func (b *notaConciliacionCabeceraBuilder) Build() NotaConciliacionCabecera {
-	return NotaConciliacionCabecera{models.NewRequestWrapper(b.cabecera)}
+func (b *notaConciliacionCabeceraBuilder) WithCodigoInterno(v string) *notaConciliacionCabeceraBuilder {
+	b.cabecera.CodigoInterno = v
+	return b
 }
 
-type notaDetalleOriginalBuilder struct {
-	detalle *documents.DetalleOriginal
+func (b *notaConciliacionCabeceraBuilder) WithCodigoDocumentoSector(v int) *notaConciliacionCabeceraBuilder {
+	b.cabecera.CodigoDocumentoSector = v
+	return b
 }
 
 func (b *notaDetalleOriginalBuilder) WithActividadEconomica(v string) *notaDetalleOriginalBuilder {
@@ -317,32 +354,25 @@ func (b *notaDetalleOriginalBuilder) WithUnidadMedida(v int) *notaDetalleOrigina
 	return b
 }
 
-func (b *notaDetalleOriginalBuilder) WithPrecioUnitario(v float64) *notaDetalleOriginalBuilder {
-	b.detalle.PrecioUnitario = decimal.NewFromFloat(v).Round(10).InexactFloat64()
+func (b *notaDetalleOriginalBuilder) WithPrecioNetoUnitario(v float64) *notaDetalleOriginalBuilder {
+	b.detalle.PrecioNetoUnitario = decimal.NewFromFloat(v).Round(10).InexactFloat64()
 	return b
 }
 
 func (b *notaDetalleOriginalBuilder) WithMontoDescuento(v *float64) *notaDetalleOriginalBuilder {
 	if v == nil {
-		b.detalle.MontoDescuento = datatype.Nilable[float64]{Value: nil}
-	} else {
-		val := decimal.NewFromFloat(*v).Round(10).InexactFloat64()
-		b.detalle.MontoDescuento = datatype.Nilable[float64]{Value: &val}
+		b.detalle.MontoDescuento = datatype.Nilable[float64]{}
+		return b
 	}
+	value := *v
+	value = decimal.NewFromFloat(value).Round(10).InexactFloat64()
+	b.detalle.MontoDescuento = datatype.Nilable[float64]{Value: &value}
 	return b
 }
 
 func (b *notaDetalleOriginalBuilder) WithSubTotal(v float64) *notaDetalleOriginalBuilder {
 	b.detalle.SubTotal = decimal.NewFromFloat(v).Round(10).InexactFloat64()
 	return b
-}
-
-func (b *notaDetalleOriginalBuilder) Build() NotaDetalleOriginal {
-	return NotaDetalleOriginal{models.NewRequestWrapper(b.detalle)}
-}
-
-type notaDetalleConciliacionBuilder struct {
-	detalle *documents.DetalleConciliacion
 }
 
 func (b *notaDetalleConciliacionBuilder) WithActividadEconomica(v string) *notaDetalleConciliacionBuilder {
@@ -365,21 +395,17 @@ func (b *notaDetalleConciliacionBuilder) WithDescripcion(v string) *notaDetalleC
 	return b
 }
 
-func (b *notaDetalleConciliacionBuilder) WithMontoOriginal(v float64) *notaDetalleConciliacionBuilder {
-	b.detalle.MontoOriginal = decimal.NewFromFloat(v).Round(10).InexactFloat64()
+func (b *notaDetalleConciliacionBuilder) WithTotalPrecioNeto(v float64) *notaDetalleConciliacionBuilder {
+	b.detalle.TotalPrecioNeto = decimal.NewFromFloat(v).Round(10).InexactFloat64()
 	return b
 }
 
-func (b *notaDetalleConciliacionBuilder) WithMontoFinal(v float64) *notaDetalleConciliacionBuilder {
-	b.detalle.MontoFinal = decimal.NewFromFloat(v).Round(10).InexactFloat64()
+func (b *notaDetalleConciliacionBuilder) WithTotalPrecioNetoFinal(v float64) *notaDetalleConciliacionBuilder {
+	b.detalle.TotalPrecioNetoFinal = decimal.NewFromFloat(v).Round(10).InexactFloat64()
 	return b
 }
 
 func (b *notaDetalleConciliacionBuilder) WithMontoConciliado(v float64) *notaDetalleConciliacionBuilder {
 	b.detalle.MontoConciliado = decimal.NewFromFloat(v).Round(10).InexactFloat64()
 	return b
-}
-
-func (b *notaDetalleConciliacionBuilder) Build() NotaDetalleConciliacion {
-	return NotaDetalleConciliacion{models.NewRequestWrapper(b.detalle)}
 }

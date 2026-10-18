@@ -47,8 +47,8 @@ func TestHospitalClinicaZonaFranca_Electronica(t *testing.T) {
 		WithNumeroDocumento("1234567").
 		WithCodigoCliente("CLI-ZF-01").
 		WithCodigoMetodoPago(1).
-		WithMontoTotal(montoTotal).
-		WithMontoTotalSujetoIva(0).
+		WithMontoAPagar(montoTotal).
+		WithTotalPrecioNeto(0).
 		WithCodigoMoneda(1).
 		WithTipoCambio(1).
 		WithMontoTotalMoneda(montoTotal).
@@ -71,7 +71,7 @@ func TestHospitalClinicaZonaFranca_Electronica(t *testing.T) {
 		WithNroFacturaMedico(&nroFacturaMedico).
 		WithCantidad(cantidad).
 		WithUnidadMedida(58).
-		WithPrecioUnitario(precioUnitario).
+		WithPrecioNetoUnitario(precioUnitario).
 		WithMontoDescuento(&montoDescuento).
 		WithSubTotal(subTotalItem).
 		Build()

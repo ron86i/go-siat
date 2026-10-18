@@ -20,27 +20,30 @@ type CabeceraPrevaloradaSinDerechoCreditoFiscal struct {
 	NitEmisor                    int64                    `xml:"nitEmisor" json:"nitEmisor"`
 	RazonSocialEmisor            string                   `xml:"razonSocialEmisor" json:"razonSocialEmisor"`
 	Municipio                    string                   `xml:"municipio" json:"municipio"`
-	Telefono                     datatype.Nilable[string] `xml:"telefono,omitempty" json:"telefono,omitempty"`
+	Telefono                     datatype.Nilable[string] `xml:"telefono" json:"telefono"`
 	NumeroFactura                int64                    `xml:"numeroFactura" json:"numeroFactura"`
 	Cuf                          string                   `xml:"cuf" json:"cuf"`
 	Cufd                         string                   `xml:"cufd" json:"cufd"`
 	CodigoSucursal               int                      `xml:"codigoSucursal" json:"codigoSucursal"`
 	Direccion                    string                   `xml:"direccion" json:"direccion"`
-	CodigoPuntoVenta             datatype.Nilable[int]    `xml:"codigoPuntoVenta,omitempty" json:"codigoPuntoVenta,omitempty"`
+	CodigoPuntoVenta             datatype.Nilable[int]    `xml:"codigoPuntoVenta" json:"codigoPuntoVenta"`
 	FechaEmision                 datatype.TimeSiat        `xml:"fechaEmision" json:"fechaEmision"`
 	NombreRazonSocial            string                   `xml:"nombreRazonSocial" json:"nombreRazonSocial"`
 	CodigoTipoDocumentoIdentidad int                      `xml:"codigoTipoDocumentoIdentidad" json:"codigoTipoDocumentoIdentidad"`
 	NumeroDocumento              int64                    `xml:"numeroDocumento" json:"numeroDocumento"`
 	CodigoCliente                string                   `xml:"codigoCliente" json:"codigoCliente"`
 	CodigoMetodoPago             int                      `xml:"codigoMetodoPago" json:"codigoMetodoPago"`
-	NumeroTarjeta                datatype.Nilable[int64]  `xml:"numeroTarjeta,omitempty" json:"numeroTarjeta,omitempty"`
-	MontoTotal                   float64                  `xml:"montoTotal" json:"montoTotal"`
-	MontoTotalSujetoIva          float64                  `xml:"montoTotalSujetoIva" json:"montoTotalSujetoIva"`
+	NumeroTarjeta                datatype.Nilable[int64]  `xml:"numeroTarjeta" json:"numeroTarjeta"`
+	SubTotalNeto                 float64                  `xml:"subTotalNeto" json:"subTotalNeto"`
+	TotalPrecioNeto              float64                  `xml:"totalPrecioNeto" json:"totalPrecioNeto"`
+	Iva                          float64                  `xml:"iva" json:"iva"`
+	MontoAPagar                  float64                  `xml:"montoaPagar" json:"montoaPagar"`
 	CodigoMoneda                 int                      `xml:"codigoMoneda" json:"codigoMoneda"`
 	TipoCambio                   float64                  `xml:"tipoCambio" json:"tipoCambio"`
 	MontoTotalMoneda             float64                  `xml:"montoTotalMoneda" json:"montoTotalMoneda"`
 	Leyenda                      string                   `xml:"leyenda" json:"leyenda"`
 	Usuario                      string                   `xml:"usuario" json:"usuario"`
+	CodigoInterno                string                   `xml:"codigoInterno" json:"codigoInterno"`
 	CodigoDocumentoSector        int                      `xml:"codigoDocumentoSector" json:"codigoDocumentoSector"`
 }
 
@@ -52,7 +55,7 @@ type DetallePrevaloradaSinDerechoCreditoFiscal struct {
 	Descripcion        string                    `xml:"descripcion" json:"descripcion"`
 	Cantidad           float64                   `xml:"cantidad" json:"cantidad"`
 	UnidadMedida       int                       `xml:"unidadMedida" json:"unidadMedida"`
-	PrecioUnitario     float64                   `xml:"precioUnitario" json:"precioUnitario"`
-	MontoDescuento     datatype.Nilable[float64] `xml:"montoDescuento,omitempty" json:"montoDescuento,omitempty"`
+	PrecioNetoUnitario float64                   `xml:"precioNetoUnitario" json:"precioNetoUnitario"`
+	MontoDescuento     datatype.Nilable[float64] `xml:"montoDescuento" json:"montoDescuento"`
 	SubTotal           float64                   `xml:"subTotal" json:"subTotal"`
 }

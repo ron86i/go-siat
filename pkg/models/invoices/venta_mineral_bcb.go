@@ -47,7 +47,6 @@ func NewVentaMineralBCBCabeceraBuilder() *ventaMineralBCBCabeceraBuilder {
 		cabecera: &documents.CabeceraVentaMineralBCB{
 			CodigoDocumentoSector: 52, // Sector 52
 			TipoCambio:            1,  // Fijo 1 según XSD
-			MontoTotalSujetoIva:   0,  // Fijo 0 según XSD
 		},
 	}
 }
@@ -69,8 +68,6 @@ type ventaMineralBCBBuilder struct {
 func (b *ventaMineralBCBBuilder) WithCabecera(req VentaMineralBCBCabecera) *ventaMineralBCBBuilder {
 	if internal := models.UnwrapInternalRequest[documents.CabeceraVentaMineralBCB](req); internal != nil {
 		b.factura.Cabecera = *internal
-		b.factura.Cabecera.TipoCambio = 1          // Garantizar fijo 1
-		b.factura.Cabecera.MontoTotalSujetoIva = 0 // Garantizar fijo 0
 	}
 	return b
 }
@@ -82,14 +79,13 @@ func (b *ventaMineralBCBBuilder) AddDetalle(req VentaMineralBCBDetalle) *ventaMi
 	return b
 }
 
+// WithModalidad conserva el formato electrónico de Venta Mineral BCB.
+// El paquete XSD v3 sólo define esta modalidad; otros valores conservan el formato actual.
 func (b *ventaMineralBCBBuilder) WithModalidad(tipo int) *ventaMineralBCBBuilder {
 	switch tipo {
 	case siat.ModalidadElectronica:
 		b.factura.XMLName = xml.Name{Local: "facturaElectronicaVentaMineralBCB"}
 		b.factura.XsiSchemaLocation = "facturaElectronicaVentaMineralBCB.xsd"
-	case siat.ModalidadComputarizada:
-		b.factura.XMLName = xml.Name{Local: "facturaComputarizadaVentaMineralBCB"}
-		b.factura.XsiSchemaLocation = "facturaComputarizadaVentaMineralBCB.xsd"
 	}
 	return b
 }
@@ -100,6 +96,18 @@ func (b *ventaMineralBCBBuilder) Build() VentaMineralBCB {
 
 type ventaMineralBCBCabeceraBuilder struct {
 	cabecera *documents.CabeceraVentaMineralBCB
+}
+
+func (b *ventaMineralBCBCabeceraBuilder) Build() VentaMineralBCBCabecera {
+	return VentaMineralBCBCabecera{models.NewRequestWrapper(b.cabecera)}
+}
+
+type ventaMineralBCBDetalleBuilder struct {
+	detalle *documents.DetalleVentaMineralBCB
+}
+
+func (b *ventaMineralBCBDetalleBuilder) Build() VentaMineralBCBDetalle {
+	return VentaMineralBCBDetalle{models.NewRequestWrapper(b.detalle)}
 }
 
 func (b *ventaMineralBCBCabeceraBuilder) WithNitEmisor(v int64) *ventaMineralBCBCabeceraBuilder {
@@ -117,12 +125,12 @@ func (b *ventaMineralBCBCabeceraBuilder) WithMunicipio(v string) *ventaMineralBC
 	return b
 }
 
-func (b *ventaMineralBCBCabeceraBuilder) WithTelefono(telefono *string) *ventaMineralBCBCabeceraBuilder {
-	if telefono == nil {
-		b.cabecera.Telefono = datatype.Nilable[string]{Value: nil}
+func (b *ventaMineralBCBCabeceraBuilder) WithTelefono(v *string) *ventaMineralBCBCabeceraBuilder {
+	if v == nil {
+		b.cabecera.Telefono = datatype.Nilable[string]{}
 		return b
 	}
-	value := *telefono
+	value := *v
 	b.cabecera.Telefono = datatype.Nilable[string]{Value: &value}
 	return b
 }
@@ -154,7 +162,7 @@ func (b *ventaMineralBCBCabeceraBuilder) WithDireccion(v string) *ventaMineralBC
 
 func (b *ventaMineralBCBCabeceraBuilder) WithCodigoPuntoVenta(v *int) *ventaMineralBCBCabeceraBuilder {
 	if v == nil {
-		b.cabecera.CodigoPuntoVenta = datatype.Nilable[int]{Value: nil}
+		b.cabecera.CodigoPuntoVenta = datatype.Nilable[int]{}
 		return b
 	}
 	value := *v
@@ -169,7 +177,7 @@ func (b *ventaMineralBCBCabeceraBuilder) WithFechaEmision(v time.Time) *ventaMin
 
 func (b *ventaMineralBCBCabeceraBuilder) WithNombreRazonSocial(v *string) *ventaMineralBCBCabeceraBuilder {
 	if v == nil {
-		b.cabecera.NombreRazonSocial = datatype.Nilable[string]{Value: nil}
+		b.cabecera.NombreRazonSocial = datatype.Nilable[string]{}
 		return b
 	}
 	value := *v
@@ -192,13 +200,8 @@ func (b *ventaMineralBCBCabeceraBuilder) WithNumeroDocumento(v string) *ventaMin
 	return b
 }
 
-func (b *ventaMineralBCBCabeceraBuilder) WithComplemento(v *string) *ventaMineralBCBCabeceraBuilder {
-	if v == nil {
-		b.cabecera.Complemento = datatype.Nilable[string]{Value: nil}
-		return b
-	}
-	value := *v
-	b.cabecera.Complemento = datatype.Nilable[string]{Value: &value}
+func (b *ventaMineralBCBCabeceraBuilder) WithComplemento(v string) *ventaMineralBCBCabeceraBuilder {
+	b.cabecera.Complemento = v
 	return b
 }
 
@@ -222,20 +225,24 @@ func (b *ventaMineralBCBCabeceraBuilder) WithCodigoMoneda(v int) *ventaMineralBC
 	return b
 }
 
+func (b *ventaMineralBCBCabeceraBuilder) WithTipoCambio(v float64) *ventaMineralBCBCabeceraBuilder {
+	b.cabecera.TipoCambio = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+	return b
+}
+
 func (b *ventaMineralBCBCabeceraBuilder) WithNumeroLote(v string) *ventaMineralBCBCabeceraBuilder {
 	b.cabecera.NumeroLote = v
 	return b
 }
 
 func (b *ventaMineralBCBCabeceraBuilder) WithKilosNetosHumedos(v float64) *ventaMineralBCBCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.KilosNetosHumedos = v
+	b.cabecera.KilosNetosHumedos = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
 func (b *ventaMineralBCBCabeceraBuilder) WithHumedadPorcentaje(v *float64) *ventaMineralBCBCabeceraBuilder {
 	if v == nil {
-		b.cabecera.HumedadPorcentaje = datatype.Nilable[float64]{Value: nil}
+		b.cabecera.HumedadPorcentaje = datatype.Nilable[float64]{}
 		return b
 	}
 	value := *v
@@ -246,7 +253,7 @@ func (b *ventaMineralBCBCabeceraBuilder) WithHumedadPorcentaje(v *float64) *vent
 
 func (b *ventaMineralBCBCabeceraBuilder) WithHumedadValor(v *float64) *ventaMineralBCBCabeceraBuilder {
 	if v == nil {
-		b.cabecera.HumedadValor = datatype.Nilable[float64]{Value: nil}
+		b.cabecera.HumedadValor = datatype.Nilable[float64]{}
 		return b
 	}
 	value := *v
@@ -257,7 +264,7 @@ func (b *ventaMineralBCBCabeceraBuilder) WithHumedadValor(v *float64) *ventaMine
 
 func (b *ventaMineralBCBCabeceraBuilder) WithMermaPorcentaje(v *float64) *ventaMineralBCBCabeceraBuilder {
 	if v == nil {
-		b.cabecera.MermaPorcentaje = datatype.Nilable[float64]{Value: nil}
+		b.cabecera.MermaPorcentaje = datatype.Nilable[float64]{}
 		return b
 	}
 	value := *v
@@ -268,7 +275,7 @@ func (b *ventaMineralBCBCabeceraBuilder) WithMermaPorcentaje(v *float64) *ventaM
 
 func (b *ventaMineralBCBCabeceraBuilder) WithMermaValor(v *float64) *ventaMineralBCBCabeceraBuilder {
 	if v == nil {
-		b.cabecera.MermaValor = datatype.Nilable[float64]{Value: nil}
+		b.cabecera.MermaValor = datatype.Nilable[float64]{}
 		return b
 	}
 	value := *v
@@ -278,8 +285,7 @@ func (b *ventaMineralBCBCabeceraBuilder) WithMermaValor(v *float64) *ventaMinera
 }
 
 func (b *ventaMineralBCBCabeceraBuilder) WithKilosNetosSecos(v float64) *ventaMineralBCBCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.KilosNetosSecos = v
+	b.cabecera.KilosNetosSecos = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
@@ -290,7 +296,7 @@ func (b *ventaMineralBCBCabeceraBuilder) WithCodigoMetodoPago(v int) *ventaMiner
 
 func (b *ventaMineralBCBCabeceraBuilder) WithNumeroTarjeta(v *int64) *ventaMineralBCBCabeceraBuilder {
 	if v == nil {
-		b.cabecera.NumeroTarjeta = datatype.Nilable[int64]{Value: nil}
+		b.cabecera.NumeroTarjeta = datatype.Nilable[int64]{}
 		return b
 	}
 	value := *v
@@ -298,39 +304,39 @@ func (b *ventaMineralBCBCabeceraBuilder) WithNumeroTarjeta(v *int64) *ventaMiner
 	return b
 }
 
-func (b *ventaMineralBCBCabeceraBuilder) WithMontoTotal(v float64) *ventaMineralBCBCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.MontoTotal = v
+func (b *ventaMineralBCBCabeceraBuilder) WithSubTotalNeto(v float64) *ventaMineralBCBCabeceraBuilder {
+	b.cabecera.SubTotalNeto = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
-func (b *ventaMineralBCBCabeceraBuilder) WithMontoTotalMoneda(v float64) *ventaMineralBCBCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.MontoTotalMoneda = v
-	return b
-}
-
-func (b *ventaMineralBCBCabeceraBuilder) WithSubTotal(v float64) *ventaMineralBCBCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.SubTotal = v
-	return b
-}
-
-func (b *ventaMineralBCBCabeceraBuilder) WithGastosRealizacion(v float64) *ventaMineralBCBCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.GastosRealizacion = v
+func (b *ventaMineralBCBCabeceraBuilder) WithTotalPrecioNeto(v float64) *ventaMineralBCBCabeceraBuilder {
+	b.cabecera.TotalPrecioNeto = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
 func (b *ventaMineralBCBCabeceraBuilder) WithIva(v float64) *ventaMineralBCBCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.Iva = v
+	b.cabecera.Iva = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+	return b
+}
+
+func (b *ventaMineralBCBCabeceraBuilder) WithMontoAPagar(v float64) *ventaMineralBCBCabeceraBuilder {
+	b.cabecera.MontoAPagar = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+	return b
+}
+
+func (b *ventaMineralBCBCabeceraBuilder) WithMontoTotalMoneda(v float64) *ventaMineralBCBCabeceraBuilder {
+	b.cabecera.MontoTotalMoneda = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+	return b
+}
+
+func (b *ventaMineralBCBCabeceraBuilder) WithGastosRealizacion(v float64) *ventaMineralBCBCabeceraBuilder {
+	b.cabecera.GastosRealizacion = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
 func (b *ventaMineralBCBCabeceraBuilder) WithLiquidacionPreliminar(v *float64) *ventaMineralBCBCabeceraBuilder {
 	if v == nil {
-		b.cabecera.LiquidacionPreliminar = datatype.Nilable[float64]{Value: nil}
+		b.cabecera.LiquidacionPreliminar = datatype.Nilable[float64]{}
 		return b
 	}
 	value := *v
@@ -341,7 +347,7 @@ func (b *ventaMineralBCBCabeceraBuilder) WithLiquidacionPreliminar(v *float64) *
 
 func (b *ventaMineralBCBCabeceraBuilder) WithOtrosDatos(v *string) *ventaMineralBCBCabeceraBuilder {
 	if v == nil {
-		b.cabecera.OtrosDatos = datatype.Nilable[string]{Value: nil}
+		b.cabecera.OtrosDatos = datatype.Nilable[string]{}
 		return b
 	}
 	value := *v
@@ -349,45 +355,18 @@ func (b *ventaMineralBCBCabeceraBuilder) WithOtrosDatos(v *string) *ventaMineral
 	return b
 }
 
-func (b *ventaMineralBCBCabeceraBuilder) WithMontoGiftCard(v *float64) *ventaMineralBCBCabeceraBuilder {
-	if v == nil {
-		b.cabecera.MontoGiftCard = datatype.Nilable[float64]{Value: nil}
-		return b
-	}
-	value := *v
-	value = decimal.NewFromFloat(value).Round(2).InexactFloat64()
-	b.cabecera.MontoGiftCard = datatype.Nilable[float64]{Value: &value}
-	return b
-}
-
-func (b *ventaMineralBCBCabeceraBuilder) WithDescuentoAdicional(v *float64) *ventaMineralBCBCabeceraBuilder {
-	if v == nil {
-		b.cabecera.DescuentoAdicional = datatype.Nilable[float64]{Value: nil}
-		return b
-	}
-	value := *v
-	value = decimal.NewFromFloat(value).Round(2).InexactFloat64()
-	b.cabecera.DescuentoAdicional = datatype.Nilable[float64]{Value: &value}
+func (b *ventaMineralBCBCabeceraBuilder) WithDescuentoAdicional(v float64) *ventaMineralBCBCabeceraBuilder {
+	b.cabecera.DescuentoAdicional = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
 func (b *ventaMineralBCBCabeceraBuilder) WithCodigoExcepcion(v *int) *ventaMineralBCBCabeceraBuilder {
 	if v == nil {
-		b.cabecera.CodigoExcepcion = datatype.Nilable[int]{Value: nil}
+		b.cabecera.CodigoExcepcion = datatype.Nilable[int]{}
 		return b
 	}
 	value := *v
 	b.cabecera.CodigoExcepcion = datatype.Nilable[int]{Value: &value}
-	return b
-}
-
-func (b *ventaMineralBCBCabeceraBuilder) WithCafc(v *string) *ventaMineralBCBCabeceraBuilder {
-	if v == nil {
-		b.cabecera.Cafc = datatype.Nilable[string]{Value: nil}
-		return b
-	}
-	value := *v
-	b.cabecera.Cafc = datatype.Nilable[string]{Value: &value}
 	return b
 }
 
@@ -401,17 +380,14 @@ func (b *ventaMineralBCBCabeceraBuilder) WithUsuario(v string) *ventaMineralBCBC
 	return b
 }
 
-func (b *ventaMineralBCBCabeceraBuilder) WithCodigoDocumentoSector(v int) *ventaMineralBCBCabeceraBuilder {
-	b.cabecera.CodigoDocumentoSector = v
+func (b *ventaMineralBCBCabeceraBuilder) WithCodigoInterno(v string) *ventaMineralBCBCabeceraBuilder {
+	b.cabecera.CodigoInterno = v
 	return b
 }
 
-func (b *ventaMineralBCBCabeceraBuilder) Build() VentaMineralBCBCabecera {
-	return VentaMineralBCBCabecera{models.NewRequestWrapper(b.cabecera)}
-}
-
-type ventaMineralBCBDetalleBuilder struct {
-	detalle *documents.DetalleVentaMineralBCB
+func (b *ventaMineralBCBCabeceraBuilder) WithCodigoDocumentoSector(v int) *ventaMineralBCBCabeceraBuilder {
+	b.cabecera.CodigoDocumentoSector = v
+	return b
 }
 
 func (b *ventaMineralBCBDetalleBuilder) WithActividadEconomica(v string) *ventaMineralBCBDetalleBuilder {
@@ -445,14 +421,12 @@ func (b *ventaMineralBCBDetalleBuilder) WithDescripcionLeyes(v string) *ventaMin
 }
 
 func (b *ventaMineralBCBDetalleBuilder) WithCantidadExtraccion(v float64) *ventaMineralBCBDetalleBuilder {
-	v = decimal.NewFromFloat(v).Round(5).InexactFloat64()
-	b.detalle.CantidadExtraccion = v
+	b.detalle.CantidadExtraccion = decimal.NewFromFloat(v).Round(5).InexactFloat64()
 	return b
 }
 
 func (b *ventaMineralBCBDetalleBuilder) WithCantidad(v float64) *ventaMineralBCBDetalleBuilder {
-	v = decimal.NewFromFloat(v).Round(5).InexactFloat64()
-	b.detalle.Cantidad = v
+	b.detalle.Cantidad = decimal.NewFromFloat(v).Round(5).InexactFloat64()
 	return b
 }
 
@@ -466,18 +440,17 @@ func (b *ventaMineralBCBDetalleBuilder) WithUnidadMedida(v int) *ventaMineralBCB
 	return b
 }
 
-func (b *ventaMineralBCBDetalleBuilder) WithPrecioUnitario(v float64) *ventaMineralBCBDetalleBuilder {
-	v = decimal.NewFromFloat(v).Round(5).InexactFloat64()
-	b.detalle.PrecioUnitario = v
+func (b *ventaMineralBCBDetalleBuilder) WithPrecioNetoUnitario(v float64) *ventaMineralBCBDetalleBuilder {
+	b.detalle.PrecioNetoUnitario = decimal.NewFromFloat(v).Round(5).InexactFloat64()
+	return b
+}
+
+func (b *ventaMineralBCBDetalleBuilder) WithMontoDescuento(v int) *ventaMineralBCBDetalleBuilder {
+	b.detalle.MontoDescuento = v
 	return b
 }
 
 func (b *ventaMineralBCBDetalleBuilder) WithSubTotal(v float64) *ventaMineralBCBDetalleBuilder {
-	v = decimal.NewFromFloat(v).Round(5).InexactFloat64()
-	b.detalle.SubTotal = v
+	b.detalle.SubTotal = decimal.NewFromFloat(v).Round(5).InexactFloat64()
 	return b
-}
-
-func (b *ventaMineralBCBDetalleBuilder) Build() VentaMineralBCBDetalle {
-	return VentaMineralBCBDetalle{models.NewRequestWrapper(b.detalle)}
 }

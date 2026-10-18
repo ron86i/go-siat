@@ -102,6 +102,18 @@ type sectorEducativoCabeceraBuilder struct {
 	cabecera *documents.CabeceraSectorEducativo
 }
 
+func (b *sectorEducativoCabeceraBuilder) Build() SectorEducativoCabecera {
+	return SectorEducativoCabecera{models.NewRequestWrapper(b.cabecera)}
+}
+
+type sectorEducativoDetalleBuilder struct {
+	detalle *documents.DetalleSectorEducativo
+}
+
+func (b *sectorEducativoDetalleBuilder) Build() SectorEducativoDetalle {
+	return SectorEducativoDetalle{models.NewRequestWrapper(b.detalle)}
+}
+
 func (b *sectorEducativoCabeceraBuilder) WithNitEmisor(v int64) *sectorEducativoCabeceraBuilder {
 	b.cabecera.NitEmisor = v
 	return b
@@ -117,12 +129,12 @@ func (b *sectorEducativoCabeceraBuilder) WithMunicipio(v string) *sectorEducativ
 	return b
 }
 
-func (b *sectorEducativoCabeceraBuilder) WithTelefono(telefono *string) *sectorEducativoCabeceraBuilder {
-	if telefono == nil {
-		b.cabecera.Telefono = datatype.Nilable[string]{Value: nil}
+func (b *sectorEducativoCabeceraBuilder) WithTelefono(v *string) *sectorEducativoCabeceraBuilder {
+	if v == nil {
+		b.cabecera.Telefono = datatype.Nilable[string]{}
 		return b
 	}
-	value := *telefono
+	value := *v
 	b.cabecera.Telefono = datatype.Nilable[string]{Value: &value}
 	return b
 }
@@ -154,7 +166,7 @@ func (b *sectorEducativoCabeceraBuilder) WithDireccion(v string) *sectorEducativ
 
 func (b *sectorEducativoCabeceraBuilder) WithCodigoPuntoVenta(v *int) *sectorEducativoCabeceraBuilder {
 	if v == nil {
-		b.cabecera.CodigoPuntoVenta = datatype.Nilable[int]{Value: nil}
+		b.cabecera.CodigoPuntoVenta = datatype.Nilable[int]{}
 		return b
 	}
 	value := *v
@@ -162,14 +174,14 @@ func (b *sectorEducativoCabeceraBuilder) WithCodigoPuntoVenta(v *int) *sectorEdu
 	return b
 }
 
-func (b *sectorEducativoCabeceraBuilder) WithFechaEmision(fechaEmision time.Time) *sectorEducativoCabeceraBuilder {
-	b.cabecera.FechaEmision = datatype.NewTimeSiat(fechaEmision)
+func (b *sectorEducativoCabeceraBuilder) WithFechaEmision(v time.Time) *sectorEducativoCabeceraBuilder {
+	b.cabecera.FechaEmision = datatype.NewTimeSiat(v)
 	return b
 }
 
 func (b *sectorEducativoCabeceraBuilder) WithNombreRazonSocial(v *string) *sectorEducativoCabeceraBuilder {
 	if v == nil {
-		b.cabecera.NombreRazonSocial = datatype.Nilable[string]{Value: nil}
+		b.cabecera.NombreRazonSocial = datatype.Nilable[string]{}
 		return b
 	}
 	value := *v
@@ -187,13 +199,8 @@ func (b *sectorEducativoCabeceraBuilder) WithNumeroDocumento(v string) *sectorEd
 	return b
 }
 
-func (b *sectorEducativoCabeceraBuilder) WithComplemento(v *string) *sectorEducativoCabeceraBuilder {
-	if v == nil {
-		b.cabecera.Complemento = datatype.Nilable[string]{Value: nil}
-		return b
-	}
-	value := *v
-	b.cabecera.Complemento = datatype.Nilable[string]{Value: &value}
+func (b *sectorEducativoCabeceraBuilder) WithComplemento(v string) *sectorEducativoCabeceraBuilder {
+	b.cabecera.Complemento = v
 	return b
 }
 
@@ -219,7 +226,7 @@ func (b *sectorEducativoCabeceraBuilder) WithCodigoMetodoPago(v int) *sectorEduc
 
 func (b *sectorEducativoCabeceraBuilder) WithNumeroTarjeta(v *int64) *sectorEducativoCabeceraBuilder {
 	if v == nil {
-		b.cabecera.NumeroTarjeta = datatype.Nilable[int64]{Value: nil}
+		b.cabecera.NumeroTarjeta = datatype.Nilable[int64]{}
 		return b
 	}
 	value := *v
@@ -227,15 +234,23 @@ func (b *sectorEducativoCabeceraBuilder) WithNumeroTarjeta(v *int64) *sectorEduc
 	return b
 }
 
-func (b *sectorEducativoCabeceraBuilder) WithMontoTotal(v float64) *sectorEducativoCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.MontoTotal = v
+func (b *sectorEducativoCabeceraBuilder) WithSubTotalNeto(v float64) *sectorEducativoCabeceraBuilder {
+	b.cabecera.SubTotalNeto = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
-func (b *sectorEducativoCabeceraBuilder) WithMontoTotalSujetoIva(v float64) *sectorEducativoCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.MontoTotalSujetoIva = v
+func (b *sectorEducativoCabeceraBuilder) WithTotalPrecioNeto(v float64) *sectorEducativoCabeceraBuilder {
+	b.cabecera.TotalPrecioNeto = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+	return b
+}
+
+func (b *sectorEducativoCabeceraBuilder) WithIva(v float64) *sectorEducativoCabeceraBuilder {
+	b.cabecera.Iva = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+	return b
+}
+
+func (b *sectorEducativoCabeceraBuilder) WithMontoAPagar(v float64) *sectorEducativoCabeceraBuilder {
+	b.cabecera.MontoAPagar = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
@@ -245,20 +260,18 @@ func (b *sectorEducativoCabeceraBuilder) WithCodigoMoneda(v int) *sectorEducativ
 }
 
 func (b *sectorEducativoCabeceraBuilder) WithTipoCambio(v float64) *sectorEducativoCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.TipoCambio = v
+	b.cabecera.TipoCambio = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
 func (b *sectorEducativoCabeceraBuilder) WithMontoTotalMoneda(v float64) *sectorEducativoCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.MontoTotalMoneda = v
+	b.cabecera.MontoTotalMoneda = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
 func (b *sectorEducativoCabeceraBuilder) WithMontoGiftCard(v *float64) *sectorEducativoCabeceraBuilder {
 	if v == nil {
-		b.cabecera.MontoGiftCard = datatype.Nilable[float64]{Value: nil}
+		b.cabecera.MontoGiftCard = datatype.Nilable[float64]{}
 		return b
 	}
 	value := *v
@@ -269,7 +282,7 @@ func (b *sectorEducativoCabeceraBuilder) WithMontoGiftCard(v *float64) *sectorEd
 
 func (b *sectorEducativoCabeceraBuilder) WithDescuentoAdicional(v *float64) *sectorEducativoCabeceraBuilder {
 	if v == nil {
-		b.cabecera.DescuentoAdicional = datatype.Nilable[float64]{Value: nil}
+		b.cabecera.DescuentoAdicional = datatype.Nilable[float64]{}
 		return b
 	}
 	value := *v
@@ -280,21 +293,11 @@ func (b *sectorEducativoCabeceraBuilder) WithDescuentoAdicional(v *float64) *sec
 
 func (b *sectorEducativoCabeceraBuilder) WithCodigoExcepcion(v *int) *sectorEducativoCabeceraBuilder {
 	if v == nil {
-		b.cabecera.CodigoExcepcion = datatype.Nilable[int]{Value: nil}
+		b.cabecera.CodigoExcepcion = datatype.Nilable[int]{}
 		return b
 	}
 	value := *v
 	b.cabecera.CodigoExcepcion = datatype.Nilable[int]{Value: &value}
-	return b
-}
-
-func (b *sectorEducativoCabeceraBuilder) WithCafc(v *string) *sectorEducativoCabeceraBuilder {
-	if v == nil {
-		b.cabecera.Cafc = datatype.Nilable[string]{Value: nil}
-		return b
-	}
-	value := *v
-	b.cabecera.Cafc = datatype.Nilable[string]{Value: &value}
 	return b
 }
 
@@ -308,18 +311,14 @@ func (b *sectorEducativoCabeceraBuilder) WithUsuario(v string) *sectorEducativoC
 	return b
 }
 
-// WithCodigoDocumentoSector configura el código que identifica el diseño o sector de la factura.
-func (b *sectorEducativoCabeceraBuilder) WithCodigoDocumentoSector(v int) *sectorEducativoCabeceraBuilder {
-	b.cabecera.CodigoDocumentoSector = v
+func (b *sectorEducativoCabeceraBuilder) WithCodigoInterno(v string) *sectorEducativoCabeceraBuilder {
+	b.cabecera.CodigoInterno = v
 	return b
 }
 
-func (b *sectorEducativoCabeceraBuilder) Build() SectorEducativoCabecera {
-	return SectorEducativoCabecera{models.NewRequestWrapper(b.cabecera)}
-}
-
-type sectorEducativoDetalleBuilder struct {
-	detalle *documents.DetalleSectorEducativo
+func (b *sectorEducativoCabeceraBuilder) WithCodigoDocumentoSector(v int) *sectorEducativoCabeceraBuilder {
+	b.cabecera.CodigoDocumentoSector = v
+	return b
 }
 
 func (b *sectorEducativoDetalleBuilder) WithActividadEconomica(v string) *sectorEducativoDetalleBuilder {
@@ -343,8 +342,7 @@ func (b *sectorEducativoDetalleBuilder) WithDescripcion(v string) *sectorEducati
 }
 
 func (b *sectorEducativoDetalleBuilder) WithCantidad(v float64) *sectorEducativoDetalleBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.detalle.Cantidad = v
+	b.detalle.Cantidad = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
@@ -353,15 +351,14 @@ func (b *sectorEducativoDetalleBuilder) WithUnidadMedida(v int) *sectorEducativo
 	return b
 }
 
-func (b *sectorEducativoDetalleBuilder) WithPrecioUnitario(v float64) *sectorEducativoDetalleBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.detalle.PrecioUnitario = v
+func (b *sectorEducativoDetalleBuilder) WithPrecioNetoUnitario(v float64) *sectorEducativoDetalleBuilder {
+	b.detalle.PrecioNetoUnitario = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
 func (b *sectorEducativoDetalleBuilder) WithMontoDescuento(v *float64) *sectorEducativoDetalleBuilder {
 	if v == nil {
-		b.detalle.MontoDescuento = datatype.Nilable[float64]{Value: nil}
+		b.detalle.MontoDescuento = datatype.Nilable[float64]{}
 		return b
 	}
 	value := *v
@@ -371,11 +368,6 @@ func (b *sectorEducativoDetalleBuilder) WithMontoDescuento(v *float64) *sectorEd
 }
 
 func (b *sectorEducativoDetalleBuilder) WithSubTotal(v float64) *sectorEducativoDetalleBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.detalle.SubTotal = v
+	b.detalle.SubTotal = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
-}
-
-func (b *sectorEducativoDetalleBuilder) Build() SectorEducativoDetalle {
-	return SectorEducativoDetalle{models.NewRequestWrapper(b.detalle)}
 }

@@ -102,6 +102,18 @@ type hospitalClinicaCabeceraBuilder struct {
 	cabecera *documents.CabeceraHospitalClinica
 }
 
+func (b *hospitalClinicaCabeceraBuilder) Build() HospitalClinicaCabecera {
+	return HospitalClinicaCabecera{models.NewRequestWrapper(b.cabecera)}
+}
+
+type hospitalClinicaDetalleBuilder struct {
+	detalle *documents.DetalleHospitalClinica
+}
+
+func (b *hospitalClinicaDetalleBuilder) Build() HospitalClinicaDetalle {
+	return HospitalClinicaDetalle{models.NewRequestWrapper(b.detalle)}
+}
+
 func (b *hospitalClinicaCabeceraBuilder) WithNitEmisor(v int64) *hospitalClinicaCabeceraBuilder {
 	b.cabecera.NitEmisor = v
 	return b
@@ -117,12 +129,12 @@ func (b *hospitalClinicaCabeceraBuilder) WithMunicipio(v string) *hospitalClinic
 	return b
 }
 
-func (b *hospitalClinicaCabeceraBuilder) WithTelefono(telefono *string) *hospitalClinicaCabeceraBuilder {
-	if telefono == nil {
-		b.cabecera.Telefono = datatype.Nilable[string]{Value: nil}
+func (b *hospitalClinicaCabeceraBuilder) WithTelefono(v *string) *hospitalClinicaCabeceraBuilder {
+	if v == nil {
+		b.cabecera.Telefono = datatype.Nilable[string]{}
 		return b
 	}
-	value := *telefono
+	value := *v
 	b.cabecera.Telefono = datatype.Nilable[string]{Value: &value}
 	return b
 }
@@ -154,7 +166,7 @@ func (b *hospitalClinicaCabeceraBuilder) WithDireccion(v string) *hospitalClinic
 
 func (b *hospitalClinicaCabeceraBuilder) WithCodigoPuntoVenta(v *int) *hospitalClinicaCabeceraBuilder {
 	if v == nil {
-		b.cabecera.CodigoPuntoVenta = datatype.Nilable[int]{Value: nil}
+		b.cabecera.CodigoPuntoVenta = datatype.Nilable[int]{}
 		return b
 	}
 	value := *v
@@ -169,7 +181,7 @@ func (b *hospitalClinicaCabeceraBuilder) WithFechaEmision(v time.Time) *hospital
 
 func (b *hospitalClinicaCabeceraBuilder) WithNombreRazonSocial(v *string) *hospitalClinicaCabeceraBuilder {
 	if v == nil {
-		b.cabecera.NombreRazonSocial = datatype.Nilable[string]{Value: nil}
+		b.cabecera.NombreRazonSocial = datatype.Nilable[string]{}
 		return b
 	}
 	value := *v
@@ -187,13 +199,8 @@ func (b *hospitalClinicaCabeceraBuilder) WithNumeroDocumento(v string) *hospital
 	return b
 }
 
-func (b *hospitalClinicaCabeceraBuilder) WithComplemento(v *string) *hospitalClinicaCabeceraBuilder {
-	if v == nil {
-		b.cabecera.Complemento = datatype.Nilable[string]{Value: nil}
-		return b
-	}
-	value := *v
-	b.cabecera.Complemento = datatype.Nilable[string]{Value: &value}
+func (b *hospitalClinicaCabeceraBuilder) WithComplemento(v string) *hospitalClinicaCabeceraBuilder {
+	b.cabecera.Complemento = v
 	return b
 }
 
@@ -204,7 +211,7 @@ func (b *hospitalClinicaCabeceraBuilder) WithCodigoCliente(v string) *hospitalCl
 
 func (b *hospitalClinicaCabeceraBuilder) WithModalidadServicio(v *string) *hospitalClinicaCabeceraBuilder {
 	if v == nil {
-		b.cabecera.ModalidadServicio = datatype.Nilable[string]{Value: nil}
+		b.cabecera.ModalidadServicio = datatype.Nilable[string]{}
 		return b
 	}
 	value := *v
@@ -219,7 +226,7 @@ func (b *hospitalClinicaCabeceraBuilder) WithCodigoMetodoPago(v int) *hospitalCl
 
 func (b *hospitalClinicaCabeceraBuilder) WithNumeroTarjeta(v *int64) *hospitalClinicaCabeceraBuilder {
 	if v == nil {
-		b.cabecera.NumeroTarjeta = datatype.Nilable[int64]{Value: nil}
+		b.cabecera.NumeroTarjeta = datatype.Nilable[int64]{}
 		return b
 	}
 	value := *v
@@ -227,15 +234,23 @@ func (b *hospitalClinicaCabeceraBuilder) WithNumeroTarjeta(v *int64) *hospitalCl
 	return b
 }
 
-func (b *hospitalClinicaCabeceraBuilder) WithMontoTotal(v float64) *hospitalClinicaCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.MontoTotal = v
+func (b *hospitalClinicaCabeceraBuilder) WithSubTotalNeto(v float64) *hospitalClinicaCabeceraBuilder {
+	b.cabecera.SubTotalNeto = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
-func (b *hospitalClinicaCabeceraBuilder) WithMontoTotalSujetoIva(v float64) *hospitalClinicaCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.MontoTotalSujetoIva = v
+func (b *hospitalClinicaCabeceraBuilder) WithTotalPrecioNeto(v float64) *hospitalClinicaCabeceraBuilder {
+	b.cabecera.TotalPrecioNeto = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+	return b
+}
+
+func (b *hospitalClinicaCabeceraBuilder) WithIva(v float64) *hospitalClinicaCabeceraBuilder {
+	b.cabecera.Iva = decimal.NewFromFloat(v).Round(2).InexactFloat64()
+	return b
+}
+
+func (b *hospitalClinicaCabeceraBuilder) WithMontoAPagar(v float64) *hospitalClinicaCabeceraBuilder {
+	b.cabecera.MontoAPagar = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
@@ -245,20 +260,18 @@ func (b *hospitalClinicaCabeceraBuilder) WithCodigoMoneda(v int) *hospitalClinic
 }
 
 func (b *hospitalClinicaCabeceraBuilder) WithTipoCambio(v float64) *hospitalClinicaCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.TipoCambio = v
+	b.cabecera.TipoCambio = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
 func (b *hospitalClinicaCabeceraBuilder) WithMontoTotalMoneda(v float64) *hospitalClinicaCabeceraBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.cabecera.MontoTotalMoneda = v
+	b.cabecera.MontoTotalMoneda = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
 func (b *hospitalClinicaCabeceraBuilder) WithMontoGiftCard(v *float64) *hospitalClinicaCabeceraBuilder {
 	if v == nil {
-		b.cabecera.MontoGiftCard = datatype.Nilable[float64]{Value: nil}
+		b.cabecera.MontoGiftCard = datatype.Nilable[float64]{}
 		return b
 	}
 	value := *v
@@ -269,7 +282,7 @@ func (b *hospitalClinicaCabeceraBuilder) WithMontoGiftCard(v *float64) *hospital
 
 func (b *hospitalClinicaCabeceraBuilder) WithDescuentoAdicional(v *float64) *hospitalClinicaCabeceraBuilder {
 	if v == nil {
-		b.cabecera.DescuentoAdicional = datatype.Nilable[float64]{Value: nil}
+		b.cabecera.DescuentoAdicional = datatype.Nilable[float64]{}
 		return b
 	}
 	value := *v
@@ -280,21 +293,11 @@ func (b *hospitalClinicaCabeceraBuilder) WithDescuentoAdicional(v *float64) *hos
 
 func (b *hospitalClinicaCabeceraBuilder) WithCodigoExcepcion(v *int) *hospitalClinicaCabeceraBuilder {
 	if v == nil {
-		b.cabecera.CodigoExcepcion = datatype.Nilable[int]{Value: nil}
+		b.cabecera.CodigoExcepcion = datatype.Nilable[int]{}
 		return b
 	}
 	value := *v
 	b.cabecera.CodigoExcepcion = datatype.Nilable[int]{Value: &value}
-	return b
-}
-
-func (b *hospitalClinicaCabeceraBuilder) WithCafc(v *string) *hospitalClinicaCabeceraBuilder {
-	if v == nil {
-		b.cabecera.Cafc = datatype.Nilable[string]{Value: nil}
-		return b
-	}
-	value := *v
-	b.cabecera.Cafc = datatype.Nilable[string]{Value: &value}
 	return b
 }
 
@@ -308,17 +311,14 @@ func (b *hospitalClinicaCabeceraBuilder) WithUsuario(v string) *hospitalClinicaC
 	return b
 }
 
-func (b *hospitalClinicaCabeceraBuilder) WithCodigoDocumentoSector(v int) *hospitalClinicaCabeceraBuilder {
-	b.cabecera.CodigoDocumentoSector = v
+func (b *hospitalClinicaCabeceraBuilder) WithCodigoInterno(v string) *hospitalClinicaCabeceraBuilder {
+	b.cabecera.CodigoInterno = v
 	return b
 }
 
-func (b *hospitalClinicaCabeceraBuilder) Build() HospitalClinicaCabecera {
-	return HospitalClinicaCabecera{models.NewRequestWrapper(b.cabecera)}
-}
-
-type hospitalClinicaDetalleBuilder struct {
-	detalle *documents.DetalleHospitalClinica
+func (b *hospitalClinicaCabeceraBuilder) WithCodigoDocumentoSector(v int) *hospitalClinicaCabeceraBuilder {
+	b.cabecera.CodigoDocumentoSector = v
+	return b
 }
 
 func (b *hospitalClinicaDetalleBuilder) WithActividadEconomica(v string) *hospitalClinicaDetalleBuilder {
@@ -343,7 +343,7 @@ func (b *hospitalClinicaDetalleBuilder) WithDescripcion(v string) *hospitalClini
 
 func (b *hospitalClinicaDetalleBuilder) WithEspecialidad(v *string) *hospitalClinicaDetalleBuilder {
 	if v == nil {
-		b.detalle.Especialidad = datatype.Nilable[string]{Value: nil}
+		b.detalle.Especialidad = datatype.Nilable[string]{}
 		return b
 	}
 	value := *v
@@ -353,7 +353,7 @@ func (b *hospitalClinicaDetalleBuilder) WithEspecialidad(v *string) *hospitalCli
 
 func (b *hospitalClinicaDetalleBuilder) WithEspecialidadDetalle(v *string) *hospitalClinicaDetalleBuilder {
 	if v == nil {
-		b.detalle.EspecialidadDetalle = datatype.Nilable[string]{Value: nil}
+		b.detalle.EspecialidadDetalle = datatype.Nilable[string]{}
 		return b
 	}
 	value := *v
@@ -368,7 +368,7 @@ func (b *hospitalClinicaDetalleBuilder) WithNroQuirofanoSalaOperaciones(v int) *
 
 func (b *hospitalClinicaDetalleBuilder) WithEspecialidadMedico(v *string) *hospitalClinicaDetalleBuilder {
 	if v == nil {
-		b.detalle.EspecialidadMedico = datatype.Nilable[string]{Value: nil}
+		b.detalle.EspecialidadMedico = datatype.Nilable[string]{}
 		return b
 	}
 	value := *v
@@ -388,7 +388,7 @@ func (b *hospitalClinicaDetalleBuilder) WithNitDocumentoMedico(v int64) *hospita
 
 func (b *hospitalClinicaDetalleBuilder) WithNroMatriculaMedico(v *string) *hospitalClinicaDetalleBuilder {
 	if v == nil {
-		b.detalle.NroMatriculaMedico = datatype.Nilable[string]{Value: nil}
+		b.detalle.NroMatriculaMedico = datatype.Nilable[string]{}
 		return b
 	}
 	value := *v
@@ -398,7 +398,7 @@ func (b *hospitalClinicaDetalleBuilder) WithNroMatriculaMedico(v *string) *hospi
 
 func (b *hospitalClinicaDetalleBuilder) WithNroFacturaMedico(v *int) *hospitalClinicaDetalleBuilder {
 	if v == nil {
-		b.detalle.NroFacturaMedico = datatype.Nilable[int]{Value: nil}
+		b.detalle.NroFacturaMedico = datatype.Nilable[int]{}
 		return b
 	}
 	value := *v
@@ -407,8 +407,7 @@ func (b *hospitalClinicaDetalleBuilder) WithNroFacturaMedico(v *int) *hospitalCl
 }
 
 func (b *hospitalClinicaDetalleBuilder) WithCantidad(v float64) *hospitalClinicaDetalleBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.detalle.Cantidad = v
+	b.detalle.Cantidad = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
@@ -417,15 +416,14 @@ func (b *hospitalClinicaDetalleBuilder) WithUnidadMedida(v int) *hospitalClinica
 	return b
 }
 
-func (b *hospitalClinicaDetalleBuilder) WithPrecioUnitario(v float64) *hospitalClinicaDetalleBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.detalle.PrecioUnitario = v
+func (b *hospitalClinicaDetalleBuilder) WithPrecioNetoUnitario(v float64) *hospitalClinicaDetalleBuilder {
+	b.detalle.PrecioNetoUnitario = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
 }
 
 func (b *hospitalClinicaDetalleBuilder) WithMontoDescuento(v *float64) *hospitalClinicaDetalleBuilder {
 	if v == nil {
-		b.detalle.MontoDescuento = datatype.Nilable[float64]{Value: nil}
+		b.detalle.MontoDescuento = datatype.Nilable[float64]{}
 		return b
 	}
 	value := *v
@@ -435,11 +433,6 @@ func (b *hospitalClinicaDetalleBuilder) WithMontoDescuento(v *float64) *hospital
 }
 
 func (b *hospitalClinicaDetalleBuilder) WithSubTotal(v float64) *hospitalClinicaDetalleBuilder {
-	v = decimal.NewFromFloat(v).Round(2).InexactFloat64()
-	b.detalle.SubTotal = v
+	b.detalle.SubTotal = decimal.NewFromFloat(v).Round(2).InexactFloat64()
 	return b
-}
-
-func (b *hospitalClinicaDetalleBuilder) Build() HospitalClinicaDetalle {
-	return HospitalClinicaDetalle{models.NewRequestWrapper(b.detalle)}
 }

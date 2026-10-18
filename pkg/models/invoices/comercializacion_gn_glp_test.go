@@ -38,8 +38,8 @@ func TestComercializacionGnGlp_Electronica(t *testing.T) {
 		WithNumeroDocumento("1234567").
 		WithCodigoCliente("CLI-39-01").
 		WithCodigoMetodoPago(1).
-		WithMontoTotal(500.00).
-		WithMontoTotalSujetoIva(500.00).
+		WithMontoAPagar(500.00).
+		WithTotalPrecioNeto(500.00).
 		WithCodigoMoneda(1).
 		WithTipoCambio(1.0).
 		WithMontoTotalMoneda(500.00).
@@ -54,7 +54,7 @@ func TestComercializacionGnGlp_Electronica(t *testing.T) {
 		WithDescripcion("SUMINISTRO DE GAS").
 		WithCantidad(100.0).
 		WithUnidadMedida(1).
-		WithPrecioUnitario(5.0).
+		WithPrecioNetoUnitario(5.0).
 		WithSubTotal(500.0).
 		Build()
 
@@ -115,8 +115,8 @@ func TestComercializacionGnGlp_Computarizada(t *testing.T) {
 		WithNumeroDocumento("1234567").
 		WithCodigoCliente("CLI-39-01").
 		WithCodigoMetodoPago(1).
-		WithMontoTotal(300.00).
-		WithMontoTotalSujetoIva(300.00).
+		WithMontoAPagar(300.00).
+		WithTotalPrecioNeto(300.00).
 		WithCodigoMoneda(1).
 		WithTipoCambio(1.0).
 		WithMontoTotalMoneda(300.00).
@@ -131,7 +131,7 @@ func TestComercializacionGnGlp_Computarizada(t *testing.T) {
 		WithDescripcion("CARGA GLP").
 		WithCantidad(10.0).
 		WithUnidadMedida(1).
-		WithPrecioUnitario(30.0).
+		WithPrecioNetoUnitario(30.0).
 		WithSubTotal(300.0).
 		Build()
 
