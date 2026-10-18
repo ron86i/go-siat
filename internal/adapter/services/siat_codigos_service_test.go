@@ -1,303 +1,130 @@
 package services_test
 
 import (
-	"context"
-	"fmt"
-	"log"
-	"net/http"
 	"os"
+	"strconv"
+	"strings"
 	"testing"
 	"time"
 
-	"github.com/joho/godotenv"
-	"github.com/ron86i/go-siat/v3"
-	"github.com/ron86i/go-siat/v3/internal/core/ports"
 	"github.com/ron86i/go-siat/v3/pkg/models"
-	"github.com/ron86i/go-siat/v3/pkg/utils"
-	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
-// TestNotificaCertificadoRevocado valida que el servicio sea capaz de informar al SIAT
-// sobre la revocación de un certificado digital.
-// Requisitos: El certificado enviado debe ser el registrado previamente en el portal de Impuestos.
-func TestNotificaCertificadoRevocado(t *testing.T) {
-	if _, err := os.Stat(".env"); os.IsNotExist(err) {
-		t.Skip("Saltando prueba de integración: .env no encontrado")
-	}
-	godotenv.Load(".env")
+// Las pruebas reales de códigos requieren SIAT_RUN=1 y ambiente 2.
+// SIAT_PV (por defecto 1) y SIAT_SUCURSAL (por defecto 0) se comparten
+// entre las solicitudes de CUIS/CUFD. Los XML se guardan por test.
 
-	cfg := siat.Config{
-		Token:          os.Getenv("SIAT_TOKEN"),
-		Nit:            123456789,
-		CodigoSistema:  os.Getenv("SIAT_CODIGO_SISTEMA"),
-		CodigoAmbiente: siat.AmbientePruebas,
-		BaseURL:        os.Getenv("SIAT_URL"),
-		HTTPClient:     &http.Client{},
-	}
-
-	siatClient, err := siat.New(cfg)
-	if err != nil {
-		t.Fatalf("error creating client: %v", err)
-	}
-
-	service := siatClient.Codigos()
-	fechaRevocacion := time.Now()
-
-	req := models.NewNotificaCertificadoRevocadoBuilder().
-		WithCodigoSucursal(0).
-		WithCuis("197C8240").
-		WithFechaRevocacion(&fechaRevocacion).
-		WithRazonRevocacion("Prueba de revocación por sistema").
-		WithCertificado(`-----BEGIN CERTIFICATE-----
-MIIEejCCA2KgA...alF2Tw0jIVieaeefsL78Yv8fA==
------END CERTIFICATE-----`).
-		Build()
-
-	resp, err := service.NotificaCertificadoRevocado(context.Background(), req)
-	if err == nil && assert.NotNil(t, resp) {
-		assert.NotNil(t, resp.Body.Content)
-	}
-}
-
-// TestVerificarNit valida el flujo completo de verificación de un NIT directamente
-// contra el servicio real del SIAT, asegurando que la configuración cargada sea válida
-// y que la respuesta del servidor se procese correctamente sin predecir mensajes fijos.
-func TestVerificarNit(t *testing.T) {
-	if _, err := os.Stat(".env"); os.IsNotExist(err) {
-		t.Skip("Saltando prueba de integración: .env no encontrado")
-	}
-	godotenv.Load(".env")
-
-	codModalidad, err := utils.ParseIntSafe(os.Getenv("SIAT_CODIGO_MODALIDAD"))
-	if err != nil {
-		t.Fatalf("la variable SIAT_CODIGO_MODALIDAD debe ser un número válido: %v", err)
-	}
-
-	nit, err := utils.ParseInt64Safe(os.Getenv("SIAT_NIT"))
-	if err != nil {
-		t.Fatalf("la variable SIAT_NIT debe ser un número válido: %v", err)
-	}
-
-	config := siat.Config{
-		Token:          os.Getenv("SIAT_TOKEN"),
-		Nit:            nit,
-		CodigoSistema:  os.Getenv("SIAT_CODIGO_SISTEMA"),
-		CodigoAmbiente: siat.AmbientePruebas,
-		BaseURL:        os.Getenv("SIAT_URL"),
-		HTTPClient:     siat.NewHTTPClient(siat.DefaultHTTPConfig()),
-	}
-
-	siatClient, err := siat.New(config)
-	if err != nil {
-		t.Fatalf("error creating client: %v", err)
-	}
-	service := siatClient.Codigos()
-
-	req := models.NewVerificarNitBuilder().
-		WithCodigoModalidad(codModalidad).
-		WithCodigoSucursal(0).
-		WithCuis("197C8240").
-		WithNitParaVerificacion(12345678). // Un NIT de prueba para validar la comunicación
-		Build()
-
-	// Ejecutar la petición al SIAT y procesar el resultado
-	resp, err := service.VerificarNit(context.Background(), req)
-
-	// Validar que no existan errores de comunicación o de serialización XML
-	if !assert.NoError(t, err) {
-		t.Fatalf("Fallo en la comunicación con el SIAT: %v", err)
-	}
-
-	// Verificar la integridad de la respuesta y registrar los mensajes devueltos por el servidor
-	if assert.NotNil(t, resp) {
-		resultado := resp.Body.Content.RespuestaVerificarNit
-		log.Printf("Resultado de Verificación NIT: %v", resultado.Transaccion)
-
-		if len(resultado.MensajesList) > 0 {
-			for _, msg := range resultado.MensajesList {
-				log.Printf("Mensaje SIAT [%d]: %s", msg.Codigo, msg.Descripcion)
-			}
-		}
-
-		// En integración, validamos que el tipo de datos sea el esperado para la transacción
-		assert.IsType(t, true, resultado.Transaccion)
-	}
-}
-
-// TestSolicitudCuis valida la obtención de un Código Único de Inicio de Sistemas (CUIS).
-// El CUIS es fundamental para identificar un punto de venta y su sistema asociado ante el SIAT.
-// Se recomienda renovar el CUIS periódicamente según la vigencia devuelta por el servidor.
 func TestSolicitudCuis(t *testing.T) {
-	if _, err := os.Stat(".env"); os.IsNotExist(err) {
-		t.Skip("Saltando prueba de integración: .env no encontrado")
-	}
-	godotenv.Load(".env")
-	siatClient := getSiatClient(t)
-	service := siatClient.Codigos()
-
-	codModalidad, _ := utils.ParseIntSafe(os.Getenv("SIAT_CODIGO_MODALIDAD"))
-
-	req := models.NewCuisBuilder().
-		WithCodigoSucursal(0).
-		WithCodigoPuntoVenta(12).
-		WithCodigoModalidad(codModalidad).
-		Build()
-
-	resp, err := service.SolicitudCuis(context.Background(), req)
-
-	// Confirmar que la comunicación fue exitosa y se recibió un objeto de respuesta
-	if assert.NoError(t, err) && assert.NotNil(t, resp) {
-		resultado := resp.Body.Content.RespuestaCuis
-
-		// Registrar los datos obtenidos para facilitar la auditoría de los tests
-		log.Printf("Respuesta Cuis - Transacción: %v", resultado.Transaccion)
-
-		isCuisVigente := false
-		if len(resultado.MensajesList) > 0 {
-			for _, msg := range resultado.MensajesList {
-				log.Printf("Mensaje SIAT [%d]: %s", msg.Codigo, msg.Descripcion)
-				if msg.Codigo == 980 {
-					isCuisVigente = true
-				}
-			}
-		}
-
-		assert.True(t, resultado.Transaccion || isCuisVigente, "La solicitud de CUIS debería ser exitosa o indicar que ya existe un CUIS vigente")
-		if resultado.Transaccion {
-			assert.NotEmpty(t, resultado.Codigo)
-			log.Printf("CUIS Obtenido: %s", resultado.Codigo)
-		}
-	}
-}
-
-// TestSolicitudCufdAll ejecuta 10 veces la solicitud de CUFD para validar estabilidad.
-func TestSolicitudCufdAll(t *testing.T) {
-	if _, err := os.Stat(".env"); os.IsNotExist(err) {
-		t.Skip("Saltando prueba de integración: .env no encontrado")
-	}
-	godotenv.Load()
-
-	siatClient := getSiatClient(t)
-	service := siatClient.Codigos()
-
-	for i := 0; i < 10; i++ {
-		t.Run(fmt.Sprintf("Iteracion_%d", i), func(t *testing.T) {
-			solicitudCufd(t, service)
-		})
-	}
+	client, options := newCodigosIntegration(t)
+	requestCodigosCuis(t, client.Codigos(), options)
 }
 
 func TestSolicitudCufd(t *testing.T) {
-	if _, err := os.Stat(".env"); os.IsNotExist(err) {
-		t.Skip("Saltando prueba de integración: .env no encontrado")
-	}
-	godotenv.Load()
-	solicitudCufd(t, getSiatClient(t).Codigos())
+	client, options := newCodigosIntegration(t)
+	cuis := codigosCuisForDependentTest(t, client.Codigos(), options)
+	requestCodigosCufd(t, client.Codigos(), options, cuis)
 }
 
-func solicitudCufd(t *testing.T, service ports.SiatCodigosService) {
-	codModalidad, _ := utils.ParseIntSafe(os.Getenv("SIAT_CODIGO_MODALIDAD"))
-
-	codigoPuntoVenta := 1
-	// 1. Obtener CUIS primero
-	reqCuis := models.NewCuisBuilder().
-		WithCodigoModalidad(codModalidad).
-		WithCodigoSucursal(0).
-		WithCodigoPuntoVenta(codigoPuntoVenta).
-		Build()
-
-	respCuis, err := service.SolicitudCuis(context.Background(), reqCuis)
-	if err != nil {
-		t.Fatalf("Error obteniendo CUIS: %v", err)
-	}
-
-	cuisCode := respCuis.Body.Content.RespuestaCuis.Codigo
-	if cuisCode == "" {
-		t.Skip("Saltando test de CUFD porque no se pudo obtener un CUIS vigente")
-	}
-
-	// 2. Solicitar CUFD
-	reqCufd := models.NewCufdBuilder().
-		WithCodigoModalidad(codModalidad).
-		WithCodigoSucursal(0).
-		WithCodigoPuntoVenta(codigoPuntoVenta).
-		WithCuis(cuisCode).
-		Build()
-
-	resp, err := service.SolicitudCufd(context.Background(), reqCufd)
-
-	if assert.NoError(t, err) && assert.NotNil(t, resp) {
-		res := resp.Body.Content.RespuestaCufd
-		log.Printf("Respuesta de cufd: %+v", res)
-	}
+// TestSolicitudCufdAll solicita SIAT_VECES CUFD (10 por defecto), con un
+// solo CUIS para todas las repeticiones. SIAT_CUIS permite reutilizar uno vigente.
+func TestSolicitudCufdAll(t *testing.T) {
+	client, options := newCodigosIntegration(t)
+	runCodigosCufdIterations(t, client.Codigos(), options)
 }
 
-// TestSolicitudCufdMasivo verifica la obtención masiva de códigos CUFD para múltiples
-// puntos de venta o sucursales en una sola operación.
 func TestSolicitudCufdMasivo(t *testing.T) {
-	if _, err := os.Stat(".env"); os.IsNotExist(err) {
-		t.Skip("Saltando prueba de integración: .env no encontrado")
-	}
-	// Cargar configuración de integración real
-	godotenv.Load()
-
-	codModalidad, err := utils.ParseIntSafe(os.Getenv("SIAT_CODIGO_MODALIDAD"))
-	if err != nil {
-		t.Fatalf("la variable SIAT_CODIGO_MODALIDAD debe ser un número válido: %v", err)
-	}
-
-	siatClient := getSiatClient(t)
-	service := siatClient.Codigos()
-
-	req := models.NewCuisBuilder().
-		WithCodigoSucursal(0).
-		WithCodigoPuntoVenta(0).
-		WithCodigoModalidad(codModalidad).
-		Build()
-
-	resp, err := service.SolicitudCuis(context.Background(), req)
-	if err == nil && assert.NotNil(t, resp) {
-		resultado := resp.Body.Content.RespuestaCuis
-		t.Logf("Resultado de Solicitud CUIS: %v", resultado.Transaccion)
-
-		isCuisVigente := false
-		if len(resultado.MensajesList) > 0 {
-			for _, msg := range resultado.MensajesList {
-				t.Logf("Mensaje SIAT [%d]: %s", msg.Codigo, msg.Descripcion)
-				if msg.Codigo == 980 {
-					isCuisVigente = true
-					t.Logf("CUIS vigente %s", resultado.Codigo)
-				}
-			}
-		}
-
-		assert.True(t, resultado.Transaccion || isCuisVigente, "La solicitud de CUIS debería ser exitosa o indicar que ya existe un CUIS vigente")
-	}
+	client, options := newCodigosIntegration(t)
+	cuis := codigosCuisForDependentTest(t, client.Codigos(), options)
+	request := models.NewCufdMasivoBuilder().WithCodigoModalidad(options.modalidad).
+		WithDatosSolicitud(models.NewSolicitudListaCufdDtoBuilder().
+			WithCodigoSucursal(options.sucursal).WithCodigoPuntoVenta(options.puntoVenta).WithCuis(cuis)).Build()
+	response, err := client.Codigos().SolicitudCufdMasivo(t.Context(), request)
+	require.NoError(t, err)
+	require.NotNil(t, response)
+	content, err := response.GetContent()
+	require.NoError(t, err)
+	result := content.RespuestaCufdMasivo
+	require.True(t, result.Transaccion, "CUFD masivo rechazado: %+v", result.MensajesList)
+	require.Len(t, result.ListaRespuestasCufd, 1, "debe responder a la entrada enviada")
+	entry := result.ListaRespuestasCufd[0]
+	require.True(t, entry.Transaccion, "entrada CUFD rechazada: %+v", entry.MensajeServicioList)
+	require.NotEmpty(t, entry.Codigo)
+	require.NotEmpty(t, entry.CodigoControl)
+	require.Equal(t, cuis, entry.Cuis)
 }
 
-func getSiatClient(t *testing.T) *siat.SiatServices {
-	godotenv.Load()
-	nit, err := utils.ParseInt64Safe(os.Getenv("SIAT_NIT"))
-	if err != nil {
-		t.Fatalf("la variable SIAT_NIT debe ser un número válido: %v", err)
-	}
-	codAmbiente, err := utils.ParseIntSafe(os.Getenv("SIAT_CODIGO_AMBIENTE"))
-	if err != nil {
-		t.Fatalf("la variable SIAT_CODIGO_AMBIENTE debe ser un número válido: %v", err)
-	}
+func TestSolicitudCuisMasivo(t *testing.T) {
+	client, options := newCodigosIntegration(t)
+	request := models.NewCuisMasivoBuilder().WithCodigoModalidad(options.modalidad).
+		WithDatosSolicitud(models.NewSolicitudListaCuisDtoBuilder().
+			WithCodigoSucursal(options.sucursal).WithCodigoPuntoVenta(options.puntoVenta)).Build()
+	response, err := client.Codigos().SolicitudCuisMasivo(t.Context(), request)
+	require.NoError(t, err)
+	require.NotNil(t, response)
+	content, err := response.GetContent()
+	require.NoError(t, err)
+	result := content.RespuestaCuisMasivo
+	require.True(t, result.Transaccion, "CUIS masivo rechazado: %+v", result.MensajesList)
+	require.Len(t, result.ListaRespuestasCuis, 1, "debe responder a la entrada enviada")
+	entry := result.ListaRespuestasCuis[0]
+	require.True(t, entry.Transaccion, "entrada CUIS rechazada: %+v", entry.MensajeServicioList)
+	require.NotEmpty(t, entry.Codigo)
+}
 
-	cfg := siat.Config{
-		Token:          os.Getenv("SIAT_TOKEN"),
-		Nit:            nit,
-		CodigoSistema:  os.Getenv("SIAT_CODIGO_SISTEMA"),
-		CodigoAmbiente: codAmbiente,
-		BaseURL:        os.Getenv("SIAT_URL"),
-		HTTPClient:     siat.NewHTTPClient(siat.DefaultHTTPConfig()),
-	}
+func TestCodigosVerificarComunicacion(t *testing.T) {
+	client, _ := newCodigosIntegration(t)
+	response, err := client.Codigos().VerificarComunicacion(t.Context(), models.NewVerificarComunicacionCodigosBuilder().Build())
+	require.NoError(t, err)
+	require.NotNil(t, response)
+	content, err := response.GetContent()
+	require.NoError(t, err)
+	result := content.RespuestaComunicacion
+	require.True(t, result.Transaccion, "comunicación rechazada: %+v", result.MensajesList)
+}
 
-	client, err := siat.New(cfg)
-	if err != nil {
-		t.Fatalf("error creating client: %v", err)
+func TestVerificarNit(t *testing.T) {
+	client, options := newCodigosIntegration(t)
+	nit := options.config.Nit
+	if value := strings.TrimSpace(os.Getenv("SIAT_NIT_VERIFICAR")); value != "" {
+		var err error
+		nit, err = strconv.ParseInt(value, 10, 64)
+		require.NoError(t, err, "SIAT_NIT_VERIFICAR debe ser un entero")
+		require.Positive(t, nit)
 	}
-	return client
+	cuis := codigosCuisForDependentTest(t, client.Codigos(), options)
+	request := models.NewVerificarNitBuilder().WithCodigoModalidad(options.modalidad).
+		WithCodigoSucursal(options.sucursal).WithCuis(cuis).WithNitParaVerificacion(nit).Build()
+	response, err := client.Codigos().VerificarNit(t.Context(), request)
+	require.NoError(t, err)
+	require.NotNil(t, response)
+	content, err := response.GetContent()
+	require.NoError(t, err)
+	result := content.RespuestaVerificarNit
+	require.True(t, result.Transaccion, "verificación de NIT rechazada: %+v", result.MensajesList)
+}
+
+// TestNotificaCertificadoRevocado necesita un certificado real de pruebas en
+// SIAT_CERT_REVOCADO. No usa el certificado de firma del cliente por defecto.
+func TestNotificaCertificadoRevocado(t *testing.T) {
+	client, options := newCodigosIntegration(t)
+	path := strings.TrimSpace(os.Getenv("SIAT_CERT_REVOCADO"))
+	if path == "" {
+		t.Skip("revocación no configurada: SIAT_CERT_REVOCADO debe apuntar a un certificado de pruebas")
+	}
+	certificate, err := os.ReadFile(path)
+	require.NoError(t, err)
+	require.NotEmpty(t, strings.TrimSpace(string(certificate)))
+	cuis := codigosCuisForDependentTest(t, client.Codigos(), options)
+	date := time.Now()
+	request := models.NewNotificaCertificadoRevocadoBuilder().WithCodigoSucursal(options.sucursal).
+		WithCuis(cuis).WithFechaRevocacion(&date).
+		WithRazonRevocacion("Prueba de revocación por sistema").WithCertificado(string(certificate)).Build()
+	response, err := client.Codigos().NotificaCertificadoRevocado(t.Context(), request)
+	require.NoError(t, err)
+	require.NotNil(t, response)
+	content, err := response.GetContent()
+	require.NoError(t, err)
+	result := content.RespuestaNotificaRevocado
+	require.True(t, result.Transaccion, "notificación de revocación rechazada: %+v", result.MensajesList)
 }

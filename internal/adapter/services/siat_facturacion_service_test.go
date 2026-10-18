@@ -137,12 +137,15 @@ func buildDuttyFree(t *testing.T, tc *FacturacionTestContext, numeroFactura int6
 		WithNumeroDocumento("1234567").
 		WithCodigoCliente("CLI01").
 		WithCodigoMetodoPago(1).
-		WithMontoTotal(montoTotal).
+		WithSubTotalNeto(subTotalItem).
+		WithTotalPrecioNeto(subTotalItem).
+		WithMontoAPagar(montoTotal).
 		WithCodigoMoneda(1).
 		WithTipoCambio(1.0).
 		WithMontoTotalMoneda(montoTotal).
 		WithLeyenda("Leyenda").
 		WithUsuario("user").
+		WithCodigoInterno("DUTTY-1").
 		Build()
 
 	detalle := invoices.NewDuttyFreeDetalleBuilder().
@@ -152,7 +155,7 @@ func buildDuttyFree(t *testing.T, tc *FacturacionTestContext, numeroFactura int6
 		WithDescripcion("Producto").
 		WithCantidad(cantidad).
 		WithUnidadMedida(1).
-		WithPrecioUnitario(precioUnitario).
+		WithPrecioNetoUnitario(precioUnitario).
 		WithSubTotal(subTotalItem).
 		Build()
 

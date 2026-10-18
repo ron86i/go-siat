@@ -11,7 +11,6 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/ron86i/go-siat/v3"
 	"github.com/ron86i/go-siat/v3/pkg/models"
-	"github.com/ron86i/go-siat/v3/pkg/models/invoices"
 	"github.com/ron86i/go-siat/v3/pkg/utils"
 	"github.com/stretchr/testify/assert"
 )
@@ -93,62 +92,7 @@ func TestSiatDocumentoAjuste_RecepcionDocumentoAjuste(t *testing.T) {
 		t.Fatalf("error al generar CUF: %v", err)
 	}
 
-	nombreRazonSocial := "JUAN PEREZ"
-	codigoPuntoVenta := 0
-
-	cabecera := invoices.NewNotaConciliacionCabeceraBuilder().
-		WithNitEmisor(nit).
-		WithRazonSocialEmisor("Ronaldo Rua").
-		WithMunicipio("Tarija").
-		WithNumeroNotaConciliacion(1).
-		WithCuf(cuf).
-		WithCufd(cufd).
-		WithCodigoSucursal(0).
-		WithDireccion("ESQUINA AVENIDA LA PAZ").
-		WithCodigoPuntoVenta(&codigoPuntoVenta).
-		WithFechaEmision(fechaEmision).
-		WithNombreRazonSocial(&nombreRazonSocial).
-		WithCodigoTipoDocumentoIdentidad(1).
-		WithNumeroDocumento("5115889").
-		WithCodigoCliente("1").
-		WithNumeroFactura(10).
-		WithNumeroAutorizacionCuf("DUMMY_AUT_CUF").
-		WithFechaEmisionFactura(fechaEmision.Add(-24 * time.Hour)).
-		WithMontoTotalOriginal(200.0).
-		WithMontoTotalConciliado(150.0).
-		WithCreditoFiscalIva(0).
-		WithDebitoFiscalIva(0).
-		WithLeyenda("Ley N° 453: Tienes derecho a recibir información...").
-		WithUsuario("usuario").
-		Build()
-
-	detalleA := invoices.NewNotaDetalleOriginalBuilder().
-		WithActividadEconomica("477300").
-		WithCodigoProductoSin(622539).
-		WithCodigoProducto("PROD-01").
-		WithDescripcion("Producto DUMMY").
-		WithCantidad(2.0).
-		WithUnidadMedida(1).
-		WithPrecioUnitario(100.0).
-		WithSubTotal(200.0).
-		Build()
-
-	detalleB := invoices.NewNotaDetalleConciliacionBuilder().
-		WithActividadEconomica("477300").
-		WithCodigoProductoSin(622539).
-		WithCodigoProducto("PROD-01").
-		WithDescripcion("Producto DUMMY").
-		WithMontoOriginal(200.0).
-		WithMontoFinal(50.0).
-		WithMontoConciliado(150.0).
-		Build()
-
-	nota := invoices.NewNotaConciliacionBuilder().
-		WithModalidad(codModalidad).
-		WithCabecera(cabecera).
-		AddDetalleOriginal(detalleA).
-		AddDetalleConciliacion(detalleB).
-		Build()
+	nota := buildNotaConciliacionFixture(nit, cuf, cufd, fechaEmision, codModalidad)
 
 	xmlData, _ := xml.Marshal(nota)
 

@@ -170,6 +170,9 @@ func TestConsultaPuntoVenta(t *testing.T) {
 }
 
 func TestSolicitudCuisYConsultaPuntosVenta(t *testing.T) {
+	if os.Getenv("SIAT_RUN") != "1" {
+		t.Skip("prueba real: requiere SIAT_RUN=1")
+	}
 	if _, err := os.Stat(".env"); os.IsNotExist(err) {
 		t.Skip("Saltando prueba de integración: .env no encontrado")
 	}
@@ -252,6 +255,9 @@ func TestSolicitudCuisYConsultaPuntosVenta(t *testing.T) {
 }
 
 func TestSolicitudCuisYCierreOperaciones(t *testing.T) {
+	if os.Getenv("SIAT_RUN") != "1" {
+		t.Skip("prueba real: requiere SIAT_RUN=1")
+	}
 	if _, err := os.Stat(".env"); os.IsNotExist(err) {
 		t.Skip("Saltando prueba de integración: .env no encontrado")
 	}
@@ -332,6 +338,9 @@ func TestSolicitudCuisYCierreOperaciones(t *testing.T) {
 }
 
 func TestSolicitudCuisYRegistroPuntoVenta(t *testing.T) {
+	if os.Getenv("SIAT_RUN") != "1" {
+		t.Skip("prueba real: requiere SIAT_RUN=1")
+	}
 	if _, err := os.Stat(".env"); os.IsNotExist(err) {
 		t.Skip("Saltando prueba de integración: .env no encontrado")
 	}
@@ -416,6 +425,9 @@ func TestSolicitudCuisYRegistroPuntoVenta(t *testing.T) {
 }
 
 func TestSolicitudCuisYCierrePuntoVenta(t *testing.T) {
+	if os.Getenv("SIAT_RUN") != "1" {
+		t.Skip("prueba real: requiere SIAT_RUN=1")
+	}
 	if _, err := os.Stat(".env"); os.IsNotExist(err) {
 		t.Skip("Saltando prueba de integración: .env no encontrado")
 	}

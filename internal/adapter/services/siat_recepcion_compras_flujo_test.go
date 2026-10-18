@@ -159,7 +159,9 @@ func TestSiatRecepcionCompras_FlujoCompleto(t *testing.T) {
 		WithCufd(cufd.Codigo).WithCodigoSucursal(0).WithCodigoPuntoVenta(new(0)).
 		WithFechaEmision(fecha).WithNombreRazonSocial(&razonSocial).
 		WithCodigoTipoDocumentoIdentidad(5).WithNumeroDocumento(nit).WithCodigoCliente(nit).
-		WithCodigoMetodoPago(1).WithMontoTotal(100).WithMontoTotalSujetoIva(100).
+		WithCodigoMetodoPago(1).
+		WithSubTotalNeto(88.50).WithTotalPrecioNeto(88.50).
+		WithIva(11.50).WithMontoAPagar(100).WithCodigoInterno(cufd.CodigoInterno).
 		WithCodigoMoneda(1).WithTipoCambio(1).WithMontoTotalMoneda(100).
 		WithLeyenda("FACTURA DE PRUEBA DE INTEGRACION").WithUsuario("integracion").
 		WithCodigoDocumentoSector(1).Build()
@@ -167,7 +169,7 @@ func TestSiatRecepcionCompras_FlujoCompleto(t *testing.T) {
 		WithActividadEconomica(product.CodigoActividad).
 		WithCodigoProductoSin(product.CodigoProducto).WithCodigoProducto("PRUEBA-RCV").
 		WithDescripcion(product.DescripcionProducto).WithCantidad(1).WithUnidadMedida(58).
-		WithPrecioUnitario(100).WithSubTotal(100).Build()
+		WithPrecioNetoUnitario(88.50).WithSubTotal(88.50).Build()
 	factura := invoices.NewCompraVentaBuilder().WithModalidad(modalidad).
 		WithCabecera(cabecera).AddDetalle(detalle).Build()
 	emision := models.NewRecepcionFacturaBuilder().WithCodigoSucursal(0).WithCodigoPuntoVenta(0).

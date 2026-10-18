@@ -15,7 +15,6 @@ import (
 	"github.com/ron86i/go-siat/v3"
 	"github.com/ron86i/go-siat/v3/internal/adapter/services"
 	"github.com/ron86i/go-siat/v3/pkg/models"
-	"github.com/ron86i/go-siat/v3/pkg/models/invoices"
 	"github.com/ron86i/go-siat/v3/pkg/utils"
 	"github.com/stretchr/testify/assert"
 )
@@ -111,38 +110,7 @@ func TestSiatBoletoAereoService_RecepcionMasivaFactura(t *testing.T) {
 		t.Fatalf("error al generar CUF: %v", err)
 	}
 
-	nombre := "JUAN PEREZ"
-	cabecera := invoices.NewBoletoAereoCabeceraBuilder().
-		WithNitEmisor(nit).
-		WithRazonSocialEmisor("AEROLINEAS TEST S.A.").
-		WithNumeroFactura(1).
-		WithCuf(cuf).
-		WithCufd(cufd).
-		WithCodigoSucursal(0).
-		WithDireccion("Aropuerto Internacional El Alto").
-		WithFechaEmision(fechaEmision).
-		WithNombreRazonSocial(&nombre).
-		WithCodigoTipoDocumentoIdentidad(1).
-		WithNumeroDocumento("1234567").
-		WithNombrePasajero("JUAN PEREZ").
-		WithCodigoIataLineaAerea(900).
-		WithCodigoOrigenServicio("LPB").
-		WithCodigoMetodoPago(1).
-		WithMontoTarifa(1000).
-		WithMontoTotal(1000).
-		WithMontoTotalSujetoIva(1000).
-		WithCodigoMoneda(1).
-		WithTipoCambio(1).
-		WithMontoTotalMoneda(1000).
-		WithCodigoTipoTransaccion("I").
-		WithLeyenda("Ley 453...").
-		WithUsuario("operador").
-		Build()
-
-	factura := invoices.NewBoletoAereoBuilder().
-		WithModalidad(siat.ModalidadElectronica).
-		WithCabecera(cabecera).
-		Build()
+	factura := buildBoletoAereoFixture(nit, cuf, cufd, fechaEmision, codModalidad)
 
 	xmlData, _ := xml.Marshal(factura)
 	signedXML, _ := utils.SignXML(xmlData, "key.pem", "cert.crt")
