@@ -218,7 +218,6 @@ Las demás operaciones de ajuste — `AnulacionDocumentoAjuste`, `ReversionAnula
 | Nota de crédito/débito | `invoices.NewNotaCreditoDebitoBuilder()` | 24 |
 | Nota fiscal de crédito/débito | `invoices.NewNotaFiscalCreditoDebitoBuilder()` | 24 |
 | Nota de conciliación | `invoices.NewNotaConciliacionBuilder()` | 29 |
-| Nota de crédito/débito con descuento | `invoices.NewNotaCreditoDebitoDescuentoBuilder()` | 47 |
 | Nota de crédito/débito ICE | `invoices.NewNotaCreditoDebitoIceBuilder()` | 48 |
 
 ---

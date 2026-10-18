@@ -192,13 +192,16 @@ header := invoices.NewCompraVentaCabeceraBuilder().
     WithNumeroDocumento("5115889").
     WithCodigoCliente("1").
     WithCodigoMetodoPago(1).              // 1 = cash
-    WithMontoTotal(100).
-    WithMontoTotalSujetoIva(100).
+    WithSubTotalNeto(100).
+    WithTotalPrecioNeto(100).
+    WithIva(13).
+    WithMontoAPagar(113).
     WithCodigoMoneda(1).                  // 1 = BOB
     WithTipoCambio(1).
-    WithMontoTotalMoneda(100).
+    WithMontoTotalMoneda(113).
     WithLeyenda("Ley N° 453: Tienes derecho a recibir información...").
     WithUsuario("cashier01").
+    WithCodigoInterno("CV-1").
     WithCodigoDocumentoSector(1).
     Build()
 
@@ -209,7 +212,7 @@ line := invoices.NewCompraVentaDetalleBuilder().
     WithDescripcion("GAUZE").
     WithCantidad(1).
     WithUnidadMedida(1).
-    WithPrecioUnitario(100).
+    WithPrecioNetoUnitario(100).
     WithSubTotal(100).
     Build()
 

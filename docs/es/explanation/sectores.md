@@ -85,14 +85,14 @@ El SIAT expone doce endpoints SOAP. Cuál acepta tu factura no es una elección 
 
 | Fachada | Sectores que atiende |
 | :--- | :--- |
-| `s.CompraVenta()` | CompraVenta (1), CompraVentaBonificaciones (35), CompraVentaTasas (41) |
+| `s.CompraVenta()` | CompraVenta (1), CompraVentaBonificaciones (35), VueloCharter (41) |
 | `s.Telecomunicaciones()` | Telecomunicaciones (22), TelecomunicacionesZF (49) |
 | `s.ServicioBasico()` | ServicioBasico (13), ServicioBasicoZF (40) |
 | `s.EntidadFinanciera()` | EntidadFinanciera (15) |
 | `s.BoletoAereo()` | BoletoAereo (30) |
-| `s.DocumentoAjuste()` | NotaCreditoDebito (24), NotaFiscalCreditoDebito (24), NotaConciliacion (29), NotaCreditoDebitoDescuento (47), NotaCreditoDebitoIce (48) |
+| `s.DocumentoAjuste()` | NotaCreditoDebito / NotaFiscalCreditoDebito (24), NotaConciliacion (29), NotaCreditoDebitoIce (48) |
 
-**Los otros 37 sectores se enrutan por modalidad**, no por actividad. Elegí la fachada que corresponde a cómo estás facturando:
+**Los demás sectores se enrutan por modalidad**, no por actividad. Elegí la fachada que corresponde a cómo estás facturando:
 
 ```go
 s.Electronica().RecepcionFactura(ctx, req)     // ModalidadElectronica — firmada
@@ -124,7 +124,6 @@ Los nombres de builder omiten el envoltorio `New`/`Builder` — `CompraVenta` si
 | 9 | Compra y Venta de Moneda Extranjera | Sin | Electrónica y Computarizada | `MonedaExtranjera` | `Electronica()` o `Computarizada()` |
 | 10 | Dutty Free | Sin | Electrónica y Computarizada | `DuttyFree` | `Electronica()` o `Computarizada()` |
 | 11 | Sectores Educativos | Con | Electrónica y Computarizada | `SectorEducativo` | `Electronica()` o `Computarizada()` |
-| 12 | Comercialización de Hidrocarburos | Con | Electrónica y Computarizada | `ComercializacionHidro` | `Electronica()` o `Computarizada()` |
 | 13 | Servicios Básicos | Con | Electrónica y Computarizada | `ServicioBasico` | `ServicioBasico()` |
 | 14 | Productos Alcanzados por el ICE | Con | Electrónica y Computarizada | `AlcanzadaIce` | `Electronica()` o `Computarizada()` |
 | 15 | Entidades Financieras | Con | Electrónica y Computarizada | `EntidadFinanciera` | `EntidadFinanciera()` |
@@ -149,17 +148,15 @@ Los nombres de builder omiten el envoltorio `New`/`Builder` — `CompraVenta` si
 | 38 | Hidrocarburos No Alcanzada IEHD | Con | Electrónica y Computarizada | `HidrocarburoNoAlcanzadaIehd` | `Electronica()` o `Computarizada()` |
 | 39 | Comercialización de GN y GLP | Con | Electrónica y Computarizada | `ComercializacionGnGlp` | `Electronica()` o `Computarizada()` |
 | 40 | Servicios Básicos Zona Franca | Sin | Electrónica y Computarizada | `ServicioBasicoZF` | `ServicioBasico()` |
-| 41 | Compra Venta Tasas | Con | Electrónica y Computarizada | `CompraVentaTasas` | `CompraVenta()` |
+| 41 | Vuelo Chárter | Con | Electrónica y Computarizada | `VueloCharter` | `CompraVenta()` |
 | 42 | Alquiler Zona Franca | Sin | Electrónica y Computarizada | `AlquilerZF` | `Electronica()` o `Computarizada()` |
 | 43 | Comercial de Exportación Hidrocarburos | Sin | Electrónica y Computarizada | `ComercialExportacionHidro` | `Electronica()` o `Computarizada()` |
 | 44 | Importación y Comercialización de Lubricantes | Con | Electrónica y Computarizada | `ImportacionComercializacionLubricantes` | `Electronica()` o `Computarizada()` |
 | 45 | Comercial de Exportación Precio Venta | Sin | Electrónica y Computarizada | `ComercialExportacionPVenta` | `Electronica()` o `Computarizada()` |
 | 46 | Sector Educativo Zona Franca | Sin | Electrónica y Computarizada | `SectorEducativoZF` | `Electronica()` o `Computarizada()` |
-| 47 | Nota Crédito Débito Descuentos | Ajuste | Electrónica y Computarizada | `NotaCreditoDebitoDescuento` | `DocumentoAjuste()` |
 | 48 | Nota Crédito Débito ICE | Ajuste | Electrónica y Computarizada | `NotaCreditoDebitoIce` | `DocumentoAjuste()` |
 | 49 | Telecomunicaciones Zona Franca | Sin | Electrónica y Computarizada | `TelecomunicacionesZF` | `Telecomunicaciones()` |
 | 50 | Hospitales / Clínicas Zona Franca | Sin | Electrónica y Computarizada | `HospitalClinicaZF` | `Electronica()` o `Computarizada()` |
-| 51 | Engarrafadoras | Con | Electrónica y Computarizada | `Engarrafadoras` | `Electronica()` o `Computarizada()` |
 | 52 | Venta de Minerales al Banco Central | Sin | **Solo Electrónica** | `VentaMineralBCB` | `Electronica()` únicamente |
 | 53 | Importación y Comercialización de Lubricantes IEHD | Con | Electrónica y Computarizada | `LubricantesIehd` | `Electronica()` o `Computarizada()` |
 | 54 | Compra-Venta de Insumos para Biodiésel / Diésel Ecológico | Sin | Electrónica y Computarizada | `Biodiesel` | `Electronica()` o `Computarizada()` |
@@ -169,11 +166,11 @@ Cinco cosas que vale la pena leer de esta tabla:
 
 **Los códigos no son contiguos.** Faltan el 25, 26, 27 y 32 en el propio catálogo del SIAT. No los inventes ni los uses como relleno.
 
-**El 24 aparece dos veces a propósito.** `NotaCreditoDebito` y `NotaFiscalCreditoDebito` son dos diseños de documento que comparten el mismo código de sector. Elegí el que tenga la lista de campos que corresponde a la nota que estás emitiendo.
+**El código 24 corresponde a un solo documento sector: Nota de Crédito-Débito.** El SDK ofrece los builders `NotaCreditoDebito` y `NotaFiscalCreditoDebito` para construirlo; ambos usan el mismo código y se documentan bajo una sola fila del catálogo.
 
 **Solo el 52 está restringido a una modalidad.** El builder de todos los demás sectores acepta tanto `ModalidadElectronica` como `ModalidadComputarizada` — la elección es tuya según cómo estés facturando. La normativa restringe la venta de minerales al Banco Central específicamente a la modalidad electrónica, así que `VentaMineralBCB` va por `Electronica()` y siempre exige firma; pasarle `ModalidadComputarizada` a su builder produce un documento que el SIAT va a rechazar.
 
-**Modalidades y Fachada responden preguntas distintas.** Modalidades es cómo se construye el *documento* de la factura. Fachada es qué *método de servicio* llamás para enviarlo. En los catorce sectores con endpoint propio estas dos cosas están desacopladas — un envío por `CompraVenta()` puede llevar un documento electrónico o computarizado, porque la fachada se elige por actividad, no por modalidad. En el resto de los sectores las dos cosas se reducen a una sola elección: si construiste electrónica, llamá a `Electronica()`; si construiste computarizada, llamá a `Computarizada()`.
+**Modalidades y Fachada responden preguntas distintas.** Modalidades es cómo se construye el *documento* de la factura. Fachada es qué *método de servicio* llamás para enviarlo. En los sectores con endpoint propio estas dos cosas están desacopladas — un envío por `CompraVenta()` puede llevar un documento electrónico o computarizado, porque la fachada se elige por actividad, no por modalidad. En el resto de los sectores las dos cosas se reducen a una sola elección: si construiste electrónica, llamá a `Electronica()`; si construiste computarizada, llamá a `Computarizada()`.
 
 **`ZF` significa zona franca.** Es la variante del sector para zona franca, con otro código y campos adicionales — y casi siempre sin derecho a crédito fiscal aunque el sector base sí lo tenga (compará 13 con 40, 22 con 49, 17 con 50).
 
@@ -183,7 +180,6 @@ Son los más fáciles de confundir, porque los nombres se superponen y la difere
 
 | Cód. | Builder | Se aplica a |
 | ---: | :--- | :--- |
-| 12 | `ComercializacionHidro` | Venta de combustible — diésel, gasolina, automotores |
 | 19 | `HidrocarburoAlcanzadaIehd` | Actividades **alcanzadas** por el IEHD |
 | 38 | `HidrocarburoNoAlcanzadaIehd` | Actividades **exentas** del IEHD |
 | 44 / 53 | `ImportacionComercializacionLubricantes` / `LubricantesIehd` | Importación y venta de lubricantes, sin y con IEHD |

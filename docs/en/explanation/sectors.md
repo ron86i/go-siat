@@ -84,14 +84,14 @@ SIAT exposes twelve SOAP endpoints. Which one accepts your invoice is not a free
 
 | Facade | Sectors it serves |
 | :--- | :--- |
-| `s.CompraVenta()` | CompraVenta (1), CompraVentaBonificaciones (35), CompraVentaTasas (41) |
+| `s.CompraVenta()` | CompraVenta (1), CompraVentaBonificaciones (35), VueloCharter (41) |
 | `s.Telecomunicaciones()` | Telecomunicaciones (22), TelecomunicacionesZF (49) |
 | `s.ServicioBasico()` | ServicioBasico (13), ServicioBasicoZF (40) |
 | `s.EntidadFinanciera()` | EntidadFinanciera (15) |
 | `s.BoletoAereo()` | BoletoAereo (30) |
-| `s.DocumentoAjuste()` | NotaCreditoDebito (24), NotaFiscalCreditoDebito (24), NotaConciliacion (29), NotaCreditoDebitoDescuento (47), NotaCreditoDebitoIce (48) |
+| `s.DocumentoAjuste()` | NotaCreditoDebito / NotaFiscalCreditoDebito (24), NotaConciliacion (29), NotaCreditoDebitoIce (48) |
 
-**The other 37 sectors route by modality**, not by activity. Pick the facade that matches how you are invoicing:
+**The remaining sectors route by modality**, not by activity. Pick the facade that matches how you are invoicing:
 
 ```go
 s.Electronica().RecepcionFactura(ctx, req)     // ModalidadElectronica — signed
@@ -123,7 +123,6 @@ Builder names drop the `New`/`Builder` wrapper — `CompraVenta` means `invoices
 | 9 | Foreign currency exchange | No | Electrónica & Computarizada | `MonedaExtranjera` | `Electronica()` or `Computarizada()` |
 | 10 | Duty free | No | Electrónica & Computarizada | `DuttyFree` | `Electronica()` or `Computarizada()` |
 | 11 | Education sector | Yes | Electrónica & Computarizada | `SectorEducativo` | `Electronica()` or `Computarizada()` |
-| 12 | Hydrocarbon retail | Yes | Electrónica & Computarizada | `ComercializacionHidro` | `Electronica()` or `Computarizada()` |
 | 13 | Basic services | Yes | Electrónica & Computarizada | `ServicioBasico` | `ServicioBasico()` |
 | 14 | ICE-liable products | Yes | Electrónica & Computarizada | `AlcanzadaIce` | `Electronica()` or `Computarizada()` |
 | 15 | Financial institutions | Yes | Electrónica & Computarizada | `EntidadFinanciera` | `EntidadFinanciera()` |
@@ -148,17 +147,15 @@ Builder names drop the `New`/`Builder` wrapper — `CompraVenta` means `invoices
 | 38 | Hydrocarbons not subject to IEHD | Yes | Electrónica & Computarizada | `HidrocarburoNoAlcanzadaIehd` | `Electronica()` or `Computarizada()` |
 | 39 | Natural gas and LPG retail | Yes | Electrónica & Computarizada | `ComercializacionGnGlp` | `Electronica()` or `Computarizada()` |
 | 40 | Basic services, free trade zone | No | Electrónica & Computarizada | `ServicioBasicoZF` | `ServicioBasico()` |
-| 41 | Sales with non-creditable fees | Yes | Electrónica & Computarizada | `CompraVentaTasas` | `CompraVenta()` |
+| 41 | Charter flight | Yes | Electrónica & Computarizada | `VueloCharter` | `CompraVenta()` |
 | 42 | Rental, free trade zone | No | Electrónica & Computarizada | `AlquilerZF` | `Electronica()` or `Computarizada()` |
 | 43 | Hydrocarbon export | No | Electrónica & Computarizada | `ComercialExportacionHidro` | `Electronica()` or `Computarizada()` |
 | 44 | Lubricant import and retail | Yes | Electrónica & Computarizada | `ImportacionComercializacionLubricantes` | `Electronica()` or `Computarizada()` |
 | 45 | Commercial export at sale price | No | Electrónica & Computarizada | `ComercialExportacionPVenta` | `Electronica()` or `Computarizada()` |
 | 46 | Education, free trade zone | No | Electrónica & Computarizada | `SectorEducativoZF` | `Electronica()` or `Computarizada()` |
-| 47 | Credit/debit note with discount | Adjustment | Electrónica & Computarizada | `NotaCreditoDebitoDescuento` | `DocumentoAjuste()` |
 | 48 | ICE credit/debit note | Adjustment | Electrónica & Computarizada | `NotaCreditoDebitoIce` | `DocumentoAjuste()` |
 | 49 | Telecommunications, free trade zone | No | Electrónica & Computarizada | `TelecomunicacionesZF` | `Telecomunicaciones()` |
 | 50 | Hospitals / clinics, free trade zone | No | Electrónica & Computarizada | `HospitalClinicaZF` | `Electronica()` or `Computarizada()` |
-| 51 | Gas bottling plants | Yes | Electrónica & Computarizada | `Engarrafadoras` | `Electronica()` or `Computarizada()` |
 | 52 | Mineral sales to the Central Bank | No | **Electrónica only** | `VentaMineralBCB` | `Electronica()` only |
 | 53 | Lubricant import and retail, IEHD | Yes | Electrónica & Computarizada | `LubricantesIehd` | `Electronica()` or `Computarizada()` |
 | 54 | Biodiesel / ecological diesel feedstock | No | Electrónica & Computarizada | `Biodiesel` | `Electronica()` or `Computarizada()` |
@@ -168,7 +165,7 @@ Five things worth reading off this table:
 
 **The codes are not contiguous.** 25, 26, 27 and 32 are absent from SIAT's own catalog. Do not invent them or use them as filler.
 
-**24 appears twice deliberately.** `NotaCreditoDebito` and `NotaFiscalCreditoDebito` are two document layouts sharing one sector code. Pick the one whose field list matches the note you are issuing.
+**Sector code 24 identifies one document: the Credit-Debit Note.** The SDK provides the `NotaCreditoDebito` and `NotaFiscalCreditoDebito` builders for it; both use the same code and are listed under one catalog row.
 
 **Only 52 is restricted to one modality.** Every other sector's builder accepts both `ModalidadElectronica` and `ModalidadComputarizada` — the choice is yours based on how you are invoicing. Regulation restricts mineral sales to the Central Bank to electronic modality specifically, so `VentaMineralBCB` goes through `Electronica()` and always requires a signature; passing `ModalidadComputarizada` to its builder produces a document SIAT will reject.
 
@@ -182,7 +179,6 @@ These are the easiest to mix up, because their names overlap and the difference 
 
 | Code | Builder | Applies to |
 | ---: | :--- | :--- |
-| 12 | `ComercializacionHidro` | Fuel retail — diesel, gasoline, automotive |
 | 19 | `HidrocarburoAlcanzadaIehd` | Activities **liable** for the IEHD |
 | 38 | `HidrocarburoNoAlcanzadaIehd` | Activities **exempt** from the IEHD |
 | 44 / 53 | `ImportacionComercializacionLubricantes` / `LubricantesIehd` | Lubricant import and retail, without and with IEHD |

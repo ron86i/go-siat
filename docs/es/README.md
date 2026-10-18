@@ -44,6 +44,7 @@ Estos documentos siguen [Diátaxis](https://diataxis.fr/): cuatro tipos de mater
 | :--- | :--- |
 | Instalar el SDK y hacer mi primera llamada | [Tutorial](tutorial/primera-factura.md) |
 | Migrar a v3 y revisar los contratos `/sfd/` | [Guía de migración](how-to/servicios-v3.md) |
+| Consultar los 93 formatos XML y sus builders v3 | [Documentos fiscales](reference/documentos-v3.md) |
 | Enviar una factura electrónica individual | [Tutorial → Paso 6](tutorial/primera-factura.md#paso-6-empaquetar-y-enviar) |
 | Firmar facturas con mi certificado `.p12` | [Guía: Firmar facturas](how-to/firmar-facturas.md) |
 | Enviar cientos de facturas en una sola petición | [Guía: Envío por lotes](how-to/envio-lotes.md) |

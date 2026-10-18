@@ -218,7 +218,6 @@ The other adjustment operations — `AnulacionDocumentoAjuste`, `ReversionAnulac
 | Credit/debit note | `invoices.NewNotaCreditoDebitoBuilder()` | 24 |
 | Fiscal credit/debit note | `invoices.NewNotaFiscalCreditoDebitoBuilder()` | 24 |
 | Conciliation note | `invoices.NewNotaConciliacionBuilder()` | 29 |
-| Credit/debit with discount | `invoices.NewNotaCreditoDebitoDescuentoBuilder()` | 47 |
 | ICE credit/debit note | `invoices.NewNotaCreditoDebitoIceBuilder()` | 48 |
 
 ---

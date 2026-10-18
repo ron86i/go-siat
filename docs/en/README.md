@@ -44,6 +44,7 @@ These docs follow [Diátaxis](https://diataxis.fr/): four kinds of material, eac
 | :--- | :--- |
 | Install the SDK and make my first call | [Tutorial](tutorial/first-invoice.md) |
 | Migrate to v3 and inspect `/sfd/` contracts | [Migration guide](how-to/siat-v3.md) |
+| Look up all 93 XML formats and their v3 builders | [Fiscal documents](reference/documents-v3.md) |
 | Send a single electronic invoice | [Tutorial → Step 6](tutorial/first-invoice.md#step-6-package-and-send) |
 | Sign invoices with my `.p12` certificate | [How-to: Sign invoices](how-to/sign-invoices.md) |
 | Send hundreds of invoices in one request | [How-to: Send batches](how-to/send-batches.md) |

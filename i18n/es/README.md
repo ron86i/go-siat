@@ -46,7 +46,7 @@ Integrarse con los servicios web SOAP del SIAT para la facturación electrónica
 - ✍️ **Firma Digital (XMLDSig) Integrada**: Utilidades para firmar facturas automáticamente con su certificado digital.
 - 🚀 **Alto Rendimiento**: Cero dependencias innecesarias, aprovechando la velocidad nativa de Go para la manipulación y compresión de bytes.
 - 🧩 **Modular**: Múltiples servicios (`Codigos`, `Sincronizacion`, `Operaciones`, `CompraVenta`, `Electronica`, `Computarizada`) claramente separados.
-- 🏢 **Multi-Sector**: Soporte nativo y verificado para **48 sectores** distintos (Compra y Venta, Hoteles, Minería, Hospitales, Hidrocarburos, etc.).
+- 🏢 **Multi-Sector**: **47 familias documentales y 93 formatos XML** alineados con los XSD v3 suministrados, incluido Vuelo Chárter. Consulta el [inventario de documentos](../../docs/es/reference/documentos-v3.md).
 
 ---
 
