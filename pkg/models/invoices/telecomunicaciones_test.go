@@ -80,7 +80,7 @@ func TestTelecomunicacionesBuilder(t *testing.T) {
 			t.Errorf("Nodo raíz incorrecto para Electronica")
 		}
 		if strings.Contains(xmlStr, "<nitConjunto>") {
-			t.Errorf("nitConjunto no pertenece al contrato v3")
+			t.Errorf("nitConjunto no corresponde al esquema XML")
 		}
 		if !strings.Contains(xmlStr, "<numeroSerie>SN123456</numeroSerie>") {
 			t.Errorf("numeroSerie no encontrado")

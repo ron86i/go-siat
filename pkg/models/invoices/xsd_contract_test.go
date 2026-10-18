@@ -10,47 +10,47 @@ import (
 	"time"
 )
 
-type xsdV3Field struct {
+type xsdField struct {
 	name, setter, kind, sample string
 	nillable                   bool
 }
 
-type xsdV3Section struct {
+type xsdSection struct {
 	name, setter string
 	count        int
 	newBuilder   func() any
-	fields       []xsdV3Field
+	fields       []xsdField
 }
 
-type xsdV3Contract struct {
+type xsdContract struct {
 	name       string
 	newBuilder func() any
 	roots      map[int]string
-	sections   []xsdV3Section
+	sections   []xsdSection
 }
 
-type xsdV3Node struct {
+type xsdNode struct {
 	XMLName  xml.Name
-	Attrs    []xml.Attr  `xml:",any,attr"`
-	Text     string      `xml:",chardata"`
-	Children []xsdV3Node `xml:",any"`
+	Attrs    []xml.Attr `xml:",any,attr"`
+	Text     string     `xml:",chardata"`
+	Children []xsdNode  `xml:",any"`
 }
 
-// These expectations describe the supplied v3 XSDs, independently of the domain
+// These expectations describe the supplied XML schemas, independently of the domain
 // structs. All construction goes through the SDK's public invoice builders.
-func TestFacturasV3ContratosXSD(t *testing.T) {
-	for _, contract := range xsdV3Contracts {
+func TestFacturasXSD(t *testing.T) {
+	for _, contract := range xsdContracts {
 		t.Run(contract.name, func(t *testing.T) {
 			for modalidad, root := range contract.roots {
 				t.Run(root, func(t *testing.T) {
 					for _, mode := range []string{"valores", "nulos", "ceros"} {
 						t.Run(mode, func(t *testing.T) {
-							document := buildXSDV3Document(t, contract, modalidad, mode)
+							document := buildXSDDocument(t, contract, modalidad, mode)
 							data, err := xml.Marshal(document)
 							if err != nil {
 								t.Fatal(err)
 							}
-							var node xsdV3Node
+							var node xsdNode
 							if err := xml.Unmarshal(data, &node); err != nil {
 								t.Fatal(err)
 							}
@@ -85,7 +85,7 @@ func TestFacturasV3ContratosXSD(t *testing.T) {
 										t.Fatalf("%s: %d campos; esperados %d", section.name, len(actual.Children), len(section.fields))
 									}
 									for i, field := range section.fields {
-										checkXSDV3Field(t, actual.Children[i], field, mode)
+										checkXSDField(t, actual.Children[i], field, mode)
 									}
 								}
 							}
@@ -97,7 +97,7 @@ func TestFacturasV3ContratosXSD(t *testing.T) {
 	}
 }
 
-func buildXSDV3Document(t *testing.T, contract xsdV3Contract, modalidad int, mode string) any {
+func buildXSDDocument(t *testing.T, contract xsdContract, modalidad int, mode string) any {
 	t.Helper()
 	builder := reflect.ValueOf(contract.newBuilder())
 	builder.MethodByName("WithModalidad").Call([]reflect.Value{reflect.ValueOf(modalidad)})
@@ -119,7 +119,7 @@ func buildXSDV3Document(t *testing.T, contract xsdV3Contract, modalidad int, mod
 						if mode == "ceros" {
 							value.Set(reflect.ValueOf(map[string]any{}))
 						} else {
-							setXSDV3Value(t, value, field)
+							setXSDValue(t, value, field)
 						}
 					}
 					method.Call([]reflect.Value{value})
@@ -132,7 +132,7 @@ func buildXSDV3Document(t *testing.T, contract xsdV3Contract, modalidad int, mod
 						target = value.Elem()
 					}
 					if mode != "ceros" || !field.nillable {
-						setXSDV3Value(t, target, field)
+						setXSDValue(t, target, field)
 					}
 				}
 				method.Call([]reflect.Value{value})
@@ -147,12 +147,12 @@ func buildXSDV3Document(t *testing.T, contract xsdV3Contract, modalidad int, mod
 	return builder.MethodByName("Build").Call(nil)[0].Interface()
 }
 
-func TestFacturasV3InventarioYSectores(t *testing.T) {
+func TestFacturasInventarioYSectores(t *testing.T) {
 	roots := make(map[string]bool)
-	if len(xsdV3Contracts) != 48 {
-		t.Fatalf("implementaciones = %d; esperadas 48 para las 47 familias", len(xsdV3Contracts))
+	if len(xsdContracts) != 48 {
+		t.Fatalf("implementaciones = %d; esperadas 48 para las 47 familias", len(xsdContracts))
 	}
-	for _, contract := range xsdV3Contracts {
+	for _, contract := range xsdContracts {
 		for _, root := range contract.roots {
 			if roots[root] && root != "notaFiscalElectronicaCreditoDebito" && root != "notaFiscalComputarizadaCreditoDebito" {
 				t.Fatalf("raíz duplicada: %s", root)
@@ -166,7 +166,7 @@ func TestFacturasV3InventarioYSectores(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			var node xsdV3Node
+			var node xsdNode
 			if err := xml.Unmarshal(data, &node); err != nil {
 				t.Fatal(err)
 			}
@@ -177,7 +177,7 @@ func TestFacturasV3InventarioYSectores(t *testing.T) {
 				found := false
 				for _, actual := range node.Children {
 					if actual.XMLName.Local == field.name {
-						checkXSDV3Field(t, actual, field, "valores")
+						checkXSDField(t, actual, field, "valores")
 						found = true
 					}
 				}
@@ -192,7 +192,7 @@ func TestFacturasV3InventarioYSectores(t *testing.T) {
 	}
 }
 
-func setXSDV3Value(t *testing.T, value reflect.Value, field xsdV3Field) {
+func setXSDValue(t *testing.T, value reflect.Value, field xsdField) {
 	t.Helper()
 	switch field.kind {
 	case "json":
@@ -238,7 +238,7 @@ func setXSDV3Value(t *testing.T, value reflect.Value, field xsdV3Field) {
 	}
 }
 
-func checkXSDV3Field(t *testing.T, actual xsdV3Node, expected xsdV3Field, mode string) {
+func checkXSDField(t *testing.T, actual xsdNode, expected xsdField, mode string) {
 	t.Helper()
 	if actual.XMLName.Local != expected.name {
 		t.Fatalf("elemento = %s; esperado %s", actual.XMLName.Local, expected.name)
@@ -273,12 +273,12 @@ func checkXSDV3Field(t *testing.T, actual xsdV3Node, expected xsdV3Field, mode s
 	}
 }
 
-func TestFacturasV3EscapeXML(t *testing.T) {
+func TestFacturasEscapeXML(t *testing.T) {
 	// Arbitrary customer/product strings must remain data, including XML metacharacters.
-	contract := xsdV3Contracts[0]
-	contract.sections = append([]xsdV3Section(nil), contract.sections...)
+	contract := xsdContracts[0]
+	contract.sections = append([]xsdSection(nil), contract.sections...)
 	for index, section := range contract.sections {
-		fields := append([]xsdV3Field(nil), section.fields...)
+		fields := append([]xsdField(nil), section.fields...)
 		for i := range fields {
 			if fields[i].kind == "string" {
 				fields[i].sample = `<dato> & "valor"`
@@ -286,11 +286,11 @@ func TestFacturasV3EscapeXML(t *testing.T) {
 		}
 		contract.sections[index].fields = fields
 	}
-	data, err := xml.Marshal(buildXSDV3Document(t, contract, 1, "valores"))
+	data, err := xml.Marshal(buildXSDDocument(t, contract, 1, "valores"))
 	if err != nil {
 		t.Fatal(err)
 	}
-	var node xsdV3Node
+	var node xsdNode
 	if err := xml.Unmarshal(data, &node); err != nil {
 		t.Fatal(err)
 	}
@@ -299,7 +299,7 @@ func TestFacturasV3EscapeXML(t *testing.T) {
 	}
 	for i, section := range contract.sections {
 		for j, field := range section.fields {
-			checkXSDV3Field(t, node.Children[i].Children[j], field, "valores")
+			checkXSDField(t, node.Children[i].Children[j], field, "valores")
 		}
 	}
 }

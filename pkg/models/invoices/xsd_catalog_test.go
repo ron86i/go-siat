@@ -2,9 +2,9 @@ package invoices_test
 
 import "github.com/ron86i/go-siat/v3/pkg/models/invoices"
 
-var xsdV3Contracts = []xsdV3Contract{
-	{name: "alcanzada_ice", newBuilder: func() any { return invoices.NewAlcanzadaIceBuilder() }, roots: map[int]string{2: "facturaComputarizadaAlcanzadaIce", 1: "facturaElectronicaAlcanzadaIce"}, sections: []xsdV3Section{
-		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewAlcanzadaIceCabeceraBuilder() }, fields: []xsdV3Field{
+var xsdContracts = []xsdContract{
+	{name: "alcanzada_ice", newBuilder: func() any { return invoices.NewAlcanzadaIceBuilder() }, roots: map[int]string{2: "facturaComputarizadaAlcanzadaIce", 1: "facturaElectronicaAlcanzadaIce"}, sections: []xsdSection{
+		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewAlcanzadaIceCabeceraBuilder() }, fields: []xsdField{
 			{"nitEmisor", "WithNitEmisor", "integer", "1", false},
 			{"razonSocialEmisor", "WithRazonSocialEmisor", "string", "1", false},
 			{"municipio", "WithMunicipio", "string", "1", false},
@@ -39,7 +39,7 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"codigoInterno", "WithCodigoInterno", "string", "1", false},
 			{"codigoDocumentoSector", "WithCodigoDocumentoSector", "integer", "14", false},
 		}},
-		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewAlcanzadaIceDetalleBuilder() }, fields: []xsdV3Field{
+		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewAlcanzadaIceDetalleBuilder() }, fields: []xsdField{
 			{"actividadEconomica", "WithActividadEconomica", "string", "1", false},
 			{"codigoProductoSin", "WithCodigoProductoSin", "integer", "1", false},
 			{"codigoProducto", "WithCodigoProducto", "string", "1", false},
@@ -58,8 +58,8 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"cantidadIce", "WithCantidadIce", "decimal", "1.23456", true},
 		}},
 	}},
-	{name: "alquiler_bien_inmueble", newBuilder: func() any { return invoices.NewAlquilerBienInmuebleBuilder() }, roots: map[int]string{2: "facturaComputarizadaAlquilerBienInmueble", 1: "facturaElectronicaAlquilerBienInmueble"}, sections: []xsdV3Section{
-		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewAlquilerBienInmuebleCabeceraBuilder() }, fields: []xsdV3Field{
+	{name: "alquiler_bien_inmueble", newBuilder: func() any { return invoices.NewAlquilerBienInmuebleBuilder() }, roots: map[int]string{2: "facturaComputarizadaAlquilerBienInmueble", 1: "facturaElectronicaAlquilerBienInmueble"}, sections: []xsdSection{
+		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewAlquilerBienInmuebleCabeceraBuilder() }, fields: []xsdField{
 			{"nitEmisor", "WithNitEmisor", "integer", "1", false},
 			{"razonSocialEmisor", "WithRazonSocialEmisor", "string", "1", false},
 			{"municipio", "WithMunicipio", "string", "1", false},
@@ -93,7 +93,7 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"codigoInterno", "WithCodigoInterno", "string", "1", false},
 			{"codigoDocumentoSector", "WithCodigoDocumentoSector", "integer", "2", false},
 		}},
-		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewAlquilerBienInmuebleDetalleBuilder() }, fields: []xsdV3Field{
+		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewAlquilerBienInmuebleDetalleBuilder() }, fields: []xsdField{
 			{"actividadEconomica", "WithActividadEconomica", "string", "1", false},
 			{"codigoProductoSin", "WithCodigoProductoSin", "integer", "1", false},
 			{"codigoProducto", "WithCodigoProducto", "string", "1", false},
@@ -105,8 +105,8 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"subTotal", "WithSubTotal", "decimal", "1.23", false},
 		}},
 	}},
-	{name: "alquiler_zona_franca", newBuilder: func() any { return invoices.NewAlquilerZFBuilder() }, roots: map[int]string{2: "facturaComputarizadaAlquilerZF", 1: "facturaElectronicaAlquilerZF"}, sections: []xsdV3Section{
-		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewAlquilerZFCabeceraBuilder() }, fields: []xsdV3Field{
+	{name: "alquiler_zona_franca", newBuilder: func() any { return invoices.NewAlquilerZFBuilder() }, roots: map[int]string{2: "facturaComputarizadaAlquilerZF", 1: "facturaElectronicaAlquilerZF"}, sections: []xsdSection{
+		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewAlquilerZFCabeceraBuilder() }, fields: []xsdField{
 			{"nitEmisor", "WithNitEmisor", "integer", "1", false},
 			{"razonSocialEmisor", "WithRazonSocialEmisor", "string", "1", false},
 			{"municipio", "WithMunicipio", "string", "1", false},
@@ -140,7 +140,7 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"codigoInterno", "WithCodigoInterno", "string", "1", false},
 			{"codigoDocumentoSector", "WithCodigoDocumentoSector", "integer", "42", false},
 		}},
-		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewAlquilerZFDetalleBuilder() }, fields: []xsdV3Field{
+		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewAlquilerZFDetalleBuilder() }, fields: []xsdField{
 			{"actividadEconomica", "WithActividadEconomica", "string", "1", false},
 			{"codigoProductoSin", "WithCodigoProductoSin", "integer", "1", false},
 			{"codigoProducto", "WithCodigoProducto", "string", "1", false},
@@ -152,8 +152,8 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"subTotal", "WithSubTotal", "decimal", "1.23", false},
 		}},
 	}},
-	{name: "biodiesel", newBuilder: func() any { return invoices.NewBiodieselBuilder() }, roots: map[int]string{2: "facturaComputarizadaBiodiesel", 1: "facturaElectronicaBiodiesel"}, sections: []xsdV3Section{
-		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewBiodieselCabeceraBuilder() }, fields: []xsdV3Field{
+	{name: "biodiesel", newBuilder: func() any { return invoices.NewBiodieselBuilder() }, roots: map[int]string{2: "facturaComputarizadaBiodiesel", 1: "facturaElectronicaBiodiesel"}, sections: []xsdSection{
+		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewBiodieselCabeceraBuilder() }, fields: []xsdField{
 			{"nitEmisor", "WithNitEmisor", "integer", "1", false},
 			{"razonSocialEmisor", "WithRazonSocialEmisor", "string", "1", false},
 			{"municipio", "WithMunicipio", "string", "1", false},
@@ -186,7 +186,7 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"codigoInterno", "WithCodigoInterno", "string", "1", false},
 			{"codigoDocumentoSector", "WithCodigoDocumentoSector", "integer", "54", false},
 		}},
-		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewBiodieselDetalleBuilder() }, fields: []xsdV3Field{
+		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewBiodieselDetalleBuilder() }, fields: []xsdField{
 			{"actividadEconomica", "WithActividadEconomica", "string", "1", false},
 			{"codigoProductoSin", "WithCodigoProductoSin", "integer", "1", false},
 			{"codigoProducto", "WithCodigoProducto", "string", "1", false},
@@ -198,8 +198,8 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"subTotal", "WithSubTotal", "decimal", "1.23456", false},
 		}},
 	}},
-	{name: "boleto_aereo", newBuilder: func() any { return invoices.NewBoletoAereoBuilder() }, roots: map[int]string{2: "facturaComputarizadaBoletoAereo", 1: "facturaElectronicaBoletoAereo"}, sections: []xsdV3Section{
-		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewBoletoAereoCabeceraBuilder() }, fields: []xsdV3Field{
+	{name: "boleto_aereo", newBuilder: func() any { return invoices.NewBoletoAereoBuilder() }, roots: map[int]string{2: "facturaComputarizadaBoletoAereo", 1: "facturaElectronicaBoletoAereo"}, sections: []xsdSection{
+		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewBoletoAereoCabeceraBuilder() }, fields: []xsdField{
 			{"nitEmisor", "WithNitEmisor", "integer", "1", false},
 			{"numeroFactura", "WithNumeroFactura", "integer", "1", false},
 			{"cufd", "WithCufd", "string", "1", false},
@@ -233,8 +233,8 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"codigoDocumentoSector", "WithCodigoDocumentoSector", "integer", "30", false},
 		}},
 	}},
-	{name: "comercial_exportacion", newBuilder: func() any { return invoices.NewComercialExportacionBuilder() }, roots: map[int]string{2: "facturaComputarizadaComercialExportacion", 1: "facturaElectronicaComercialExportacion"}, sections: []xsdV3Section{
-		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewComercialExportacionCabeceraBuilder() }, fields: []xsdV3Field{
+	{name: "comercial_exportacion", newBuilder: func() any { return invoices.NewComercialExportacionBuilder() }, roots: map[int]string{2: "facturaComputarizadaComercialExportacion", 1: "facturaElectronicaComercialExportacion"}, sections: []xsdSection{
+		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewComercialExportacionCabeceraBuilder() }, fields: []xsdField{
 			{"nitEmisor", "WithNitEmisor", "integer", "1", false},
 			{"razonSocialEmisor", "WithRazonSocialEmisor", "string", "1", false},
 			{"municipio", "WithMunicipio", "string", "1", false},
@@ -280,7 +280,7 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"codigoInterno", "WithCodigoInterno", "string", "1", false},
 			{"codigoDocumentoSector", "WithCodigoDocumentoSector", "integer", "3", false},
 		}},
-		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewComercialExportacionDetalleBuilder() }, fields: []xsdV3Field{
+		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewComercialExportacionDetalleBuilder() }, fields: []xsdField{
 			{"actividadEconomica", "WithActividadEconomica", "string", "1", false},
 			{"codigoProductoSin", "WithCodigoProductoSin", "integer", "1", false},
 			{"codigoProducto", "WithCodigoProducto", "string", "1", false},
@@ -293,8 +293,8 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"subTotal", "WithSubTotal", "decimal", "1.23456", false},
 		}},
 	}},
-	{name: "comercial_exportacion_hidrocarburos", newBuilder: func() any { return invoices.NewComercialExportacionHidroBuilder() }, roots: map[int]string{2: "facturaComputarizadaComercialExportacionHidro", 1: "facturaElectronicaComercialExportacionHidro"}, sections: []xsdV3Section{
-		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewComercialExportacionHidroCabeceraBuilder() }, fields: []xsdV3Field{
+	{name: "comercial_exportacion_hidrocarburos", newBuilder: func() any { return invoices.NewComercialExportacionHidroBuilder() }, roots: map[int]string{2: "facturaComputarizadaComercialExportacionHidro", 1: "facturaElectronicaComercialExportacionHidro"}, sections: []xsdSection{
+		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewComercialExportacionHidroCabeceraBuilder() }, fields: []xsdField{
 			{"nitEmisor", "WithNitEmisor", "integer", "1", false},
 			{"razonSocialEmisor", "WithRazonSocialEmisor", "string", "1", false},
 			{"municipio", "WithMunicipio", "string", "1", false},
@@ -338,7 +338,7 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"codigoInterno", "WithCodigoInterno", "string", "1", false},
 			{"codigoDocumentoSector", "WithCodigoDocumentoSector", "integer", "43", false},
 		}},
-		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewComercialExportacionHidroDetalleBuilder() }, fields: []xsdV3Field{
+		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewComercialExportacionHidroDetalleBuilder() }, fields: []xsdField{
 			{"actividadEconomica", "WithActividadEconomica", "string", "1", false},
 			{"codigoProductoSin", "WithCodigoProductoSin", "integer", "1", false},
 			{"codigoProducto", "WithCodigoProducto", "string", "1", false},
@@ -351,8 +351,8 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"subTotal", "WithSubTotal", "decimal", "1.234567", false},
 		}},
 	}},
-	{name: "comercial_exportacion_minera", newBuilder: func() any { return invoices.NewComercialExportacionMineraBuilder() }, roots: map[int]string{2: "facturaComputarizadaComercialExportacionMinera", 1: "facturaElectronicaComercialExportacionMinera"}, sections: []xsdV3Section{
-		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewComercialExportacionMineraCabeceraBuilder() }, fields: []xsdV3Field{
+	{name: "comercial_exportacion_minera", newBuilder: func() any { return invoices.NewComercialExportacionMineraBuilder() }, roots: map[int]string{2: "facturaComputarizadaComercialExportacionMinera", 1: "facturaElectronicaComercialExportacionMinera"}, sections: []xsdSection{
+		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewComercialExportacionMineraCabeceraBuilder() }, fields: []xsdField{
 			{"nitEmisor", "WithNitEmisor", "integer", "1", false},
 			{"razonSocialEmisor", "WithRazonSocialEmisor", "string", "1", false},
 			{"municipio", "WithMunicipio", "string", "1", false},
@@ -403,7 +403,7 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"codigoInterno", "WithCodigoInterno", "string", "1", false},
 			{"codigoDocumentoSector", "WithCodigoDocumentoSector", "integer", "20", false},
 		}},
-		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewComercialExportacionMineraDetalleBuilder() }, fields: []xsdV3Field{
+		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewComercialExportacionMineraDetalleBuilder() }, fields: []xsdField{
 			{"actividadEconomica", "WithActividadEconomica", "string", "1", false},
 			{"codigoProductoSin", "WithCodigoProductoSin", "integer", "1", false},
 			{"codigoProducto", "WithCodigoProducto", "string", "1", false},
@@ -419,8 +419,8 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"subTotal", "WithSubTotal", "decimal", "1.23456", false},
 		}},
 	}},
-	{name: "comercial_exportacion_punto_venta", newBuilder: func() any { return invoices.NewComercialExportacionPVentaBuilder() }, roots: map[int]string{2: "facturaComputarizadaComercialExportacionPVenta", 1: "facturaElectronicaComercialExportacionPVenta"}, sections: []xsdV3Section{
-		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewComercialExportacionPVentaCabeceraBuilder() }, fields: []xsdV3Field{
+	{name: "comercial_exportacion_punto_venta", newBuilder: func() any { return invoices.NewComercialExportacionPVentaBuilder() }, roots: map[int]string{2: "facturaComputarizadaComercialExportacionPVenta", 1: "facturaElectronicaComercialExportacionPVenta"}, sections: []xsdSection{
+		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewComercialExportacionPVentaCabeceraBuilder() }, fields: []xsdField{
 			{"nitEmisor", "WithNitEmisor", "integer", "1", false},
 			{"razonSocialEmisor", "WithRazonSocialEmisor", "string", "1", false},
 			{"municipio", "WithMunicipio", "string", "1", false},
@@ -465,7 +465,7 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"codigoInterno", "WithCodigoInterno", "string", "1", false},
 			{"codigoDocumentoSector", "WithCodigoDocumentoSector", "integer", "45", false},
 		}},
-		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewComercialExportacionPVentaDetalleBuilder() }, fields: []xsdV3Field{
+		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewComercialExportacionPVentaDetalleBuilder() }, fields: []xsdField{
 			{"actividadEconomica", "WithActividadEconomica", "string", "1", false},
 			{"codigoProductoSin", "WithCodigoProductoSin", "integer", "1", false},
 			{"codigoProducto", "WithCodigoProducto", "string", "1", false},
@@ -478,8 +478,8 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"subTotal", "WithSubTotal", "decimal", "1.23456", false},
 		}},
 	}},
-	{name: "comercial_exportacion_servicio", newBuilder: func() any { return invoices.NewComercialExportacionServicioBuilder() }, roots: map[int]string{2: "facturaComputarizadaComercialExportacionServicio", 1: "facturaElectronicaComercialExportacionServicio"}, sections: []xsdV3Section{
-		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewComercialExportacionServicioCabeceraBuilder() }, fields: []xsdV3Field{
+	{name: "comercial_exportacion_servicio", newBuilder: func() any { return invoices.NewComercialExportacionServicioBuilder() }, roots: map[int]string{2: "facturaComputarizadaComercialExportacionServicio", 1: "facturaElectronicaComercialExportacionServicio"}, sections: []xsdSection{
+		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewComercialExportacionServicioCabeceraBuilder() }, fields: []xsdField{
 			{"nitEmisor", "WithNitEmisor", "integer", "1", false},
 			{"razonSocialEmisor", "WithRazonSocialEmisor", "string", "1", false},
 			{"municipio", "WithMunicipio", "string", "1", false},
@@ -516,7 +516,7 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"codigoInterno", "WithCodigoInterno", "string", "1", false},
 			{"codigoDocumentoSector", "WithCodigoDocumentoSector", "integer", "28", false},
 		}},
-		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewComercialExportacionServicioDetalleBuilder() }, fields: []xsdV3Field{
+		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewComercialExportacionServicioDetalleBuilder() }, fields: []xsdField{
 			{"actividadEconomica", "WithActividadEconomica", "string", "1", false},
 			{"codigoProductoSin", "WithCodigoProductoSin", "integer", "1", false},
 			{"codigoProducto", "WithCodigoProducto", "string", "1", false},
@@ -528,8 +528,8 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"subTotal", "WithSubTotal", "decimal", "1.23456", false},
 		}},
 	}},
-	{name: "comercializacion_gn_glp", newBuilder: func() any { return invoices.NewComercializacionGnGlpBuilder() }, roots: map[int]string{2: "facturaComputarizadaComercializacionGnGlp", 1: "facturaElectronicaComercializacionGnGlp"}, sections: []xsdV3Section{
-		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewComercializacionGnGlpCabeceraBuilder() }, fields: []xsdV3Field{
+	{name: "comercializacion_gn_glp", newBuilder: func() any { return invoices.NewComercializacionGnGlpBuilder() }, roots: map[int]string{2: "facturaComputarizadaComercializacionGnGlp", 1: "facturaElectronicaComercializacionGnGlp"}, sections: []xsdSection{
+		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewComercializacionGnGlpCabeceraBuilder() }, fields: []xsdField{
 			{"nitEmisor", "WithNitEmisor", "integer", "1", false},
 			{"razonSocialEmisor", "WithRazonSocialEmisor", "string", "1", false},
 			{"municipio", "WithMunicipio", "string", "1", false},
@@ -562,7 +562,7 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"codigoInterno", "WithCodigoInterno", "string", "1", false},
 			{"codigoDocumentoSector", "WithCodigoDocumentoSector", "integer", "39", false},
 		}},
-		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewComercializacionGnGlpDetalleBuilder() }, fields: []xsdV3Field{
+		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewComercializacionGnGlpDetalleBuilder() }, fields: []xsdField{
 			{"actividadEconomica", "WithActividadEconomica", "string", "1", false},
 			{"codigoProductoSin", "WithCodigoProductoSin", "integer", "1", false},
 			{"codigoProducto", "WithCodigoProducto", "string", "1", false},
@@ -574,8 +574,8 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"subTotal", "WithSubTotal", "decimal", "1.23", false},
 		}},
 	}},
-	{name: "comercializacion_gnv", newBuilder: func() any { return invoices.NewComercializacionGnvBuilder() }, roots: map[int]string{2: "facturaComputarizadaComercializacionGnv", 1: "facturaElectronicaComercializacionGnv"}, sections: []xsdV3Section{
-		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewComercializacionGnvCabeceraBuilder() }, fields: []xsdV3Field{
+	{name: "comercializacion_gnv", newBuilder: func() any { return invoices.NewComercializacionGnvBuilder() }, roots: map[int]string{2: "facturaComputarizadaComercializacionGnv", 1: "facturaElectronicaComercializacionGnv"}, sections: []xsdSection{
+		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewComercializacionGnvCabeceraBuilder() }, fields: []xsdField{
 			{"nitEmisor", "WithNitEmisor", "integer", "1", false},
 			{"razonSocialEmisor", "WithRazonSocialEmisor", "string", "1", false},
 			{"municipio", "WithMunicipio", "string", "1", false},
@@ -612,7 +612,7 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"codigoInterno", "WithCodigoInterno", "string", "1", false},
 			{"codigoDocumentoSector", "WithCodigoDocumentoSector", "integer", "37", false},
 		}},
-		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewComercializacionGnvDetalleBuilder() }, fields: []xsdV3Field{
+		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewComercializacionGnvDetalleBuilder() }, fields: []xsdField{
 			{"actividadEconomica", "WithActividadEconomica", "string", "1", false},
 			{"codigoProductoSin", "WithCodigoProductoSin", "integer", "1", false},
 			{"codigoProducto", "WithCodigoProducto", "string", "1", false},
@@ -624,8 +624,8 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"subTotal", "WithSubTotal", "decimal", "1.23", false},
 		}},
 	}},
-	{name: "compra_venta", newBuilder: func() any { return invoices.NewCompraVentaBuilder() }, roots: map[int]string{2: "facturaComputarizadaCompraVenta", 1: "facturaElectronicaCompraVenta"}, sections: []xsdV3Section{
-		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewCompraVentaCabeceraBuilder() }, fields: []xsdV3Field{
+	{name: "compra_venta", newBuilder: func() any { return invoices.NewCompraVentaBuilder() }, roots: map[int]string{2: "facturaComputarizadaCompraVenta", 1: "facturaElectronicaCompraVenta"}, sections: []xsdSection{
+		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewCompraVentaCabeceraBuilder() }, fields: []xsdField{
 			{"nitEmisor", "WithNitEmisor", "integer", "1", false},
 			{"razonSocialEmisor", "WithRazonSocialEmisor", "string", "1", false},
 			{"municipio", "WithMunicipio", "string", "1", false},
@@ -659,7 +659,7 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"codigoInterno", "WithCodigoInterno", "string", "1", false},
 			{"codigoDocumentoSector", "WithCodigoDocumentoSector", "integer", "1", false},
 		}},
-		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewCompraVentaDetalleBuilder() }, fields: []xsdV3Field{
+		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewCompraVentaDetalleBuilder() }, fields: []xsdField{
 			{"actividadEconomica", "WithActividadEconomica", "string", "1", false},
 			{"codigoProductoSin", "WithCodigoProductoSin", "integer", "1", false},
 			{"codigoProducto", "WithCodigoProducto", "string", "1", false},
@@ -673,8 +673,8 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"numeroImei", "WithNumeroImei", "string", "1", true},
 		}},
 	}},
-	{name: "compra_venta_bonificaciones", newBuilder: func() any { return invoices.NewCompraVentaBonificacionesBuilder() }, roots: map[int]string{2: "facturaComputarizadaCompraVentaBon", 1: "facturaElectronicaCompraVentaBon"}, sections: []xsdV3Section{
-		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewCompraVentaBonificacionesCabeceraBuilder() }, fields: []xsdV3Field{
+	{name: "compra_venta_bonificaciones", newBuilder: func() any { return invoices.NewCompraVentaBonificacionesBuilder() }, roots: map[int]string{2: "facturaComputarizadaCompraVentaBon", 1: "facturaElectronicaCompraVentaBon"}, sections: []xsdSection{
+		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewCompraVentaBonificacionesCabeceraBuilder() }, fields: []xsdField{
 			{"nitEmisor", "WithNitEmisor", "integer", "1", false},
 			{"razonSocialEmisor", "WithRazonSocialEmisor", "string", "1", false},
 			{"municipio", "WithMunicipio", "string", "1", false},
@@ -708,7 +708,7 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"codigoInterno", "WithCodigoInterno", "string", "1", false},
 			{"codigoDocumentoSector", "WithCodigoDocumentoSector", "integer", "35", false},
 		}},
-		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewCompraVentaBonificacionesDetalleBuilder() }, fields: []xsdV3Field{
+		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewCompraVentaBonificacionesDetalleBuilder() }, fields: []xsdField{
 			{"actividadEconomica", "WithActividadEconomica", "string", "1", false},
 			{"codigoProductoSin", "WithCodigoProductoSin", "integer", "1", false},
 			{"codigoProducto", "WithCodigoProducto", "string", "1", false},
@@ -722,8 +722,8 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"numeroImei", "WithNumeroImei", "string", "1", true},
 		}},
 	}},
-	{name: "dutty_free", newBuilder: func() any { return invoices.NewDuttyFreeBuilder() }, roots: map[int]string{2: "facturaComputarizadaDuttyFree", 1: "facturaElectronicaDuttyFree"}, sections: []xsdV3Section{
-		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewDuttyFreeCabeceraBuilder() }, fields: []xsdV3Field{
+	{name: "dutty_free", newBuilder: func() any { return invoices.NewDuttyFreeBuilder() }, roots: map[int]string{2: "facturaComputarizadaDuttyFree", 1: "facturaElectronicaDuttyFree"}, sections: []xsdSection{
+		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewDuttyFreeCabeceraBuilder() }, fields: []xsdField{
 			{"nitEmisor", "WithNitEmisor", "integer", "1", false},
 			{"razonSocialEmisor", "WithRazonSocialEmisor", "string", "1", false},
 			{"municipio", "WithMunicipio", "string", "1", false},
@@ -757,7 +757,7 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"codigoInterno", "WithCodigoInterno", "string", "1", false},
 			{"codigoDocumentoSector", "WithCodigoDocumentoSector", "integer", "10", false},
 		}},
-		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewDuttyFreeDetalleBuilder() }, fields: []xsdV3Field{
+		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewDuttyFreeDetalleBuilder() }, fields: []xsdField{
 			{"actividadEconomica", "WithActividadEconomica", "string", "1", false},
 			{"codigoProductoSin", "WithCodigoProductoSin", "integer", "1", false},
 			{"codigoProducto", "WithCodigoProducto", "string", "1", false},
@@ -769,8 +769,8 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"subTotal", "WithSubTotal", "decimal", "1.23", false},
 		}},
 	}},
-	{name: "entidad_financiera", newBuilder: func() any { return invoices.NewEntidadFinancieraBuilder() }, roots: map[int]string{2: "facturaComputarizadaEntidadFinanciera", 1: "facturaElectronicaEntidadFinanciera"}, sections: []xsdV3Section{
-		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewEntidadFinancieraCabeceraBuilder() }, fields: []xsdV3Field{
+	{name: "entidad_financiera", newBuilder: func() any { return invoices.NewEntidadFinancieraBuilder() }, roots: map[int]string{2: "facturaComputarizadaEntidadFinanciera", 1: "facturaElectronicaEntidadFinanciera"}, sections: []xsdSection{
+		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewEntidadFinancieraCabeceraBuilder() }, fields: []xsdField{
 			{"nitEmisor", "WithNitEmisor", "integer", "1", false},
 			{"razonSocialEmisor", "WithRazonSocialEmisor", "string", "1", false},
 			{"municipio", "WithMunicipio", "string", "1", false},
@@ -804,7 +804,7 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"codigoInterno", "WithCodigoInterno", "string", "1", false},
 			{"codigoDocumentoSector", "WithCodigoDocumentoSector", "integer", "15", false},
 		}},
-		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewEntidadFinancieraDetalleBuilder() }, fields: []xsdV3Field{
+		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewEntidadFinancieraDetalleBuilder() }, fields: []xsdField{
 			{"actividadEconomica", "WithActividadEconomica", "string", "1", false},
 			{"codigoProductoSin", "WithCodigoProductoSin", "integer", "1", false},
 			{"codigoProducto", "WithCodigoProducto", "string", "1", false},
@@ -816,8 +816,8 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"subTotal", "WithSubTotal", "decimal", "1.23", false},
 		}},
 	}},
-	{name: "hidrocarburo_alcanzada_iehd", newBuilder: func() any { return invoices.NewHidrocarburoAlcanzadaIehdBuilder() }, roots: map[int]string{2: "facturaComputarizadaHidrocarburoAlcanzadaIehd", 1: "facturaElectronicaHidrocarburoAlcanzadaIehd"}, sections: []xsdV3Section{
-		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewHidrocarburoAlcanzadaIehdCabeceraBuilder() }, fields: []xsdV3Field{
+	{name: "hidrocarburo_alcanzada_iehd", newBuilder: func() any { return invoices.NewHidrocarburoAlcanzadaIehdBuilder() }, roots: map[int]string{2: "facturaComputarizadaHidrocarburoAlcanzadaIehd", 1: "facturaElectronicaHidrocarburoAlcanzadaIehd"}, sections: []xsdSection{
+		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewHidrocarburoAlcanzadaIehdCabeceraBuilder() }, fields: []xsdField{
 			{"nitEmisor", "WithNitEmisor", "integer", "1", false},
 			{"razonSocialEmisor", "WithRazonSocialEmisor", "string", "1", false},
 			{"municipio", "WithMunicipio", "string", "1", false},
@@ -857,7 +857,7 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"codigoInterno", "WithCodigoInterno", "string", "1", false},
 			{"codigoDocumentoSector", "WithCodigoDocumentoSector", "integer", "19", false},
 		}},
-		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewHidrocarburoAlcanzadaIehdDetalleBuilder() }, fields: []xsdV3Field{
+		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewHidrocarburoAlcanzadaIehdDetalleBuilder() }, fields: []xsdField{
 			{"actividadEconomica", "WithActividadEconomica", "string", "1", false},
 			{"codigoProductoSin", "WithCodigoProductoSin", "integer", "1", false},
 			{"codigoProducto", "WithCodigoProducto", "string", "1", false},
@@ -870,8 +870,8 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"porcentajeIehd", "WithPorcentajeIehd", "decimal", "1.2345678901", true},
 		}},
 	}},
-	{name: "hidrocarburo_no_alcanzada_iehd", newBuilder: func() any { return invoices.NewHidrocarburoNoAlcanzadaIehdBuilder() }, roots: map[int]string{2: "facturaComputarizadaHidrocarburoNoAlcanzadaIehd", 1: "facturaElectronicaHidrocarburoNoAlcanzadaIehd"}, sections: []xsdV3Section{
-		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewHidrocarburoNoAlcanzadaIehdCabeceraBuilder() }, fields: []xsdV3Field{
+	{name: "hidrocarburo_no_alcanzada_iehd", newBuilder: func() any { return invoices.NewHidrocarburoNoAlcanzadaIehdBuilder() }, roots: map[int]string{2: "facturaComputarizadaHidrocarburoNoAlcanzadaIehd", 1: "facturaElectronicaHidrocarburoNoAlcanzadaIehd"}, sections: []xsdSection{
+		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewHidrocarburoNoAlcanzadaIehdCabeceraBuilder() }, fields: []xsdField{
 			{"nitEmisor", "WithNitEmisor", "integer", "1", false},
 			{"razonSocialEmisor", "WithRazonSocialEmisor", "string", "1", false},
 			{"municipio", "WithMunicipio", "string", "1", false},
@@ -909,7 +909,7 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"codigoInterno", "WithCodigoInterno", "string", "1", false},
 			{"codigoDocumentoSector", "WithCodigoDocumentoSector", "integer", "38", false},
 		}},
-		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewHidrocarburoNoAlcanzadaIehdDetalleBuilder() }, fields: []xsdV3Field{
+		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewHidrocarburoNoAlcanzadaIehdDetalleBuilder() }, fields: []xsdField{
 			{"actividadEconomica", "WithActividadEconomica", "string", "1", false},
 			{"codigoProductoSin", "WithCodigoProductoSin", "integer", "1", false},
 			{"codigoProducto", "WithCodigoProducto", "string", "1", false},
@@ -921,8 +921,8 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"subTotal", "WithSubTotal", "decimal", "1.2345678901", false},
 		}},
 	}},
-	{name: "hospital_clinica", newBuilder: func() any { return invoices.NewHospitalClinicaBuilder() }, roots: map[int]string{2: "facturaComputarizadaHospitalClinica", 1: "facturaElectronicaHospitalClinica"}, sections: []xsdV3Section{
-		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewHospitalClinicaCabeceraBuilder() }, fields: []xsdV3Field{
+	{name: "hospital_clinica", newBuilder: func() any { return invoices.NewHospitalClinicaBuilder() }, roots: map[int]string{2: "facturaComputarizadaHospitalClinica", 1: "facturaElectronicaHospitalClinica"}, sections: []xsdSection{
+		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewHospitalClinicaCabeceraBuilder() }, fields: []xsdField{
 			{"nitEmisor", "WithNitEmisor", "integer", "1", false},
 			{"razonSocialEmisor", "WithRazonSocialEmisor", "string", "1", false},
 			{"municipio", "WithMunicipio", "string", "1", false},
@@ -957,7 +957,7 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"codigoInterno", "WithCodigoInterno", "string", "1", false},
 			{"codigoDocumentoSector", "WithCodigoDocumentoSector", "integer", "17", false},
 		}},
-		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewHospitalClinicaDetalleBuilder() }, fields: []xsdV3Field{
+		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewHospitalClinicaDetalleBuilder() }, fields: []xsdField{
 			{"actividadEconomica", "WithActividadEconomica", "string", "1", false},
 			{"codigoProductoSin", "WithCodigoProductoSin", "integer", "1", false},
 			{"codigoProducto", "WithCodigoProducto", "string", "1", false},
@@ -977,8 +977,8 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"subTotal", "WithSubTotal", "decimal", "1.23", false},
 		}},
 	}},
-	{name: "hospital_clinica_zona_franca", newBuilder: func() any { return invoices.NewHospitalClinicaZFBuilder() }, roots: map[int]string{2: "facturaComputarizadaHospitalClinicaZF", 1: "facturaElectronicaHospitalClinicaZF"}, sections: []xsdV3Section{
-		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewHospitalClinicaZFCabeceraBuilder() }, fields: []xsdV3Field{
+	{name: "hospital_clinica_zona_franca", newBuilder: func() any { return invoices.NewHospitalClinicaZFBuilder() }, roots: map[int]string{2: "facturaComputarizadaHospitalClinicaZF", 1: "facturaElectronicaHospitalClinicaZF"}, sections: []xsdSection{
+		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewHospitalClinicaZFCabeceraBuilder() }, fields: []xsdField{
 			{"nitEmisor", "WithNitEmisor", "integer", "1", false},
 			{"razonSocialEmisor", "WithRazonSocialEmisor", "string", "1", false},
 			{"municipio", "WithMunicipio", "string", "1", false},
@@ -1013,7 +1013,7 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"codigoInterno", "WithCodigoInterno", "string", "1", false},
 			{"codigoDocumentoSector", "WithCodigoDocumentoSector", "integer", "50", false},
 		}},
-		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewHospitalClinicaZonaFrancaDetalleBuilder() }, fields: []xsdV3Field{
+		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewHospitalClinicaZonaFrancaDetalleBuilder() }, fields: []xsdField{
 			{"actividadEconomica", "WithActividadEconomica", "string", "1", false},
 			{"codigoProductoSin", "WithCodigoProductoSin", "integer", "1", false},
 			{"codigoProducto", "WithCodigoProducto", "string", "1", false},
@@ -1033,8 +1033,8 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"subTotal", "WithSubTotal", "decimal", "1.23", false},
 		}},
 	}},
-	{name: "hotel", newBuilder: func() any { return invoices.NewHotelBuilder() }, roots: map[int]string{2: "facturaComputarizadaHotel", 1: "facturaElectronicaHotel"}, sections: []xsdV3Section{
-		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewHotelCabeceraBuilder() }, fields: []xsdV3Field{
+	{name: "hotel", newBuilder: func() any { return invoices.NewHotelBuilder() }, roots: map[int]string{2: "facturaComputarizadaHotel", 1: "facturaElectronicaHotel"}, sections: []xsdSection{
+		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewHotelCabeceraBuilder() }, fields: []xsdField{
 			{"nitEmisor", "WithNitEmisor", "integer", "1", false},
 			{"razonSocialEmisor", "WithRazonSocialEmisor", "string", "1", false},
 			{"municipio", "WithMunicipio", "string", "1", false},
@@ -1073,7 +1073,7 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"codigoInterno", "WithCodigoInterno", "string", "1", false},
 			{"codigoDocumentoSector", "WithCodigoDocumentoSector", "integer", "16", false},
 		}},
-		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewHotelDetalleBuilder() }, fields: []xsdV3Field{
+		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewHotelDetalleBuilder() }, fields: []xsdField{
 			{"actividadEconomica", "WithActividadEconomica", "string", "1", false},
 			{"codigoProductoSin", "WithCodigoProductoSin", "integer", "1", false},
 			{"codigoProducto", "WithCodigoProducto", "string", "1", false},
@@ -1087,8 +1087,8 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"detalleHuespedes", "WithDetalleHuespedes", "json", "{\"dato\":\"valor\"}", true},
 		}},
 	}},
-	{name: "importacion_comercializacion_lubricantes", newBuilder: func() any { return invoices.NewImportacionComercializacionLubricantesBuilder() }, roots: map[int]string{2: "facturaComputarizadaImportacionComercializacionLubricantes", 1: "facturaElectronicaImportacionComercializacionLubricantes"}, sections: []xsdV3Section{
-		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewImportacionComercializacionLubricantesCabeceraBuilder() }, fields: []xsdV3Field{
+	{name: "importacion_comercializacion_lubricantes", newBuilder: func() any { return invoices.NewImportacionComercializacionLubricantesBuilder() }, roots: map[int]string{2: "facturaComputarizadaImportacionComercializacionLubricantes", 1: "facturaElectronicaImportacionComercializacionLubricantes"}, sections: []xsdSection{
+		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewImportacionComercializacionLubricantesCabeceraBuilder() }, fields: []xsdField{
 			{"nitEmisor", "WithNitEmisor", "integer", "1", false},
 			{"razonSocialEmisor", "WithRazonSocialEmisor", "string", "1", false},
 			{"municipio", "WithMunicipio", "string", "1", false},
@@ -1127,7 +1127,7 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"codigoInterno", "WithCodigoInterno", "string", "1", false},
 			{"codigoDocumentoSector", "WithCodigoDocumentoSector", "integer", "44", false},
 		}},
-		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewImportacionComercializacionLubricantesDetalleBuilder() }, fields: []xsdV3Field{
+		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewImportacionComercializacionLubricantesDetalleBuilder() }, fields: []xsdField{
 			{"actividadEconomica", "WithActividadEconomica", "string", "1", false},
 			{"codigoProductoSin", "WithCodigoProductoSin", "integer", "1", false},
 			{"codigoProducto", "WithCodigoProducto", "string", "1", false},
@@ -1141,8 +1141,8 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"porcentajeDeduccionIehdDS25530", "WithPorcentajeDeduccionIehdDS25530", "decimal", "1.23456", true},
 		}},
 	}},
-	{name: "juego_azar", newBuilder: func() any { return invoices.NewJuegoAzarBuilder() }, roots: map[int]string{2: "facturaComputarizadaJuegoAzar", 1: "facturaElectronicaJuegoAzar"}, sections: []xsdV3Section{
-		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewJuegoAzarCabeceraBuilder() }, fields: []xsdV3Field{
+	{name: "juego_azar", newBuilder: func() any { return invoices.NewJuegoAzarBuilder() }, roots: map[int]string{2: "facturaComputarizadaJuegoAzar", 1: "facturaElectronicaJuegoAzar"}, sections: []xsdSection{
+		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewJuegoAzarCabeceraBuilder() }, fields: []xsdField{
 			{"nitEmisor", "WithNitEmisor", "integer", "1", false},
 			{"razonSocialEmisor", "WithRazonSocialEmisor", "string", "1", false},
 			{"municipio", "WithMunicipio", "string", "1", false},
@@ -1176,7 +1176,7 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"codigoInterno", "WithCodigoInterno", "string", "1", false},
 			{"codigoDocumentoSector", "WithCodigoDocumentoSector", "integer", "18", false},
 		}},
-		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewJuegoAzarDetalleBuilder() }, fields: []xsdV3Field{
+		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewJuegoAzarDetalleBuilder() }, fields: []xsdField{
 			{"actividadEconomica", "WithActividadEconomica", "string", "1", false},
 			{"codigoProductoSin", "WithCodigoProductoSin", "integer", "1", false},
 			{"codigoProducto", "WithCodigoProducto", "string", "1", false},
@@ -1188,8 +1188,8 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"subTotal", "WithSubTotal", "decimal", "1.23", false},
 		}},
 	}},
-	{name: "libre_consignacion", newBuilder: func() any { return invoices.NewLibreConsignacionBuilder() }, roots: map[int]string{2: "facturaComputarizadaLibreConsignacion", 1: "facturaElectronicaLibreConsignacion"}, sections: []xsdV3Section{
-		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewLibreConsignacionCabeceraBuilder() }, fields: []xsdV3Field{
+	{name: "libre_consignacion", newBuilder: func() any { return invoices.NewLibreConsignacionBuilder() }, roots: map[int]string{2: "facturaComputarizadaLibreConsignacion", 1: "facturaElectronicaLibreConsignacion"}, sections: []xsdSection{
+		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewLibreConsignacionCabeceraBuilder() }, fields: []xsdField{
 			{"nitEmisor", "WithNitEmisor", "integer", "1", false},
 			{"razonSocialEmisor", "WithRazonSocialEmisor", "string", "1", false},
 			{"municipio", "WithMunicipio", "string", "1", false},
@@ -1221,7 +1221,7 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"codigoInterno", "WithCodigoInterno", "string", "1", false},
 			{"codigoDocumentoSector", "WithCodigoDocumentoSector", "integer", "4", false},
 		}},
-		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewLibreConsignacionDetalleBuilder() }, fields: []xsdV3Field{
+		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewLibreConsignacionDetalleBuilder() }, fields: []xsdField{
 			{"actividadEconomica", "WithActividadEconomica", "string", "1", false},
 			{"codigoProductoSin", "WithCodigoProductoSin", "integer", "1", false},
 			{"codigoProducto", "WithCodigoProducto", "string", "1", false},
@@ -1234,8 +1234,8 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"subTotal", "WithSubTotal", "decimal", "1.23456", false},
 		}},
 	}},
-	{name: "lubricantes_iehd", newBuilder: func() any { return invoices.NewLubricantesIehdBuilder() }, roots: map[int]string{2: "facturaComputarizadaImportacionComercializacionLubricantesIEHD", 1: "facturaElectronicaImportacionComercializacionLubricantesIEHD"}, sections: []xsdV3Section{
-		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewLubricantesIehdCabeceraBuilder() }, fields: []xsdV3Field{
+	{name: "lubricantes_iehd", newBuilder: func() any { return invoices.NewLubricantesIehdBuilder() }, roots: map[int]string{2: "facturaComputarizadaImportacionComercializacionLubricantesIEHD", 1: "facturaElectronicaImportacionComercializacionLubricantesIEHD"}, sections: []xsdSection{
+		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewLubricantesIehdCabeceraBuilder() }, fields: []xsdField{
 			{"nitEmisor", "WithNitEmisor", "integer", "1", false},
 			{"razonSocialEmisor", "WithRazonSocialEmisor", "string", "1", false},
 			{"municipio", "WithMunicipio", "string", "1", false},
@@ -1274,7 +1274,7 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"codigoInterno", "WithCodigoInterno", "string", "1", false},
 			{"codigoDocumentoSector", "WithCodigoDocumentoSector", "integer", "53", false},
 		}},
-		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewLubricantesIehdDetalleBuilder() }, fields: []xsdV3Field{
+		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewLubricantesIehdDetalleBuilder() }, fields: []xsdField{
 			{"actividadEconomica", "WithActividadEconomica", "string", "1", false},
 			{"codigoProductoSin", "WithCodigoProductoSin", "integer", "1", false},
 			{"codigoProducto", "WithCodigoProducto", "string", "1", false},
@@ -1288,8 +1288,8 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"porcentajeDeduccionIehdDS25530", "WithPorcentajeDeduccionIehdDS25530", "decimal", "1.23456", true},
 		}},
 	}},
-	{name: "moneda_extranjera", newBuilder: func() any { return invoices.NewMonedaExtranjeraBuilder() }, roots: map[int]string{2: "facturaComputarizadaMonedaExtranjera", 1: "facturaElectronicaMonedaExtranjera"}, sections: []xsdV3Section{
-		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewMonedaExtranjeraCabeceraBuilder() }, fields: []xsdV3Field{
+	{name: "moneda_extranjera", newBuilder: func() any { return invoices.NewMonedaExtranjeraBuilder() }, roots: map[int]string{2: "facturaComputarizadaMonedaExtranjera", 1: "facturaElectronicaMonedaExtranjera"}, sections: []xsdSection{
+		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewMonedaExtranjeraCabeceraBuilder() }, fields: []xsdField{
 			{"nitEmisor", "WithNitEmisor", "integer", "1", false},
 			{"razonSocialEmisor", "WithRazonSocialEmisor", "string", "1", false},
 			{"municipio", "WithMunicipio", "string", "1", false},
@@ -1325,7 +1325,7 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"codigoInterno", "WithCodigoInterno", "string", "1", false},
 			{"codigoDocumentoSector", "WithCodigoDocumentoSector", "integer", "9", false},
 		}},
-		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewMonedaExtranjeraDetalleBuilder() }, fields: []xsdV3Field{
+		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewMonedaExtranjeraDetalleBuilder() }, fields: []xsdField{
 			{"actividadEconomica", "WithActividadEconomica", "string", "1", false},
 			{"codigoProductoSin", "WithCodigoProductoSin", "integer", "1", false},
 			{"codigoProducto", "WithCodigoProducto", "string", "1", false},
@@ -1337,8 +1337,8 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"subTotal", "WithSubTotal", "decimal", "1.23456", false},
 		}},
 	}},
-	{name: "nota_conciliacion", newBuilder: func() any { return invoices.NewNotaConciliacionBuilder() }, roots: map[int]string{2: "notaComputarizadaConciliacion", 1: "notaElectronicaConciliacion"}, sections: []xsdV3Section{
-		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewNotaConciliacionCabeceraBuilder() }, fields: []xsdV3Field{
+	{name: "nota_conciliacion", newBuilder: func() any { return invoices.NewNotaConciliacionBuilder() }, roots: map[int]string{2: "notaComputarizadaConciliacion", 1: "notaElectronicaConciliacion"}, sections: []xsdSection{
+		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewNotaConciliacionCabeceraBuilder() }, fields: []xsdField{
 			{"nitEmisor", "WithNitEmisor", "integer", "1", false},
 			{"razonSocialEmisor", "WithRazonSocialEmisor", "string", "1", false},
 			{"municipio", "WithMunicipio", "string", "1", false},
@@ -1373,7 +1373,7 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"codigoInterno", "WithCodigoInterno", "string", "1", false},
 			{"codigoDocumentoSector", "WithCodigoDocumentoSector", "integer", "29", false},
 		}},
-		{name: "detalleOriginal", setter: "AddDetalleOriginal", count: 1, newBuilder: func() any { return invoices.NewNotaDetalleOriginalBuilder() }, fields: []xsdV3Field{
+		{name: "detalleOriginal", setter: "AddDetalleOriginal", count: 1, newBuilder: func() any { return invoices.NewNotaDetalleOriginalBuilder() }, fields: []xsdField{
 			{"actividadEconomica", "WithActividadEconomica", "string", "1", false},
 			{"codigoProductoSin", "WithCodigoProductoSin", "integer", "1", false},
 			{"codigoProducto", "WithCodigoProducto", "string", "1", false},
@@ -1384,7 +1384,7 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"montoDescuento", "WithMontoDescuento", "decimal", "1.2345678901", true},
 			{"subTotal", "WithSubTotal", "decimal", "1.2345678901", false},
 		}},
-		{name: "detalleConciliacion", setter: "AddDetalleConciliacion", count: 1, newBuilder: func() any { return invoices.NewNotaDetalleConciliacionBuilder() }, fields: []xsdV3Field{
+		{name: "detalleConciliacion", setter: "AddDetalleConciliacion", count: 1, newBuilder: func() any { return invoices.NewNotaDetalleConciliacionBuilder() }, fields: []xsdField{
 			{"actividadEconomica", "WithActividadEconomica", "string", "1", false},
 			{"codigoProductoSin", "WithCodigoProductoSin", "integer", "1", false},
 			{"codigoProducto", "WithCodigoProducto", "string", "1", false},
@@ -1394,8 +1394,8 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"montoConciliado", "WithMontoConciliado", "decimal", "1.2345678901", false},
 		}},
 	}},
-	{name: "nota_credito_debito", newBuilder: func() any { return invoices.NewNotaCreditoDebitoBuilder() }, roots: map[int]string{2: "notaFiscalComputarizadaCreditoDebito", 1: "notaFiscalElectronicaCreditoDebito"}, sections: []xsdV3Section{
-		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewNotaCreditoDebitoCabeceraBuilder() }, fields: []xsdV3Field{
+	{name: "nota_credito_debito", newBuilder: func() any { return invoices.NewNotaCreditoDebitoBuilder() }, roots: map[int]string{2: "notaFiscalComputarizadaCreditoDebito", 1: "notaFiscalElectronicaCreditoDebito"}, sections: []xsdSection{
+		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewNotaCreditoDebitoCabeceraBuilder() }, fields: []xsdField{
 			{"nitEmisor", "WithNitEmisor", "integer", "1", false},
 			{"razonSocialEmisor", "WithRazonSocialEmisor", "string", "1", false},
 			{"municipio", "WithMunicipio", "string", "1", false},
@@ -1431,7 +1431,7 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"codigoInterno", "WithCodigoInterno", "string", "1", false},
 			{"codigoDocumentoSector", "WithCodigoDocumentoSector", "integer", "24", false},
 		}},
-		{name: "detalle", setter: "AddDetalle", count: 2, newBuilder: func() any { return invoices.NewNotaDetalleCreditoDebitoBuilder() }, fields: []xsdV3Field{
+		{name: "detalle", setter: "AddDetalle", count: 2, newBuilder: func() any { return invoices.NewNotaDetalleCreditoDebitoBuilder() }, fields: []xsdField{
 			{"nroItem", "WithNroItem", "integer", "1", false},
 			{"actividadEconomica", "WithActividadEconomica", "string", "1", false},
 			{"codigoProductoSin", "WithCodigoProductoSin", "integer", "1", false},
@@ -1445,8 +1445,8 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"codigoDetalleTransaccion", "WithCodigoDetalleTransaccion", "integer", "1", false},
 		}},
 	}},
-	{name: "nota_credito_debito_ice", newBuilder: func() any { return invoices.NewNotaCreditoDebitoIceBuilder() }, roots: map[int]string{2: "notaComputarizadaCreditoDebitoIce", 1: "notaElectronicaCreditoDebitoIce"}, sections: []xsdV3Section{
-		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewNotaCreditoDebitoIceCabeceraBuilder() }, fields: []xsdV3Field{
+	{name: "nota_credito_debito_ice", newBuilder: func() any { return invoices.NewNotaCreditoDebitoIceBuilder() }, roots: map[int]string{2: "notaComputarizadaCreditoDebitoIce", 1: "notaElectronicaCreditoDebitoIce"}, sections: []xsdSection{
+		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewNotaCreditoDebitoIceCabeceraBuilder() }, fields: []xsdField{
 			{"nitEmisor", "WithNitEmisor", "integer", "1", false},
 			{"razonSocialEmisor", "WithRazonSocialEmisor", "string", "1", false},
 			{"municipio", "WithMunicipio", "string", "1", false},
@@ -1484,7 +1484,7 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"codigoInterno", "WithCodigoInterno", "string", "1", false},
 			{"codigoDocumentoSector", "WithCodigoDocumentoSector", "integer", "48", false},
 		}},
-		{name: "detalle", setter: "AddDetalle", count: 2, newBuilder: func() any { return invoices.NewNotaDetalleCreditoDebitoIceBuilder() }, fields: []xsdV3Field{
+		{name: "detalle", setter: "AddDetalle", count: 2, newBuilder: func() any { return invoices.NewNotaDetalleCreditoDebitoIceBuilder() }, fields: []xsdField{
 			{"nroItem", "WithNroItem", "integer", "1", false},
 			{"actividadEconomica", "WithActividadEconomica", "string", "1", false},
 			{"codigoProductoSin", "WithCodigoProductoSin", "integer", "1", false},
@@ -1505,8 +1505,8 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"codigoDetalleTransaccion", "WithCodigoDetalleTransaccion", "integer", "1", false},
 		}},
 	}},
-	{name: "nota_fiscal_credito_debito", newBuilder: func() any { return invoices.NewNotaFiscalCreditoDebitoBuilder() }, roots: map[int]string{2: "notaFiscalComputarizadaCreditoDebito", 1: "notaFiscalElectronicaCreditoDebito"}, sections: []xsdV3Section{
-		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewNotaFiscalCreditoDebitoCabeceraBuilder() }, fields: []xsdV3Field{
+	{name: "nota_fiscal_credito_debito", newBuilder: func() any { return invoices.NewNotaFiscalCreditoDebitoBuilder() }, roots: map[int]string{2: "notaFiscalComputarizadaCreditoDebito", 1: "notaFiscalElectronicaCreditoDebito"}, sections: []xsdSection{
+		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewNotaFiscalCreditoDebitoCabeceraBuilder() }, fields: []xsdField{
 			{"nitEmisor", "WithNitEmisor", "integer", "1", false},
 			{"razonSocialEmisor", "WithRazonSocialEmisor", "string", "1", false},
 			{"municipio", "WithMunicipio", "string", "1", false},
@@ -1542,7 +1542,7 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"codigoInterno", "WithCodigoInterno", "string", "1", false},
 			{"codigoDocumentoSector", "WithCodigoDocumentoSector", "integer", "24", false},
 		}},
-		{name: "detalle", setter: "AddDetalle", count: 2, newBuilder: func() any { return invoices.NewNotaDetalleFiscalCreditoDebitoBuilder() }, fields: []xsdV3Field{
+		{name: "detalle", setter: "AddDetalle", count: 2, newBuilder: func() any { return invoices.NewNotaDetalleFiscalCreditoDebitoBuilder() }, fields: []xsdField{
 			{"nroItem", "WithNroItem", "integer", "1", false},
 			{"actividadEconomica", "WithActividadEconomica", "string", "1", false},
 			{"codigoProductoSin", "WithCodigoProductoSin", "integer", "1", false},
@@ -1556,8 +1556,8 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"codigoDetalleTransaccion", "WithCodigoDetalleTransaccion", "integer", "1", false},
 		}},
 	}},
-	{name: "prevalorada", newBuilder: func() any { return invoices.NewPrevaloradaBuilder() }, roots: map[int]string{2: "facturaComputarizadaPrevalorada", 1: "facturaElectronicaPrevalorada"}, sections: []xsdV3Section{
-		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewPrevaloradaCabeceraBuilder() }, fields: []xsdV3Field{
+	{name: "prevalorada", newBuilder: func() any { return invoices.NewPrevaloradaBuilder() }, roots: map[int]string{2: "facturaComputarizadaPrevalorada", 1: "facturaElectronicaPrevalorada"}, sections: []xsdSection{
+		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewPrevaloradaCabeceraBuilder() }, fields: []xsdField{
 			{"nitEmisor", "WithNitEmisor", "integer", "1", false},
 			{"razonSocialEmisor", "WithRazonSocialEmisor", "string", "1", false},
 			{"municipio", "WithMunicipio", "string", "1", false},
@@ -1587,7 +1587,7 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"codigoInterno", "WithCodigoInterno", "string", "1", false},
 			{"codigoDocumentoSector", "WithCodigoDocumentoSector", "integer", "23", false},
 		}},
-		{name: "detalle", setter: "WithDetalle", count: 1, newBuilder: func() any { return invoices.NewPrevaloradaDetalleBuilder() }, fields: []xsdV3Field{
+		{name: "detalle", setter: "WithDetalle", count: 1, newBuilder: func() any { return invoices.NewPrevaloradaDetalleBuilder() }, fields: []xsdField{
 			{"actividadEconomica", "WithActividadEconomica", "string", "1", false},
 			{"codigoProductoSin", "WithCodigoProductoSin", "integer", "1", false},
 			{"codigoProducto", "WithCodigoProducto", "string", "1", false},
@@ -1599,8 +1599,8 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"subTotal", "WithSubTotal", "decimal", "1.23", false},
 		}},
 	}},
-	{name: "prevalorada_sin_derecho_credito_fiscal", newBuilder: func() any { return invoices.NewPrevaloradaSinDerechoCreditoFiscalBuilder() }, roots: map[int]string{2: "facturaComputarizadaPrevaloradaSD", 1: "facturaElectronicaPrevaloradaSD"}, sections: []xsdV3Section{
-		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewPrevaloradaSinDerechoCreditoFiscalCabeceraBuilder() }, fields: []xsdV3Field{
+	{name: "prevalorada_sin_derecho_credito_fiscal", newBuilder: func() any { return invoices.NewPrevaloradaSinDerechoCreditoFiscalBuilder() }, roots: map[int]string{2: "facturaComputarizadaPrevaloradaSD", 1: "facturaElectronicaPrevaloradaSD"}, sections: []xsdSection{
+		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewPrevaloradaSinDerechoCreditoFiscalCabeceraBuilder() }, fields: []xsdField{
 			{"nitEmisor", "WithNitEmisor", "integer", "1", false},
 			{"razonSocialEmisor", "WithRazonSocialEmisor", "string", "1", false},
 			{"municipio", "WithMunicipio", "string", "1", false},
@@ -1630,7 +1630,7 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"codigoInterno", "WithCodigoInterno", "string", "1", false},
 			{"codigoDocumentoSector", "WithCodigoDocumentoSector", "integer", "36", false},
 		}},
-		{name: "detalle", setter: "WithDetalle", count: 1, newBuilder: func() any { return invoices.NewPrevaloradaSinDerechoCreditoFiscalDetalleBuilder() }, fields: []xsdV3Field{
+		{name: "detalle", setter: "WithDetalle", count: 1, newBuilder: func() any { return invoices.NewPrevaloradaSinDerechoCreditoFiscalDetalleBuilder() }, fields: []xsdField{
 			{"actividadEconomica", "WithActividadEconomica", "string", "1", false},
 			{"codigoProductoSin", "WithCodigoProductoSin", "integer", "1", false},
 			{"codigoProducto", "WithCodigoProducto", "string", "1", false},
@@ -1642,8 +1642,8 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"subTotal", "WithSubTotal", "decimal", "1.23", false},
 		}},
 	}},
-	{name: "sector_educativo", newBuilder: func() any { return invoices.NewSectorEducativoBuilder() }, roots: map[int]string{2: "facturaComputarizadaSectorEducativo", 1: "facturaElectronicaSectorEducativo"}, sections: []xsdV3Section{
-		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewSectorEducativoCabeceraBuilder() }, fields: []xsdV3Field{
+	{name: "sector_educativo", newBuilder: func() any { return invoices.NewSectorEducativoBuilder() }, roots: map[int]string{2: "facturaComputarizadaSectorEducativo", 1: "facturaElectronicaSectorEducativo"}, sections: []xsdSection{
+		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewSectorEducativoCabeceraBuilder() }, fields: []xsdField{
 			{"nitEmisor", "WithNitEmisor", "integer", "1", false},
 			{"razonSocialEmisor", "WithRazonSocialEmisor", "string", "1", false},
 			{"municipio", "WithMunicipio", "string", "1", false},
@@ -1679,7 +1679,7 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"codigoInterno", "WithCodigoInterno", "string", "1", false},
 			{"codigoDocumentoSector", "WithCodigoDocumentoSector", "integer", "11", false},
 		}},
-		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewSectorEducativoDetalleBuilder() }, fields: []xsdV3Field{
+		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewSectorEducativoDetalleBuilder() }, fields: []xsdField{
 			{"actividadEconomica", "WithActividadEconomica", "string", "1", false},
 			{"codigoProductoSin", "WithCodigoProductoSin", "integer", "1", false},
 			{"codigoProducto", "WithCodigoProducto", "string", "1", false},
@@ -1691,8 +1691,8 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"subTotal", "WithSubTotal", "decimal", "1.23", false},
 		}},
 	}},
-	{name: "sector_educativo_zona_franca", newBuilder: func() any { return invoices.NewSectorEducativoZFBuilder() }, roots: map[int]string{2: "facturaComputarizadaSectorEducativoZF", 1: "facturaElectronicaSectorEducativoZF"}, sections: []xsdV3Section{
-		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewSectorEducativoZFCabeceraBuilder() }, fields: []xsdV3Field{
+	{name: "sector_educativo_zona_franca", newBuilder: func() any { return invoices.NewSectorEducativoZFBuilder() }, roots: map[int]string{2: "facturaComputarizadaSectorEducativoZF", 1: "facturaElectronicaSectorEducativoZF"}, sections: []xsdSection{
+		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewSectorEducativoZFCabeceraBuilder() }, fields: []xsdField{
 			{"nitEmisor", "WithNitEmisor", "integer", "1", false},
 			{"razonSocialEmisor", "WithRazonSocialEmisor", "string", "1", false},
 			{"municipio", "WithMunicipio", "string", "1", false},
@@ -1728,7 +1728,7 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"codigoInterno", "WithCodigoInterno", "string", "1", false},
 			{"codigoDocumentoSector", "WithCodigoDocumentoSector", "integer", "46", false},
 		}},
-		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewSectorEducativoZFDetalleBuilder() }, fields: []xsdV3Field{
+		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewSectorEducativoZFDetalleBuilder() }, fields: []xsdField{
 			{"actividadEconomica", "WithActividadEconomica", "string", "1", false},
 			{"codigoProductoSin", "WithCodigoProductoSin", "integer", "1", false},
 			{"codigoProducto", "WithCodigoProducto", "string", "1", false},
@@ -1740,8 +1740,8 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"subTotal", "WithSubTotal", "decimal", "1.23", false},
 		}},
 	}},
-	{name: "seguridad_alimentaria", newBuilder: func() any { return invoices.NewSeguridadAlimentariaBuilder() }, roots: map[int]string{2: "facturaComputarizadaSeguridadAlimentaria", 1: "facturaElectronicaSeguridadAlimentaria"}, sections: []xsdV3Section{
-		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewSeguridadAlimentariaCabeceraBuilder() }, fields: []xsdV3Field{
+	{name: "seguridad_alimentaria", newBuilder: func() any { return invoices.NewSeguridadAlimentariaBuilder() }, roots: map[int]string{2: "facturaComputarizadaSeguridadAlimentaria", 1: "facturaElectronicaSeguridadAlimentaria"}, sections: []xsdSection{
+		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewSeguridadAlimentariaCabeceraBuilder() }, fields: []xsdField{
 			{"nitEmisor", "WithNitEmisor", "integer", "1", false},
 			{"razonSocialEmisor", "WithRazonSocialEmisor", "string", "1", false},
 			{"municipio", "WithMunicipio", "string", "1", false},
@@ -1775,7 +1775,7 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"codigoInterno", "WithCodigoInterno", "string", "1", false},
 			{"codigoDocumentoSector", "WithCodigoDocumentoSector", "integer", "7", false},
 		}},
-		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewSeguridadAlimentariaDetalleBuilder() }, fields: []xsdV3Field{
+		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewSeguridadAlimentariaDetalleBuilder() }, fields: []xsdField{
 			{"actividadEconomica", "WithActividadEconomica", "string", "1", false},
 			{"codigoProductoSin", "WithCodigoProductoSin", "integer", "1", false},
 			{"codigoProducto", "WithCodigoProducto", "string", "1", false},
@@ -1787,8 +1787,8 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"subTotal", "WithSubTotal", "decimal", "1.23", false},
 		}},
 	}},
-	{name: "seguros", newBuilder: func() any { return invoices.NewSegurosBuilder() }, roots: map[int]string{2: "facturaComputarizadaSeguros", 1: "facturaElectronicaSeguros"}, sections: []xsdV3Section{
-		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewSegurosCabeceraBuilder() }, fields: []xsdV3Field{
+	{name: "seguros", newBuilder: func() any { return invoices.NewSegurosBuilder() }, roots: map[int]string{2: "facturaComputarizadaSeguros", 1: "facturaElectronicaSeguros"}, sections: []xsdSection{
+		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewSegurosCabeceraBuilder() }, fields: []xsdField{
 			{"nitEmisor", "WithNitEmisor", "integer", "1", false},
 			{"razonSocialEmisor", "WithRazonSocialEmisor", "string", "1", false},
 			{"municipio", "WithMunicipio", "string", "1", false},
@@ -1823,7 +1823,7 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"codigoInterno", "WithCodigoInterno", "string", "1", false},
 			{"codigoDocumentoSector", "WithCodigoDocumentoSector", "integer", "34", false},
 		}},
-		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewSegurosDetalleBuilder() }, fields: []xsdV3Field{
+		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewSegurosDetalleBuilder() }, fields: []xsdField{
 			{"actividadEconomica", "WithActividadEconomica", "string", "1", false},
 			{"codigoProductoSin", "WithCodigoProductoSin", "integer", "1", false},
 			{"codigoProducto", "WithCodigoProducto", "string", "1", false},
@@ -1835,8 +1835,8 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"subTotal", "WithSubTotal", "decimal", "1.23", false},
 		}},
 	}},
-	{name: "servicio_basico", newBuilder: func() any { return invoices.NewServicioBasicoBuilder() }, roots: map[int]string{2: "facturaComputarizadaServicioBasico", 1: "facturaElectronicaServicioBasico"}, sections: []xsdV3Section{
-		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewServicioBasicoCabeceraBuilder() }, fields: []xsdV3Field{
+	{name: "servicio_basico", newBuilder: func() any { return invoices.NewServicioBasicoBuilder() }, roots: map[int]string{2: "facturaComputarizadaServicioBasico", 1: "facturaElectronicaServicioBasico"}, sections: []xsdSection{
+		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewServicioBasicoCabeceraBuilder() }, fields: []xsdField{
 			{"nitEmisor", "WithNitEmisor", "integer", "1", false},
 			{"razonSocialEmisor", "WithRazonSocialEmisor", "string", "1", false},
 			{"municipio", "WithMunicipio", "string", "1", false},
@@ -1887,7 +1887,7 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"codigoInterno", "WithCodigoInterno", "string", "1", false},
 			{"codigoDocumentoSector", "WithCodigoDocumentoSector", "integer", "13", false},
 		}},
-		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewServicioBasicoDetalleBuilder() }, fields: []xsdV3Field{
+		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewServicioBasicoDetalleBuilder() }, fields: []xsdField{
 			{"actividadEconomica", "WithActividadEconomica", "string", "1", false},
 			{"codigoProductoSin", "WithCodigoProductoSin", "integer", "1", false},
 			{"codigoProducto", "WithCodigoProducto", "string", "1", false},
@@ -1899,8 +1899,8 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"subTotal", "WithSubTotal", "decimal", "1.23", false},
 		}},
 	}},
-	{name: "servicio_basico_zf", newBuilder: func() any { return invoices.NewServicioBasicoZFBuilder() }, roots: map[int]string{2: "facturaComputarizadaServicioBasicoZf", 1: "facturaElectronicaServicioBasicoZf"}, sections: []xsdV3Section{
-		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewServicioBasicoZFCabeceraBuilder() }, fields: []xsdV3Field{
+	{name: "servicio_basico_zf", newBuilder: func() any { return invoices.NewServicioBasicoZFBuilder() }, roots: map[int]string{2: "facturaComputarizadaServicioBasicoZf", 1: "facturaElectronicaServicioBasicoZf"}, sections: []xsdSection{
+		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewServicioBasicoZFCabeceraBuilder() }, fields: []xsdField{
 			{"nitEmisor", "WithNitEmisor", "integer", "1", false},
 			{"razonSocialEmisor", "WithRazonSocialEmisor", "string", "1", false},
 			{"municipio", "WithMunicipio", "string", "1", false},
@@ -1951,7 +1951,7 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"codigoInterno", "WithCodigoInterno", "string", "1", false},
 			{"codigoDocumentoSector", "WithCodigoDocumentoSector", "integer", "40", false},
 		}},
-		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewServicioBasicoZFDetalleBuilder() }, fields: []xsdV3Field{
+		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewServicioBasicoZFDetalleBuilder() }, fields: []xsdField{
 			{"actividadEconomica", "WithActividadEconomica", "string", "1", false},
 			{"codigoProductoSin", "WithCodigoProductoSin", "integer", "1", false},
 			{"codigoProducto", "WithCodigoProducto", "string", "1", false},
@@ -1963,8 +1963,8 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"subTotal", "WithSubTotal", "decimal", "1.23", false},
 		}},
 	}},
-	{name: "suministro_energia", newBuilder: func() any { return invoices.NewSuministroEnergiaBuilder() }, roots: map[int]string{2: "facturaComputarizadaSuministroEnergia", 1: "facturaElectronicaSuministroEnergia"}, sections: []xsdV3Section{
-		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewSuministroEnergiaCabeceraBuilder() }, fields: []xsdV3Field{
+	{name: "suministro_energia", newBuilder: func() any { return invoices.NewSuministroEnergiaBuilder() }, roots: map[int]string{2: "facturaComputarizadaSuministroEnergia", 1: "facturaElectronicaSuministroEnergia"}, sections: []xsdSection{
+		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewSuministroEnergiaCabeceraBuilder() }, fields: []xsdField{
 			{"nitEmisor", "WithNitEmisor", "integer", "1", false},
 			{"razonSocialEmisor", "WithRazonSocialEmisor", "string", "1", false},
 			{"municipio", "WithMunicipio", "string", "1", false},
@@ -2000,7 +2000,7 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"codigoInterno", "WithCodigoInterno", "string", "1", false},
 			{"codigoDocumentoSector", "WithCodigoDocumentoSector", "integer", "31", false},
 		}},
-		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewSuministroEnergiaDetalleBuilder() }, fields: []xsdV3Field{
+		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewSuministroEnergiaDetalleBuilder() }, fields: []xsdField{
 			{"actividadEconomica", "WithActividadEconomica", "string", "1", false},
 			{"codigoProductoSin", "WithCodigoProductoSin", "integer", "1", false},
 			{"codigoProducto", "WithCodigoProducto", "string", "1", false},
@@ -2012,8 +2012,8 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"subTotal", "WithSubTotal", "decimal", "1.2345", false},
 		}},
 	}},
-	{name: "tasa_cero", newBuilder: func() any { return invoices.NewTasaCeroBuilder() }, roots: map[int]string{2: "facturaComputarizadaTasaCero", 1: "facturaElectronicaTasaCero"}, sections: []xsdV3Section{
-		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewTasaCeroCabeceraBuilder() }, fields: []xsdV3Field{
+	{name: "tasa_cero", newBuilder: func() any { return invoices.NewTasaCeroBuilder() }, roots: map[int]string{2: "facturaComputarizadaTasaCero", 1: "facturaElectronicaTasaCero"}, sections: []xsdSection{
+		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewTasaCeroCabeceraBuilder() }, fields: []xsdField{
 			{"nitEmisor", "WithNitEmisor", "integer", "1", false},
 			{"razonSocialEmisor", "WithRazonSocialEmisor", "string", "1", false},
 			{"municipio", "WithMunicipio", "string", "1", false},
@@ -2047,7 +2047,7 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"codigoInterno", "WithCodigoInterno", "string", "1", false},
 			{"codigoDocumentoSector", "WithCodigoDocumentoSector", "integer", "8", false},
 		}},
-		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewTasaCeroDetalleBuilder() }, fields: []xsdV3Field{
+		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewTasaCeroDetalleBuilder() }, fields: []xsdField{
 			{"actividadEconomica", "WithActividadEconomica", "string", "1", false},
 			{"codigoProductoSin", "WithCodigoProductoSin", "integer", "1", false},
 			{"codigoProducto", "WithCodigoProducto", "string", "1", false},
@@ -2059,8 +2059,8 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"subTotal", "WithSubTotal", "decimal", "1.23", false},
 		}},
 	}},
-	{name: "telecomunicaciones", newBuilder: func() any { return invoices.NewTelecomunicacionesBuilder() }, roots: map[int]string{2: "facturaComputarizadaTelecomunicacion", 1: "facturaElectronicaTelecomunicacion"}, sections: []xsdV3Section{
-		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewTelecomunicacionesCabeceraBuilder() }, fields: []xsdV3Field{
+	{name: "telecomunicaciones", newBuilder: func() any { return invoices.NewTelecomunicacionesBuilder() }, roots: map[int]string{2: "facturaComputarizadaTelecomunicacion", 1: "facturaElectronicaTelecomunicacion"}, sections: []xsdSection{
+		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewTelecomunicacionesCabeceraBuilder() }, fields: []xsdField{
 			{"nitEmisor", "WithNitEmisor", "integer", "1", false},
 			{"razonSocialEmisor", "WithRazonSocialEmisor", "string", "1", false},
 			{"municipio", "WithMunicipio", "string", "1", false},
@@ -2095,7 +2095,7 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"codigoInterno", "WithCodigoInterno", "string", "1", false},
 			{"codigoDocumentoSector", "WithCodigoDocumentoSector", "integer", "22", false},
 		}},
-		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewTelecomunicacionesDetalleBuilder() }, fields: []xsdV3Field{
+		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewTelecomunicacionesDetalleBuilder() }, fields: []xsdField{
 			{"actividadEconomica", "WithActividadEconomica", "string", "1", false},
 			{"codigoProductoSin", "WithCodigoProductoSin", "integer", "1", false},
 			{"codigoProducto", "WithCodigoProducto", "string", "1", false},
@@ -2109,8 +2109,8 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"numeroImei", "WithNumeroImei", "string", "1", true},
 		}},
 	}},
-	{name: "telecomunicaciones_zf", newBuilder: func() any { return invoices.NewTelecomunicacionesZFBuilder() }, roots: map[int]string{2: "facturaComputarizadaTelecomunicacionZF", 1: "facturaElectronicaTelecomunicacionZF"}, sections: []xsdV3Section{
-		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewTelecomunicacionesZFCabeceraBuilder() }, fields: []xsdV3Field{
+	{name: "telecomunicaciones_zf", newBuilder: func() any { return invoices.NewTelecomunicacionesZFBuilder() }, roots: map[int]string{2: "facturaComputarizadaTelecomunicacionZF", 1: "facturaElectronicaTelecomunicacionZF"}, sections: []xsdSection{
+		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewTelecomunicacionesZFCabeceraBuilder() }, fields: []xsdField{
 			{"nitEmisor", "WithNitEmisor", "integer", "1", false},
 			{"razonSocialEmisor", "WithRazonSocialEmisor", "string", "1", false},
 			{"municipio", "WithMunicipio", "string", "1", false},
@@ -2144,7 +2144,7 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"codigoInterno", "WithCodigoInterno", "string", "1", false},
 			{"codigoDocumentoSector", "WithCodigoDocumentoSector", "integer", "49", false},
 		}},
-		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewTelecomunicacionesZFDetalleBuilder() }, fields: []xsdV3Field{
+		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewTelecomunicacionesZFDetalleBuilder() }, fields: []xsdField{
 			{"actividadEconomica", "WithActividadEconomica", "string", "1", false},
 			{"codigoProductoSin", "WithCodigoProductoSin", "integer", "1", false},
 			{"codigoProducto", "WithCodigoProducto", "string", "1", false},
@@ -2158,8 +2158,8 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"numeroImei", "WithNumeroImei", "string", "1", true},
 		}},
 	}},
-	{name: "turismo_hospedaje", newBuilder: func() any { return invoices.NewTurismoHospedajeBuilder() }, roots: map[int]string{2: "facturaComputarizadaServicioTuristicoHospedaje", 1: "facturaElectronicaServicioTuristicoHospedaje"}, sections: []xsdV3Section{
-		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewTurismoHospedajeCabeceraBuilder() }, fields: []xsdV3Field{
+	{name: "turismo_hospedaje", newBuilder: func() any { return invoices.NewTurismoHospedajeBuilder() }, roots: map[int]string{2: "facturaComputarizadaServicioTuristicoHospedaje", 1: "facturaElectronicaServicioTuristicoHospedaje"}, sections: []xsdSection{
+		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewTurismoHospedajeCabeceraBuilder() }, fields: []xsdField{
 			{"nitEmisor", "WithNitEmisor", "integer", "2", false},
 			{"razonSocialEmisor", "WithRazonSocialEmisor", "string", "1", false},
 			{"municipio", "WithMunicipio", "string", "1", false},
@@ -2199,7 +2199,7 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"codigoInterno", "WithCodigoInterno", "string", "1", false},
 			{"codigoDocumentoSector", "WithCodigoDocumentoSector", "integer", "6", false},
 		}},
-		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewTurismoHospedajeDetalleBuilder() }, fields: []xsdV3Field{
+		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewTurismoHospedajeDetalleBuilder() }, fields: []xsdField{
 			{"actividadEconomica", "WithActividadEconomica", "string", "1", false},
 			{"codigoProductoSin", "WithCodigoProductoSin", "integer", "1", false},
 			{"codigoProducto", "WithCodigoProducto", "string", "1", false},
@@ -2213,8 +2213,8 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"detalleHuespedes", "WithDetalleHuespedes", "string", "1", true},
 		}},
 	}},
-	{name: "venta_combustible_sin_subvencion", newBuilder: func() any { return invoices.NewVentaCombustibleSinSubvencionBuilder() }, roots: map[int]string{2: "facturaComputarizadaVentaCombustibleSinSubvencion", 1: "facturaElectronicaVentaCombustibleSinSubvencion"}, sections: []xsdV3Section{
-		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewVentaCombustibleSinSubvencionCabeceraBuilder() }, fields: []xsdV3Field{
+	{name: "venta_combustible_sin_subvencion", newBuilder: func() any { return invoices.NewVentaCombustibleSinSubvencionBuilder() }, roots: map[int]string{2: "facturaComputarizadaVentaCombustibleSinSubvencion", 1: "facturaElectronicaVentaCombustibleSinSubvencion"}, sections: []xsdSection{
+		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewVentaCombustibleSinSubvencionCabeceraBuilder() }, fields: []xsdField{
 			{"nitEmisor", "WithNitEmisor", "integer", "1", false},
 			{"razonSocialEmisor", "WithRazonSocialEmisor", "string", "1", false},
 			{"municipio", "WithMunicipio", "string", "1", false},
@@ -2253,7 +2253,7 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"codigoInterno", "WithCodigoInterno", "string", "1", false},
 			{"codigoDocumentoSector", "WithCodigoDocumentoSector", "integer", "55", false},
 		}},
-		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewVentaCombustibleSinSubvencionDetalleBuilder() }, fields: []xsdV3Field{
+		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewVentaCombustibleSinSubvencionDetalleBuilder() }, fields: []xsdField{
 			{"actividadEconomica", "WithActividadEconomica", "string", "1", false},
 			{"codigoProductoSin", "WithCodigoProductoSin", "integer", "1", false},
 			{"codigoProducto", "WithCodigoProducto", "string", "1", false},
@@ -2265,8 +2265,8 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"subTotal", "WithSubTotal", "decimal", "1.23456", false},
 		}},
 	}},
-	{name: "venta_mineral", newBuilder: func() any { return invoices.NewVentaMineralBuilder() }, roots: map[int]string{2: "facturaComputarizadaVentaMineral", 1: "facturaElectronicaVentaMineral"}, sections: []xsdV3Section{
-		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewVentaMineralCabeceraBuilder() }, fields: []xsdV3Field{
+	{name: "venta_mineral", newBuilder: func() any { return invoices.NewVentaMineralBuilder() }, roots: map[int]string{2: "facturaComputarizadaVentaMineral", 1: "facturaElectronicaVentaMineral"}, sections: []xsdSection{
+		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewVentaMineralCabeceraBuilder() }, fields: []xsdField{
 			{"nitEmisor", "WithNitEmisor", "integer", "1", false},
 			{"razonSocialEmisor", "WithRazonSocialEmisor", "string", "1", false},
 			{"municipio", "WithMunicipio", "string", "1", false},
@@ -2316,7 +2316,7 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"codigoInterno", "WithCodigoInterno", "string", "1", false},
 			{"codigoDocumentoSector", "WithCodigoDocumentoSector", "integer", "21", false},
 		}},
-		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewVentaMineralDetalleBuilder() }, fields: []xsdV3Field{
+		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewVentaMineralDetalleBuilder() }, fields: []xsdField{
 			{"actividadEconomica", "WithActividadEconomica", "string", "1", false},
 			{"codigoProductoSin", "WithCodigoProductoSin", "integer", "1", false},
 			{"codigoProducto", "WithCodigoProducto", "string", "1", false},
@@ -2332,8 +2332,8 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"subTotal", "WithSubTotal", "decimal", "1.23456", false},
 		}},
 	}},
-	{name: "venta_mineral_bcb", newBuilder: func() any { return invoices.NewVentaMineralBCBBuilder() }, roots: map[int]string{1: "facturaElectronicaVentaMineralBCB"}, sections: []xsdV3Section{
-		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewVentaMineralBCBCabeceraBuilder() }, fields: []xsdV3Field{
+	{name: "venta_mineral_bcb", newBuilder: func() any { return invoices.NewVentaMineralBCBBuilder() }, roots: map[int]string{1: "facturaElectronicaVentaMineralBCB"}, sections: []xsdSection{
+		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewVentaMineralBCBCabeceraBuilder() }, fields: []xsdField{
 			{"nitEmisor", "WithNitEmisor", "integer", "1", false},
 			{"razonSocialEmisor", "WithRazonSocialEmisor", "string", "1", false},
 			{"municipio", "WithMunicipio", "string", "1", false},
@@ -2379,7 +2379,7 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"codigoInterno", "WithCodigoInterno", "string", "1", false},
 			{"codigoDocumentoSector", "WithCodigoDocumentoSector", "integer", "52", false},
 		}},
-		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewVentaMineralBCBDetalleBuilder() }, fields: []xsdV3Field{
+		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewVentaMineralBCBDetalleBuilder() }, fields: []xsdField{
 			{"actividadEconomica", "WithActividadEconomica", "string", "1", false},
 			{"codigoProductoSin", "WithCodigoProductoSin", "integer", "1", false},
 			{"codigoProducto", "WithCodigoProducto", "string", "1", false},
@@ -2395,8 +2395,8 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"subTotal", "WithSubTotal", "decimal", "1.23456", false},
 		}},
 	}},
-	{name: "vuelo_charter", newBuilder: func() any { return invoices.NewVueloCharterBuilder() }, roots: map[int]string{2: "facturaComputarizadaVueloCharter", 1: "facturaElectronicaVueloCharter"}, sections: []xsdV3Section{
-		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewVueloCharterCabeceraBuilder() }, fields: []xsdV3Field{
+	{name: "vuelo_charter", newBuilder: func() any { return invoices.NewVueloCharterBuilder() }, roots: map[int]string{2: "facturaComputarizadaVueloCharter", 1: "facturaElectronicaVueloCharter"}, sections: []xsdSection{
+		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewVueloCharterCabeceraBuilder() }, fields: []xsdField{
 			{"nitEmisor", "WithNitEmisor", "integer", "1", false},
 			{"razonSocialEmisor", "WithRazonSocialEmisor", "string", "1", false},
 			{"municipio", "WithMunicipio", "string", "1", false},
@@ -2431,7 +2431,7 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"codigoInterno", "WithCodigoInterno", "string", "1", false},
 			{"codigoDocumentoSector", "WithCodigoDocumentoSector", "integer", "41", false},
 		}},
-		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewVueloCharterDetalleBuilder() }, fields: []xsdV3Field{
+		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewVueloCharterDetalleBuilder() }, fields: []xsdField{
 			{"actividadEconomica", "WithActividadEconomica", "string", "1", false},
 			{"codigoProductoSin", "WithCodigoProductoSin", "integer", "1", false},
 			{"codigoProducto", "WithCodigoProducto", "string", "1", false},
@@ -2445,8 +2445,8 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"numeroImei", "WithNumeroImei", "string", "1", true},
 		}},
 	}},
-	{name: "zona_franca", newBuilder: func() any { return invoices.NewZonaFrancaBuilder() }, roots: map[int]string{2: "facturaComputarizadaZonaFranca", 1: "facturaElectronicaZonaFranca"}, sections: []xsdV3Section{
-		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewZonaFrancaCabeceraBuilder() }, fields: []xsdV3Field{
+	{name: "zona_franca", newBuilder: func() any { return invoices.NewZonaFrancaBuilder() }, roots: map[int]string{2: "facturaComputarizadaZonaFranca", 1: "facturaElectronicaZonaFranca"}, sections: []xsdSection{
+		{name: "cabecera", setter: "WithCabecera", count: 1, newBuilder: func() any { return invoices.NewZonaFrancaCabeceraBuilder() }, fields: []xsdField{
 			{"nitEmisor", "WithNitEmisor", "integer", "1", false},
 			{"razonSocialEmisor", "WithRazonSocialEmisor", "string", "1", false},
 			{"municipio", "WithMunicipio", "string", "1", false},
@@ -2481,7 +2481,7 @@ var xsdV3Contracts = []xsdV3Contract{
 			{"codigoInterno", "WithCodigoInterno", "string", "1", false},
 			{"codigoDocumentoSector", "WithCodigoDocumentoSector", "integer", "5", false},
 		}},
-		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewZonaFrancaDetalleBuilder() }, fields: []xsdV3Field{
+		{name: "detalle", setter: "AddDetalle", count: 1, newBuilder: func() any { return invoices.NewZonaFrancaDetalleBuilder() }, fields: []xsdField{
 			{"actividadEconomica", "WithActividadEconomica", "string", "1", false},
 			{"codigoProductoSin", "WithCodigoProductoSin", "integer", "1", false},
 			{"codigoProducto", "WithCodigoProducto", "string", "1", false},

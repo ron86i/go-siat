@@ -15,7 +15,7 @@ import (
 	dsig "github.com/russellhaering/goxmldsig"
 )
 
-func TestFacturasV3FirmaElectronica(t *testing.T) {
+func TestFacturasFirmaElectronica(t *testing.T) {
 	key, err := rsa.GenerateKey(rand.Reader, 2048)
 	if err != nil {
 		t.Fatal(err)
@@ -41,9 +41,9 @@ func TestFacturasV3FirmaElectronica(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	for _, contract := range xsdV3Contracts {
+	for _, contract := range xsdContracts {
 		t.Run(contract.name, func(t *testing.T) {
-			input, err := xml.Marshal(buildXSDV3Document(t, contract, 1, "valores"))
+			input, err := xml.Marshal(buildXSDDocument(t, contract, 1, "valores"))
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -51,7 +51,7 @@ func TestFacturasV3FirmaElectronica(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			var node xsdV3Node
+			var node xsdNode
 			if err := xml.Unmarshal(signed, &node); err != nil {
 				t.Fatal(err)
 			}
@@ -67,7 +67,7 @@ func TestFacturasV3FirmaElectronica(t *testing.T) {
 						t.Fatalf("se alteró %s al firmar", section.name)
 					}
 					for i, field := range section.fields {
-						checkXSDV3Field(t, actual.Children[i], field, "valores")
+						checkXSDField(t, actual.Children[i], field, "valores")
 					}
 				}
 			}

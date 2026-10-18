@@ -13,13 +13,13 @@ import (
 	"github.com/ron86i/go-siat/v3/pkg/models"
 )
 
-type v3Capture struct {
+type siatCapture struct {
 	path, body, token string
 }
 
-func v3TestServer(t *testing.T) (*httptest.Server, <-chan v3Capture) {
+func siatTestServer(t *testing.T) (*httptest.Server, <-chan siatCapture) {
 	t.Helper()
-	captures := make(chan v3Capture, 1)
+	captures := make(chan siatCapture, 1)
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		body, err := io.ReadAll(r.Body)
 		if err != nil {
@@ -27,7 +27,7 @@ func v3TestServer(t *testing.T) (*httptest.Server, <-chan v3Capture) {
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
-		captures <- v3Capture{r.URL.Path, string(body), r.Header.Get("apiKey")}
+		captures <- siatCapture{r.URL.Path, string(body), r.Header.Get("apiKey")}
 		w.Header().Set("Content-Type", "text/xml")
 		if strings.Contains(string(body), "<ns:verificarComunicacion>") {
 			io.WriteString(w, `<Envelope xmlns="http://schemas.xmlsoap.org/soap/envelope/"><Body><verificarComunicacionResponse xmlns="https://siat.impuestos.gob.bo/"><return><transaccion>true</transaccion></return></verificarComunicacionResponse></Body></Envelope>`)
@@ -47,12 +47,12 @@ func v3TestServer(t *testing.T) (*httptest.Server, <-chan v3Capture) {
 	return server, captures
 }
 
-func v3TestConfig(url string) siat.Config {
+func siatTestConfig(url string) siat.Config {
 	return siat.Config{BaseURL: url, Token: "test", Nit: 123456789, CodigoSistema: "SISTEMA", CodigoAmbiente: siat.AmbientePruebas}
 }
 
-// v3RequestFields checks the actual SOAP namespace and ordered request children.
-func v3RequestFields(t *testing.T, body, operation, request string) []string {
+// siatRequestFields checks the actual SOAP namespace and ordered request children.
+func siatRequestFields(t *testing.T, body, operation, request string) []string {
 	t.Helper()
 	d := xml.NewDecoder(strings.NewReader(body))
 	var fields []string
@@ -93,9 +93,9 @@ func v3RequestFields(t *testing.T, body, operation, request string) []string {
 	return fields
 }
 
-func TestSIATV3_ServicesAndPackageContract(t *testing.T) {
-	server, captures := v3TestServer(t)
-	client, err := siat.New(v3TestConfig(server.URL + "/sfd"))
+func TestSIAT_ServicesAndPackageContract(t *testing.T) {
+	server, captures := siatTestServer(t)
+	client, err := siat.New(siatTestConfig(server.URL + "/sfd"))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -128,7 +128,7 @@ func TestSIATV3_ServicesAndPackageContract(t *testing.T) {
 			if got.path != "/sfd/"+tc.name || got.token != "TokenApi test" {
 				t.Errorf("unexpected endpoint/auth: %s %s", got.path, got.token)
 			}
-			fields := v3RequestFields(t, got.body, "recepcionPaqueteFactura", "SolicitudServicioRecepcionPaquete")
+			fields := siatRequestFields(t, got.body, "recepcionPaqueteFactura", "SolicitudServicioRecepcionPaquete")
 			want := []string{"codigoAmbiente", "codigoDocumentoSector", "codigoEmision", "codigoModalidad", "codigoPuntoVenta", "codigoSistema", "codigoSucursal", "cufd", "cuis", "nit", "tipoFacturaDocumento", "archivo", "fechaEnvio", "hashArchivo", "cantidadFacturas", "codigoEvento"}
 			if !slices.Equal(fields, want) {
 				t.Errorf("SOAP fields = %v; want %v", fields, want)
@@ -141,9 +141,9 @@ func TestSIATV3_ServicesAndPackageContract(t *testing.T) {
 
 }
 
-func TestSIATV3_CufdAndResponseDetails(t *testing.T) {
-	server, captures := v3TestServer(t)
-	client, err := siat.New(v3TestConfig(server.URL + "/sfd"))
+func TestSIAT_CufdAndResponseDetails(t *testing.T) {
+	server, captures := siatTestServer(t)
+	client, err := siat.New(siatTestConfig(server.URL + "/sfd"))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -168,15 +168,15 @@ func TestSIATV3_CufdAndResponseDetails(t *testing.T) {
 	}
 }
 
-func TestSIATV3_InvalidConfig(t *testing.T) {
+func TestSIAT_InvalidConfig(t *testing.T) {
 	if client, err := siat.New(siat.Config{}); err == nil || client != nil {
 		t.Fatal("invalid config accepted")
 	}
 }
 
-func TestSIATV3_AllServiceEndpoints(t *testing.T) {
-	server, captures := v3TestServer(t)
-	client, err := siat.New(v3TestConfig(" " + server.URL + "/sfd/ "))
+func TestSIAT_AllServiceEndpoints(t *testing.T) {
+	server, captures := siatTestServer(t)
+	client, err := siat.New(siatTestConfig(" " + server.URL + "/sfd/ "))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -241,14 +241,14 @@ func TestSIATV3_AllServiceEndpoints(t *testing.T) {
 			if got.path != "/sfd/"+tc.name {
 				t.Errorf("endpoint = %s", got.path)
 			}
-			v3RequestFields(t, got.body, "verificarComunicacion", "")
+			siatRequestFields(t, got.body, "verificarComunicacion", "")
 		})
 	}
 }
 
-func TestSIATV3_DynamicIdentityDoesNotMutatePackage(t *testing.T) {
-	server, captures := v3TestServer(t)
-	client, err := siat.New(v3TestConfig(server.URL + "/sfd"))
+func TestSIAT_DynamicIdentityDoesNotMutatePackage(t *testing.T) {
+	server, captures := siatTestServer(t)
+	client, err := siat.New(siatTestConfig(server.URL + "/sfd"))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -270,9 +270,9 @@ func TestSIATV3_DynamicIdentityDoesNotMutatePackage(t *testing.T) {
 	}
 }
 
-func TestSIATV3_ProductResponse(t *testing.T) {
-	server, captures := v3TestServer(t)
-	client, err := siat.New(v3TestConfig(server.URL + "/sfd"))
+func TestSIAT_ProductResponse(t *testing.T) {
+	server, captures := siatTestServer(t)
+	client, err := siat.New(siatTestConfig(server.URL + "/sfd"))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -290,8 +290,8 @@ func TestSIATV3_ProductResponse(t *testing.T) {
 	}
 }
 
-func TestSIATV3_ZeroRequestReturnsError(t *testing.T) {
-	client, err := siat.New(v3TestConfig("http://unused.invalid/sfd"))
+func TestSIAT_ZeroRequestReturnsError(t *testing.T) {
+	client, err := siat.New(siatTestConfig("http://unused.invalid/sfd"))
 	if err != nil {
 		t.Fatal(err)
 	}

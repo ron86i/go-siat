@@ -13,7 +13,7 @@ func TestVentaMineralBCBConservaFormatoElectronico(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	var node xsdV3Node
+	var node xsdNode
 	if err := xml.Unmarshal(data, &node); err != nil {
 		t.Fatal(err)
 	}
