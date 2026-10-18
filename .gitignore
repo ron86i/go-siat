@@ -16,3 +16,9 @@ coverage.out
 AGENT.md
 .cursorrules
 .cursor/
+
+# Local planning documents
+docs/superpowers/
+
+# Local SIAT contingency runs
+internal/adapter/services/siat_recepcion_paquete_*_test.go
