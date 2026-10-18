@@ -4,7 +4,7 @@ import (
 	"encoding/xml"
 	"time"
 
-	"github.com/ron86i/go-siat/v2/internal/core/domain/datatype"
+	"github.com/ron86i/go-siat/v3/internal/core/domain/datatype"
 )
 
 // RegistroEventoSignificativo es el wrapper para registrar un evento
@@ -63,6 +63,7 @@ type SolicitudConsultaEvento struct {
 	CodigoPuntoVenta int       `xml:"codigoPuntoVenta" json:"codigoPuntoVenta"`
 	CodigoSistema    string    `xml:"codigoSistema" json:"codigoSistema"`
 	CodigoSucursal   int       `xml:"codigoSucursal" json:"codigoSucursal"`
+	Cufd             string    `xml:"cufd" json:"cufd"`
 	Cuis             string    `xml:"cuis" json:"cuis"`
 	FechaEvento      time.Time `xml:"fechaEvento" json:"fechaEvento"`
 	Nit              int64     `xml:"nit" json:"nit"`

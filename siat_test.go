@@ -3,8 +3,8 @@ package siat_test
 import (
 	"testing"
 
-	"github.com/ron86i/go-siat/v2"
-	"github.com/ron86i/go-siat/v2/pkg/models"
+	"github.com/ron86i/go-siat/v3"
+	"github.com/ron86i/go-siat/v3/pkg/models"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -47,7 +47,7 @@ func TestNew(t *testing.T) {
 			Nit:            123456789,
 			CodigoSistema:  "test",
 			CodigoAmbiente: siat.AmbientePruebas,
-			BaseURL:        "https://pilotosiatservicios.impuestos.gob.bo/v2",
+			BaseURL:        "https://pilotosiatservicios.impuestos.gob.bo/sfd",
 		}
 		services, err := siat.New(cfg)
 		assert.NoError(t, err)

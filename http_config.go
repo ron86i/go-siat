@@ -3,7 +3,7 @@ package siat
 import (
 	"net/http"
 
-	"github.com/ron86i/go-siat/v2/internal/adapter/services"
+	"github.com/ron86i/go-siat/v3/internal/adapter/services"
 )
 
 // HTTPConfig es la configuración pública para personalizar el cliente HTTP del SDK.
@@ -26,7 +26,7 @@ import (
 //		Nit:            123456789,
 //		CodigoSistema:  "...",
 //		CodigoAmbiente: siat.AmbientePruebas,
-//		BaseURL:        "https://pilotosiatservicios.impuestos.gob.bo/v2",
+//		BaseURL:        "https://pilotosiatservicios.impuestos.gob.bo/sfd",
 //		HTTPClient:     siat.NewHTTPClient(cfg),
 //	})
 type HTTPConfig = services.HTTPConfig

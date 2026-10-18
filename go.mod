@@ -1,4 +1,4 @@
-module github.com/ron86i/go-siat/v2
+module github.com/ron86i/go-siat/v3
 
 go 1.26.0
 

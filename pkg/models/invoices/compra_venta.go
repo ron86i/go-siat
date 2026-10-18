@@ -6,10 +6,10 @@ import (
 
 	"github.com/shopspring/decimal"
 
-	"github.com/ron86i/go-siat/v2"
-	"github.com/ron86i/go-siat/v2/internal/core/domain/datatype"
-	"github.com/ron86i/go-siat/v2/internal/core/domain/documents"
-	"github.com/ron86i/go-siat/v2/pkg/models"
+	"github.com/ron86i/go-siat/v3"
+	"github.com/ron86i/go-siat/v3/internal/core/domain/datatype"
+	"github.com/ron86i/go-siat/v3/internal/core/domain/documents"
+	"github.com/ron86i/go-siat/v3/pkg/models"
 )
 
 // CompraVenta representa la estructura completa de una factura lista para ser procesada.

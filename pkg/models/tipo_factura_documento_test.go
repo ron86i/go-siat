@@ -6,8 +6,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/ron86i/go-siat/v2"
-	"github.com/ron86i/go-siat/v2/pkg/models"
+	"github.com/ron86i/go-siat/v3"
+	"github.com/ron86i/go-siat/v3/pkg/models"
 )
 
 type documentoFiscalPrueba struct{}

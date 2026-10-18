@@ -19,7 +19,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ron86i/go-siat/v2/pkg/utils"
+	"github.com/ron86i/go-siat/v3/pkg/utils"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

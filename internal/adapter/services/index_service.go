@@ -10,10 +10,10 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/ron86i/go-siat/v2/internal/core/domain/datatype/soap"
-	siatErrors "github.com/ron86i/go-siat/v2/internal/core/errors"
-	"github.com/ron86i/go-siat/v2/internal/core/ports"
-	"github.com/ron86i/go-siat/v2/pkg/models"
+	"github.com/ron86i/go-siat/v3/internal/core/domain/datatype/soap"
+	siatErrors "github.com/ron86i/go-siat/v3/internal/core/errors"
+	"github.com/ron86i/go-siat/v3/internal/core/ports"
+	"github.com/ron86i/go-siat/v3/pkg/models"
 )
 
 // SiatService define los diferentes servicios disponibles en el SIAT.
@@ -183,10 +183,16 @@ func performSoapRequest[TReq any, TResp any](ctx context.Context, httpClient *ht
 		}
 	}
 
-	req := getInternalRequest[TReq](opaqueReq)
-	injectCredenciales(req, config)
+	source := getInternalRequest[TReq](opaqueReq)
+	if source == nil {
+		return nil, fmt.Errorf("nil SOAP request")
+	}
+	// The builders may be reused by another tenant or request. Inject identity
+	// into a value copy, preserving the original builder's zero-valued fields.
+	req := *source
+	injectCredenciales(&req, config)
 
-	xmlBody, err := buildRequest(req)
+	xmlBody, err := buildRequest(&req)
 	if err != nil {
 		return nil, err
 	}

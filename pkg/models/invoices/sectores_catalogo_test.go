@@ -5,9 +5,9 @@ import (
 	"strings"
 	"testing"
 
-	siat "github.com/ron86i/go-siat/v2"
-	"github.com/ron86i/go-siat/v2/pkg/models"
-	"github.com/ron86i/go-siat/v2/pkg/models/invoices"
+	siat "github.com/ron86i/go-siat/v3"
+	"github.com/ron86i/go-siat/v3/pkg/models"
+	"github.com/ron86i/go-siat/v3/pkg/models/invoices"
 )
 
 // sectorCase describe lo que el catálogo normativo del SIAT espera de un builder de sector:

@@ -3,8 +3,8 @@ package models_test
 import (
 	"testing"
 
-	"github.com/ron86i/go-siat/v2/pkg/models"
-	"github.com/ron86i/go-siat/v2/pkg/utils"
+	"github.com/ron86i/go-siat/v3/pkg/models"
+	"github.com/ron86i/go-siat/v3/pkg/utils"
 	"github.com/stretchr/testify/require"
 )
 

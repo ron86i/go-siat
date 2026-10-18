@@ -12,9 +12,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/ron86i/go-siat/v2/internal/core/domain/datatype"
-	"github.com/ron86i/go-siat/v2/internal/core/domain/siat/facturacion"
-	"github.com/ron86i/go-siat/v2/pkg/utils"
+	"github.com/ron86i/go-siat/v3/internal/core/domain/datatype"
+	"github.com/ron86i/go-siat/v3/internal/core/domain/siat/facturacion"
+	"github.com/ron86i/go-siat/v3/pkg/utils"
 )
 
 // XMLSigner define la interfaz para realizar la firma de documentos XML
@@ -566,11 +566,6 @@ func (b *RecepcionPaqueteFacturaBuilder) WithFechaEnvio(fechaEnvio time.Time) *R
 
 func (b *RecepcionPaqueteFacturaBuilder) WithHashArchivo(hashArchivo string) *RecepcionPaqueteFacturaBuilder {
 	b.request.SolicitudServicioRecepcionPaquete.SolicitudRecepcionFactura.HashArchivo = hashArchivo
-	return b
-}
-
-func (b *RecepcionPaqueteFacturaBuilder) WithCafc(cafc *string) *RecepcionPaqueteFacturaBuilder {
-	b.request.SolicitudServicioRecepcionPaquete.Cafc = datatype.Nilable[string]{Value: cafc}
 	return b
 }
 

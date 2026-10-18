@@ -9,8 +9,8 @@ type AnulacionFactura struct {
 
 type SolicitudAnulacion struct {
 	SolicitudRecepcion
-	Cuf          string `xml:"cuf" json:"cuf"`
 	CodigoMotivo int    `xml:"codigoMotivo" json:"codigomotivo"`
+	Cuf          string `xml:"cuf" json:"cuf"`
 }
 
 type AnulacionFacturaResponse struct {

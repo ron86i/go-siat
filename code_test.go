@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/ron86i/go-siat/v2"
+	"github.com/ron86i/go-siat/v3"
 	"github.com/stretchr/testify/assert"
 )
 

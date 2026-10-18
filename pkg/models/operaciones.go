@@ -3,8 +3,8 @@ package models
 import (
 	"time"
 
-	"github.com/ron86i/go-siat/v2/internal/core/domain/datatype"
-	"github.com/ron86i/go-siat/v2/internal/core/domain/siat/operaciones"
+	"github.com/ron86i/go-siat/v3/internal/core/domain/datatype"
+	"github.com/ron86i/go-siat/v3/internal/core/domain/siat/operaciones"
 )
 
 // --- Interfaces opacas para las solicitudes de Operaciones ---
@@ -278,6 +278,11 @@ func (b *consultaEventoSignificativoBuilder) WithCodigoPuntoVenta(codigoPuntoVen
 
 func (b *consultaEventoSignificativoBuilder) WithCuis(cuis string) *consultaEventoSignificativoBuilder {
 	b.request.SolicitudConsultaEvento.Cuis = cuis
+	return b
+}
+
+func (b *consultaEventoSignificativoBuilder) WithCufd(cufd string) *consultaEventoSignificativoBuilder {
+	b.request.SolicitudConsultaEvento.Cufd = cufd
 	return b
 }
 

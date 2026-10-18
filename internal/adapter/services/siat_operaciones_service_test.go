@@ -6,15 +6,17 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/http/httptest"
 	"os"
 	"path/filepath"
 	"testing"
 	"time"
 
+	"github.com/beevik/etree"
 	"github.com/joho/godotenv"
-	"github.com/ron86i/go-siat/v2"
-	"github.com/ron86i/go-siat/v2/pkg/models"
-	"github.com/ron86i/go-siat/v2/pkg/utils"
+	"github.com/ron86i/go-siat/v3"
+	"github.com/ron86i/go-siat/v3/pkg/models"
+	"github.com/ron86i/go-siat/v3/pkg/utils"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -34,7 +36,7 @@ func (t *xmlTraceTransport) RoundTrip(req *http.Request) (*http.Response, error)
 	t.sequence++
 	sequence := t.sequence
 	t.writeXML(sequence, "solicitud", body)
-	t.t.Logf("XML enviado al SIAT:\n%s", body)
+	t.logXML("enviado al", body)
 
 	resp, err := t.base.RoundTrip(req)
 	if err != nil {
@@ -43,17 +45,40 @@ func (t *xmlTraceTransport) RoundTrip(req *http.Request) (*http.Response, error)
 	t.t.Logf("respuesta HTTP del SIAT: %s %s -> %s", req.Method, req.URL, resp.Status)
 
 	responseBody, err := io.ReadAll(resp.Body)
+	resp.Body.Close()
 	if err != nil {
 		return nil, err
 	}
 	resp.Body = io.NopCloser(bytes.NewReader(responseBody))
 	t.writeXML(sequence, "respuesta", responseBody)
-	t.t.Logf("XML recibido del SIAT:\n%s", responseBody)
+	t.logXML("recibido del", responseBody)
 
 	return resp, nil
 }
 
+// logXML formatea una copia del cuerpo HTTP, conservando los elementos y
+// atributos desconocidos por los modelos. Los bytes originales se guardan en
+// disco y se entregan sin cambios al transporte o al decodificador del SDK.
+func (t *xmlTraceTransport) logXML(direction string, body []byte) {
+	document := etree.NewDocument()
+	if err := document.ReadFromBytes(body); err != nil {
+		t.t.Logf("Cuerpo %s SIAT (no se pudo formatear como XML: %v):\n%s", direction, err, body)
+		return
+	}
+	document.Indent(2)
+	formatted, err := document.WriteToString()
+	if err != nil {
+		t.t.Logf("XML %s SIAT (sin formato: %v):\n%s", direction, err, body)
+		return
+	}
+	t.t.Logf("XML completo %s SIAT (formateado para lectura):\n%s", direction, formatted)
+}
+
 func (t *xmlTraceTransport) writeXML(sequence int, kind string, body []byte) {
+	if err := os.MkdirAll(t.outputDir, 0o700); err != nil {
+		t.t.Logf("no se pudo crear directorio para XML de %s: %v", kind, err)
+		return
+	}
 	filename := fmt.Sprintf("%02d-%s.xml", sequence, kind)
 	path := filepath.Join(t.outputDir, filename)
 	if err := os.WriteFile(path, body, 0o600); err != nil {
@@ -61,6 +86,38 @@ func (t *xmlTraceTransport) writeXML(sequence int, kind string, body []byte) {
 		return
 	}
 	t.t.Logf("XML de %s guardado en %s", kind, path)
+}
+
+func TestXMLTraceTransportStoresErrorResponseInNestedDirectory(t *testing.T) {
+	responseBody := []byte(`<Envelope><Body><Respuesta><codigoEstado>-1</codigoEstado><codigoDescripcion>Error inesperado</codigoDescripcion></Respuesta></Body></Envelope>`)
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write(responseBody)
+	}))
+	t.Cleanup(server.Close)
+
+	outputDir := filepath.Join(t.TempDir(), "TestFacturasSector1_Individual")
+	client := &http.Client{Transport: &xmlTraceTransport{
+		t:         t,
+		base:      http.DefaultTransport,
+		outputDir: outputDir,
+	}}
+	resp, err := client.Post(server.URL, "application/xml", bytes.NewReader([]byte(`<Request/>`)))
+	if err != nil {
+		t.Fatalf("no se pudo recibir respuesta de prueba: %v", err)
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		t.Fatalf("estado HTTP inesperado: %s", resp.Status)
+	}
+
+	trace, err := os.ReadFile(filepath.Join(outputDir, "01-respuesta.xml"))
+	if err != nil {
+		t.Fatalf("no se guardó la respuesta XML: %v", err)
+	}
+	if !bytes.Equal(trace, responseBody) {
+		t.Fatalf("respuesta guardada distinta de la recibida:\nwant %s\n got %s", responseBody, trace)
+	}
 }
 
 func newXMLTraceHTTPClient(t *testing.T) *http.Client {

@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"testing"
 
-	"github.com/ron86i/go-siat/v2/pkg/models/invoices"
+	"github.com/ron86i/go-siat/v3/pkg/models/invoices"
 	"github.com/stretchr/testify/assert"
 )
 

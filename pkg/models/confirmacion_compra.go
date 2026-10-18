@@ -1,6 +1,6 @@
 package models
 
-import "github.com/ron86i/go-siat/v2/internal/core/domain/documents"
+import "github.com/ron86i/go-siat/v3/internal/core/domain/documents"
 
 // ConfirmacionCompra representa un XML individual para un archivo de
 // confirmaciones de compras. Puede serializarse directamente o incluirse en un

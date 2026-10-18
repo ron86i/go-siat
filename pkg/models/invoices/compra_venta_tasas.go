@@ -6,10 +6,10 @@ import (
 
 	"github.com/shopspring/decimal"
 
-	"github.com/ron86i/go-siat/v2"
-	"github.com/ron86i/go-siat/v2/internal/core/domain/datatype"
-	"github.com/ron86i/go-siat/v2/internal/core/domain/documents"
-	"github.com/ron86i/go-siat/v2/pkg/models"
+	"github.com/ron86i/go-siat/v3"
+	"github.com/ron86i/go-siat/v3/internal/core/domain/datatype"
+	"github.com/ron86i/go-siat/v3/internal/core/domain/documents"
+	"github.com/ron86i/go-siat/v3/pkg/models"
 )
 
 // CompraVentaTasas representa una factura de compra-venta con tasas lista para procesar.

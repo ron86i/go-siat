@@ -1,10 +1,6 @@
 package facturacion
 
-import (
-	"encoding/xml"
-
-	"github.com/ron86i/go-siat/v2/internal/core/domain/datatype"
-)
+import "encoding/xml"
 
 type RecepcionPaqueteFactura struct {
 	XMLName                           xml.Name                  `xml:"ns:recepcionPaqueteFactura" json:"-"`
@@ -13,9 +9,8 @@ type RecepcionPaqueteFactura struct {
 
 type SolicitudRecepcionPaquete struct {
 	SolicitudRecepcionFactura
-	Cafc             datatype.Nilable[string] `xml:"cafc" json:"cafc"`
-	CantidadFacturas int                      `xml:"cantidadFacturas" json:"cantidadFacturas"`
-	CodigoEvento     int64                    `xml:"codigoEvento" json:"codigoEvento"`
+	CantidadFacturas int   `xml:"cantidadFacturas" json:"cantidadFacturas"`
+	CodigoEvento     int64 `xml:"codigoEvento" json:"codigoEvento"`
 }
 
 type RecepcionPaqueteFacturaResponse struct {

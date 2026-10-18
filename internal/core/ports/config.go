@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/ron86i/go-siat/v2/pkg/utils"
+	"github.com/ron86i/go-siat/v3/pkg/utils"
 )
 
 // CredentialSign representa las credenciales de firma digital de manera tipada y estructurada.
@@ -119,7 +119,8 @@ type Config struct {
 	// CodigoAmbiente: siat.AmbienteProduccion o siat.AmbientePruebas (obligatorio)
 	CodigoAmbiente int
 
-	// BaseURL del SIAT (obligatorio)
+	// BaseURL del SIAT v3 (obligatorio), por ejemplo
+	// https://pilotosiatservicios.impuestos.gob.bo/sfd en piloto.
 	BaseURL string
 
 	// UserAgent personalizado (opcional, default: "go-siat")

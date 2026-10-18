@@ -3,7 +3,7 @@ package facturacion
 import (
 	"encoding/xml"
 
-	"github.com/ron86i/go-siat/v2/internal/core/domain/datatype"
+	"github.com/ron86i/go-siat/v3/internal/core/domain/datatype"
 )
 
 // SolicitudCompras representa la base de las solicitudes para el servicio de recepción de compras.
@@ -94,8 +94,8 @@ type SolicitudAnulacionCompra struct {
 	SolicitudCompras
 	CodAutorizacion string `xml:"codAutorizacion" json:"codAutorizacion"`
 	NitProveedor    int64  `xml:"nitProveedor" json:"nitProveedor"`
-	NroFactura      int64  `xml:"nroFactura" json:"nroFactura"`
 	NroDuiDim       string `xml:"nroDuiDim" json:"nroDuiDim"`
+	NroFactura      int64  `xml:"nroFactura" json:"nroFactura"`
 }
 
 // SolicitudConsultaCompras representa los datos para consultar compras.

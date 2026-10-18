@@ -1,6 +1,6 @@
 package siat
 
-import "github.com/ron86i/go-siat/v2/pkg/models"
+import "github.com/ron86i/go-siat/v3/pkg/models"
 
 const (
 	// AmbienteProduccion (1): Operaciones reales con validez tributaria.

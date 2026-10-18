@@ -9,9 +9,9 @@ import (
 	"time"
 
 	"github.com/joho/godotenv"
-	"github.com/ron86i/go-siat/v2"
-	"github.com/ron86i/go-siat/v2/pkg/models"
-	"github.com/ron86i/go-siat/v2/pkg/utils"
+	"github.com/ron86i/go-siat/v3"
+	"github.com/ron86i/go-siat/v3/pkg/models"
+	"github.com/ron86i/go-siat/v3/pkg/utils"
 )
 
 // TestContext agrupa los elementos comunes necesarios para ejecutar pruebas de integración con el SIAT.
@@ -28,6 +28,10 @@ type TestContext struct {
 
 // setupTestContext inicializa el entorno de pruebas, cargando variables de entorno y configurando el cliente SIAT.
 func setupTestContext(t *testing.T, modalidad int) *TestContext {
+	t.Helper()
+	if os.Getenv("SIAT_RUN") != "1" {
+		t.Skip("Prueba de integración real: requiere SIAT_RUN=1")
+	}
 	if _, err := os.Stat(".env"); os.IsNotExist(err) {
 		t.Skip("Saltando prueba de integración: .env no encontrado")
 	}

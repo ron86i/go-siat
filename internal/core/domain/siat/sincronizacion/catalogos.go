@@ -3,7 +3,7 @@ package sincronizacion
 import (
 	"encoding/xml"
 
-	"github.com/ron86i/go-siat/v2/internal/core/domain/datatype"
+	"github.com/ron86i/go-siat/v3/internal/core/domain/datatype"
 )
 
 // SolicitudSincronizacion representa los parámetros comunes requeridos para las solicitudes de sincronización al SIAT.
@@ -143,9 +143,10 @@ type RespuestaListaProductos struct {
 
 // ListaCodigosProductos detalla un producto asociado a una actividad.
 type ListaCodigosProductos struct {
-	CodigoActividad     uint64 `xml:"codigoActividad" json:"codigoActividad"`
-	CodigoProducto      uint64 `xml:"codigoProducto" json:"codigoProducto"`
-	DescripcionProducto string `xml:"descripcionProducto" json:"descripcionProducto"`
+	CodigoActividad     string   `xml:"codigoActividad" json:"codigoActividad"`
+	CodigoProducto      int64    `xml:"codigoProducto" json:"codigoProducto"`
+	DescripcionProducto string   `xml:"descripcionProducto" json:"descripcionProducto"`
+	Nandina             []string `xml:"nandina" json:"nandina"`
 }
 
 // --- Estructuras genéricas para paramétricas ---

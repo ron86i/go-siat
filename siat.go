@@ -5,15 +5,15 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/ron86i/go-siat/v2/internal/adapter/services"
-	"github.com/ron86i/go-siat/v2/internal/core/domain/siat/common"
-	"github.com/ron86i/go-siat/v2/internal/core/ports"
+	"github.com/ron86i/go-siat/v3/internal/adapter/services"
+	"github.com/ron86i/go-siat/v3/internal/core/domain/siat/common"
+	"github.com/ron86i/go-siat/v3/internal/core/ports"
 )
 
 // SiatServices es el punto de entrada principal del SDK.
 // Agrupa todas las implementaciones de los servicios del SIAT
 // (Códigos, Sincronización, Operaciones, Compra-Venta, Computarizada, Electrónica, etc.).
-// Los usuarios deben crear una instancia usando New().
+// Los usuarios deben crear una instancia usando New() con la ruta base /sfd/.
 type SiatServices struct {
 	config             Config
 	operaciones        ports.SiatOperacionesService
@@ -110,7 +110,8 @@ func New(config Config) (*SiatServices, error) {
 		httpClient = services.NewHTTPClient(services.DefaultHTTPConfig())
 	}
 
-	baseUrl := strings.TrimSpace(config.BaseURL)
+	baseUrl := strings.TrimRight(strings.TrimSpace(config.BaseURL), "/")
+	config.BaseURL = baseUrl
 
 	operaciones, err := services.NewSiatOperacionesService(baseUrl, httpClient, config)
 	if err != nil {

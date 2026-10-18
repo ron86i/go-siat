@@ -1,6 +1,6 @@
 package invoices
 
-import "github.com/ron86i/go-siat/v2/pkg/models"
+import "github.com/ron86i/go-siat/v3/pkg/models"
 
 // DefinicionTipoFactura se mantiene como alias para compatibilidad con los
 // consumidores del paquete invoices. El catálogo vive en models, junto a los
