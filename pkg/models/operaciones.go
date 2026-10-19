@@ -280,6 +280,10 @@ func (b *consultaEventoSignificativoBuilder) WithCuis(cuis string) *consultaEven
 	b.request.SolicitudConsultaEvento.Cuis = cuis
 	return b
 }
+func (b *consultaEventoSignificativoBuilder) WithCufd(cufd string) *consultaEventoSignificativoBuilder {
+	b.request.SolicitudConsultaEvento.Cufd = cufd
+	return b
+}
 
 func (b *consultaEventoSignificativoBuilder) WithFechaEvento(fecha time.Time) *consultaEventoSignificativoBuilder {
 	b.request.SolicitudConsultaEvento.FechaEvento = fecha
