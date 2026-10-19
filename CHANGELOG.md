@@ -1,5 +1,21 @@
 # Changelog
 
+## [2.4.3](https://github.com/ron86i/go-siat/compare/v2.4.2...v2.4.3) (2026-10-19)
+
+
+### Features
+
+* **operaciones:** add CUFD to event lookup ([450c289](https://github.com/ron86i/go-siat/commit/450c289a786830e6b5598b891bbdd941deaf7322))
+* **operaciones:** add CUFD to event lookup ([9a653c1](https://github.com/ron86i/go-siat/commit/9a653c14d91b9a15184885ce61e58f18d02c4ca8))
+
+
+### Bug Fixes
+
+* **deps:** bump github.com/shopspring/decimal ([ed3eea9](https://github.com/ron86i/go-siat/commit/ed3eea997f47e9a15290dcc6daa0eeacce9b844d))
+* **deps:** bump github.com/shopspring/decimal from 1.4.0 to 1.5.0 in the go-dependencies group ([eca0e06](https://github.com/ron86i/go-siat/commit/eca0e069b81b3b7eaaa767d2c146c6fd2be23231))
+* **deps:** bump golang.org/x/crypto ([070eb36](https://github.com/ron86i/go-siat/commit/070eb3698c9332cb5b0c582e4fad53ba3810a022))
+* **deps:** bump golang.org/x/crypto from 0.57.0 to 0.58.0 in the go-dependencies group ([2e4e55e](https://github.com/ron86i/go-siat/commit/2e4e55e2af2a373db24078a0718ad8c229ec65c3))
+
 ## [2.4.2](https://github.com/ron86i/go-siat/compare/v2.4.1...v2.4.2) (2026-10-06)
 
 
