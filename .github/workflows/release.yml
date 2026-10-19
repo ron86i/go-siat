@@ -2,6 +2,11 @@ name: Release Please
 
 on:
   workflow_dispatch:
+    inputs:
+      release_version:
+        description: "Versión a publicar, por ejemplo 2.4.2"
+        required: true
+        type: string
 
 permissions:
   contents: read
@@ -19,3 +24,4 @@ jobs:
         with:
           token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
           release-type: go
+          release-as: ${{ inputs.release_version }}
