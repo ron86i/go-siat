@@ -12,11 +12,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/beevik/etree"
-	"github.com/joho/godotenv"
 	"github.com/ron86i/go-siat/v3"
 	"github.com/ron86i/go-siat/v3/pkg/models"
 	"github.com/ron86i/go-siat/v3/pkg/utils"
+	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -36,7 +35,6 @@ func (t *xmlTraceTransport) RoundTrip(req *http.Request) (*http.Response, error)
 	t.sequence++
 	sequence := t.sequence
 	t.writeXML(sequence, "solicitud", body)
-	t.logXML("enviado al", body)
 
 	resp, err := t.base.RoundTrip(req)
 	if err != nil {
@@ -51,27 +49,8 @@ func (t *xmlTraceTransport) RoundTrip(req *http.Request) (*http.Response, error)
 	}
 	resp.Body = io.NopCloser(bytes.NewReader(responseBody))
 	t.writeXML(sequence, "respuesta", responseBody)
-	t.logXML("recibido del", responseBody)
 
 	return resp, nil
-}
-
-// logXML formatea una copia del cuerpo HTTP, conservando los elementos y
-// atributos desconocidos por los modelos. Los bytes originales se guardan en
-// disco y se entregan sin cambios al transporte o al decodificador del SDK.
-func (t *xmlTraceTransport) logXML(direction string, body []byte) {
-	document := etree.NewDocument()
-	if err := document.ReadFromBytes(body); err != nil {
-		t.t.Logf("Cuerpo %s SIAT (no se pudo formatear como XML: %v):\n%s", direction, err, body)
-		return
-	}
-	document.Indent(2)
-	formatted, err := document.WriteToString()
-	if err != nil {
-		t.t.Logf("XML %s SIAT (sin formato: %v):\n%s", direction, err, body)
-		return
-	}
-	t.t.Logf("XML completo %s SIAT (formateado para lectura):\n%s", direction, formatted)
 }
 
 func (t *xmlTraceTransport) writeXML(sequence int, kind string, body []byte) {
@@ -136,6 +115,10 @@ func newXMLTraceHTTPClient(t *testing.T) *http.Client {
 }
 
 func TestConsultaPuntoVenta(t *testing.T) {
+	if os.Getenv("SIAT_RUN") != "1" {
+		t.Skip("prueba de integración real: requiere SIAT_RUN=1")
+	}
+
 	if _, err := os.Stat(".env"); os.IsNotExist(err) {
 		t.Skip("Saltando prueba de integración: .env no encontrado")
 	}

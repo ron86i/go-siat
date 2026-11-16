@@ -2,112 +2,98 @@ package services_test
 
 import (
 	"encoding/xml"
-	"github.com/ron86i/go-siat/v3/pkg/models/invoices"
 	"strconv"
 	"testing"
 	"time"
+
+	"github.com/ron86i/go-siat/v3/documents/boletoaereo"
+	"github.com/ron86i/go-siat/v3/documents/notaconciliacion"
 )
 
-func buildBoletoAereoFixture(nit int64, cuf, cufd string, fechaEmision time.Time, modalidad int) invoices.BoletoAereo {
+func buildBoletoAereoFixture(nit int64, cuf, cufd string, fechaEmision time.Time, modalidad int) boletoaereo.Factura {
 	nombre := "JUAN PEREZ"
-	cabecera := invoices.NewBoletoAereoCabeceraBuilder().
-		WithNitEmisor(nit).
-		WithRazonSocialEmisor("AEROLINEAS TEST S.A.").
-		WithNumeroFactura(1).
-		WithCuf(cuf).
-		WithCufd(cufd).
-		WithCodigoSucursal(0).
-		WithDireccion("Aropuerto Internacional El Alto").
-		WithFechaEmision(fechaEmision).
-		WithNombreRazonSocial(&nombre).
-		WithCodigoTipoDocumentoIdentidad(1).
-		WithNumeroDocumento("1234567").
-		WithNombrePasajero("JUAN PEREZ").
-		WithCodigoIataLineaAerea(900).
-		WithCodigoOrigenServicio("LPB").
-		WithCodigoMetodoPago(1).
-		WithMontoTarifa(1000).
-		WithMontoAPagar(1000).
-		WithTotalPrecioNeto(870).
-		WithIva(130).
-		WithCodigoMoneda(1).
-		WithTipoCambio(1).
-		WithMontoTotalMoneda(1000).
-		WithCodigoTipoTransaccion("I").
-		WithLeyenda("Ley 453...").
-		WithUsuario("operador").
-		WithCodigoInterno("BOLETO-1").
-		Build()
-
-	factura := invoices.NewBoletoAereoBuilder().
-		WithModalidad(modalidad).
-		WithCabecera(cabecera).
-		Build()
-
-	return factura
+	return boletoaereo.Factura{
+		Modalidad: modalidad,
+		Cabecera: boletoaereo.Cabecera{
+			NitEmisor:                    nit,
+			RazonSocialEmisor:            "AEROLINEAS TEST S.A.",
+			NumeroFactura:                1,
+			Cuf:                          cuf,
+			Cufd:                         cufd,
+			CodigoSucursal:               0,
+			Direccion:                    "Aeropuerto Internacional El Alto",
+			FechaEmision:                 fechaEmision,
+			NombreRazonSocial:            &nombre,
+			CodigoTipoDocumentoIdentidad: 1,
+			NumeroDocumento:              "1234567",
+			NombrePasajero:               "JUAN PEREZ",
+			CodigoIataLineaAerea:         900,
+			CodigoOrigenServicio:         "LPB",
+			CodigoMetodoPago:             1,
+			MontoTarifa:                  1000,
+			MontoAPagar:                  1000,
+			TotalPrecioNeto:              870,
+			Iva:                          130,
+			CodigoMoneda:                 1,
+			TipoCambio:                   1,
+			MontoTotalMoneda:             1000,
+			CodigoTipoTransaccion:        "I",
+			Leyenda:                      "Ley 453...",
+			Usuario:                      "operador",
+			CodigoInterno:                "BOLETO-1",
+			CodigoDocumentoSector:        30,
+		},
+	}
 }
 
-func buildNotaConciliacionFixture(nit int64, cuf, cufd string, fechaEmision time.Time, codModalidad int) invoices.NotaConciliacion {
+func buildNotaConciliacionFixture(nit int64, cuf, cufd string, fechaEmision time.Time, codModalidad int) notaconciliacion.NotaCreditoDebito {
 	nombreRazonSocial := "JUAN PEREZ"
 	codigoPuntoVenta := 0
 
-	cabecera := invoices.NewNotaConciliacionCabeceraBuilder().
-		WithNitEmisor(nit).
-		WithRazonSocialEmisor("Ronaldo Rua").
-		WithMunicipio("Tarija").
-		WithNumeroNotaConciliacion(1).
-		WithCuf(cuf).
-		WithCufd(cufd).
-		WithCodigoSucursal(0).
-		WithDireccion("ESQUINA AVENIDA LA PAZ").
-		WithCodigoPuntoVenta(&codigoPuntoVenta).
-		WithFechaEmision(fechaEmision).
-		WithNombreRazonSocial(&nombreRazonSocial).
-		WithCodigoTipoDocumentoIdentidad(1).
-		WithNumeroDocumento("5115889").
-		WithCodigoCliente("1").
-		WithNumeroFactura(10).
-		WithNumeroAutorizacionCuf("DUMMY_AUT_CUF").
-		WithFechaEmisionFactura(fechaEmision.Add(-24 * time.Hour)).
-		WithTotalPrecioNetoOriginal(200).
-		WithMontoActualizacion(50).
-		WithUfvFactura(1).
-		WithUfvConciliacion(1.25).
-		WithMontoTotalConciliado(250.0).
-		WithCreditoFiscalIva(0).
-		WithDebitoFiscalIva(0).
-		WithLeyenda("Ley N° 453: Tienes derecho a recibir información...").
-		WithUsuario("usuario").
-		WithCodigoInterno("NOTA-1").
-		Build()
-
-	detalleA := invoices.NewNotaDetalleOriginalBuilder().
-		WithActividadEconomica("477300").
-		WithCodigoProductoSin(622539).
-		WithCodigoProducto("PROD-01").
-		WithDescripcion("Producto DUMMY").
-		WithCantidad(2.0).
-		WithUnidadMedida(1).
-		WithPrecioNetoUnitario(100.0).
-		WithSubTotal(200.0).
-		Build()
-
-	detalleB := invoices.NewNotaDetalleConciliacionBuilder().
-		WithActividadEconomica("477300").
-		WithCodigoProductoSin(622539).
-		WithCodigoProducto("PROD-01").
-		WithDescripcion("Producto DUMMY").
-		WithMontoConciliado(250.0).
-		Build()
-
-	nota := invoices.NewNotaConciliacionBuilder().
-		WithModalidad(codModalidad).
-		WithCabecera(cabecera).
-		AddDetalleOriginal(detalleA).
-		AddDetalleConciliacion(detalleB).
-		Build()
-
-	return nota
+	return notaconciliacion.NotaCreditoDebito{
+		Modalidad: codModalidad,
+		Cabecera: notaconciliacion.Cabecera{
+			NitEmisor:                    nit,
+			RazonSocialEmisor:            "Ronaldo Rua",
+			Municipio:                    "Tarija",
+			NumeroNotaConciliacion:       1,
+			Cuf:                          cuf,
+			Cufd:                         cufd,
+			CodigoSucursal:               0,
+			Direccion:                    "ESQUINA AVENIDA LA PAZ",
+			CodigoPuntoVenta:             &codigoPuntoVenta,
+			FechaEmision:                 fechaEmision,
+			NombreRazonSocial:            &nombreRazonSocial,
+			CodigoTipoDocumentoIdentidad: 1,
+			NumeroDocumento:              "5115889",
+			CodigoCliente:                "1",
+			NumeroFactura:                10,
+			NumeroAutorizacionCuf:        "DUMMY_AUT_CUF",
+			FechaEmisionFactura:          fechaEmision.Add(-24 * time.Hour),
+			TotalPrecioNetoOriginal:      200,
+			MontoActualizacion:           50,
+			UfvFactura:                   1,
+			UfvConciliacion:              1.25,
+			MontoTotalConciliado:         250.0,
+			CreditoFiscalIva:             0,
+			DebitoFiscalIva:              0,
+			Leyenda:                      "Ley N° 453: Tienes derecho a recibir información...",
+			Usuario:                      "usuario",
+			CodigoInterno:                "NOTA-1",
+			CodigoDocumentoSector:        29,
+		},
+		Detalles: []notaconciliacion.Detalle{
+			{
+				ActividadEconomica:   "477300",
+				CodigoProductoSin:    622539,
+				CodigoProducto:       "PROD-01",
+				Descripcion:          "Producto DUMMY",
+				TotalPrecioNeto:      200.0,
+				TotalPrecioNetoFinal: 250.0,
+				MontoConciliado:      250.0,
+			},
+		},
+	}
 }
 
 func TestFacturasFixturesSinRed(t *testing.T) {
@@ -128,7 +114,6 @@ func TestFacturasFixturesSinRed(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			// Decode names explicitly; this test checks the data used by the live fixtures.
 			var doc struct {
 				Cabecera struct {
 					Fields []struct {

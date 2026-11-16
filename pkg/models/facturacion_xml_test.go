@@ -4,7 +4,27 @@ import (
 	"encoding/xml"
 	"strings"
 	"testing"
+	"time"
 )
+
+func TestRecepcionesSerializanFechaEnvioSinZona(t *testing.T) {
+	fecha := time.Date(2026, 10, 19, 23, 50, 43, 498123456, time.FixedZone("Bolivia", -4*60*60))
+	for nombre, solicitud := range map[string]any{
+		"individual": NewRecepcionFacturaBuilder().WithFechaEnvio(fecha).Build(),
+		"paquete":    NewRecepcionPaqueteFacturaBuilder().WithFechaEnvio(fecha).Build(),
+		"masiva":     NewRecepcionMasivaFacturaBuilder().WithFechaEnvio(fecha).Build(),
+	} {
+		t.Run(nombre, func(t *testing.T) {
+			data, err := xml.Marshal(solicitud)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if !strings.Contains(string(data), "<fechaEnvio>2026-10-19T23:50:43.498</fechaEnvio>") {
+				t.Fatalf("fechaEnvio incompatible con SIAT: %s", data)
+			}
+		})
+	}
+}
 
 func TestRecepcionFacturaBuilderConservaXMLIndentado(t *testing.T) {
 	type facturaPrueba struct {

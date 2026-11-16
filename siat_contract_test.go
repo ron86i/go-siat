@@ -99,29 +99,37 @@ func TestSIAT_ServicesAndPackageContract(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	request := models.NewRecepcionPaqueteFacturaBuilder().
-		WithCodigoModalidad(siat.ModalidadElectronica).
-		WithCodigoDocumentoSector(1).WithTipoFacturaDocumento(1).
-		WithCuis("CUIS").WithCufd("CUFD").WithArchivo("QQ==").
-		WithHashArchivo("HASH").
-		WithCantidadFacturas(10).WithCodigoEvento(123).Build()
 	for _, tc := range []struct {
-		name string
-		send func() error
+		name      string
+		sector    int
+		modalidad int
+		send      func(models.RecepcionPaqueteFactura) error
 	}{
-		{"ServicioFacturacionCompraVenta", func() error { _, err := client.CompraVenta().RecepcionPaqueteFactura(t.Context(), request); return err }},
-		{"ServicioFacturacionElectronica", func() error { _, err := client.Electronica().RecepcionPaqueteFactura(t.Context(), request); return err }},
-		{"ServicioFacturacionComputarizada", func() error {
-			_, err := client.Computarizada().RecepcionPaqueteFactura(t.Context(), request)
+		{"ServicioFacturacionCompraVenta", 1, siat.ModalidadElectronica, func(req models.RecepcionPaqueteFactura) error {
+			_, err := client.CompraVenta().RecepcionPaqueteFactura(t.Context(), req)
 			return err
 		}},
-		{"ServicioFacturacionServicioBasico", func() error {
-			_, err := client.ServicioBasico().RecepcionPaqueteFactura(t.Context(), request)
+		{"ServicioFacturacionElectronica", 2, siat.ModalidadElectronica, func(req models.RecepcionPaqueteFactura) error {
+			_, err := client.Electronica().RecepcionPaqueteFactura(t.Context(), req)
+			return err
+		}},
+		{"ServicioFacturacionComputarizada", 2, siat.ModalidadComputarizada, func(req models.RecepcionPaqueteFactura) error {
+			_, err := client.Computarizada().RecepcionPaqueteFactura(t.Context(), req)
+			return err
+		}},
+		{"ServicioFacturacionServicioBasico", 13, siat.ModalidadElectronica, func(req models.RecepcionPaqueteFactura) error {
+			_, err := client.ServicioBasico().RecepcionPaqueteFactura(t.Context(), req)
 			return err
 		}},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			if err := tc.send(); err != nil {
+			request := models.NewRecepcionPaqueteFacturaBuilder().
+				WithCodigoModalidad(tc.modalidad).
+				WithCodigoDocumentoSector(tc.sector).WithTipoFacturaDocumento(1).
+				WithCuis("CUIS").WithCufd("CUFD").WithArchivo("QQ==").
+				WithHashArchivo("HASH").
+				WithCantidadFacturas(10).WithCodigoEvento(123).Build()
+			if err := tc.send(request); err != nil {
 				t.Fatal(err)
 			}
 			got := <-captures
@@ -157,7 +165,12 @@ func TestSIAT_CufdAndResponseDetails(t *testing.T) {
 	if resp.Body.Content.RespuestaCufd.CodigoInterno != "INTERNO" {
 		t.Error("codigoInterno not decoded")
 	}
-	result, err := client.CompraVenta().RecepcionPaqueteFactura(t.Context(), models.NewRecepcionPaqueteFacturaBuilder().Build())
+	packageRequest := models.NewRecepcionPaqueteFacturaBuilder().
+		WithCodigoModalidad(siat.ModalidadElectronica).
+		WithCodigoDocumentoSector(1).WithTipoFacturaDocumento(1).
+		WithCuis("CUIS").WithCufd("CUFD").WithArchivo("QQ==").WithHashArchivo("HASH").
+		WithCantidadFacturas(1).WithCodigoEvento(1).Build()
+	result, err := client.CompraVenta().RecepcionPaqueteFactura(t.Context(), packageRequest)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -171,6 +184,93 @@ func TestSIAT_CufdAndResponseDetails(t *testing.T) {
 func TestSIAT_InvalidConfig(t *testing.T) {
 	if client, err := siat.New(siat.Config{}); err == nil || client != nil {
 		t.Fatal("invalid config accepted")
+	}
+}
+
+func TestSIAT_NewRejectsV2BaseURL(t *testing.T) {
+	server, _ := siatTestServer(t)
+	client, err := siat.New(siatTestConfig(server.URL + "/v2"))
+	if err == nil || client != nil {
+		t.Fatalf("siat.New accepted a v2 endpoint: client=%v err=%v", client, err)
+	}
+}
+
+func TestSIAT_NewDoesNotFollowRedirects(t *testing.T) {
+	redirected := make(chan struct{}, 1)
+	target := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		redirected <- struct{}{}
+		io.WriteString(w, `<Envelope xmlns="http://schemas.xmlsoap.org/soap/envelope/"><Body><verificarComunicacionResponse xmlns="https://siat.impuestos.gob.bo/"><RespuestaComunicacion><transaccion>true</transaccion></RespuestaComunicacion></verificarComunicacionResponse></Body></Envelope>`)
+	}))
+	t.Cleanup(target.Close)
+
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		http.Redirect(w, r, target.URL+"/v2/FacturacionCodigos", http.StatusTemporaryRedirect)
+	}))
+	t.Cleanup(server.Close)
+
+	client, err := siat.New(siatTestConfig(server.URL + "/sfd"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	_, err = client.Codigos().VerificarComunicacion(t.Context(), models.NewVerificarComunicacionCodigosBuilder().Build())
+	if err == nil {
+		t.Fatal("redirect response was treated as a successful SIAT response")
+	}
+	select {
+	case <-redirected:
+		t.Fatal("SIAT client followed a redirect to another protocol endpoint")
+	default:
+	}
+}
+
+func TestSIAT_FacturacionRechazaServicioIncompatibleAntesDeEnviar(t *testing.T) {
+	server, captures := siatTestServer(t)
+	client, err := siat.New(siatTestConfig(server.URL + "/sfd"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	request := models.NewRecepcionPaqueteFacturaBuilder().
+		WithCodigoModalidad(siat.ModalidadElectronica).
+		WithCodigoDocumentoSector(1).
+		Build()
+	if _, err := client.Electronica().RecepcionPaqueteFactura(t.Context(), request); err == nil {
+		t.Fatal("Compra-Venta was accepted by the generic electronic service")
+	}
+	select {
+	case got := <-captures:
+		t.Fatalf("incompatible request reached the server: %s", got.path)
+	default:
+	}
+}
+
+func TestSIAT_ServiciosSectorialesRechazanSectorIncompatible(t *testing.T) {
+	server, captures := siatTestServer(t)
+	client, err := siat.New(siatTestConfig(server.URL + "/sfd"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	_, ajusteErr := client.DocumentoAjuste().RecepcionDocumentoAjuste(t.Context(), models.NewRecepcionDocumentoAjusteBuilder().
+		WithCodigoModalidad(siat.ModalidadElectronica).
+		WithCodigoDocumentoSector(1).Build())
+	if ajusteErr == nil {
+		t.Fatal("Compra-Venta was accepted by the document-adjustment service")
+	}
+	select {
+	case got := <-captures:
+		t.Fatalf("incompatible adjustment request reached the server: %s", got.path)
+	default:
+	}
+
+	_, boletoErr := client.BoletoAereo().AnulacionFactura(t.Context(), models.NewAnulacionFacturaBuilder().
+		WithCodigoModalidad(siat.ModalidadElectronica).
+		WithCodigoDocumentoSector(1).Build())
+	if boletoErr == nil {
+		t.Fatal("Compra-Venta was accepted by the airline service")
+	}
+	select {
+	case got := <-captures:
+		t.Fatalf("incompatible airline request reached the server: %s", got.path)
+	default:
 	}
 }
 
@@ -252,7 +352,11 @@ func TestSIAT_DynamicIdentityDoesNotMutatePackage(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	request := models.NewRecepcionPaqueteFacturaBuilder().Build()
+	request := models.NewRecepcionPaqueteFacturaBuilder().
+		WithCodigoModalidad(siat.ModalidadElectronica).
+		WithCodigoDocumentoSector(1).WithTipoFacturaDocumento(1).
+		WithCuis("CUIS").WithCufd("CUFD").WithArchivo("QQ==").WithHashArchivo("HASH").
+		WithCantidadFacturas(1).WithCodigoEvento(1).Build()
 	ctx := siat.WithDynamicConfig(t.Context(), siat.Config{Nit: 999, Token: "tenant", CodigoSistema: "TENANT"})
 	if _, err := client.CompraVenta().RecepcionPaqueteFactura(ctx, request); err != nil {
 		t.Fatal(err)
@@ -291,7 +395,7 @@ func TestSIAT_ProductResponse(t *testing.T) {
 }
 
 func TestSIAT_ZeroRequestReturnsError(t *testing.T) {
-	client, err := siat.New(siatTestConfig("http://unused.invalid/sfd"))
+	client, err := siat.New(siatTestConfig("http://127.0.0.1"))
 	if err != nil {
 		t.Fatal(err)
 	}

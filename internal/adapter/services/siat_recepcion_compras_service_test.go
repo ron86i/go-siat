@@ -8,13 +8,17 @@ import (
 	"testing"
 	"time"
 
-	"github.com/joho/godotenv"
 	"github.com/ron86i/go-siat/v3"
 	"github.com/ron86i/go-siat/v3/pkg/models"
+	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/require"
 )
 
 func siatRecepcionComprasIntegrationConfig(t *testing.T) siat.Config {
+	if os.Getenv("SIAT_RUN") != "1" {
+		t.Skip("prueba de integración real: requiere SIAT_RUN=1")
+	}
+
 	t.Helper()
 
 	// Las variables exportadas tienen prioridad; .env solo completa las ausentes.

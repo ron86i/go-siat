@@ -3,12 +3,29 @@ package siat
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
 	"strings"
 
 	"github.com/ron86i/go-siat/v3/internal/adapter/services"
 	"github.com/ron86i/go-siat/v3/internal/core/domain/siat/common"
 	"github.com/ron86i/go-siat/v3/internal/core/ports"
+	"github.com/ron86i/go-siat/v3/internal/siatpolicy"
+	"github.com/ron86i/go-siat/v3/protocols"
 )
+
+// Tipos del cliente modular SIAT 3.0.
+type (
+	// Client es el cliente modular para SIAT 3.0.
+	Client = protocols.Client
+
+	// ClientConfig es la configuración de conexión e identidad para SIAT 3.0.
+	ClientConfig = protocols.Config
+)
+
+// NewClient crea el cliente modular para SIAT 3.0.
+func NewClient(config ClientConfig) (*Client, error) {
+	return protocols.NewClient(config)
+}
 
 // SiatServices es el punto de entrada principal del SDK.
 // Agrupa todas las implementaciones de los servicios del SIAT
@@ -101,6 +118,11 @@ func New(config Config) (*SiatServices, error) {
 	if err := validateConfig(config); err != nil {
 		return nil, err
 	}
+	baseURL, err := siatpolicy.ResolveBaseURL(config.BaseURL, config.CodigoAmbiente)
+	if err != nil {
+		return nil, err
+	}
+	config.BaseURL = baseURL
 
 	httpClient := config.HTTPClient
 	if httpClient != nil {
@@ -109,9 +131,9 @@ func New(config Config) (*SiatServices, error) {
 	} else {
 		httpClient = services.NewHTTPClient(services.DefaultHTTPConfig())
 	}
+	httpClient.CheckRedirect = func(_ *http.Request, _ []*http.Request) error { return http.ErrUseLastResponse }
 
-	baseUrl := strings.TrimRight(strings.TrimSpace(config.BaseURL), "/")
-	config.BaseURL = baseUrl
+	baseUrl := config.BaseURL
 
 	operaciones, err := services.NewSiatOperacionesService(baseUrl, httpClient, config)
 	if err != nil {

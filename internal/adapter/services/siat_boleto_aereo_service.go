@@ -11,6 +11,7 @@ import (
 	"github.com/ron86i/go-siat/v3/internal/core/domain/datatype/soap"
 	"github.com/ron86i/go-siat/v3/internal/core/domain/siat/facturacion"
 	"github.com/ron86i/go-siat/v3/internal/core/ports"
+	"github.com/ron86i/go-siat/v3/internal/siatpolicy"
 
 	"github.com/ron86i/go-siat/v3/pkg/models"
 )
@@ -25,23 +26,54 @@ type SiatBoletoAereoService struct {
 
 // AnulacionFactura anula una factura electrónicado.
 func (s *SiatBoletoAereoService) AnulacionFactura(ctx context.Context, req models.AnulacionFactura) (*soap.EnvelopeResponse[facturacion.AnulacionFacturaResponse], error) {
+	if err := validateLegacyFacturacionRequest(SiatBoletoAereo, req, 0, func(r *facturacion.AnulacionFactura) facturacion.SolicitudRecepcion {
+		return r.SolicitudAnulacion.SolicitudRecepcion
+	}); err != nil {
+		return nil, err
+	}
 	return performSoapRequest[facturacion.AnulacionFactura, facturacion.AnulacionFacturaResponse](ctx, s.httpClient, s.url, s.config, req)
 }
 
 // RecepcionMasivaFactura recepciona un conjunto de facturas electrónicas de forma masiva.
 func (s *SiatBoletoAereoService) RecepcionMasivaFactura(ctx context.Context, req models.RecepcionMasivaFactura) (*soap.EnvelopeResponse[facturacion.RecepcionMasivaFacturaResponse], error) {
+	if err := validateLegacyFacturacionRequest(SiatBoletoAereo, req, 3, func(r *facturacion.RecepcionMasivaFactura) facturacion.SolicitudRecepcion {
+		return r.SolicitudServicioRecepcionMasiva.SolicitudRecepcionFactura.SolicitudRecepcion
+	}); err != nil {
+		return nil, err
+	}
+	if count := getInternalRequest[facturacion.RecepcionMasivaFactura](req).SolicitudServicioRecepcionMasiva.CantidadFacturas; count <= 0 || count > siatpolicy.MaxFacturasMasiva {
+		return nil, fmt.Errorf("cantidad de facturas masiva fuera de límites")
+	}
 	return performSoapRequest[facturacion.RecepcionMasivaFactura, facturacion.RecepcionMasivaFacturaResponse](ctx, s.httpClient, s.url, s.config, req)
 }
 
 func (s *SiatBoletoAereoService) ReversionAnulacionFactura(ctx context.Context, req models.ReversionAnulacionFactura) (*soap.EnvelopeResponse[facturacion.ReversionAnulacionFacturaResponse], error) {
+	if err := validateLegacyFacturacionRequest(SiatBoletoAereo, req, 0, func(r *facturacion.ReversionAnulacionFactura) facturacion.SolicitudRecepcion {
+		return r.SolicitudReversionAnulacion.SolicitudRecepcion
+	}); err != nil {
+		return nil, err
+	}
 	return performSoapRequest[facturacion.ReversionAnulacionFactura, facturacion.ReversionAnulacionFacturaResponse](ctx, s.httpClient, s.url, s.config, req)
 }
 
 func (s *SiatBoletoAereoService) ValidacionRecepcionMasivaFactura(ctx context.Context, req models.ValidacionRecepcionMasivaFactura) (*soap.EnvelopeResponse[facturacion.ValidacionRecepcionMasivaFacturaResponse], error) {
+	if err := validateLegacyFacturacionRequest(SiatBoletoAereo, req, 3, func(r *facturacion.ValidacionRecepcionMasivaFactura) facturacion.SolicitudRecepcion {
+		return r.SolicitudServicioValidacionRecepcionMasivaFactura.SolicitudRecepcion
+	}); err != nil {
+		return nil, err
+	}
+	if getInternalRequest[facturacion.ValidacionRecepcionMasivaFactura](req).SolicitudServicioValidacionRecepcionMasivaFactura.CodigoRecepcion == "" {
+		return nil, fmt.Errorf("codigo de recepción masiva obligatorio")
+	}
 	return performSoapRequest[facturacion.ValidacionRecepcionMasivaFactura, facturacion.ValidacionRecepcionMasivaFacturaResponse](ctx, s.httpClient, s.url, s.config, req)
 }
 
 func (s *SiatBoletoAereoService) VerificacionEstadoFactura(ctx context.Context, req models.VerificacionEstadoFactura) (*soap.EnvelopeResponse[facturacion.VerificacionEstadoFacturaResponse], error) {
+	if err := validateLegacyFacturacionRequest(SiatBoletoAereo, req, 0, func(r *facturacion.VerificacionEstadoFactura) facturacion.SolicitudRecepcion {
+		return r.SolicitudServicioVerificacionEstadoFactura.SolicitudRecepcion
+	}); err != nil {
+		return nil, err
+	}
 	return performSoapRequest[facturacion.VerificacionEstadoFactura, facturacion.VerificacionEstadoFacturaResponse](ctx, s.httpClient, s.url, s.config, req)
 }
 

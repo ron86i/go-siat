@@ -32,6 +32,7 @@ type CabeceraComercialExportacionMinera struct {
 	DireccionComprador           string                    `xml:"direccionComprador" json:"direccionComprador"`
 	CodigoTipoDocumentoIdentidad int                       `xml:"codigoTipoDocumentoIdentidad" json:"codigoTipoDocumentoIdentidad"`
 	NumeroDocumento              string                    `xml:"numeroDocumento" json:"numeroDocumento"`
+	Complemento                  string                    `xml:"complemento" json:"complemento"`
 	Ruex                         datatype.Nilable[string]  `xml:"ruex" json:"ruex"`
 	Nim                          datatype.Nilable[string]  `xml:"nim" json:"nim"`
 	DescripcionProducto          string                    `xml:"descripcionProducto" json:"descripcionProducto"`
@@ -39,7 +40,7 @@ type CabeceraComercialExportacionMinera struct {
 	PuertoTransito               datatype.Nilable[string]  `xml:"puertoTransito" json:"puertoTransito"`
 	PuertoDestino                string                    `xml:"puertoDestino" json:"puertoDestino"`
 	PaisDestino                  int                       `xml:"paisDestino" json:"paisDestino"`
-	Incoterm                     string                    `xml:"incoterm" json:"incoterm"`
+	Incoterm                     int                       `xml:"incoterm" json:"incoterm"`
 	AlcanceIncoterm              string                    `xml:"alcanceIncoterm" json:"alcanceIncoterm"`
 	SubTotalNeto                 float64                   `xml:"subTotalNeto" json:"subTotalNeto"`
 	TotalPrecioNeto              float64                   `xml:"totalPrecioNeto" json:"totalPrecioNeto"`

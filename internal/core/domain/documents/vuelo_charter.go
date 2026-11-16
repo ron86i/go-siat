@@ -2,7 +2,6 @@ package documents
 
 import (
 	"encoding/xml"
-	"time"
 
 	"github.com/ron86i/go-siat/v3/internal/core/domain/datatype"
 )
@@ -28,7 +27,7 @@ type CabeceraVueloCharter struct {
 	CodigoSucursal               int                       `xml:"codigoSucursal" json:"codigoSucursal"`
 	Direccion                    string                    `xml:"direccion" json:"direccion"`
 	CodigoPuntoVenta             datatype.Nilable[int]     `xml:"codigoPuntoVenta" json:"codigoPuntoVenta"`
-	FechaEmision                 time.Time                 `xml:"fechaEmision" json:"fechaEmision"`
+	FechaEmision                 datatype.TimeSiat         `xml:"fechaEmision" json:"fechaEmision"`
 	NombreRazonSocial            datatype.Nilable[string]  `xml:"nombreRazonSocial" json:"nombreRazonSocial"`
 	CodigoTipoDocumentoIdentidad int                       `xml:"codigoTipoDocumentoIdentidad" json:"codigoTipoDocumentoIdentidad"`
 	NumeroDocumento              string                    `xml:"numeroDocumento" json:"numeroDocumento"`

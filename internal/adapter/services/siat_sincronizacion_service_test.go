@@ -30,7 +30,7 @@ func sincronizacionIntegrationContext(t *testing.T) (context.Context, ports.Siat
 	require.NoError(t, err, "no se pudo crear el cliente SIAT")
 
 	sucursal := codigoSIATDesdeEntorno(t, "SIAT_CODIGO_SUCURSAL", 0)
-	puntoVenta := codigoSIATDesdeEntorno(t, "SIAT_CODIGO_PUNTO_VENTA", 0)
+	puntoVenta := codigoSIATDesdeEntorno(t, "SIAT_PV", 0)
 	cuis := strings.TrimSpace(os.Getenv("SIAT_CUIS"))
 	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Minute)
 	t.Cleanup(cancel)
@@ -195,6 +195,9 @@ func TestSiatSincronizacion_Catalogos(t *testing.T) {
 		}},
 		{"unidades_medida", func() (any, error) {
 			return service.SincronizarParametricaUnidadMedida(ctx, models.NewSincronizarParametricaUnidadMedidaBuilder().WithCodigoSucursal(sucursal).WithCodigoPuntoVenta(puntoVenta).WithCuis(cuis).Build())
+		}},
+		{"fecha_hora", func() (any, error) {
+			return service.SincronizarFechaHora(ctx, models.NewSincronizarFechaHoraBuilder().WithCodigoSucursal(sucursal).WithCodigoPuntoVenta(puntoVenta).WithCuis(cuis).Build())
 		}},
 	}
 	for _, test := range tests {

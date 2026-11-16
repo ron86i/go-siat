@@ -10,6 +10,7 @@ import (
 
 	"github.com/ron86i/go-siat/v3/internal/core/domain/datatype/soap"
 	"github.com/ron86i/go-siat/v3/internal/core/domain/siat/documento_ajuste"
+	"github.com/ron86i/go-siat/v3/internal/core/domain/siat/facturacion"
 	"github.com/ron86i/go-siat/v3/internal/core/ports"
 
 	"github.com/ron86i/go-siat/v3/pkg/models"
@@ -22,18 +23,38 @@ type SiatDocumentoAjusteService struct {
 }
 
 func (s *SiatDocumentoAjusteService) RecepcionDocumentoAjuste(ctx context.Context, req models.RecepcionDocumentoAjuste) (*soap.EnvelopeResponse[documento_ajuste.RecepcionDocumentoAjusteResponse], error) {
+	if err := validateLegacyFacturacionRequest(SiatDocumentoAjuste, req, 1, func(r *documento_ajuste.RecepcionDocumentoAjuste) facturacion.SolicitudRecepcion {
+		return r.SolicitudRecepcionFactura.SolicitudRecepcion
+	}); err != nil {
+		return nil, err
+	}
 	return performSoapRequest[documento_ajuste.RecepcionDocumentoAjuste, documento_ajuste.RecepcionDocumentoAjusteResponse](ctx, s.httpClient, s.url, s.config, req)
 }
 
 func (s *SiatDocumentoAjusteService) AnulacionDocumentoAjuste(ctx context.Context, req models.AnulacionDocumentoAjuste) (*soap.EnvelopeResponse[documento_ajuste.AnulacionDocumentoAjusteResponse], error) {
+	if err := validateLegacyFacturacionRequest(SiatDocumentoAjuste, req, 0, func(r *documento_ajuste.AnulacionDocumentoAjuste) facturacion.SolicitudRecepcion {
+		return r.SolicitudServicioAnulacionDocumentoAjuste.SolicitudRecepcion
+	}); err != nil {
+		return nil, err
+	}
 	return performSoapRequest[documento_ajuste.AnulacionDocumentoAjuste, documento_ajuste.AnulacionDocumentoAjusteResponse](ctx, s.httpClient, s.url, s.config, req)
 }
 
 func (s *SiatDocumentoAjusteService) ReversionAnulacionDocumentoAjuste(ctx context.Context, req models.ReversionAnulacionDocumentoAjuste) (*soap.EnvelopeResponse[documento_ajuste.ReversionAnulacionDocumentoAjusteResponse], error) {
+	if err := validateLegacyFacturacionRequest(SiatDocumentoAjuste, req, 0, func(r *documento_ajuste.ReversionAnulacionDocumentoAjuste) facturacion.SolicitudRecepcion {
+		return r.SolicitudServicioReversionAnulacionDocumentoAjuste.SolicitudRecepcion
+	}); err != nil {
+		return nil, err
+	}
 	return performSoapRequest[documento_ajuste.ReversionAnulacionDocumentoAjuste, documento_ajuste.ReversionAnulacionDocumentoAjusteResponse](ctx, s.httpClient, s.url, s.config, req)
 }
 
 func (s *SiatDocumentoAjusteService) VerificacionEstadoDocumentoAjuste(ctx context.Context, req models.VerificacionEstadoDocumentoAjuste) (*soap.EnvelopeResponse[documento_ajuste.VerificacionEstadoDocumentoAjusteResponse], error) {
+	if err := validateLegacyFacturacionRequest(SiatDocumentoAjuste, req, 0, func(r *documento_ajuste.VerificacionEstadoDocumentoAjuste) facturacion.SolicitudRecepcion {
+		return r.SolicitudServicioVerificacionEstado.SolicitudRecepcion
+	}); err != nil {
+		return nil, err
+	}
 	return performSoapRequest[documento_ajuste.VerificacionEstadoDocumentoAjuste, documento_ajuste.VerificacionEstadoDocumentoAjusteResponse](ctx, s.httpClient, s.url, s.config, req)
 }
 

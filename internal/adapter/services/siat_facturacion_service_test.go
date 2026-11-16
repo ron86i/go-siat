@@ -8,11 +8,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/joho/godotenv"
 	"github.com/ron86i/go-siat/v3"
+	"github.com/ron86i/go-siat/v3/documents/duttyfree"
 	"github.com/ron86i/go-siat/v3/pkg/models"
-	"github.com/ron86i/go-siat/v3/pkg/models/invoices"
 	"github.com/ron86i/go-siat/v3/pkg/utils"
+	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -38,6 +38,10 @@ func (s *testXMLSigner) SignXML(xmlBytes []byte) ([]byte, error) {
 }
 
 func setupFacturacionTestContext(t *testing.T) *FacturacionTestContext {
+	if os.Getenv("SIAT_RUN") != "1" {
+		t.Skip("prueba de integración real: requiere SIAT_RUN=1")
+	}
+
 	if _, err := os.Stat(".env"); os.IsNotExist(err) {
 		t.Skip("Saltando prueba de integración: .env no encontrado")
 	}
@@ -121,49 +125,48 @@ func buildDuttyFree(t *testing.T, tc *FacturacionTestContext, numeroFactura int6
 	subTotalItem := (cantidad * precioUnitario) - montoDescuento
 	montoTotal := subTotalItem
 
-	cabecera := invoices.NewDuttyFreeCabeceraBuilder().
-		WithNitEmisor(tc.Nit).
-		WithRazonSocialEmisor("Empresa Test").
-		WithMunicipio("La Paz").
-		WithNumeroFactura(numeroFactura).
-		WithCuf(cuf).
-		WithCufd(tc.Cufd).
-		WithCodigoSucursal(0).
-		WithDireccion("Calle 1").
-		WithCodigoPuntoVenta(&codigoPuntoVenta).
-		WithFechaEmision(fechaEmision).
-		WithNombreRazonSocial(&nombreRazonSocial).
-		WithCodigoTipoDocumentoIdentidad(1).
-		WithNumeroDocumento("1234567").
-		WithCodigoCliente("CLI01").
-		WithCodigoMetodoPago(1).
-		WithSubTotalNeto(subTotalItem).
-		WithTotalPrecioNeto(subTotalItem).
-		WithMontoAPagar(montoTotal).
-		WithCodigoMoneda(1).
-		WithTipoCambio(1.0).
-		WithMontoTotalMoneda(montoTotal).
-		WithLeyenda("Leyenda").
-		WithUsuario("user").
-		WithCodigoInterno("DUTTY-1").
-		Build()
-
-	detalle := invoices.NewDuttyFreeDetalleBuilder().
-		WithActividadEconomica("477300").
-		WithCodigoProductoSin(622539).
-		WithCodigoProducto("P01").
-		WithDescripcion("Producto").
-		WithCantidad(cantidad).
-		WithUnidadMedida(1).
-		WithPrecioNetoUnitario(precioUnitario).
-		WithSubTotal(subTotalItem).
-		Build()
-
-	factura := invoices.NewDuttyFreeBuilder().
-		WithModalidad(tc.Modalidad).
-		WithCabecera(cabecera).
-		AddDetalle(detalle).
-		Build()
+	factura := duttyfree.Factura{
+		Modalidad: tc.Modalidad,
+		Cabecera: duttyfree.Cabecera{
+			NitEmisor:                    tc.Nit,
+			RazonSocialEmisor:            "Empresa Test",
+			Municipio:                    "La Paz",
+			NumeroFactura:                numeroFactura,
+			Cuf:                          cuf,
+			Cufd:                         tc.Cufd,
+			CodigoSucursal:               0,
+			Direccion:                    "Calle 1",
+			CodigoPuntoVenta:             &codigoPuntoVenta,
+			FechaEmision:                 fechaEmision,
+			NombreRazonSocial:            &nombreRazonSocial,
+			CodigoTipoDocumentoIdentidad: 1,
+			NumeroDocumento:              "1234567",
+			CodigoCliente:                "CLI01",
+			CodigoMetodoPago:             1,
+			SubTotalNeto:                 subTotalItem,
+			TotalPrecioNeto:              subTotalItem,
+			MontoAPagar:                  montoTotal,
+			CodigoMoneda:                 1,
+			TipoCambio:                   1.0,
+			MontoTotalMoneda:             montoTotal,
+			Leyenda:                      "Leyenda",
+			Usuario:                      "user",
+			CodigoInterno:                "DUTTY-1",
+			CodigoDocumentoSector:        10,
+		},
+		Detalles: []duttyfree.Detalle{
+			{
+				ActividadEconomica: "477300",
+				CodigoProductoSin:  622539,
+				CodigoProducto:     "P01",
+				Descripcion:        "Producto",
+				Cantidad:           cantidad,
+				UnidadMedida:       1,
+				PrecioNetoUnitario: precioUnitario,
+				SubTotal:           subTotalItem,
+			},
+		},
+	}
 
 	return cuf, factura
 }

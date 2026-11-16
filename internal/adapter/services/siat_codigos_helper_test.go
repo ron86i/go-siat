@@ -11,11 +11,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/joho/godotenv"
 	"github.com/ron86i/go-siat/v3"
 	"github.com/ron86i/go-siat/v3/internal/core/domain/siat/codigos"
 	"github.com/ron86i/go-siat/v3/internal/core/ports"
 	"github.com/ron86i/go-siat/v3/pkg/models"
+	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/require"
 )
 
@@ -24,6 +24,21 @@ type codigosTestOptions struct {
 	modalidad, sucursal, puntoVenta int
 	veces                           int
 	cuis                            string
+}
+
+func readSIATTestNumber(getenv func(string) string, short, alias string, fallback int) (int, error) {
+	name, value := short, strings.TrimSpace(getenv(short))
+	if value == "" && alias != "" {
+		name, value = alias, strings.TrimSpace(getenv(alias))
+	}
+	if value == "" {
+		return fallback, nil
+	}
+	n, err := strconv.Atoi(value)
+	if err != nil || n < 0 {
+		return 0, fmt.Errorf("%s debe ser un entero no negativo", name)
+	}
+	return n, nil
 }
 
 // Configuración del ejecutor de pruebas; no añade validaciones al SDK.
@@ -51,27 +66,13 @@ func readCodigosTestOptions(getenv func(string) string) (codigosTestOptions, err
 		!strings.HasSuffix(strings.TrimRight(endpoint.Path, "/"), "/sfd") || endpoint.RawQuery != "" || endpoint.Fragment != "" {
 		return options, fmt.Errorf("SIAT_URL debe ser una dirección base terminada en /sfd")
 	}
-	number := func(short, alias string, fallback int) (int, error) {
-		name, value := short, get(short)
-		if value == "" && alias != "" {
-			name, value = alias, get(alias)
-		}
-		if value == "" {
-			return fallback, nil
-		}
-		n, err := strconv.Atoi(value)
-		if err != nil || n < 0 {
-			return 0, fmt.Errorf("%s debe ser un entero no negativo", name)
-		}
-		return n, nil
-	}
-	if options.sucursal, err = number("SIAT_SUCURSAL", "SIAT_CODIGO_SUCURSAL", 0); err != nil {
+	if options.sucursal, err = readSIATTestNumber(getenv, "SIAT_SUCURSAL", "SIAT_CODIGO_SUCURSAL", 0); err != nil {
 		return options, err
 	}
-	if options.puntoVenta, err = number("SIAT_PV", "SIAT_CODIGO_PUNTO_VENTA", 1); err != nil {
+	if options.puntoVenta, err = readSIATTestNumber(getenv, "SIAT_PV", "SIAT_CODIGO_PUNTO_VENTA", 1); err != nil {
 		return options, err
 	}
-	if options.veces, err = number("SIAT_VECES", "", 10); err != nil {
+	if options.veces, err = readSIATTestNumber(getenv, "SIAT_VECES", "", 10); err != nil {
 		return options, err
 	}
 	if options.veces == 0 {

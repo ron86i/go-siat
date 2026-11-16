@@ -11,15 +11,19 @@ import (
 	"testing"
 	"time"
 
-	"github.com/joho/godotenv"
 	"github.com/ron86i/go-siat/v3"
 	"github.com/ron86i/go-siat/v3/internal/adapter/services"
 	"github.com/ron86i/go-siat/v3/pkg/models"
 	"github.com/ron86i/go-siat/v3/pkg/utils"
+	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
 )
 
 func getBoletoAereoSetup(t *testing.T) (*siat.SiatServices, string, string, string, int64, int) {
+	if os.Getenv("SIAT_RUN") != "1" {
+		t.Skip("prueba de integración real: requiere SIAT_RUN=1")
+	}
+
 	if _, err := os.Stat(".env"); os.IsNotExist(err) {
 		t.Skip("Saltando prueba de integración: .env no encontrado")
 	}

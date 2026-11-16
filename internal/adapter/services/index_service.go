@@ -73,6 +73,15 @@ func parseSoapResponse[T any](resp *http.Response) (*soap.EnvelopeResponse[T], e
 	// Intentar parsear la respuesta XML en la estructura de respuesta SOAP
 	err = xml.Unmarshal(body, &result)
 	if err != nil {
+		if resp.StatusCode < http.StatusOK || resp.StatusCode >= http.StatusMultipleChoices {
+			return nil, &siatErrors.SiatError{
+				Code:        "SIAT_HTTP_ERROR",
+				Message:     fmt.Sprintf("respuesta HTTP %s sin sobre SOAP válido; el resultado de la operación no está confirmado", resp.Status),
+				StatusCode:  resp.StatusCode,
+				IsRetryable: false,
+				WrappedErr:  err,
+			}
+		}
 		return nil, err
 	}
 

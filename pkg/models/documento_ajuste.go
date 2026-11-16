@@ -116,7 +116,7 @@ func (b *recepcionDocumentoAjusteBuilder) WithArchivo(v string) *recepcionDocume
 }
 
 func (b *recepcionDocumentoAjusteBuilder) WithFechaEnvio(v time.Time) *recepcionDocumentoAjusteBuilder {
-	b.request.SolicitudRecepcionFactura.FechaEnvio = datatype.TimeSiat(v)
+	b.request.SolicitudRecepcionFactura.FechaEnvio = datatype.NewTimeSiat(v)
 	return b
 }
 

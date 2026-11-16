@@ -9,11 +9,12 @@ import (
 	"testing"
 	"time"
 
-	"github.com/joho/godotenv"
 	"github.com/ron86i/go-siat/v3"
+	"github.com/ron86i/go-siat/v3/documents/compraventa"
 	"github.com/ron86i/go-siat/v3/pkg/models"
-	"github.com/ron86i/go-siat/v3/pkg/models/invoices"
 	"github.com/ron86i/go-siat/v3/pkg/utils"
+	siatfacturacion "github.com/ron86i/go-siat/v3/protocols/facturacion"
+	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/require"
 )
 
@@ -52,7 +53,7 @@ func TestRegistroCompraE2EXMLUsesOfficialSchemaSequence(t *testing.T) {
 		NumeroFactura:       123,
 		NumeroDuiDim:        "0",
 		FechaEmision:        time.Date(2026, time.October, 16, 12, 0, 0, 0, time.FixedZone("America/La_Paz", -4*60*60)),
-		MontoTotalCompra:    "100",
+		MontoTotalCompra:    "100.01",
 		ImporteIce:          "0",
 		ImporteIehd:         "0",
 		ImporteIpj:          "0",
@@ -60,11 +61,11 @@ func TestRegistroCompraE2EXMLUsesOfficialSchemaSequence(t *testing.T) {
 		OtroNoSujetoCredito: "0",
 		ImportesExentos:     "0",
 		ImporteTasaCero:     "0",
-		SubTotal:            "100",
+		SubTotal:            "100.01",
 		Descuento:           "0",
 		MontoGiftCard:       "0",
-		MontoTotalSujetoIva: "100",
-		CreditoFiscal:       "13",
+		MontoTotalSujetoIva: "88.50",
+		CreditoFiscal:       "11.51",
 		TipoCompra:          1,
 		CodigoControl:       "0",
 	}
@@ -153,35 +154,80 @@ func TestSiatRecepcionCompras_FlujoCompleto(t *testing.T) {
 	cuf, err := utils.GenerarCUF(cfg.Nit, fecha, 0, modalidad, siat.EmisionOnline, 1, 1, numero, 0, cufd.CodigoControl)
 	require.NoError(t, err)
 	nit := strconv.FormatInt(cfg.Nit, 10)
-	cabecera := invoices.NewCompraVentaCabeceraBuilder().WithNitEmisor(cfg.Nit).
-		WithRazonSocialEmisor(razonSocial).WithMunicipio("LA PAZ").
-		WithDireccion("DOMICILIO DE PRUEBAS").WithNumeroFactura(numero).WithCuf(cuf).
-		WithCufd(cufd.Codigo).WithCodigoSucursal(0).WithCodigoPuntoVenta(new(0)).
-		WithFechaEmision(fecha).WithNombreRazonSocial(&razonSocial).
-		WithCodigoTipoDocumentoIdentidad(5).WithNumeroDocumento(nit).WithCodigoCliente(nit).
-		WithCodigoMetodoPago(1).
-		WithSubTotalNeto(88.50).WithTotalPrecioNeto(88.50).
-		WithIva(11.50).WithMontoAPagar(100).WithCodigoInterno(cufd.CodigoInterno).
-		WithCodigoMoneda(1).WithTipoCambio(1).WithMontoTotalMoneda(100).
-		WithLeyenda("FACTURA DE PRUEBA DE INTEGRACION").WithUsuario("integracion").
-		WithCodigoDocumentoSector(1).Build()
-	detalle := invoices.NewCompraVentaDetalleBuilder().
-		WithActividadEconomica(product.CodigoActividad).
-		WithCodigoProductoSin(product.CodigoProducto).WithCodigoProducto("PRUEBA-RCV").
-		WithDescripcion(product.DescripcionProducto).WithCantidad(1).WithUnidadMedida(58).
-		WithPrecioNetoUnitario(88.50).WithSubTotal(88.50).Build()
-	factura := invoices.NewCompraVentaBuilder().WithModalidad(modalidad).
-		WithCabecera(cabecera).AddDetalle(detalle).Build()
-	emision := models.NewRecepcionFacturaBuilder().WithCodigoSucursal(0).WithCodigoPuntoVenta(0).
-		WithCodigoModalidad(modalidad).WithCodigoDocumentoSector(1).WithTipoFacturaDocumento(1).
-		WithCodigoEmision(siat.EmisionOnline).WithCuis(cuis).WithCufd(cufd.Codigo).WithFechaEnvio(fecha)
-	require.NoError(t, emision.WithFactura(factura, client.Config()))
-	resp, err := client.CompraVenta().RecepcionFactura(ctx, emision.Build())
+	cabecera := compraventa.Cabecera{
+		NitEmisor:                    cfg.Nit,
+		RazonSocialEmisor:            razonSocial,
+		Municipio:                    "LA PAZ",
+		Direccion:                    "DOMICILIO DE PRUEBAS",
+		NumeroFactura:                numero,
+		Cuf:                          cuf,
+		Cufd:                         cufd.Codigo,
+		CodigoSucursal:               0,
+		CodigoPuntoVenta:             new(0),
+		FechaEmision:                 fecha,
+		NombreRazonSocial:            &razonSocial,
+		CodigoTipoDocumentoIdentidad: 5,
+		NumeroDocumento:              nit,
+		Complemento:                  "0",
+		CodigoCliente:                nit,
+		CodigoMetodoPago:             1,
+		SubTotalNeto:                 88.50,
+		TotalPrecioNeto:              88.50,
+		Iva:                          11.51,
+		MontoAPagar:                  100.01,
+		CodigoInterno:                cufd.CodigoInterno,
+		CodigoMoneda:                 1,
+		TipoCambio:                   1,
+		MontoTotalMoneda:             100.01,
+		Leyenda:                      "FACTURA DE PRUEBA DE INTEGRACION",
+		Usuario:                      "integracion",
+		CodigoDocumentoSector:        1,
+	}
+	detalles := []compraventa.Detalle{
+		{
+			ActividadEconomica: product.CodigoActividad,
+			CodigoProductoSin:  product.CodigoProducto,
+			CodigoProducto:     "PRUEBA-RCV",
+			Descripcion:        product.DescripcionProducto,
+			Cantidad:           1,
+			UnidadMedida:       58,
+			PrecioNetoUnitario: 88.50,
+			SubTotal:           88.50,
+		},
+	}
+	factura, err := compraventa.New(cabecera, detalles)
 	require.NoError(t, err)
-	emitida, err := resp.GetContent()
+	emisionClient, err := siatfacturacion.NewClient(siatfacturacion.Config{
+		BaseURL:        cfg.BaseURL,
+		Token:          cfg.Token,
+		Nit:            cfg.Nit,
+		CodigoSistema:  cfg.CodigoSistema,
+		CodigoAmbiente: cfg.CodigoAmbiente,
+		HTTPClient:     cfg.HTTPClient,
+	})
 	require.NoError(t, err)
-	require.True(t, emitida.RespuestaServicioFacturacion.Transaccion, "%+v", emitida.RespuestaServicioFacturacion)
-	require.Equal(t, 908, emitida.RespuestaServicioFacturacion.CodigoEstado, "%+v", emitida.RespuestaServicioFacturacion)
+	var signer siatfacturacion.XMLSigner
+	if modalidad == siat.ModalidadElectronica {
+		signer = cfg.CredentialSign
+	}
+	emision := siatfacturacion.SolicitudRecepcionFactura{
+		CodigoDocumentoSector: 1,
+		CodigoEmision:         siat.EmisionOnline,
+		CodigoModalidad:       modalidad,
+		CodigoPuntoVenta:      new(0),
+		CodigoSucursal:        0,
+		Cufd:                  cufd.Codigo,
+		Cuis:                  cuis,
+		TipoFacturaDocumento:  1,
+		FechaEnvio:            fecha,
+	}
+	preparada, err := emisionClient.PrepararFactura(emision, factura, signer)
+	require.NoError(t, err)
+	emitida, err := emisionClient.RecepcionFactura(ctx, preparada)
+	require.NoError(t, err)
+	require.NotNil(t, emitida.Transaccion, "%+v", emitida)
+	require.True(t, *emitida.Transaccion, "%+v", emitida)
+	require.Equal(t, 908, emitida.CodigoEstado, "%+v", emitida)
 	t.Logf("Factura emitida: número=%d CUF=%s; emisor y comprador usan el mismo NIT", numero, cuf)
 	// Este escenario declara la compra manualmente. ConsultaCompras y
 	// ConfirmacionCompras son otro flujo: sólo confirman compras ya reportadas.
@@ -193,7 +239,7 @@ func TestSiatRecepcionCompras_FlujoCompleto(t *testing.T) {
 		NumeroFactura:       numero,
 		NumeroDuiDim:        "0",
 		FechaEmision:        fecha,
-		MontoTotalCompra:    "100",
+		MontoTotalCompra:    "100.01",
 		ImporteIce:          "0",
 		ImporteIehd:         "0",
 		ImporteIpj:          "0",
@@ -201,11 +247,11 @@ func TestSiatRecepcionCompras_FlujoCompleto(t *testing.T) {
 		OtroNoSujetoCredito: "0",
 		ImportesExentos:     "0",
 		ImporteTasaCero:     "0",
-		SubTotal:            "100",
+		SubTotal:            "100.01",
 		Descuento:           "0",
 		MontoGiftCard:       "0",
-		MontoTotalSujetoIva: "100",
-		CreditoFiscal:       "13",
+		MontoTotalSujetoIva: "88.50",
+		CreditoFiscal:       "11.51",
 		TipoCompra:          1,
 		CodigoControl:       "0",
 	}

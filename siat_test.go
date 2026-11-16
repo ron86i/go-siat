@@ -4,7 +4,6 @@ import (
 	"testing"
 
 	"github.com/ron86i/go-siat/v3"
-	"github.com/ron86i/go-siat/v3/pkg/models"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -53,8 +52,6 @@ func TestNew(t *testing.T) {
 		assert.NoError(t, err)
 		assert.NotNil(t, services)
 	})
-
-	models.NewCuisBuilder().Build()
 
 	t.Run("Invalid Config - Empty BaseUrl", func(t *testing.T) {
 		cfg := siat.Config{
@@ -119,4 +116,21 @@ func TestSiatError_Mensajes(t *testing.T) {
 	assert.Len(t, warnings, 2)
 	assert.Equal(t, 2005, warnings[0].Codigo)
 	assert.Equal(t, 3008, warnings[1].Codigo)
+}
+
+func TestNewClient(t *testing.T) {
+	cfg := siat.ClientConfig{
+		BaseURL:        "https://pilotosiatservicios.impuestos.gob.bo/sfd",
+		Token:          "test-token",
+		Nit:            123456789,
+		CodigoSistema:  "SISTEMA-TEST",
+		CodigoAmbiente: 2,
+	}
+	client, err := siat.NewClient(cfg)
+	assert.NoError(t, err)
+	assert.NotNil(t, client)
+	assert.NotNil(t, client.Codigos)
+	assert.NotNil(t, client.Facturacion)
+	assert.NotNil(t, client.Sincronizacion)
+	assert.NotNil(t, client.Operaciones)
 }

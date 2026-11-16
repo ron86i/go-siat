@@ -41,7 +41,7 @@ type CabeceraAlquilerZF struct {
 	Iva                          float64                   `xml:"iva" json:"iva"`
 	MontoAPagar                  float64                   `xml:"montoaPagar" json:"montoaPagar"`
 	CodigoMoneda                 int                       `xml:"codigoMoneda" json:"codigoMoneda"`
-	TipoCambio                   int                       `xml:"tipoCambio" json:"tipoCambio"`
+	TipoCambio                   float64                   `xml:"tipoCambio" json:"tipoCambio"`
 	MontoTotalMoneda             float64                   `xml:"montoTotalMoneda" json:"montoTotalMoneda"`
 	DescuentoAdicional           datatype.Nilable[float64] `xml:"descuentoAdicional" json:"descuentoAdicional"`
 	CodigoExcepcion              datatype.Nilable[int]     `xml:"codigoExcepcion" json:"codigoExcepcion"`

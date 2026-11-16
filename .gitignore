@@ -23,3 +23,4 @@ docs/superpowers/
 
 # Local SIAT contingency runs
 internal/adapter/services/siat_recepcion_paquete_*_test.go
+*_local_test.go

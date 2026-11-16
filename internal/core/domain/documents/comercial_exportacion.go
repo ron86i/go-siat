@@ -36,7 +36,7 @@ type CabeceraComercialExportacion struct {
 	Complemento                     string                    `xml:"complemento" json:"complemento"`
 	DireccionComprador              string                    `xml:"direccionComprador" json:"direccionComprador"`
 	CodigoCliente                   string                    `xml:"codigoCliente" json:"codigoCliente"`
-	Incoterm                        string                    `xml:"incoterm" json:"incoterm"`
+	Incoterm                        int                       `xml:"incoterm" json:"incoterm"`
 	IncotermAlcance                 string                    `xml:"incotermAlcance" json:"incotermAlcance"`
 	IncotermDetalle                 string                    `xml:"incotermDetalle" json:"incotermDetalle"`
 	PuertoDestino                   string                    `xml:"puertoDestino" json:"puertoDestino"`
