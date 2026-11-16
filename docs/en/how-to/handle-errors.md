@@ -144,7 +144,7 @@ CUFD is valid for one day. A long-running process that caches one at startup wil
 | 928 | `CodeCertificadoRevocado` | Certificate revoked |
 | 965 | `CodeContribuyenteSinFirmaVigente` | No valid signature registered with SIAT |
 
-A 921 with no local error almost always means `WithFactura` ran before `WithCodigoModalidad` — see [Sign invoices](sign-invoices.md).
+A 921 indicates the SIN rejected the signed XML. Set `CodigoModalidad` on the typed request before calling `PrepararFactura`, and pass an XMLSigner for electronic mode — see [Sign invoices](sign-invoices.md).
 
 ### Document content
 

@@ -144,7 +144,7 @@ El CUFD vale un día. Un proceso de larga duración que cachea uno al arrancar e
 | 928 | `CodeCertificadoRevocado` | Certificado revocado |
 | 965 | `CodeContribuyenteSinFirmaVigente` | Sin firma vigente registrada en el SIAT |
 
-Un 921 sin error local casi siempre significa que `WithFactura` corrió antes que `WithCodigoModalidad` — mirá [Firmar facturas](firmar-facturas.md).
+Un 921 indica que el SIN rechazó el XML firmado. Define `CodigoModalidad` en la solicitud tipada antes de llamar a `PrepararFactura` y pasa un XMLSigner para modalidad electrónica; consulta [Firmar facturas](firmar-facturas.md).
 
 ### Contenido del documento
 

@@ -15,18 +15,18 @@ import (
 //
 // Ejemplo de uso:
 //
-//	cuf, err := utils.CUFParams{
-//		Nit:                 tc.Nit,
+//	cuf, err := (utils.CUFParams{
+//		Nit:                 nit,
 //		FechaHora:           fechaEmision,
-//		Sucursal:            tc.Sucursal,
-//		Modalidad:           tc.Modalidad,
-//		TipoEmision:         siat.EmisionOnline,
+//		Sucursal:            sucursal,
+//		Modalidad:           modalidad,
+//		TipoEmision:         1,
 //		TipoFactura:         1,
 //		TipoDocumentoSector: 1,
-//		NumeroFactura:       1,
-//		PuntoVenta:          tc.PuntoVenta,
-//		CodigoControl:       cufdControl,
-//	}.Generar()
+//		NumeroFactura:       numeroFactura,
+//		PuntoVenta:          puntoVenta,
+//		CodigoControl:       codigoControl,
+//	}).Generate()
 type CUFParams struct {
 	// Nit es el NIT del contribuyente emisor (13 dígitos).
 	Nit int64
